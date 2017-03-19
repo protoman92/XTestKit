@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * Use this utility class to easily compose {@link XPath} queries in order
  * to write cross-platform tests.
  */
-public class XPath {
+public final class XPath {
     @NotNull
     public static Builder newBuilder(@NotNull Platform platform) {
         return new Builder(platform);
