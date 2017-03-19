@@ -1,0 +1,38 @@
+group 'com.swiften'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    ext {
+        annotations = '15.0'
+        appium = '5.0.0-BETA3'
+        junit = '4.12'
+        rx = '2.0.7'
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+sourceCompatibility = 1.5
+
+dependencies {
+    compile "org.jetbrains:annotations-java5:$annotations"
+    compile "io.reactivex.rxjava2:rxjava:$rx"
+    compile "io.appium:java-client:$appium"
+
+    testCompile "junit:junit:$junit"
+}
+
+task getHomeDir << {
+    println gradle.gradleHomeDir
+}
