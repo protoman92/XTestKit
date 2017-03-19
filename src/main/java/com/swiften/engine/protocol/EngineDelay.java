@@ -1,4 +1,4 @@
-package com.swiften.engine;
+package com.swiften.engine.protocol;
 
 /**
  * Created by haipham on 3/19/17.

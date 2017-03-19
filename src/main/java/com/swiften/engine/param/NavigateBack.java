@@ -23,10 +23,10 @@ public final class NavigateBack {
     }
 
     public static final class Builder {
-        @NotNull NavigateBack param;
+        @NotNull final NavigateBack PARAM;
 
         Builder() {
-            param = new NavigateBack();
+            PARAM = new NavigateBack();
         }
 
         /**
@@ -36,13 +36,13 @@ public final class NavigateBack {
          */
         @NotNull
         public Builder withTimes(int times) {
-            param.times = times;
+            PARAM.times = times;
             return this;
         }
 
         @NotNull
         public NavigateBack build() {
-            return param;
+            return PARAM;
         }
     }
 }

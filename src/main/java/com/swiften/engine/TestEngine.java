@@ -4,17 +4,19 @@ package com.swiften.engine;
  * Created by haipham on 3/19/17.
  */
 
+import com.swiften.engine.param.ByXPath;
+import com.swiften.engine.param.HasText;
 import com.swiften.engine.param.NavigateBack;
+import com.swiften.engine.protocol.*;
+import com.swiften.util.CollectionUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.SingleSource;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.*;
@@ -25,11 +27,10 @@ import java.util.concurrent.TimeUnit;
  * should extend this class and provide its own wrappers for Appium methods.
  */
 public abstract class TestEngine<T extends WebDriver> implements
-    DeviceProtocol,
     EngineDelay,
-    EngineError,
-    DriverProtocol {
-    @Nullable protected  T driver;
+    EngineError {
+    @Nullable protected T driver;
+    @Nullable protected PlatformView platformView;
 
     @NotNull protected String app;
     @NotNull protected String appPackage;
@@ -53,6 +54,20 @@ public abstract class TestEngine<T extends WebDriver> implements
         platformName = "";
         platformVersion = "";
         serverUrl = "http://localhost:4723/wd/hub";
+    }
+
+    /**
+     * Get the current {@link PlatformView}, or throw an {@link Exception} if
+     * it is not found.
+     * @return A {@link PlatformView} instance.
+     */
+    @NotNull
+    protected PlatformView platformView() {
+        if (platformView != null) {
+            return platformView;
+        }
+
+        throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
     }
 
     /**
@@ -122,7 +137,6 @@ public abstract class TestEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    @Override
     public Flowable<Boolean> rxStartDriver() {
         if (hasAllRequiredInformation()) {
             return Completable
@@ -139,7 +153,6 @@ public abstract class TestEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    @Override
     public Flowable<Boolean> rxStopDriver() {
         if (Objects.nonNull(driver)) {
             return Completable.fromAction(() -> driver.quit()).toFlowable();
@@ -156,7 +169,6 @@ public abstract class TestEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    @Override
     public Flowable<Boolean> rxNavigateBack(@NotNull NavigateBack param) {
         final T DRIVER = driver;
         final int TIMES = param.times;
@@ -188,8 +200,12 @@ public abstract class TestEngine<T extends WebDriver> implements
     }
     //endregion
 
+    /**
+     * Convenience method to create a new {@link XPath.Builder} instance.
+     * @return A {@link XPath.Builder} instance.
+     */
     @NotNull
-    public XPath.Builder newXPathBuilderInstance() {
+    protected XPath.Builder newXPathBuilderInstance() {
         Optional<Platform> platform = Platform.fromValue(platformName);
 
         if (platform.isPresent()) {
@@ -199,12 +215,87 @@ public abstract class TestEngine<T extends WebDriver> implements
         throw new RuntimeException(new Error(PLATFORM_UNAVAILABLE));
     }
 
+    /**
+     * Find all elements that satisfies an {@link XPath} request.
+     * @param param A {@link ByXPath} instance.
+     * @return A {@link Flowable} instance.
+     */
     @NotNull
-    public Flowable<Object> rxElementsWithXPath() {
+    public Flowable<List<WebElement>> rxElementsByXPath(@NotNull ByXPath param) {
         if (Objects.nonNull(driver)) {
+            final T DRIVER = driver;
+            final String XPATH = param.xPath;
+            List<View> classes = param.classes;
+
+            return Flowable.fromIterable(classes)
+                .map(cls -> String.format("//%s%s", cls.className(), XPATH))
+                .map(query -> DRIVER.findElements(By.xpath(query)))
+                .onErrorReturnItem(Collections.emptyList())
+                .reduce(CollectionUtil::unify)
+                .toFlowable();
         }
 
         return Flowable.error(new Error(DRIVER_UNAVAILABLE));
+    }
+
+    /**
+     * Get a single {@link WebElement} that satisfies an {@link XPath}
+     * request. If there are multiple such elements, take the first one.
+     * Throw an {@link Exception} if none is found.
+     * @param PARAM A {@link ByXPath} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementByXPath(@NotNull final ByXPath PARAM) {
+        Flowable<List<WebElement>> source;
+
+        if (Objects.nonNull(PARAM.parent)) {
+            source = PARAM.parent;
+        } else {
+            source = rxElementsByXPath(PARAM);
+        }
+
+        return source
+            .filter(a -> !a.isEmpty())
+            .map(a -> a.get(0))
+            .filter(Objects::nonNull)
+            .onErrorResumeNext(Flowable.error(new Exception(PARAM.error)));
+    }
+
+    /**
+     * Get all {@link WebElement} that are displaying a text.
+     * @param param A {@link HasText} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>> rxElementsWithText(@NotNull HasText param) {
+        String xPath = newXPathBuilderInstance()
+            .hasText(param.text)
+            .build()
+            .getAttribute();
+
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().hasText())
+            .withError(noElementsWithText(param.text))
+            .withXPath(xPath)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Get a {@link WebElement} that is displaying a text.
+     * @param param A {@link HasText} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementWithText(@NotNull HasText param) {
+        ByXPath query = ByXPath.newBuilder()
+            .withParent(rxElementsWithText(param))
+            .withError(noElementsWithText(param.text))
+            .build();
+
+        return rxElementByXPath(query);
     }
 
     protected abstract T createDriverInstance();
@@ -214,6 +305,17 @@ public abstract class TestEngine<T extends WebDriver> implements
 
         protected Builder() {
             ENGINE = createEngineInstance();
+        }
+
+        /**
+         * Set the {@link #ENGINE#platformView} value.
+         * @param platformView A {@link PlatformView} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withPlatformView(@NotNull PlatformView platformView) {
+            ENGINE.platformView = platformView;
+            return this;
         }
 
         /**
