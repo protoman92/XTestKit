@@ -14,6 +14,7 @@ buildscript {
         annotations = '15.0'
         appium = '5.0.0-BETA3'
         junit = '4.12'
+        mockito = '2.2.0'
         rx = '2.0.7'
     }
 }
@@ -23,7 +24,7 @@ repositories {
     jcenter()
 }
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 
 dependencies {
     compile "org.jetbrains:annotations-java5:$annotations"
@@ -31,6 +32,7 @@ dependencies {
     compile "io.appium:java-client:$appium"
 
     testCompile "junit:junit:$junit"
+    testCompile "org.mockito:mockito-core:$mockito"
 }
 
 task getHomeDir << {

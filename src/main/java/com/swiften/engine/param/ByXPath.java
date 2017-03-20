@@ -1,5 +1,6 @@
 package com.swiften.engine.param;
 
+import com.swiften.engine.PlatformEngine;
 import com.swiften.engine.protocol.View;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import java.util.List;
 
 /**
  * Parameter object for
- * {@link com.swiften.engine.TestEngine#rxElementsByXPath(ByXPath)}.
+ * {@link PlatformEngine#rxElementsByXPath(ByXPath)}.
  */
 public final class ByXPath {
     @NotNull

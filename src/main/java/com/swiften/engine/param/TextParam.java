@@ -1,6 +1,6 @@
 package com.swiften.engine.param;
 
-import com.swiften.engine.TestEngine;
+import com.swiften.engine.PlatformEngine;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
  */
 
 /**
- * Parameter object for {@link TestEngine#rxElementsWithText()}.
+ * Parameter object for {@link PlatformEngine#rxElementsWithText(TextParam)}.
  */
-public final class HasText {
+public final class TextParam {
     @NotNull
     public Builder newBuilder() {
         return new Builder();
@@ -18,15 +18,15 @@ public final class HasText {
 
     @NotNull public String text;
 
-    HasText() {
+    TextParam() {
         text = "";
     }
 
     public static final class Builder {
-        @NotNull final HasText PARAM;
+        @NotNull final TextParam PARAM;
 
         Builder() {
-            PARAM = new HasText();
+            PARAM = new TextParam();
         }
 
         /**
@@ -41,7 +41,7 @@ public final class HasText {
         }
 
         @NotNull
-        public HasText build() {
+        public TextParam build() {
             return PARAM;
         }
     }

@@ -20,4 +20,14 @@ public interface EngineError {
     default String noElementsContainingText(@NotNull String text) {
         return String.format("No elements containing text: %s", text);
     }
+
+    @NotNull
+    default String noElementsWithHint(@NotNull String hint) {
+        return String.format("No elements with hint: %s", hint);
+    }
+
+    @NotNull
+    default String noElementContainingHint(@NotNull String hint) {
+        return String.format("No elements containing hint: %s", hint);
+    }
 }

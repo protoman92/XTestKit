@@ -5,13 +5,13 @@ package com.swiften.engine;
  */
 
 import com.swiften.engine.param.ByXPath;
-import com.swiften.engine.param.HasText;
+import com.swiften.engine.param.HintParam;
+import com.swiften.engine.param.TextParam;
 import com.swiften.engine.param.NavigateBack;
 import com.swiften.engine.protocol.*;
 import com.swiften.util.CollectionUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * A base class for platform-specific implementations. Each Different platform
  * should extend this class and provide its own wrappers for Appium methods.
  */
-public abstract class TestEngine<T extends WebDriver> implements
+public abstract class PlatformEngine<T extends WebDriver> implements
     EngineDelay,
     EngineError {
     @Nullable protected T driver;
@@ -43,7 +43,7 @@ public abstract class TestEngine<T extends WebDriver> implements
     @NotNull protected String serverUrl;
     protected long deviceReadyTimeout;
 
-    public TestEngine() {
+    public PlatformEngine() {
         app = "";
         appPackage = "";
         appiumVersion = "1.6.3";
@@ -74,21 +74,21 @@ public abstract class TestEngine<T extends WebDriver> implements
      * Get a {@link List} of required capabilities. We convert all values to
      * {@link String} and check if all values are non-empty. If a value is
      * not a {@link String}, but is falsy (e.g. a zero value), we replace
-     * it with an empty {@link String}. Subclasses of {@link TestEngine}
+     * it with an empty {@link String}. Subclasses of {@link PlatformEngine}
      * can append to this {@link List}.
      * @return A {@link List} of {@link String}
      */
     @NotNull
     protected List<String> requiredCapabilities() {
         List<String> required = Arrays.asList(
-                app,
-                appPackage,
-                automationName,
-                deviceName,
-                deviceName,
-                platformName,
-                platformVersion,
-                serverUrl
+            app,
+            appPackage,
+            automationName,
+            deviceName,
+            deviceName,
+            platformName,
+            platformVersion,
+            serverUrl
         );
 
         return new ArrayList<>(required);
@@ -200,6 +200,7 @@ public abstract class TestEngine<T extends WebDriver> implements
     }
     //endregion
 
+    //region By XPath
     /**
      * Convenience method to create a new {@link XPath.Builder} instance.
      * @return A {@link XPath.Builder} instance.
@@ -261,14 +262,18 @@ public abstract class TestEngine<T extends WebDriver> implements
             .filter(Objects::nonNull)
             .onErrorResumeNext(Flowable.error(new Exception(PARAM.error)));
     }
+    //endregion
 
+    //region With Text
     /**
-     * Get all {@link WebElement} that are displaying a text.
-     * @param param A {@link HasText} instance.
+     * Get all {@link View#hasText()} {@link WebElement} that are displaying
+     * a text.
+     * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsWithText(@NotNull HasText param) {
+    public Flowable<List<WebElement>>
+    rxElementsWithText(@NotNull TextParam param) {
         String xPath = newXPathBuilderInstance()
             .hasText(param.text)
             .build()
@@ -284,12 +289,13 @@ public abstract class TestEngine<T extends WebDriver> implements
     }
 
     /**
-     * Get a {@link WebElement} that is displaying a text.
-     * @param param A {@link HasText} instance.
+     * Get a {@link View#hasText()} {@link WebElement} that is displaying
+     * a text.
+     * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<WebElement> rxElementWithText(@NotNull HasText param) {
+    public Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsWithText(param))
             .withError(noElementsWithText(param.text))
@@ -297,10 +303,179 @@ public abstract class TestEngine<T extends WebDriver> implements
 
         return rxElementByXPath(query);
     }
+    //endregion
 
+    //region Contains Text
+    /**
+     * Get all {@link View#hasText()} {@link WebElement} whose texts contain
+     * another text.
+     * @param param A {@link TextParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>>
+    rxElementsContainingText(@NotNull TextParam param) {
+        String xPath = newXPathBuilderInstance()
+            .containsText(param.text)
+            .build()
+            .getAttribute();
+
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().hasText())
+            .withError(noElementsContainingText(param.text))
+            .withXPath(xPath)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Get a {@link View#hasText()} {@link WebElement} whose text contains
+     * another text.
+     * @param param A {@link TextParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement>
+    rxElementContainingText(@NotNull TextParam param) {
+        ByXPath query = ByXPath.newBuilder()
+            .withParent(rxElementsContainingText(param))
+            .withError(noElementsContainingText(param.text))
+            .build();
+
+        return rxElementByXPath(query);
+    }
+    //endregion
+
+    //region With Hint
+    /**
+     * Get all {@link View#isEditable()} {@link WebElement} that have a
+     * certain hint.
+     * @param param A {@link HintParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>>
+    rxElementsWithHint(@NotNull HintParam param) {
+        String xPath = newXPathBuilderInstance()
+            .hasHint(param.hint)
+            .build()
+            .getAttribute();
+
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().isEditable())
+            .withError(noElementsWithHint(param.hint))
+            .withXPath(xPath)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Get a {@link View#isEditable()} {@link WebElement} that has a certain
+     * hint.
+     * @param param A {@link HintParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
+        ByXPath query = ByXPath.newBuilder()
+            .withParent(rxElementsWithHint(param))
+            .withError(noElementsWithHint(param.hint))
+            .build();
+
+        return rxElementByXPath(query);
+    }
+    //endregion
+
+    //region Contains Hint
+    /**
+     * Get all {@link View#isEditable()} {@link WebElement} whose hints
+     * contain another hint.
+     * @param param A {@link HintParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>>
+    rxElementsContainingHint(@NotNull HintParam param) {
+        String xPath = newXPathBuilderInstance()
+            .containsHint(param.hint)
+            .build()
+            .getAttribute();
+
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().isEditable())
+            .withError(noElementContainingHint(param.hint))
+            .withXPath(xPath)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Get a {@link View#isEditable()} {@link WebElement} whose hint contains
+     * another hint.
+     * @param param A {@link HintParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement>
+    rxElementContainingHint(@NotNull HintParam param) {
+        ByXPath query = ByXPath.newBuilder()
+            .withParent(rxElementsContainingHint(param))
+            .withError(noElementContainingHint(param.hint))
+            .build();
+
+        return rxElementByXPath(query);
+    }
+    //endregion
+
+    //region Editable Elements
+    /**
+     * Get all {@link View#isEditable()} {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>> rxAllEditableElements() {
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().isEditable())
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Clear all {@link View#isEditable()} {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxClearAllEditableElements() {
+        return rxAllEditableElements()
+            .flatMap(Flowable::fromIterable)
+            .flatMap(a -> Completable.fromAction(a::clear).toFlowable())
+            .map(a -> true);
+    }
+    //endregion
+
+    //region Clickable Elements
+    /**
+     * Get all {@link View#isClickable()} {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<List<WebElement>> rxAllClickableElements() {
+        ByXPath query = ByXPath.newBuilder()
+            .withClasses(platformView().isClickable())
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+    //endregion
+
+    @NotNull
     protected abstract T createDriverInstance();
 
-    public static abstract class Builder<T extends TestEngine> {
+    public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
 
         protected Builder() {

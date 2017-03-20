@@ -1,6 +1,6 @@
 package com.swiften.engine.param;
 
-import com.swiften.engine.TestEngine;
+import com.swiften.engine.PlatformEngine;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 /**
- * Parameter object for {@link TestEngine#rxNavigateBack(NavigateBack)}.
+ * Parameter object for {@link PlatformEngine#rxNavigateBack(NavigateBack)}.
  */
 public final class NavigateBack {
     @NotNull

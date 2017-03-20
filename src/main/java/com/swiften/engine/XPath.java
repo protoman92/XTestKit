@@ -1,5 +1,6 @@
 package com.swiften.engine;
 
+import com.swiften.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +29,7 @@ public final class XPath {
     }
 
     void appendAttribute(@NotNull String attr) {
-        attribute = String.format("%s[%s]", attribute, attr);
+        attribute = String.format("%1$s[%2$s]", attribute, attr);
     }
 
     public static final class Builder {
@@ -47,7 +48,7 @@ public final class XPath {
          */
         @NotNull
         public Builder hasText(@NotNull String text) {
-            String attr = String.format("@text='%s", text);
+            String attr = String.format("@text='%s'", text);
             XPATH.appendAttribute(attr);
             return this;
         }
@@ -60,6 +61,32 @@ public final class XPath {
         @NotNull
         public Builder containsText(@NotNull String text) {
             String attr = String.format("contains(@text, '%s')", text);
+            XPATH.appendAttribute(attr);
+            return this;
+        }
+
+        /**
+         * Appends a @hint attribute. There are, however, platform implications
+         * since on iOS this may be called a placeholder.
+         * @param hint The hint to be appended.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder hasHint(@NotNull String hint) {
+            String attr = String.format("@hint='%s'", hint);
+            XPATH.appendAttribute(attr);
+            return this;
+        }
+
+        /**
+         * Appends a contains(@hint) attribute. There are, however, platform
+         * implications since on iOS this may be called a placeholder.
+         * @param hint The hint to be appended.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder containsHint(@NotNull String hint) {
+            String attr = String.format("contains(@hint, '%s')", hint);
             XPATH.appendAttribute(attr);
             return this;
         }
