@@ -3,11 +3,14 @@ package com.swiften.xtestkit.engine;
 import com.swiften.engine.base.XPath;
 import com.swiften.engine.base.param.ByXPath;
 import com.swiften.engine.base.param.NavigateBack;
+import com.swiften.engine.base.param.TextParam;
 import com.swiften.engine.base.protocol.EngineError;
+import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.base.protocol.PlatformView;
 import com.swiften.engine.base.protocol.View;
 import com.swiften.engine.mobile.Automation;
 import com.swiften.engine.base.PlatformEngine;
+import com.swiften.engine.mobile.Platform;
 import com.swiften.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -31,6 +34,7 @@ import org.reactivestreams.Subscriber;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.*;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +44,8 @@ public final class PlatformEngineTest implements EngineError {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final WebDriver.Navigation NAVIGATION;
-    @NotNull private final PlatformView PLATFORM_VIEWS;
-    @NotNull private final Random RAND;
-    private final int ELEMENT_COUNT, TRIES, VIEW_COUNT;
+    @NotNull private final MockPlatformView PLATFORM_VIEWS;
+    private final int ELEMENT_COUNT, TRIES;
 
     {
         ENGINE = spy(new MockEngine.Builder()
@@ -58,19 +61,17 @@ public final class PlatformEngineTest implements EngineError {
          * every time driver.navigate() is called */
         NAVIGATION = mock(WebDriver.Navigation.class);
 
-        /* This PlatformView object will be returned by ENGINE */
-        PLATFORM_VIEWS = mock(PlatformView.class);
-
-        RAND = new Random();
+        /* This PlatformView object will be returned by ENGINE. We return
+         * an implementation whose getViews() method returns a list of mock
+         * WebElement, instead of a mock PlatformView. This way, we do not
+         * have to rewrite view login for PlatformView */
+        PLATFORM_VIEWS = spy(new MockPlatformView());
 
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
         /* The number of tries for certain tests */
         TRIES = 10;
-
-        /* The number of View to pass to PlatformView */
-        VIEW_COUNT = 1000;
     }
 
     @Before
@@ -85,12 +86,6 @@ public final class PlatformEngineTest implements EngineError {
                 .map(a -> mock(WebElement.class))
                 .collect(Collectors.toList())
         );
-
-        when(PLATFORM_VIEWS.allViews()).thenReturn(
-            Arrays
-                .stream(new Object[VIEW_COUNT])
-                .map(a -> spy(new MockView(RAND)))
-                .collect(Collectors.toList()));
     }
 
     @After
@@ -352,7 +347,7 @@ public final class PlatformEngineTest implements EngineError {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(events.size(), VIEW_COUNT * ELEMENT_COUNT);
+        assertEquals(events.size(), PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
 
         views.forEach(a -> {
             verify(a).className();
@@ -364,9 +359,7 @@ public final class PlatformEngineTest implements EngineError {
     public void test_elementByXPathWithNoElement_shouldThrow() {
         // Setup
         List<WebElement> result = mock(ArrayList.class);
-
-        doReturn(Flowable.just(result))
-            .when(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        when(DRIVER.findElements(any(By.ByXPath.class))).thenReturn(result);
 
         ByXPath param = mock(ByXPath.class);
         TestSubscriber subscriber = TestSubscriber.create();
@@ -380,7 +373,7 @@ public final class PlatformEngineTest implements EngineError {
         subscriber.assertErrorMessage(null);
         subscriber.assertNoValues();
         subscriber.assertNotComplete();
-        verify(result).get(anyInt());
+        verify(result, never()).get(anyInt());
     }
 
     @Test
@@ -444,6 +437,96 @@ public final class PlatformEngineTest implements EngineError {
     }
     //endregion
 
+    //region Element With Text
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_elementsWithText_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+        // When
+        ENGINE.rxElementsWithText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_elementWithTextWithNoElement_shouldThrow() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+        when(DRIVER.findElements(any(By.ByXPath.class)))
+            .thenReturn(Collections.emptyList());
+
+        // When
+        ENGINE.rxElementWithText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(noElementsWithText(""));
+        subscriber.assertNotComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_elementWithText_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+//        doReturn(Flowable.just(DRIVER.findElements(mock(By.ByXPath.class))))
+//            .when(ENGINE).
+
+        // When
+        ENGINE.rxElementWithText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        Object object = ((List)subscriber.getEvents().get(0)).get(0);
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(object instanceof WebElement);
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+    //endregion
+
+    static class MockPlatformView extends PlatformView {
+        @NotNull private final Random RAND;
+        final int VIEW_COUNT;
+
+        {
+            RAND = new Random();
+
+            /* The number of View to pass to PlatformView */
+            VIEW_COUNT = 1000;
+        }
+
+        @NotNull
+        @Override
+        protected View[] getViews() {
+            return Arrays
+                .stream(new Object[VIEW_COUNT])
+                .map(a -> spy(new MockView(RAND)))
+                .toArray(View[]::new);
+        }
+    }
+
     static class MockEngine extends PlatformEngine<WebDriver> {
         @NotNull
         @Override
@@ -483,7 +566,11 @@ public final class PlatformEngineTest implements EngineError {
         @NotNull
         @Override
         protected XPath.Builder newXPathBuilderInstance() {
-            return mock(XPath.Builder.class);
+            PlatformProtocol platform = mock(PlatformProtocol.class);
+            when(platform.enabledAttribute()).thenReturn("enabled");
+            when(platform.hintAttribute()).thenReturn("hint");
+            when(platform.textAttribute()).thenReturn("text");
+            return XPath.newBuilder(platform);
         }
 
         static final class Builder extends PlatformEngine.Builder<MockEngine> {
@@ -521,6 +608,16 @@ public final class PlatformEngineTest implements EngineError {
         @Override
         public boolean isClickable() {
             return RAND.nextBoolean();
+        }
+
+        @NotNull
+        @Override
+        public String toString() {
+            String base = "";
+            base += ("\nhasText: " + hasText());
+            base += ("\nisClickable: " + isClickable());
+            base += ("\nisEditable: " + isEditable());
+            return base;
         }
     }
 }

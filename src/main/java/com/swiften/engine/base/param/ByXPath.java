@@ -26,15 +26,35 @@ public class ByXPath {
         return new Builder();
     }
 
-    @NotNull public List<View> classes;
-    @NotNull public String error;
-    @NotNull public String xPath;
-    @Nullable public Flowable<List<WebElement>> parent;
+    @NotNull private List<View> classes;
+    @NotNull private String error;
+    @NotNull private String xPath;
+    @Nullable private Flowable<List<WebElement>> parent;
 
     ByXPath() {
         classes = new ArrayList<>();
         error = "";
         xPath = "";
+    }
+
+    @NotNull
+    public List<View> classes() {
+        return classes;
+    }
+
+    @NotNull
+    public String error() {
+        return error;
+    }
+
+    @NotNull
+    public String xPath() {
+        return xPath;
+    }
+
+    @Nullable
+    public Flowable<List<WebElement>> parent() {
+        return parent;
     }
 
     public static final class Builder {

@@ -10,16 +10,21 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Parameter object for {@link PlatformEngine#rxElementsWithText(TextParam)}.
  */
-public final class TextParam {
+public class TextParam {
     @NotNull
-    public Builder newBuilder() {
+    public static Builder newBuilder() {
         return new Builder();
     }
 
-    @NotNull public String text;
+    @NotNull private String text = "";
 
     TextParam() {
         text = "";
+    }
+
+    @NotNull
+    public String text() {
+        return text;
     }
 
     public static final class Builder {

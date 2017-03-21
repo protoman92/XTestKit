@@ -16,10 +16,14 @@ public final class NavigateBack {
         return new Builder();
     }
 
-    public int times;
+    private int times;
 
     NavigateBack() {
         times = 1;
+    }
+
+    public int times() {
+        return times;
     }
 
     public static final class Builder {

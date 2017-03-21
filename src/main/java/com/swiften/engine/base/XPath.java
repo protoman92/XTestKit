@@ -1,7 +1,9 @@
 package com.swiften.engine.base;
 
+import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.mobile.Platform;
 import org.jetbrains.annotations.NotNull;
+import sun.security.krb5.internal.PAData;
 
 /**
  * Created by haipham on 3/19/17.
@@ -11,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
  * Use this utility class to easily compose {@link XPath} queries in order
  * to write cross-platform tests.
  */
-public final class XPath {
+public class XPath {
     @NotNull
-    public static Builder newBuilder(@NotNull Platform platform) {
+    public static Builder newBuilder(@NotNull PlatformProtocol platform) {
         return new Builder(platform);
     }
 
@@ -34,11 +36,13 @@ public final class XPath {
 
     public static class Builder {
         @NotNull private final XPath XPATH;
-        @NotNull private final Platform PLATFORM;
+        @NotNull private final PlatformProtocol PLATFORM;
+        @NotNull private final String NO_ATTR_NAME_ERROR;
 
-        Builder(@NotNull Platform platform) {
+        Builder(@NotNull PlatformProtocol platform) {
             PLATFORM = platform;
             XPATH = new XPath();
+            NO_ATTR_NAME_ERROR = "Must specify attribute name";
         }
 
         /**
@@ -48,7 +52,13 @@ public final class XPath {
          */
         @NotNull
         public Builder hasText(@NotNull String text) {
-            String attr = String.format("@text='%s'", text);
+            String name = PLATFORM.textAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("@%1$s='%2$s'", name, text);
             XPATH.appendAttribute(attr);
             return this;
         }
@@ -60,7 +70,13 @@ public final class XPath {
          */
         @NotNull
         public Builder containsText(@NotNull String text) {
-            String attr = String.format("contains(@text, '%s')", text);
+            String name = PLATFORM.textAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("contains(@%1$s, '%2$s')", name, text);
             XPATH.appendAttribute(attr);
             return this;
         }
@@ -73,7 +89,13 @@ public final class XPath {
          */
         @NotNull
         public Builder hasHint(@NotNull String hint) {
-            String attr = String.format("@hint='%s'", hint);
+            String name = PLATFORM.hintAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("@%1$s='%2$s'", name, hint);
             XPATH.appendAttribute(attr);
             return this;
         }
@@ -86,7 +108,13 @@ public final class XPath {
          */
         @NotNull
         public Builder containsHint(@NotNull String hint) {
-            String attr = String.format("contains(@hint, '%s')", hint);
+            String name = PLATFORM.hintAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("contains(@%1$s, '%2$s')", name, hint);
             XPATH.appendAttribute(attr);
             return this;
         }
@@ -98,7 +126,13 @@ public final class XPath {
          */
         @NotNull
         public Builder isEnabled(boolean enabled) {
-            String attr = String.format("@enabled='%b'", enabled);
+            String name = PLATFORM.enabledAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("@%1$s='%2$s'", name, enabled);
             XPATH.appendAttribute(attr);
             return this;
         }

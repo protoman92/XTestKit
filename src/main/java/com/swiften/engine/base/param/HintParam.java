@@ -17,10 +17,15 @@ public final class HintParam {
         return new Builder();
     }
 
-    @NotNull public String hint;
+    @NotNull private String hint;
 
     HintParam() {
         hint = "";
+    }
+
+    @NotNull
+    public String hint() {
+        return hint;
     }
 
     public static final class Builder {

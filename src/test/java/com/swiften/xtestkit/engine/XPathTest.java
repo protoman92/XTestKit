@@ -5,6 +5,7 @@ import com.swiften.engine.base.XPath;
 import static org.junit.Assert.*;
 
 import com.swiften.engine.mobile.Platform;
+import com.swiften.util.Log;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -33,5 +34,6 @@ public final class XPathTest {
 
         // Then
         assertEquals(groupCount, groups.size());
+        Log.println(attribute);
     }
 }

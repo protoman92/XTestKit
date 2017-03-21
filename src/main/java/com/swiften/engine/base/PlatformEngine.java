@@ -176,7 +176,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             return Flowable.error(e);
         }
 
-        final int TIMES = param.times;
+        final int TIMES = param.times();
 
         @SuppressWarnings("WeakerAccess")
         final long DELAY = backNavigationDelay();
@@ -229,8 +229,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             return Flowable.error(e);
         }
 
-        final String XPATH = param.xPath;
-        List<View> classes = param.classes;
+        final String XPATH = param.xPath();
+        List<View> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
 
         return Flowable.fromIterable(classes)
@@ -256,11 +256,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementByXPath(@NotNull final ByXPath PARAM) {
-        Flowable<List<WebElement>> source;
+        Flowable<List<WebElement>> source = PARAM.parent();
 
-        if (Objects.nonNull(PARAM.parent)) {
-            source = PARAM.parent;
-        } else {
+        if (Objects.isNull(source)) {
             source = rxElementsByXPath(PARAM);
         }
 
@@ -268,7 +266,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .filter(a -> !a.isEmpty())
             .map(a -> a.get(0))
             .filter(Objects::nonNull)
-            .onErrorResumeNext(Flowable.error(new Exception(PARAM.error)));
+            .switchIfEmpty(Flowable.error(new Exception(PARAM.error())));
     }
     //endregion
 
@@ -280,16 +278,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>>
-    rxElementsWithText(@NotNull TextParam param) {
+    public Flowable<List<WebElement>> rxElementsWithText(@NotNull TextParam param) {
         String xPath = newXPathBuilderInstance()
-            .hasText(param.text)
+            .hasText(param.text())
             .build()
             .getAttribute();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().hasText())
-            .withError(noElementsWithText(param.text))
+            .withError(noElementsWithText(param.text()))
             .withXPath(xPath)
             .build();
 
@@ -306,7 +303,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsWithText(param))
-            .withError(noElementsWithText(param.text))
+            .withError(noElementsWithText(param.text()))
             .build();
 
         return rxElementByXPath(query);
@@ -321,16 +318,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>>
-    rxElementsContainingText(@NotNull TextParam param) {
+    public Flowable<List<WebElement>> rxElementsContainingText(@NotNull TextParam param) {
         String xPath = newXPathBuilderInstance()
-            .containsText(param.text)
+            .containsText(param.text())
             .build()
             .getAttribute();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().hasText())
-            .withError(noElementsContainingText(param.text))
+            .withError(noElementsContainingText(param.text()))
             .withXPath(xPath)
             .build();
 
@@ -348,7 +344,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     rxElementContainingText(@NotNull TextParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsContainingText(param))
-            .withError(noElementsContainingText(param.text))
+            .withError(noElementsContainingText(param.text()))
             .build();
 
         return rxElementByXPath(query);
@@ -366,13 +362,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<List<WebElement>>
     rxElementsWithHint(@NotNull HintParam param) {
         String xPath = newXPathBuilderInstance()
-            .hasHint(param.hint)
+            .hasHint(param.hint())
             .build()
             .getAttribute();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().isEditable())
-            .withError(noElementsWithHint(param.hint))
+            .withError(noElementsWithHint(param.hint()))
             .withXPath(xPath)
             .build();
 
@@ -389,7 +385,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsWithHint(param))
-            .withError(noElementsWithHint(param.hint))
+            .withError(noElementsWithHint(param.hint()))
             .build();
 
         return rxElementByXPath(query);
@@ -404,16 +400,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>>
-    rxElementsContainingHint(@NotNull HintParam param) {
+    public Flowable<List<WebElement>> rxElementsContainingHint(@NotNull HintParam param) {
         String xPath = newXPathBuilderInstance()
-            .containsHint(param.hint)
+            .containsHint(param.hint())
             .build()
             .getAttribute();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().isEditable())
-            .withError(noElementContainingHint(param.hint))
+            .withError(noElementContainingHint(param.hint()))
             .withXPath(xPath)
             .build();
 
@@ -431,7 +426,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     rxElementContainingHint(@NotNull HintParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsContainingHint(param))
-            .withError(noElementContainingHint(param.hint))
+            .withError(noElementContainingHint(param.hint()))
             .build();
 
         return rxElementByXPath(query);
