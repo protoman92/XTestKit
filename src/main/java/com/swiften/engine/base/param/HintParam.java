@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link PlatformEngine#rxElementsWithHint(HintParam)}
  */
-public final class HintParam {
+public class HintParam {
     @NotNull
     public static HintParam.Builder newBuilder() {
         return new Builder();

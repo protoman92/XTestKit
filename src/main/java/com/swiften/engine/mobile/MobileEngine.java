@@ -3,18 +3,22 @@ package com.swiften.engine.mobile;
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.engine.base.XPath;
 import com.swiften.engine.mobile.protocol.MobileEngineError;
+import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.*;
 
 /**
  * Created by haipham on 3/20/17.
  */
-public abstract class MobileEngine<T extends WebDriver> extends
-    PlatformEngine<T> implements
-    MobileEngineError {
+public abstract class MobileEngine<
+    E extends WebElement,
+    T extends MobileDriver<E>
+    > extends PlatformEngine<T>
+    implements MobileEngineError {
     @NotNull protected String app;
     @NotNull protected String appPackage;
     @NotNull protected String appiumVersion;
@@ -147,6 +151,17 @@ public abstract class MobileEngine<T extends WebDriver> extends
         @NotNull
         public Builder<T> withAutomation(@NotNull Automation automation) {
             return withAutomationName(automation.value());
+        }
+
+        /**
+         * Set the {@link #ENGINE#deviceName} value.
+         * @param deviceName The device name on which tests will be executed.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withDeviceName(@NotNull String deviceName) {
+            ENGINE.deviceName = deviceName;
+            return this;
         }
 
         /**

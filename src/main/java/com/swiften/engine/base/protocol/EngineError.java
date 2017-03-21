@@ -26,7 +26,7 @@ public interface EngineError {
     }
 
     @NotNull
-    default String noElementContainingHint(@NotNull String hint) {
+    default String noElementsContainingHint(@NotNull String hint) {
         return String.format("No elements containing hint: %s", hint);
     }
 }

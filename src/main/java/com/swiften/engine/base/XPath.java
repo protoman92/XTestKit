@@ -3,7 +3,6 @@ package com.swiften.engine.base;
 import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.mobile.Platform;
 import org.jetbrains.annotations.NotNull;
-import sun.security.krb5.internal.PAData;
 
 /**
  * Created by haipham on 3/19/17.

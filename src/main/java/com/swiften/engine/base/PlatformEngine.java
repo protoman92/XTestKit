@@ -10,16 +10,8 @@ import com.swiften.engine.base.param.TextParam;
 import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.protocol.*;
 import com.swiften.util.CollectionUtil;
-import com.swiften.util.Log;
 import io.reactivex.Completable;
-import io.reactivex.CompletableSource;
-import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -340,8 +332,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<WebElement>
-    rxElementContainingText(@NotNull TextParam param) {
+    public Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsContainingText(param))
             .withError(noElementsContainingText(param.text()))
@@ -359,8 +350,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>>
-    rxElementsWithHint(@NotNull HintParam param) {
+    public Flowable<List<WebElement>> rxElementsWithHint(@NotNull HintParam param) {
         String xPath = newXPathBuilderInstance()
             .hasHint(param.hint())
             .build()
@@ -408,7 +398,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().isEditable())
-            .withError(noElementContainingHint(param.hint()))
+            .withError(noElementsContainingHint(param.hint()))
             .withXPath(xPath)
             .build();
 
@@ -422,11 +412,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<WebElement>
-    rxElementContainingHint(@NotNull HintParam param) {
+    public Flowable<WebElement> rxElementContainingHint(@NotNull HintParam param) {
         ByXPath query = ByXPath.newBuilder()
             .withParent(rxElementsContainingHint(param))
-            .withError(noElementContainingHint(param.hint()))
+            .withError(noElementsContainingHint(param.hint()))
             .build();
 
         return rxElementByXPath(query);

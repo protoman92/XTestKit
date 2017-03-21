@@ -2,20 +2,16 @@ package com.swiften.xtestkit.engine;
 
 import com.swiften.engine.base.XPath;
 import com.swiften.engine.base.param.ByXPath;
+import com.swiften.engine.base.param.HintParam;
 import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.param.TextParam;
 import com.swiften.engine.base.protocol.EngineError;
 import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.base.protocol.PlatformView;
 import com.swiften.engine.base.protocol.View;
-import com.swiften.engine.mobile.Automation;
 import com.swiften.engine.base.PlatformEngine;
-import com.swiften.engine.mobile.Platform;
-import com.swiften.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.commons.collections.ArrayStack;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 
 import static org.junit.Assert.*;
@@ -23,18 +19,15 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+
 import static org.mockito.Mockito.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.reactivestreams.Subscriber;
-import org.springframework.scheduling.annotation.Async;
 
 import java.util.*;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +88,7 @@ public final class PlatformEngineTest implements EngineError {
 
     //region Engine Setup
     @Test
-    public void test_createEngine_shouldHaveCorrectCapabilities() {
+    public void mock_createEngine_shouldHaveCorrectCapabilities() {
         // Setup
         // When
         // Then
@@ -106,7 +99,7 @@ public final class PlatformEngineTest implements EngineError {
     //region Start Driver
     @Test
     @SuppressWarnings("unchecked")
-    public void test_startDriverWithWrongConfigs_shouldFail() {
+    public void mock_startDriverWithWrongConfigs_shouldThrow() {
         // Setup
         doReturn(false).when(ENGINE).hasAllRequiredInformation();
         TestSubscriber subscriber = TestSubscriber.create();
@@ -124,7 +117,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_unableToStartDriver_shouldThrow() {
+    public void mock_unableToStartDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE))
             .when(ENGINE)
@@ -145,7 +138,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_startDriver_shouldSucceed() {
+    public void mock_startDriver_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
@@ -169,7 +162,7 @@ public final class PlatformEngineTest implements EngineError {
     //region Stop Driver
     @Test
     @SuppressWarnings("unchecked")
-    public void test_stopUnavailableDriver_shouldThrow() {
+    public void mock_stopUnavailableDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
         TestSubscriber subscriber = TestSubscriber.create();
@@ -187,7 +180,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_stopAvailableDriver_shouldSucceed() {
+    public void mock_stopAvailableDriver_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
@@ -209,7 +202,7 @@ public final class PlatformEngineTest implements EngineError {
     //region Navigate Back
     @Test
     @SuppressWarnings("unchecked")
-    public void test_navigateBackWithNoDriver_shouldThrowError() {
+    public void mock_navigateBackWithNoDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE))
             .when(ENGINE)
@@ -234,7 +227,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_navigateBack_shouldSuccess() {
+    public void mock_navigateBack_shouldSuccess() {
         // Setup
         /* Stub out backNavigationDelay() to avoid long wait */
         long delay = 100;
@@ -274,7 +267,7 @@ public final class PlatformEngineTest implements EngineError {
     //region Element By XPATH
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementsByXPathWithNoDriver_shouldFail() {
+    public void mock_elementsByXPathWithNoDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
         ByXPath param = ByXPath.newBuilder().build();
@@ -295,7 +288,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_failToFindElements_shouldReturnEmptyList() {
+    public void mock_failToFindElements_shouldReturnEmptyList() {
         // Setup
         when(DRIVER.findElements(any(By.ByXPath.class)))
             .thenThrow(new RuntimeException());
@@ -327,7 +320,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementsByXPath_shouldSucceed() {
+    public void mock_elementsByXPath_shouldSucceed() {
         // Setup
         List<View> views = PLATFORM_VIEWS.allViews();
 
@@ -356,7 +349,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithNoElement_shouldThrow() {
+    public void mock_elementByXPathWithNoElement_shouldThrow() {
         // Setup
         List<WebElement> result = mock(ArrayList.class);
         when(DRIVER.findElements(any(By.ByXPath.class))).thenReturn(result);
@@ -378,7 +371,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithParent_shouldSuccess() {
+    public void mock_elementByXPathWithParent_shouldSuccess() {
         // Setup
         WebElement element = mock(WebElement.class);
         List<WebElement> result = spy(new ArrayList<WebElement>());
@@ -407,7 +400,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithNoParent_shouldSucceed() {
+    public void mock_elementByXPathWithNoParent_shouldSucceed() {
         // Setup
         WebElement element = mock(WebElement.class);
         List<WebElement> result = spy(new ArrayList<WebElement>());
@@ -440,7 +433,7 @@ public final class PlatformEngineTest implements EngineError {
     //region Element With Text
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementsWithText_shouldSucceed() {
+    public void mock_elementsWithText_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
         TextParam param = mock(TextParam.class);
@@ -459,7 +452,7 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementWithTextWithNoElement_shouldThrow() {
+    public void mock_elementWithTextWithNoElement_shouldThrow() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
         TextParam param = mock(TextParam.class);
@@ -482,17 +475,212 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementWithText_shouldSucceed() {
+    public void mock_elementWithText_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
-//        doReturn(Flowable.just(DRIVER.findElements(mock(By.ByXPath.class))))
-//            .when(ENGINE).
-
         // When
         ENGINE.rxElementWithText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        Object object = ((List)subscriber.getEvents().get(0)).get(0);
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(object instanceof WebElement);
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+    //endregion
+
+    //region Element Containing Text
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementsContainingText_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+        // When
+        ENGINE.rxElementsContainingText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementContainingTextWithNoElement_shouldThrow() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+        when(DRIVER.findElements(any(By.ByXPath.class)))
+            .thenReturn(Collections.emptyList());
+
+        // When
+        ENGINE.rxElementContainingText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(noElementsContainingText(""));
+        subscriber.assertNotComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementContainingText_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        TextParam param = mock(TextParam.class);
+        when(param.text()).thenReturn("");
+
+        // When
+        ENGINE.rxElementContainingText(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        Object object = ((List)subscriber.getEvents().get(0)).get(0);
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(object instanceof WebElement);
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+    //endregion
+
+    //region Element With Hint
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementsWithHint_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        // When
+        ENGINE.rxElementsWithHint(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementWithHintWithNoElement_shouldThrow() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        when(DRIVER.findElements(any(By.ByXPath.class)))
+            .thenReturn(Collections.emptyList());
+
+        // When
+        ENGINE.rxElementWithHint(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(noElementsWithHint(""));
+        subscriber.assertNotComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementWithHint_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        // When
+        ENGINE.rxElementWithHint(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        Object object = ((List)subscriber.getEvents().get(0)).get(0);
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(object instanceof WebElement);
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+    //endregion
+
+    //region Element Containing Hint
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementsContainingHint_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        // When
+        ENGINE.rxElementsContainingHint(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementContainingHintWithNoElement_shouldThrow() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        when(DRIVER.findElements(any(By.ByXPath.class)))
+            .thenReturn(Collections.emptyList());
+
+        // When
+        ENGINE.rxElementContainingHint(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(noElementsContainingHint(""));
+        subscriber.assertNotComplete();
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_elementContainingHint_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+        HintParam param = mock(HintParam.class);
+        when(param.hint()).thenReturn("");
+
+        // When
+        ENGINE.rxElementContainingHint(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
