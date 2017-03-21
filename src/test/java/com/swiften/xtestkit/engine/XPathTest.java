@@ -1,15 +1,14 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.engine.Platform;
-import com.swiften.engine.XPath;
-import com.swiften.util.Log;
+import com.swiften.engine.base.XPath;
+
 import static org.junit.Assert.*;
+
+import com.swiften.engine.mobile.Platform;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by haipham on 3/19/17.

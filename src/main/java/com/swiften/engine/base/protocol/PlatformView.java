@@ -1,4 +1,4 @@
-package com.swiften.engine.protocol;
+package com.swiften.engine.base.protocol;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public abstract class PlatformView {
      */
     @NotNull
     public List<? extends View> hasText() {
-        return Arrays.stream(getViews())
+        return allViews().stream()
             .filter(View::hasText)
             .collect(Collectors.toList());
     }
@@ -35,7 +35,7 @@ public abstract class PlatformView {
      * @return A {@link List} of {@link View}.
      */
     public List<? extends View> isClickable() {
-        return Arrays.stream(this.<View>getViews())
+        return allViews().stream()
             .filter(View::isClickable)
             .collect(Collectors.toList());
     }
@@ -46,7 +46,7 @@ public abstract class PlatformView {
      */
     @NotNull
     public List<? extends View> isEditable() {
-        return Arrays.stream(getViews())
+        return allViews().stream()
             .filter(View::isEditable)
             .collect(Collectors.toList());
     }

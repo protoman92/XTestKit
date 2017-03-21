@@ -1,4 +1,4 @@
-package com.swiften.engine.protocol;
+package com.swiften.engine.base.protocol;
 
 import org.jetbrains.annotations.NotNull;
 

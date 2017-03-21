@@ -1,4 +1,4 @@
-package com.swiften.engine.protocol;
+package com.swiften.engine.base.protocol;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface EngineError {
     String DRIVER_UNAVAILABLE = "Driver unavailable";
-    String PLATFORM_UNAVAILABLE = "Platform unavailable";
     String PLATFORM_VIEW_UNAVAILABLE = "Platform view unavailable";
     String INSUFFICIENT_SETTINGS = "Insufficient settings";
 

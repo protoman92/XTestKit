@@ -1,6 +1,6 @@
-package com.swiften.engine.param;
+package com.swiften.engine.base.param;
 
-import com.swiften.engine.PlatformEngine;
+import com.swiften.engine.base.PlatformEngine;
 import org.jetbrains.annotations.NotNull;
 
 /**

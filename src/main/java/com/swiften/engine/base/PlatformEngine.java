@@ -1,22 +1,31 @@
-package com.swiften.engine;
+package com.swiften.engine.base;
 
 /**
  * Created by haipham on 3/19/17.
  */
 
-import com.swiften.engine.param.ByXPath;
-import com.swiften.engine.param.HintParam;
-import com.swiften.engine.param.TextParam;
-import com.swiften.engine.param.NavigateBack;
-import com.swiften.engine.protocol.*;
+import com.swiften.engine.base.param.ByXPath;
+import com.swiften.engine.base.param.HintParam;
+import com.swiften.engine.base.param.TextParam;
+import com.swiften.engine.base.param.NavigateBack;
+import com.swiften.engine.base.protocol.*;
 import com.swiften.util.CollectionUtil;
+import com.swiften.util.Log;
 import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.*;
@@ -32,28 +41,25 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @Nullable protected T driver;
     @Nullable protected PlatformView platformView;
 
-    @NotNull protected String app;
-    @NotNull protected String appPackage;
-    @NotNull protected String appiumVersion;
-    @NotNull protected String automationName;
     @NotNull protected String browserName;
-    @NotNull protected String deviceName;
-    @NotNull protected String platformName;
-    @NotNull protected String platformVersion;
     @NotNull protected String serverUrl;
-    protected long deviceReadyTimeout;
 
     public PlatformEngine() {
-        app = "";
-        appPackage = "";
-        appiumVersion = "1.6.3";
-        automationName = "";
         browserName = "";
-        deviceName = "";
-        deviceReadyTimeout = 10000;
-        platformName = "";
-        platformVersion = "";
         serverUrl = "http://localhost:4723/wd/hub";
+    }
+
+    /**
+     * Get the active {@link T} {@link #driver}.
+     * @return {@link T} {@link #driver}.
+     */
+    @NotNull
+    protected T driver() {
+        if (Objects.nonNull(driver)) {
+            return driver;
+        }
+
+        throw new RuntimeException(DRIVER_UNAVAILABLE);
     }
 
     /**
@@ -70,24 +76,18 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
     }
 
+    //region Appium Setup.
     /**
      * Get a {@link List} of required capabilities. We convert all values to
      * {@link String} and check if all values are non-empty. If a value is
      * not a {@link String}, but is falsy (e.g. a zero value), we replace
      * it with an empty {@link String}. Subclasses of {@link PlatformEngine}
      * can append to this {@link List}.
-     * @return A {@link List} of {@link String}
+     * @return A {@link List} of {@link String}.
      */
     @NotNull
     protected List<String> requiredCapabilities() {
-        List<String> required = Arrays.asList(
-            app,
-            appPackage,
-            automationName,
-            deviceName,
-            deviceName,
-            platformName,
-            platformVersion,
+        List<String> required = Collections.singletonList(
             serverUrl
         );
 
@@ -100,7 +100,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     protected boolean hasAllRequiredInformation() {
         List<String> required = requiredCapabilities();
-        return required.stream().allMatch(String::isEmpty);
+        return required.stream().noneMatch(String::isEmpty);
     }
 
     /**
@@ -108,16 +108,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Map} instance.
      */
     @NotNull
-    private Map<String,Object> capabilities() {
+    protected Map<String,Object> capabilities() {
         Map<String,Object> capabilities = new HashMap<String,Object>();
-        capabilities.put("app", app);
-        capabilities.put("appPackage", appPackage);
-        capabilities.put("appium-version", appiumVersion);
-        capabilities.put("automationName", appiumVersion);
-        capabilities.put("deviceName", deviceName);
-        capabilities.put("deviceReadyTimeout", deviceReadyTimeout);
-        capabilities.put("platformName", platformName);
-        capabilities.put("platformVersion", platformVersion);
+        capabilities.put(CapabilityType.BROWSER_NAME, browserName);
         return capabilities;
     }
 
@@ -129,8 +122,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         Map<String,Object> capabilities = capabilities();
         return new DesiredCapabilities(capabilities);
     }
+    //endregion
 
-    //region DriverProtocol
+    //region Driver Methods.
+
+    /**
+     * Create a {@link T} instance in order to navigate UI tests.
+     * @return A {@link T} instance.
+     */
+    @NotNull
+    protected abstract T createDriverInstance();
+
     /**
      * Start the Appium driver. If {@link #hasAllRequiredInformation()}
      * returns false, throw an {@link Exception}.
@@ -154,15 +156,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        if (Objects.nonNull(driver)) {
-            return Completable.fromAction(() -> driver.quit()).toFlowable();
-        }
-
-        return Flowable.error(new Exception(DRIVER_UNAVAILABLE));
+        return Completable.fromAction(() -> driver().quit()).toFlowable();
     }
     //endregion
 
-    //region DeviceProtocol
+    //region Device Methods
     /**
      * Navigate backwards for certain number of times.
      * @param param A {@link NavigateBack} object.
@@ -170,33 +168,41 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxNavigateBack(@NotNull NavigateBack param) {
-        final T DRIVER = driver;
-        final int TIMES = param.times;
-        final long DELAY = BACK_NAVIGATION_DELAY;
+        final T DRIVER;
 
-        if (Objects.nonNull(DRIVER)) {
-            class Back {
-                /**
-                 * Loop the operation until a stopping point is reached.
-                 * finished navigating back x times.
-                 */
-                @NotNull
-                Completable back(final int ITERATION) {
-                    if (ITERATION < TIMES) {
-                        return Completable
-                            .fromAction(() -> DRIVER.navigate().back())
-                            .delay(DELAY, TimeUnit.MILLISECONDS)
-                            .andThen(new Back().back(ITERATION + 1));
-                    }
-
-                    return Completable.complete();
-                }
-            }
-
-            return new Back().back(0).toFlowable().map(a -> true);
+        try {
+            DRIVER = driver();
+        } catch (Exception e) {
+            return Flowable.error(e);
         }
 
-        return Flowable.error(new Error(DRIVER_UNAVAILABLE));
+        final int TIMES = param.times;
+
+        @SuppressWarnings("WeakerAccess")
+        final long DELAY = backNavigationDelay();
+
+        final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
+
+        class Back {
+            /**
+             * Loop the operation until a stopping point is reached.
+             * finished navigating back x times.
+             */
+            @NotNull
+            @SuppressWarnings("WeakerAccess")
+            Completable back(final int ITERATION) {
+                if (ITERATION < TIMES) {
+                    return Completable
+                        .fromAction(NAVIGATION::back)
+                        .delay(DELAY, TimeUnit.MILLISECONDS)
+                        .andThen(new Back().back(ITERATION + 1));
+                }
+
+                return Completable.complete();
+            }
+        }
+
+        return new Back().back(0).toFlowable().map(a -> true);
     }
     //endregion
 
@@ -206,15 +212,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link XPath.Builder} instance.
      */
     @NotNull
-    protected XPath.Builder newXPathBuilderInstance() {
-        Optional<Platform> platform = Platform.fromValue(platformName);
-
-        if (platform.isPresent()) {
-            return XPath.newBuilder(platform.get());
-        }
-
-        throw new RuntimeException(new Error(PLATFORM_UNAVAILABLE));
-    }
+    protected abstract XPath.Builder newXPathBuilderInstance();
 
     /**
      * Find all elements that satisfies an {@link XPath} request.
@@ -223,20 +221,30 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsByXPath(@NotNull ByXPath param) {
-        if (Objects.nonNull(driver)) {
-            final T DRIVER = driver;
-            final String XPATH = param.xPath;
-            List<View> classes = param.classes;
+        final T DRIVER;
 
-            return Flowable.fromIterable(classes)
-                .map(cls -> String.format("//%s%s", cls.className(), XPATH))
-                .map(query -> DRIVER.findElements(By.xpath(query)))
-                .onErrorReturnItem(Collections.emptyList())
-                .reduce(CollectionUtil::unify)
-                .toFlowable();
+        try {
+            DRIVER = driver();
+        } catch (Exception e) {
+            return Flowable.error(e);
         }
 
-        return Flowable.error(new Error(DRIVER_UNAVAILABLE));
+        final String XPATH = param.xPath;
+        List<View> classes = param.classes;
+        List<WebElement> elements = new ArrayList<>();
+
+        return Flowable.fromIterable(classes)
+            .map(cls -> String.format("//%s%s", cls.className(), XPATH))
+            .map(path -> {
+                try {
+                    /* Check for error here just to be certain */
+                    return DRIVER.findElements(By.xpath(path));
+                } catch (Exception e) {
+                    return Collections.<WebElement>emptyList();
+                }
+            })
+            .reduce(elements, (a, b) -> CollectionUtil.unify(a, b))
+            .toFlowable();
     }
 
     /**
@@ -472,9 +480,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
-    @NotNull
-    protected abstract T createDriverInstance();
-
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
 
@@ -490,119 +495,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         @NotNull
         public Builder<T> withPlatformView(@NotNull PlatformView platformView) {
             ENGINE.platformView = platformView;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#appiumVersion} value.
-         * @param version The Appium version that will run the tests.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withAppiumVersion(@NotNull String version) {
-            ENGINE.appiumVersion = version;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#app} value. We assume that the app is
-         * placed in {currentProject}/app folder.
-         * @param app The app's file name.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withApp(@NotNull String app) {
-            String path = System.getProperty("user.dir");
-            ENGINE.app = String.format("%s/%s", path, app);
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#appPackage} value.
-         * @param appPackage The app's package name.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withAppPackage(@NotNull String appPackage) {
-            ENGINE.appPackage = appPackage;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#automationName} value.
-         * @param automationName The app's automation name. For e.g., Android
-         *                       SDK 16 or less should specify Selendroid,
-         *                       and Appium otherwise. In order to minimize
-         *                       platform differences, we should use
-         *                       {@link XPath} as much as possible for
-         *                       locator operations.
-         * @return The current {@link Builder} instance.
-         */
-        public Builder<T> withAutomationName(@NotNull String automationName) {
-            ENGINE.automationName = automationName;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#browserName} value.
-         * @param browser The browser name for Web tests. Android/iOS tests
-         *                should leave this blank.
-         * @return The current {@link Builder} instance.
-         */
-        public Builder<T> withBrowserName(@NotNull String browser) {
-            ENGINE.browserName = browser;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#deviceName} value.
-         * @param name The name of the device on which tests will be run.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withDeviceName(@NotNull String name) {
-            ENGINE.deviceName = name;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#deviceReadyTimeout} value. This value
-         * specifies how long Appium should wait until the device is ready.
-         * If the app takes to long to boot up, Appium will terminate the
-         * running tests.
-         * @param timeout A {@link Long} value.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withDeviceReadyTimeout(long timeout) {
-            ENGINE.deviceReadyTimeout = timeout;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#platformName} value.
-         * @param name The name of the platform for which tests are executed.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withPlatformName(@NotNull String name) {
-            ENGINE.platformName = name;
-            return this;
-        }
-
-        @NotNull
-        public Builder<T> withPlatform(@NotNull Platform platform) {
-            return withPlatformName(platform.value());
-        }
-
-        /**
-         * Set the {@link #ENGINE#platformVersion} value.
-         * @param version The platform version to be executed.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withPlatformVersion(@NotNull String version) {
-            ENGINE.platformVersion = version;
             return this;
         }
 

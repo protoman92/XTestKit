@@ -1,6 +1,6 @@
-package com.swiften.engine;
+package com.swiften.engine.base;
 
-import com.swiften.util.Log;
+import com.swiften.engine.mobile.Platform;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,7 +32,7 @@ public final class XPath {
         attribute = String.format("%1$s[%2$s]", attribute, attr);
     }
 
-    public static final class Builder {
+    public static class Builder {
         @NotNull private final XPath XPATH;
         @NotNull private final Platform PLATFORM;
 

@@ -2,10 +2,7 @@ package com.swiften.util;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by haipham on 3/20/17.
@@ -23,8 +20,7 @@ public class CollectionUtil {
      */
     @SafeVarargs
     public static <E,T extends Collection<E>> T unify(@NotNull T...cls)
-        throws Exception
-    {
+        throws Exception {
         int length = cls.length;
 
         if (length > 0 && Objects.nonNull(cls[0])) {

@@ -1,7 +1,7 @@
-package com.swiften.engine.platform.android;
+package com.swiften.engine.mobile.android;
 
-import com.swiften.engine.protocol.PlatformView;
-import com.swiften.engine.protocol.View;
+import com.swiften.engine.base.protocol.PlatformView;
+import com.swiften.engine.base.protocol.View;
 import org.jetbrains.annotations.NotNull;
 
 /**

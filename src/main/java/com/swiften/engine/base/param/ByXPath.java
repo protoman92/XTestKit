@@ -1,7 +1,8 @@
-package com.swiften.engine.param;
+package com.swiften.engine.base.param;
 
-import com.swiften.engine.PlatformEngine;
-import com.swiften.engine.protocol.View;
+import com.swiften.engine.base.PlatformEngine;
+import com.swiften.engine.base.XPath;
+import com.swiften.engine.base.protocol.View;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.List;
  * Parameter object for
  * {@link PlatformEngine#rxElementsByXPath(ByXPath)}.
  */
-public final class ByXPath {
+public class ByXPath {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -45,7 +46,7 @@ public final class ByXPath {
 
         /**
          * Add view classes to {@link #PARAM#classes}. These view classes
-         * are used to construct the {@link com.swiften.engine.XPath} query.
+         * are used to construct the {@link XPath} query.
          * @param cls The {@link Collection} of {@link View}.
          * @return The current {@link Builder} instance.
          */
@@ -70,9 +71,9 @@ public final class ByXPath {
         }
 
         /**
-         * The {@link com.swiften.engine.XPath} query that will be used to
+         * The {@link XPath} query that will be used to
          * search for elements.
-         * @param xPath The {@link com.swiften.engine.XPath} {@link String}.
+         * @param xPath The {@link XPath} {@link String}.
          * @return The current {@link Builder} instance.
          */
         @NotNull
