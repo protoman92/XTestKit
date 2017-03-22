@@ -1,6 +1,7 @@
 package com.swiften.engine.base.param;
 
 import com.swiften.engine.base.PlatformEngine;
+import com.swiften.engine.base.param.protocol.RetryProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link PlatformEngine#rxElementsWithHint(HintParam)}
  */
-public class HintParam {
+public class HintParam implements RetryProtocol {
     @NotNull
     public static HintParam.Builder newBuilder() {
         return new Builder();

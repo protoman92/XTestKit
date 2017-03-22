@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.android.mock;
 
 import com.swiften.engine.base.param.StartEnvParam;
+import com.swiften.engine.base.param.protocol.RetryProtocol;
 import com.swiften.engine.mobile.android.AndroidEngine;
 import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
@@ -21,6 +22,8 @@ import static org.mockito.Mockito.*;
 public final class AndroidEngineTest {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @NotNull private final StartEnvParam START_PARAM;
+    private final int RETRIES_ON_ERROR;
 
     {
         ENGINE = spy(AndroidEngine.newBuilder()
@@ -29,6 +32,11 @@ public final class AndroidEngineTest {
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ENGINE.processRunner());
+
+        /* Create a mock here to fake retriesOnError() */
+        START_PARAM = mock(StartEnvParam.class);
+
+        RETRIES_ON_ERROR = 3;
     }
 
     @Before
@@ -37,20 +45,23 @@ public final class AndroidEngineTest {
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ENGINE).emulatorBootRetryDelay();
+
+        /* We specifically mock StartEnvParams because starting emulator
+         * requires rather complicated behaviors */
+        when(START_PARAM.retriesOnError()).thenReturn(RETRIES_ON_ERROR);
     }
 
     @After
     public void tearDown() {
-        reset(ENGINE, PROCESS_RUNNER);
+        reset(ENGINE, PROCESS_RUNNER, START_PARAM);
     }
 
-    //region Start Emulator.
+    //region Start Emulator
     @Test
     @SuppressWarnings("unchecked")
     public void mock_startEmulatorWithBootAnimError_shouldThrow() {
         try {
             // Setup
-            int retries = 3;
             String startEmulator = ENGINE.startEmulator();
             String bootAnim = ENGINE.bootAnim();
 
@@ -60,15 +71,10 @@ public final class AndroidEngineTest {
              * indefinitely */
             doReturn("Valid output").when(PROCESS_RUNNER).execute(startEmulator);
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(bootAnim);
-
-            StartEnvParam param = StartEnvParam.newBuilder()
-                .withRetriesOnError(retries)
-                .build();
-
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(param).take(3).subscribe(subscriber);
+            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -78,7 +84,7 @@ public final class AndroidEngineTest {
             verify(PROCESS_RUNNER).rxExecute(anyString());
 
             try {
-                verify(PROCESS_RUNNER, times(retries + 2)).execute(anyString());
+                verify(PROCESS_RUNNER, times(RETRIES_ON_ERROR + 2)).execute(anyString());
             } catch (IOException e) {
                 fail(e.getMessage());
             }
@@ -96,11 +102,10 @@ public final class AndroidEngineTest {
              * error, bootAnim loop will be notified. This is because the
              * former is run on a different Thread */
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(anyString());
-            StartEnvParam param = StartEnvParam.newBuilder().build();
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(param).subscribe(subscriber);
+            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -115,7 +120,7 @@ public final class AndroidEngineTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_startEmulator_shouldThrow() {
+    public void mock_startEmulator_shouldSucceed() {
         try {
             // Setup
             String startEmulator = ENGINE.startEmulator();
@@ -124,11 +129,10 @@ public final class AndroidEngineTest {
 
             /* Emulate successful bootanim output */
             doReturn("stopped").when(PROCESS_RUNNER).execute(eq(bootAnim));
-            StartEnvParam param = StartEnvParam.newBuilder().build();
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(param).subscribe(subscriber);
+            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -142,6 +146,57 @@ public final class AndroidEngineTest {
             } catch (IOException e) {
                 fail(e.getMessage());
             }
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+    //endregion
+
+    //region Stop Emulator
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_stopEmulatorWithError_shouldThrow() {
+        try {
+            // Setup
+            int retries = new RetryProtocol() {}.retriesOnError();
+            String command = ENGINE.stopEmulator();
+            doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxStopEmulator().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoValues();
+            subscriber.assertNotComplete();
+
+            /* Since we are using retry(), there will be a total of retry
+             * count + 1 (including the original count) */
+            verify(PROCESS_RUNNER, times(retries + 1)).execute(eq(command));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_stopEmulator_shouldSucceed() {
+        try {
+            // Setup
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxStopEmulator().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(PROCESS_RUNNER).execute(anyString());
         } catch (Exception e) {
             fail(e.getMessage());
         }

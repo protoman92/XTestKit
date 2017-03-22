@@ -1,6 +1,7 @@
 package com.swiften.engine.base.param;
 
 import com.swiften.engine.base.PlatformEngine;
+import com.swiften.engine.base.param.protocol.RetryProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Parameter object for {@link PlatformEngine#rxElementsWithText(TextParam)}.
  */
-public class TextParam {
+public class TextParam implements RetryProtocol {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();

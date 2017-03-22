@@ -2,6 +2,7 @@ package com.swiften.engine.mobile.android;
 
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.engine.base.param.StartEnvParam;
+import com.swiften.engine.base.param.StopEnvParam;
 import com.swiften.engine.mobile.MobileEngine;
 import com.swiften.engine.mobile.android.protocol.AndroidDelay;
 import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
@@ -13,6 +14,7 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.schedulers.Schedulers;
+import javafx.scene.paint.Stop;
 import org.apache.bcel.generic.RET;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.exec.CommandLine;
@@ -135,6 +137,33 @@ public class AndroidEngine extends MobileEngine<
     }
 
     /**
+     * Command to get a list of attached devices.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String adbDevices() {
+        return String.format("%s devices -l", adb());
+    }
+
+    /**
+     * Check if the specified emulator is open. This is a crude workaround
+     * that assumes only once device is attached at any moment. Suitable only
+     * for isolated tests.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxCheckEmulatorOpen() {
+        String command = adbDevices();
+
+        return processRunner()
+            .rxExecute(command)
+            .map(a -> a.split("\n"))
+            .filter(a -> a.length >= 2)
+            .map(a -> true)
+            .defaultIfEmpty(false);
+    }
+
+    /**
      * Command to start an emulator whose name is {@link #deviceName}.
      * @return A {@link String} value.
      */
@@ -219,6 +248,51 @@ public class AndroidEngine extends MobileEngine<
     }
 
     /**
+     * Same as above, but uses a default {@link StartEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxStartEmulator() {
+        StartEnvParam param = StartEnvParam.newBuilder().build();
+        return rxStartEmulator(param);
+    }
+
+    /**
+     * Command to shut down the emulator. Should not be used for actual
+     * devices because this command will send a shutdown signal.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String stopEmulator() {
+        return String.format("%s reboot -p", adbShell());
+    }
+
+    /**
+     * Shut down the emulator with {@link #stopEmulator()}.
+     * @param param A {@link StopEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxStopEmulator(@NotNull StopEnvParam param) {
+        String command = stopEmulator();
+
+        return processRunner()
+            .rxExecute(command)
+            .retry(param.retriesOnError())
+            .map(a -> true);
+    }
+
+    /**
+     * Same as above, but uses a default {@link StopEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxStopEmulator() {
+        StopEnvParam param = StopEnvParam.newBuilder().build();
+        return rxStopEmulator(param);
+    }
+
+    /**
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxStartTestEnvironment(StartEnvParam)
      */
@@ -228,6 +302,22 @@ public class AndroidEngine extends MobileEngine<
         switch (testMode()) {
             case EMULATOR:
                 return rxStartEmulator(param);
+
+            default:
+                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+        }
+    }
+
+    /**
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxStopTestEnvironment(StopEnvParam)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
+        switch (testMode()) {
+            case EMULATOR:
+                return rxStopEmulator(param);
 
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));

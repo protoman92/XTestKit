@@ -9,6 +9,7 @@ import com.swiften.engine.base.protocol.View;
 import com.swiften.engine.base.PlatformEngine;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 
 import static org.junit.Assert.*;
@@ -732,6 +733,12 @@ public final class PlatformEngineTest implements EngineError {
         @NotNull
         @Override
         public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
+            return Flowable.empty();
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
             return Flowable.empty();
         }
 

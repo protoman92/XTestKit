@@ -476,13 +476,21 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     /**
-     * start the test environment. E.g. if we are testing mobile apps, start
+     * Start the test environment. E.g. if we are testing mobile apps, start
      * the emulator.
      * @param param A {@link StartEnvParam} instance.
      * @return An {@link Flowable} instance.
      */
     @NotNull
     public abstract Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param);
+
+    /**
+     * Stop the test environement, e.g. by shutting down an emulator.
+     * @param param A {@link StopEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public abstract Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param);
 
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
