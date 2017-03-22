@@ -13,6 +13,7 @@ buildscript {
     ext {
         annotations = '15.0'
         appium = '5.0.0-BETA3'
+        commons_exec = '1.0.1'
         junit = '4.12'
         mockito = '2.2.0'
         rx = '2.0.7'
@@ -27,6 +28,7 @@ repositories {
 sourceCompatibility = 1.8
 
 dependencies {
+    compile "org.apache.commons:commons-exec:$commons_exec"
     compile "org.jetbrains:annotations-java5:$annotations"
     compile "io.reactivex.rxjava2:rxjava:$rx"
     compile "io.appium:java-client:$appium"

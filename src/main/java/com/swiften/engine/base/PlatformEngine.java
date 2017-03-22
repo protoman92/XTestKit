@@ -4,12 +4,10 @@ package com.swiften.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import com.swiften.engine.base.param.ByXPath;
-import com.swiften.engine.base.param.HintParam;
-import com.swiften.engine.base.param.TextParam;
-import com.swiften.engine.base.param.NavigateBack;
+import com.swiften.engine.base.param.*;
 import com.swiften.engine.base.protocol.*;
 import com.swiften.util.CollectionUtil;
+import com.swiften.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -30,15 +28,27 @@ import java.util.concurrent.TimeUnit;
 public abstract class PlatformEngine<T extends WebDriver> implements
     EngineDelay,
     EngineError {
-    @Nullable protected T driver;
-    @Nullable protected PlatformView platformView;
+    @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @Nullable private T driver;
+    @Nullable PlatformView platformView;
 
     @NotNull protected String browserName;
     @NotNull protected String serverUrl;
 
     public PlatformEngine() {
+        PROCESS_RUNNER = ProcessRunner.newBuilder().build();
         browserName = "";
         serverUrl = "http://localhost:4723/wd/hub";
+    }
+
+    /**
+     * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
+     * {@link #PROCESS_RUNNER}.
+     * @return {@link #PROCESS_RUNNER}.
+     */
+    @NotNull
+    public ProcessRunner processRunner() {
+        return PROCESS_RUNNER;
     }
 
     /**
@@ -46,7 +56,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return {@link T} {@link #driver}.
      */
     @NotNull
-    protected T driver() {
+    public T driver() {
         if (Objects.nonNull(driver)) {
             return driver;
         }
@@ -60,7 +70,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link PlatformView} instance.
      */
     @NotNull
-    protected PlatformView platformView() {
+    public PlatformView platformView() {
         if (platformView != null) {
             return platformView;
         }
@@ -78,7 +88,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link List} of {@link String}.
      */
     @NotNull
-    protected List<String> requiredCapabilities() {
+    public List<String> requiredCapabilities() {
         List<String> required = Collections.singletonList(
             serverUrl
         );
@@ -90,7 +100,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * If this method returns false, we should throw an {@link Exception}.
      * @return A {@link Boolean} value.
      */
-    protected boolean hasAllRequiredInformation() {
+    public boolean hasAllRequiredInformation() {
         List<String> required = requiredCapabilities();
         return required.stream().noneMatch(String::isEmpty);
     }
@@ -100,7 +110,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Map} instance.
      */
     @NotNull
-    protected Map<String,Object> capabilities() {
+    public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = new HashMap<String,Object>();
         capabilities.put(CapabilityType.BROWSER_NAME, browserName);
         return capabilities;
@@ -110,7 +120,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Get a {@link DesiredCapabilities} instance from {@link #capabilities()}.
      * @return A {@link DesiredCapabilities} instance.
      */
-    protected DesiredCapabilities desiredCapabilities() {
+    @NotNull
+    public DesiredCapabilities desiredCapabilities() {
         Map<String,Object> capabilities = capabilities();
         return new DesiredCapabilities(capabilities);
     }
@@ -463,6 +474,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         return rxElementsByXPath(query);
     }
     //endregion
+
+    /**
+     * start the test environment. E.g. if we are testing mobile apps, start
+     * the emulator.
+     * @param param A {@link StartEnvParam} instance.
+     * @return An {@link Flowable} instance.
+     */
+    @NotNull
+    public abstract Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param);
 
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;

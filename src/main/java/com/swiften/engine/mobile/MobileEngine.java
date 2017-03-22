@@ -26,6 +26,7 @@ public abstract class MobileEngine<
     @NotNull protected String deviceName;
     @NotNull protected String platformName;
     @NotNull protected String platformVersion;
+    @NotNull TestMode testMode;
 
     public MobileEngine() {
         app = "";
@@ -35,6 +36,7 @@ public abstract class MobileEngine<
         deviceName = "";
         platformName = "";
         platformVersion = "";
+        testMode = TestMode.EMULATOR;
     }
 
     /**
@@ -43,7 +45,7 @@ public abstract class MobileEngine<
      */
     @NotNull
     @Override
-    protected List<String> requiredCapabilities() {
+    public List<String> requiredCapabilities() {
         List<String> required = super.requiredCapabilities();
 
         Collections.addAll(required,
@@ -63,7 +65,7 @@ public abstract class MobileEngine<
      */
     @NotNull
     @Override
-    protected Map<String,Object> capabilities() {
+    public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
         capabilities.put(MobileCapabilityType.APP, app);
         capabilities.put(MobileCapabilityType.APPIUM_VERSION, appiumVersion);
@@ -72,6 +74,16 @@ public abstract class MobileEngine<
         capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName);
         capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
         return capabilities;
+    }
+
+    /**
+     * Return {@link #testMode}. This can be stubbed out for custom
+     * implementation.
+     * @return The specified {@link #testMode} {@link TestMode}.
+     */
+    @NotNull
+    public TestMode testMode() {
+        return testMode;
     }
 
     /**
@@ -183,6 +195,18 @@ public abstract class MobileEngine<
         @NotNull
         public Builder<T> withPlatform(@NotNull Platform platform) {
             return withPlatformName(platform.value());
+        }
+
+        /**
+         * Set the {@link #ENGINE#testMode} value. This variable specifies
+         * which test environment to be used.
+         * @param mode A {@link TestMode} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withTestMode(@NotNull TestMode mode) {
+            ENGINE.testMode = mode;
+            return this;
         }
     }
 }

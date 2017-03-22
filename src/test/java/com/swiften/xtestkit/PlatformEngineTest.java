@@ -1,10 +1,7 @@
-package com.swiften.xtestkit.engine;
+package com.swiften.xtestkit;
 
 import com.swiften.engine.base.XPath;
-import com.swiften.engine.base.param.ByXPath;
-import com.swiften.engine.base.param.HintParam;
-import com.swiften.engine.base.param.NavigateBack;
-import com.swiften.engine.base.param.TextParam;
+import com.swiften.engine.base.param.*;
 import com.swiften.engine.base.protocol.EngineError;
 import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.base.protocol.PlatformView;
@@ -718,47 +715,24 @@ public final class PlatformEngineTest implements EngineError {
     static class MockEngine extends PlatformEngine<WebDriver> {
         @NotNull
         @Override
-        public DesiredCapabilities desiredCapabilities() {
-            return super.desiredCapabilities();
-        }
-
-        @NotNull
-        @Override
-        public WebDriver driver() {
-            return super.driver();
-        }
-
-        @Override
-        public boolean hasAllRequiredInformation() {
-            return super.hasAllRequiredInformation();
-        }
-
-        @NotNull
-        @Override
-        public List<String> requiredCapabilities() {
-            return super.requiredCapabilities();
-        }
-
-        @NotNull
-        @Override
         protected WebDriver createDriverInstance() {
             return mock(WebDriver.class);
         }
 
         @NotNull
         @Override
-        public PlatformView platformView() {
-            return super.platformView();
-        }
-
-        @NotNull
-        @Override
-        protected XPath.Builder newXPathBuilderInstance() {
+        public XPath.Builder newXPathBuilderInstance() {
             PlatformProtocol platform = mock(PlatformProtocol.class);
             when(platform.enabledAttribute()).thenReturn("enabled");
             when(platform.hintAttribute()).thenReturn("hint");
             when(platform.textAttribute()).thenReturn("text");
             return XPath.newBuilder(platform);
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
+            return Flowable.empty();
         }
 
         static final class Builder extends PlatformEngine.Builder<MockEngine> {
