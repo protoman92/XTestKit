@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 
 /**
@@ -48,6 +49,7 @@ public class AndroidEngineTest implements AndroidDelay, TestProtocol {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStopEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
+        reset(ENGINE);
     }
 
     @Test

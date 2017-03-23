@@ -134,6 +134,7 @@ public class AndroidEngine extends MobileEngine<
         return processRunner().rxExecute(start).map(a -> true);
     }
 
+    //region Check Emulator Open
     /**
      * Command to get a list of attached devices.
      * @return A {@link String} value.
@@ -160,7 +161,9 @@ public class AndroidEngine extends MobileEngine<
             .map(a -> true)
             .defaultIfEmpty(false);
     }
+    //endregion
 
+    //region Start Emulator
     /**
      * Command to start an emulator whose name is {@link #deviceName}.
      * @return A {@link String} value.
@@ -202,14 +205,11 @@ public class AndroidEngine extends MobileEngine<
 
         /* We need to start the emulator on a new Thread, or else it will
          * block the rest of the operations */
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PROCESS_RUNNER.execute(startEmulator());
-                } catch (Exception e) {
-                    ERRORS.add(e);
-                }
+        new Thread(() -> {
+            try {
+                PROCESS_RUNNER.execute(startEmulator());
+            } catch (Exception e) {
+                ERRORS.add(e);
             }
         }).start();
 
@@ -255,7 +255,9 @@ public class AndroidEngine extends MobileEngine<
         StartEnvParam param = StartEnvParam.newBuilder().build();
         return rxStartEmulator(param);
     }
+    //endregion
 
+    //region Stop Emulator
     /**
      * Command to shut down the emulator. Should not be used for actual
      * devices because this command will send a shutdown signal.
@@ -291,7 +293,9 @@ public class AndroidEngine extends MobileEngine<
         StopEnvParam param = StopEnvParam.newBuilder().build();
         return rxStopEmulator(param);
     }
+    //endregion
 
+    //region Toggle Internet Connection
     /**
      * The command to enable/disable internet connection.
      * @param param A {@link ConnectionParam} instance.
@@ -348,7 +352,9 @@ public class AndroidEngine extends MobileEngine<
 
         return rxToggleInternetConnection(param);
     }
+    //endregion
 
+    //region Start and Stop Test Environment
     /**
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxStartTestEnvironment(StartEnvParam)
@@ -358,7 +364,9 @@ public class AndroidEngine extends MobileEngine<
     public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
         switch (testMode()) {
             case EMULATOR:
-                return rxStartEmulator(param);
+                return rxStartEmulator(param)
+                    /* Disable animations to avoid erratic behaviors */
+                    .flatMap(a -> rxDisableEmulatorAnimations());
 
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
@@ -380,7 +388,9 @@ public class AndroidEngine extends MobileEngine<
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
         }
     }
+    //endregion
 
+    //region Dismiss Keyboard
     /**
      * Command to check whether keyboard is open.
      * @return A {@link String} value.
@@ -432,7 +442,9 @@ public class AndroidEngine extends MobileEngine<
             .flatMap(a -> rxNavigateBack())
             .defaultIfEmpty(true);
     }
+    //endregion
 
+    //region Change Device Settings
     /**
      * Command to change device settings.
      * @param param a {@link DeviceSettingParam} instance.
@@ -472,6 +484,42 @@ public class AndroidEngine extends MobileEngine<
              * setting value */
             .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))));
     }
+    //endregion
+
+    //region Disable Window Animation Scale
+    /**
+     * Construct a {@link DeviceSettingParam} to disable window animation
+     * scale.
+     * @return A {@link DeviceSettingParam} instance.
+     */
+    @NotNull
+    public DeviceSettingParam disableWindowAnimationScaleParam() {
+        return DeviceSettingParam.newBuilder()
+            .withGlobalNameSpace()
+            .withKey("window_animation_scale")
+            .withValue("0")
+            .build();
+    }
+
+    /**
+     * Command to disable window animation scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String disableWindowAnimationScale() {
+        DeviceSettingParam param = disableWindowAnimationScaleParam();
+        return putDeviceSettings(param);
+    }
+
+    /**
+     * Command to get window animation scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String getWindowAnimationScale() {
+        DeviceSettingParam param = disableWindowAnimationScaleParam();
+        return getDeviceSettings(param);
+    }
 
     /**
      * Disable window animation scale.
@@ -479,13 +527,44 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public Flowable<Boolean> rxDisableWindowAnimationScale() {
-        DeviceSettingParam param = DeviceSettingParam.newBuilder()
+        DeviceSettingParam param = disableWindowAnimationScaleParam();
+        return rxChangeDeviceSettings(param);
+    }
+    //endregion
+
+    //region Disable Transition Animation Scale
+    /**
+     * Construct a {@link DeviceSettingParam} to disable transition animation
+     * scale.
+     * @return A {@link DeviceSettingParam} instance.
+     */
+    @NotNull
+    public DeviceSettingParam disableTransitionAnimationScaleParam() {
+        return DeviceSettingParam.newBuilder()
             .withGlobalNameSpace()
-            .withKey("window_animation_scale")
+            .withKey("transition_animation_scale")
             .withValue("0")
             .build();
+    }
 
-        return rxChangeDeviceSettings(param);
+    /**
+     * Command to disable transition animation scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String disableTransitionAnimationScale() {
+        DeviceSettingParam param = disableTransitionAnimationScaleParam();
+        return putDeviceSettings(param);
+    }
+
+    /**
+     * Command to get transition animation scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String getTransitionAnimationScale() {
+        DeviceSettingParam param = disableTransitionAnimationScaleParam();
+        return getDeviceSettings(param);
     }
 
     /**
@@ -494,13 +573,44 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public Flowable<Boolean> rxDisableTransitionAnimationScale() {
-        DeviceSettingParam param = DeviceSettingParam.newBuilder()
+        DeviceSettingParam param = disableTransitionAnimationScaleParam();
+        return rxChangeDeviceSettings(param);
+    }
+    //endregion
+
+    //region Disable Animator Duration Scale
+    /**
+     * Construct a {@link DeviceSettingParam} to disable animator duration
+     * scale.
+     * @return A {@link DeviceSettingParam} instance.
+     */
+    @NotNull
+    public DeviceSettingParam disableAnimatorDurationScaleParam() {
+        return DeviceSettingParam.newBuilder()
             .withGlobalNameSpace()
-            .withKey("transition_animation_scale")
+            .withKey("animator_duration_scale")
             .withValue("0")
             .build();
+    }
 
-        return rxChangeDeviceSettings(param);
+    /**
+     * Command to disable animator duration scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String disableAnimatorDurationScale() {
+        DeviceSettingParam param = disableAnimatorDurationScaleParam();
+        return putDeviceSettings(param);
+    }
+
+    /**
+     * Command to get animator duration scale.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String getAnimatorDurationScale() {
+        DeviceSettingParam param = disableAnimatorDurationScaleParam();
+        return getDeviceSettings(param);
     }
 
     /**
@@ -509,13 +619,33 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public Flowable<Boolean> rxDisableAnimatorDurationScale() {
-        DeviceSettingParam param = DeviceSettingParam.newBuilder()
-            .withGlobalNameSpace()
-            .withKey("animator_duration_scale")
-            .withValue("0")
-            .build();
-
+        DeviceSettingParam param = disableAnimatorDurationScaleParam();
         return rxChangeDeviceSettings(param);
+    }
+    //endregion
+
+    //region Disable Emulator Animations
+    /**
+     * Return an Array of {@link String} commands to disable emulator
+     * animations.
+     * @return An Array of {@link String}.
+     */
+    @NotNull
+    public String[] disableAnimationCommands() {
+        return new String[] {
+            disableWindowAnimationScale(),
+            disableTransitionAnimationScale(),
+            disableAnimatorDurationScale()
+        };
+    }
+
+    @NotNull
+    public String[] getAnimationValuesCommands() {
+        return new String[] {
+            getWindowAnimationScale(),
+            getTransitionAnimationScale(),
+            getAnimatorDurationScale()
+        };
     }
 
     /**
@@ -537,6 +667,7 @@ public class AndroidEngine extends MobileEngine<
             .toFlowable()
             .map(a -> true);
     }
+    //endregion
     //endregion
 
     public static final class Builder extends MobileEngine.Builder<AndroidEngine> {
