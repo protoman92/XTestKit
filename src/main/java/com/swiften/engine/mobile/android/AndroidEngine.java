@@ -1,9 +1,12 @@
 package com.swiften.engine.mobile.android;
 
 import com.swiften.engine.base.PlatformEngine;
+import com.swiften.engine.base.param.ConnectionParam;
+import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.param.StartEnvParam;
 import com.swiften.engine.base.param.StopEnvParam;
 import com.swiften.engine.mobile.MobileEngine;
+import com.swiften.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.engine.mobile.android.protocol.AndroidDelay;
 import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
 import com.swiften.util.Log;
@@ -13,18 +16,11 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
-import io.reactivex.schedulers.Schedulers;
-import javafx.scene.paint.Stop;
-import org.apache.bcel.generic.RET;
-import org.apache.commons.collections.FastHashMap;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.regexp.RE;
+import org.apache.xpath.operations.Bool;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.reactivestreams.Publisher;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by haipham on 3/22/17.
@@ -250,6 +248,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Same as above, but uses a default {@link StartEnvParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxStartEmulator(StartEnvParam)
      */
     @NotNull
     public Flowable<Boolean> rxStartEmulator() {
@@ -285,11 +284,69 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Same as above, but uses a default {@link StopEnvParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxStopEmulator(StopEnvParam)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator() {
         StopEnvParam param = StopEnvParam.newBuilder().build();
         return rxStopEmulator(param);
+    }
+
+    /**
+     * The command to enable/disable internet connection.
+     * @param param A {@link ConnectionParam} instance.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String toggleConnectionCommand(@NotNull ConnectionParam param) {
+        String append = param.enable() ? "enable" : "disable";
+        return String.format("%1$s svc data %2$s", adbShell(), append);
+    }
+
+    /**
+     * Disable internet connection for a rooted device. We should only use
+     * this method for emulators since they are rooted by default.
+     * @param param A {@link ConnectionParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxToggleInternetConnection(@NotNull ConnectionParam param) {
+        String command = toggleConnectionCommand(param);
+        return processRunner().rxExecute(command)
+            /* If successful, there should be no output */
+            .filter(String::isEmpty)
+            .map(a -> true)
+            .switchIfEmpty(Flowable.error(new Exception(NO_OUTPUT_EXPECTED)));
+    }
+
+    /**
+     * Same as above, but uses a default {@link ConnectionParam}.
+     * @return A {@link Flowable} instance.
+     * @see #rxToggleInternetConnection(ConnectionParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxEnableInternetConnection() {
+        ConnectionParam param = ConnectionParam
+            .newBuilder()
+            .shouldEnable(true)
+            .build();
+
+        return rxToggleInternetConnection(param);
+    }
+
+    /**
+     * Same as above, but uses a default {@link ConnectionParam}.
+     * @return A {@link Flowable} instance.
+     * @see #rxToggleInternetConnection(ConnectionParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxDisableInternetConnection() {
+        ConnectionParam param = ConnectionParam
+            .newBuilder()
+            .shouldEnable(false)
+            .build();
+
+        return rxToggleInternetConnection(param);
     }
 
     /**
@@ -322,6 +379,163 @@ public class AndroidEngine extends MobileEngine<
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
         }
+    }
+
+    /**
+     * Command to check whether keyboard is open.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String checkKeyboardOpen() {
+        return String.format(
+            "%s dumpsys window InputMethod | grep 'mHasSurface'",
+            adbShell());
+    }
+
+    /**
+     * Check whether the keyboard is open.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxCheckKeyboardOpen() {
+        String command = checkKeyboardOpen();
+
+        return processRunner().rxExecute(command)
+            .filter(a -> a != null && !a.isEmpty())
+            .map(output -> {
+                String regex = "mHasSurface=(\\w+)";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(output);
+
+                if (matcher.find()) {
+                    return matcher.group(1);
+                } else {
+                    return "false";
+                }
+            })
+            .map(Boolean::valueOf)
+
+            /* If the output is empty, the keyboard is not open */
+            .defaultIfEmpty(false);
+    }
+
+    /**
+     * Dismiss the keyboard if it is open. We first need to check whether the
+     * keyboard is present with {@link #rxCheckKeyboardOpen()}, and then call
+     * {@link #rxNavigateBack(NavigateBack)}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxDismissKeyboard() {
+        return rxCheckKeyboardOpen()
+            .filter(isOpen -> isOpen)
+            .flatMap(a -> rxNavigateBack())
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * Command to change device settings.
+     * @param param a {@link DeviceSettingParam} instance.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String putDeviceSettings(@NotNull DeviceSettingParam param) {
+        return String.format("%1$s settings %2$s", adbShell(), param.putCommand());
+    }
+
+    /**
+     * Command to get device settings.
+     * @param param a {@link DeviceSettingParam} instance.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String getDeviceSettings(@NotNull DeviceSettingParam param) {
+        return String.format("%1$s settings %2$s", adbShell(), param.getCommand());
+    }
+
+    /**
+     * Change emulator/device settings with
+     * {@link #putDeviceSettings(DeviceSettingParam)}, and then check that the
+     * value is set with {@link #getDeviceSettings(DeviceSettingParam)}.
+     * @param PARAM A {@link DeviceSettingParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxChangeDeviceSettings(@NotNull final DeviceSettingParam PARAM) {
+        final ProcessRunner RUNNER = processRunner();
+
+        return RUNNER.rxExecute(putDeviceSettings(PARAM))
+            .flatMap(a -> RUNNER.rxExecute(getDeviceSettings(PARAM)))
+            .filter(a -> a.contains(PARAM.value()))
+            .map(a -> true)
+            /* Throw error if the returned value does not match the new
+             * setting value */
+            .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))));
+    }
+
+    /**
+     * Disable window animation scale.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxDisableWindowAnimationScale() {
+        DeviceSettingParam param = DeviceSettingParam.newBuilder()
+            .withGlobalNameSpace()
+            .withKey("window_animation_scale")
+            .withValue("0")
+            .build();
+
+        return rxChangeDeviceSettings(param);
+    }
+
+    /**
+     * Disable transition animation scale.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxDisableTransitionAnimationScale() {
+        DeviceSettingParam param = DeviceSettingParam.newBuilder()
+            .withGlobalNameSpace()
+            .withKey("transition_animation_scale")
+            .withValue("0")
+            .build();
+
+        return rxChangeDeviceSettings(param);
+    }
+
+    /**
+     * Disable animator duration scale.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxDisableAnimatorDurationScale() {
+        DeviceSettingParam param = DeviceSettingParam.newBuilder()
+            .withGlobalNameSpace()
+            .withKey("animator_duration_scale")
+            .withValue("0")
+            .build();
+
+        return rxChangeDeviceSettings(param);
+    }
+
+    /**
+     * Disable emulator animations for UI tests to prevent unexpected wait
+     * times. Note that this is only applicable for rooted devices, and
+     * emulators are rooted by default.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public Flowable<Boolean> rxDisableEmulatorAnimations() {
+        return Flowable
+            .mergeArray(
+                rxDisableWindowAnimationScale(),
+                rxDisableTransitionAnimationScale(),
+                rxDisableAnimatorDurationScale()
+            )
+            .toList()
+            .toFlowable()
+            .map(a -> true);
     }
     //endregion
 

@@ -1,8 +1,11 @@
 package com.swiften.xtestkit.android.actual;
 
 import com.swiften.engine.mobile.android.AndroidEngine;
+import com.swiften.engine.mobile.android.protocol.AndroidDelay;
 import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
+import com.swiften.xtestkit.util.TestProtocol;
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -18,7 +21,7 @@ import static org.mockito.Mockito.spy;
 /**
  * Created by haipham on 3/23/17.
  */
-public class AndroidEngineTest {
+public class AndroidEngineTest implements AndroidDelay, TestProtocol {
     @NotNull private final AndroidEngine ENGINE;
 
     {
@@ -28,25 +31,37 @@ public class AndroidEngineTest {
     }
 
     @Before
-    public void setUp() {}
+    @SuppressWarnings("unchecked")
+    public void setUp() {
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        ENGINE.rxStartEmulator()
+            .delay(emulatorBootFinishDelay(), TimeUnit.MILLISECONDS)
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+    }
 
     @After
-    public void tearDown() {}
+    @SuppressWarnings("unchecked")
+    public void tearDown() {
+        TestSubscriber subscriber = TestSubscriber.create();
+        ENGINE.rxStopEmulator().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+    }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void actual_startAndStopEmulator_shouldSucceed() {
+    public void actual_enableDisableConnection_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        ENGINE.rxStartEmulator()
-            .delay(2000, TimeUnit.MILLISECONDS)
-            .flatMap(a -> ENGINE.rxStopEmulator())
-
-            /* By the time rxCheckEmulatorOpen is called, it would emit false,
-             * so we need to check the test subscriber for a false value */
-            .flatMap(a -> ENGINE.rxCheckEmulatorOpen())
+        ENGINE.rxDisableInternetConnection()
+            .filter(success -> success)
+            .flatMap(a -> ENGINE.rxEnableInternetConnection())
+            .filter(success -> success)
+            .switchIfEmpty(Flowable.error(new Exception()))
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -55,6 +70,43 @@ public class AndroidEngineTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Assert.assertFalse((boolean)((List)subscriber.getEvents().get(0)).get(0));
+        Assert.assertTrue(getFirstNextEvent(subscriber));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void actual_checkKeyboardOpen_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ENGINE.rxCheckKeyboardOpen().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void actual_disableEmulatorAnimations_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ENGINE.rxDisableEmulatorAnimations()
+            .filter(success -> success)
+            .switchIfEmpty(Flowable.error(new Exception()))
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        Assert.assertTrue(getFirstNextEvent(subscriber));
     }
 }

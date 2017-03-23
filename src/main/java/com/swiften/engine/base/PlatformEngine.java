@@ -10,6 +10,7 @@ import com.swiften.util.CollectionUtil;
 import com.swiften.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -206,6 +207,20 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         return new Back().back(0).toFlowable().map(a -> true);
+    }
+
+    /**
+     * Same as above, but uses a default {@link NavigateBack} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxNavigateBack(NavigateBack)
+     */
+    @NotNull
+    public Flowable<Boolean> rxNavigateBack() {
+        NavigateBack param = NavigateBack.newBuilder()
+            .withTimes(1)
+            .build();
+
+        return rxNavigateBack(param);
     }
     //endregion
 
