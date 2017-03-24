@@ -10,6 +10,7 @@ import com.swiften.util.CollectionUtil;
 import com.swiften.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import javafx.scene.paint.Stop;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -129,7 +130,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     //region Driver Methods.
-
     /**
      * Create a {@link T} instance in order to navigate UI tests.
      * @return A {@link T} instance.
@@ -490,6 +490,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
+    //region Test Environment
     /**
      * Start the test environment. E.g. if we are testing mobile apps, start
      * the emulator.
@@ -500,12 +501,35 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public abstract Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param);
 
     /**
+     * Same as above, but uses a default {@link StartEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxStartTestEnvironment(StartEnvParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxStartTestEnvironment() {
+        StartEnvParam param = StartEnvParam.newBuilder().build();
+        return rxStartTestEnvironment(param);
+    }
+
+    /**
      * Stop the test environement, e.g. by shutting down an emulator.
      * @param param A {@link StopEnvParam} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public abstract Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param);
+
+    /**
+     * Same as above, but uses a default {@link StopEnvParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxStopTestEnvironment(StopEnvParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxStopTestEnvironment() {
+        StopEnvParam param = StopEnvParam.newBuilder().build();
+        return rxStopTestEnvironment(param);
+    }
+    //endregion
 
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;

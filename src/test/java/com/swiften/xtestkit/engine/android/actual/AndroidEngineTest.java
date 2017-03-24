@@ -1,10 +1,8 @@
-package com.swiften.xtestkit.android.actual;
+package com.swiften.xtestkit.engine.android.actual;
 
 import com.swiften.engine.mobile.android.AndroidEngine;
 import com.swiften.engine.mobile.android.protocol.AndroidDelay;
-import com.swiften.util.Log;
-import com.swiften.util.ProcessRunner;
-import com.swiften.xtestkit.util.TestProtocol;
+import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.reset;
@@ -22,7 +19,7 @@ import static org.mockito.Mockito.spy;
 /**
  * Created by haipham on 3/23/17.
  */
-public class AndroidEngineTest implements AndroidDelay, TestProtocol {
+public class AndroidEngineTest implements AndroidDelay {
     @NotNull private final AndroidEngine ENGINE;
 
     {
@@ -72,7 +69,7 @@ public class AndroidEngineTest implements AndroidDelay, TestProtocol {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Assert.assertTrue(getFirstNextEvent(subscriber));
+        Assert.assertTrue(TestUtil.getFirstNextEvent(subscriber));
     }
 
     @Test
@@ -109,6 +106,6 @@ public class AndroidEngineTest implements AndroidDelay, TestProtocol {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Assert.assertTrue(getFirstNextEvent(subscriber));
+        Assert.assertTrue(TestUtil.getFirstNextEvent(subscriber));
     }
 }

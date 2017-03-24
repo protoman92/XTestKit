@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.util;
 
+import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,5 +62,23 @@ public class TestUtil {
         } else {
             throw new RuntimeException("Element cannot be null");
         }
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> getNextEvents(@NotNull List<Object> events) {
+        return (List)events.get(0);
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static <T> T getFirstNextEvent(@NotNull List<Object> events) {
+        return (T)getNextEvents(events).get(0);
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static <T> T getFirstNextEvent(@NotNull TestSubscriber subscriber) {
+        return (T)getFirstNextEvent(subscriber.getEvents());
     }
 }

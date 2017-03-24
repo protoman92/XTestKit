@@ -1,4 +1,4 @@
-package com.swiften.xtestkit;
+package com.swiften.xtestkit.engine;
 
 import com.swiften.engine.base.XPath;
 

@@ -1,13 +1,11 @@
-package com.swiften.xtestkit.android.mock;
+package com.swiften.xtestkit.engine.android.mock;
 
 import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.param.StartEnvParam;
 import com.swiften.engine.base.param.protocol.RetryProtocol;
 import com.swiften.engine.mobile.android.AndroidEngine;
 import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
-import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
-import com.swiften.xtestkit.util.TestProtocol;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -27,9 +25,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/22/17.
  */
-public final class AndroidEngineTest implements
-    AndroidEngineError,
-    TestProtocol {
+public final class AndroidEngineTest implements AndroidEngineError {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final StartEnvParam START_PARAM;
@@ -153,11 +149,11 @@ public final class AndroidEngineTest implements
             subscriber.assertComplete();
             verify(PROCESS_RUNNER).rxExecute(anyString());
 
-//            try {
-//                verify(PROCESS_RUNNER, times(2)).execute(anyString());
-//            } catch (IOException e) {
-//                fail(e.getMessage());
-//            }
+            try {
+                verify(PROCESS_RUNNER, times(2)).execute(anyString());
+            } catch (IOException e) {
+                fail(e.getMessage());
+            }
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -286,7 +282,7 @@ public final class AndroidEngineTest implements
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertFalse(getFirstNextEvent(subscriber));
+            assertFalse(TestUtil.getFirstNextEvent(subscriber));
             verify(PROCESS_RUNNER).execute(eq(command));
         } catch (Exception e) {
             fail(e.getMessage());
@@ -317,7 +313,7 @@ public final class AndroidEngineTest implements
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(getFirstNextEvent(subscriber));
+            assertTrue(TestUtil.getFirstNextEvent(subscriber));
             verify(PROCESS_RUNNER).execute(eq(command));
         } catch (Exception e) {
             fail(e.getMessage());

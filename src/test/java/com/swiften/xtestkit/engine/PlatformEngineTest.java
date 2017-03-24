@@ -1,4 +1,4 @@
-package com.swiften.xtestkit;
+package com.swiften.xtestkit.engine;
 
 import com.swiften.engine.base.XPath;
 import com.swiften.engine.base.param.*;
@@ -7,11 +7,9 @@ import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.base.protocol.PlatformView;
 import com.swiften.engine.base.protocol.View;
 import com.swiften.engine.base.PlatformEngine;
-import com.swiften.util.Log;
-import com.swiften.xtestkit.util.TestProtocol;
+import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 
 import static org.junit.Assert.*;
@@ -25,7 +23,6 @@ import static org.mockito.Mockito.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,9 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class PlatformEngineTest implements
-    EngineError,
-    TestProtocol {
+public final class PlatformEngineTest implements EngineError {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final WebDriver.Navigation NAVIGATION;
@@ -312,7 +307,7 @@ public final class PlatformEngineTest implements
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(this.<List>getFirstNextEvent(subscriber).size(), 0);
+        assertEquals(TestUtil.<List>getFirstNextEvent(subscriber).size(), 0);
 
         views.forEach(a -> {
             verify(a).className();
@@ -342,7 +337,7 @@ public final class PlatformEngineTest implements
         subscriber.assertComplete();
 
         assertEquals(
-            this.<List>getFirstNextEvent(subscriber).size(),
+            TestUtil.<List>getFirstNextEvent(subscriber).size(),
             PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
 
         views.forEach(a -> {
@@ -397,7 +392,7 @@ public final class PlatformEngineTest implements
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         verify(result).get(anyInt());
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
     }
 
     @Test
@@ -427,7 +422,7 @@ public final class PlatformEngineTest implements
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         verify(result).get(anyInt());
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
     }
     //endregion
 
@@ -490,7 +485,7 @@ public final class PlatformEngineTest implements
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
@@ -555,7 +550,7 @@ public final class PlatformEngineTest implements
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
@@ -620,7 +615,7 @@ public final class PlatformEngineTest implements
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
@@ -685,7 +680,7 @@ public final class PlatformEngineTest implements
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(TestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
