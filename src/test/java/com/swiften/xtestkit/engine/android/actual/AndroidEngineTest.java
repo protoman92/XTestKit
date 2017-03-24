@@ -30,7 +30,7 @@ public class AndroidEngineTest implements AndroidDelay {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void before() {
         TestSubscriber subscriber = TestSubscriber.create();
 
         ENGINE.rxStartEmulator()
@@ -42,7 +42,7 @@ public class AndroidEngineTest implements AndroidDelay {
 
     @After
     @SuppressWarnings("unchecked")
-    public void tearDown() {
+    public void after() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStopEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();

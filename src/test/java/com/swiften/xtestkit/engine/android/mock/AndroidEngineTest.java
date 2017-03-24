@@ -39,14 +39,14 @@ public final class AndroidEngineTest implements AndroidEngineError {
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ENGINE.processRunner());
 
-        /* Create a mock here to fake retriesOnError() */
+        /* Create a mock here to fake retries() */
         START_PARAM = mock(StartEnvParam.class);
 
         RETRIES_ON_ERROR = 3;
     }
 
     @Before
-    public void setUp() {
+    public void before() {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
 
         /* Shorten the delay for testing */
@@ -54,11 +54,11 @@ public final class AndroidEngineTest implements AndroidEngineError {
 
         /* We specifically mock StartEnvParams because starting emulator
          * requires rather complicated behaviors */
-        when(START_PARAM.retriesOnError()).thenReturn(RETRIES_ON_ERROR);
+        when(START_PARAM.retries()).thenReturn(RETRIES_ON_ERROR);
     }
 
     @After
-    public void tearDown() {
+    public void after() {
         reset(ENGINE, PROCESS_RUNNER, START_PARAM);
     }
 
@@ -166,7 +166,7 @@ public final class AndroidEngineTest implements AndroidEngineError {
     public void mock_stopEmulatorWithError_shouldThrow() {
         try {
             // Setup
-            int retries = new RetryProtocol() {}.retriesOnError();
+            int retries = new RetryProtocol() {}.retries();
             String command = ENGINE.stopEmulator();
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
             TestSubscriber subscriber = TestSubscriber.create();

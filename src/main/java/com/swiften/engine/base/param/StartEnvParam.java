@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Parameter object for
  * {@link com.swiften.engine.base.PlatformEngine#rxStartTestEnvironment(StartEnvParam)}.
- * When {@link #retriesOnError()} is used with
+ * When {@link #retries()} is used with
  * {@link io.reactivex.Flowable#retryWhen(Function)}, it will be incremented
  * by 1, so when we call
  * {@link io.reactivex.Flowable#zipWith(Iterable, BiFunction)} with
@@ -34,7 +34,7 @@ public class StartEnvParam implements RetryProtocol {
      * @return An {@link Integer} value.
      */
     @Override
-    public int retriesOnError() {
+    public int retries() {
         return 1000;
     }
 

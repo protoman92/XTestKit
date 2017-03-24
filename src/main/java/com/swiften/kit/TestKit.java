@@ -3,15 +3,14 @@ package com.swiften.kit;
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.engine.mobile.Platform;
 import com.swiften.kit.protocol.TestKitError;
+import com.swiften.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by haipham on 3/24/17.
@@ -23,11 +22,33 @@ public class TestKit implements TestKitError {
     }
 
     @NotNull private final List<PlatformEngine> ENGINES;
+
     private int current;
 
     TestKit() {
         ENGINES = new LinkedList<>();
         current = -1;
+    }
+
+    @NotNull
+    public List<PlatformEngine> engines() {
+        return Collections.unmodifiableList(ENGINES);
+    }
+
+    /**
+     * Increment {@link #current} to access a different {@link PlatformEngine}
+     * from {@link #ENGINES}.
+     */
+    public void incrementCurrent() {
+        current += 1;
+    }
+
+    /**
+     * Get {@link #current}.
+     * @return An {@link Integer} value.
+     */
+    public int currentIndex() {
+        return current;
     }
 
     //region PlatformEngine
@@ -38,10 +59,11 @@ public class TestKit implements TestKitError {
      */
     @NotNull
     public PlatformEngine<?> currentEngine() {
-        int current = this.current;
+        int current = currentIndex();
+        List<PlatformEngine> engines = engines();
 
-        if (current > -1 && current < ENGINES.size()) {
-            PlatformEngine engine = ENGINES.get(current);
+        if (current > -1 && current < engines.size()) {
+            PlatformEngine engine = engines.get(current);
 
             if (Objects.nonNull(engine)) {
                 return engine;
@@ -116,7 +138,11 @@ public class TestKit implements TestKitError {
      */
     @NotNull
     public Flowable<Boolean> rxAfterClass() {
-        return currentEngine().rxStopTestEnvironment();
+        if (currentIndex() > -1) {
+            return currentEngine().rxStopTestEnvironment();
+        } else {
+            return Flowable.just(false);
+        }
     }
 
     /**

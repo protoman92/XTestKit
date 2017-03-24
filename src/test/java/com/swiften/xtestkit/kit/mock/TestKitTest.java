@@ -9,11 +9,12 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.util.Assert.*;
+import static org.junit.Assert.*;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -35,7 +36,7 @@ public class TestKitTest {
     }
 
     @Before
-    public void setUp() {
+    public void before() {
         doReturn(Flowable.just(true)).when(ENGINE).rxStartTestEnvironment();
         doReturn(Flowable.just(true)).when(ENGINE).rxStopTestEnvironment();
         doReturn(Flowable.just(true)).when(ENGINE).rxStartDriver();
@@ -58,7 +59,7 @@ public class TestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        isTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
         verify(ENGINE).rxStartTestEnvironment();
     }
@@ -79,7 +80,7 @@ public class TestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        isTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
         verify(ENGINE).rxStartDriver();
     }
@@ -90,6 +91,7 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_afterClass_shouldSucceed() {
         // Setup
+        doReturn(0).when(TEST_KIT).currentIndex();
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -100,9 +102,29 @@ public class TestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        isTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
         verify(ENGINE).rxStopTestEnvironment();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_afterClassWithInvalidCurrent_shouldDoNothing() {
+        // Setup
+        doReturn(-1).when(TEST_KIT).currentIndex();
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        TEST_KIT.rxAfterClass().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertFalse(TestUtil.getFirstNextEvent(subscriber));
+        verify(TEST_KIT, never()).currentEngine();
+        verify(ENGINE, never()).rxStopTestEnvironment();
     }
     //endregion
 
@@ -121,7 +143,7 @@ public class TestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        isTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
         verify(ENGINE).rxStopDriver();
     }

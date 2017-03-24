@@ -65,7 +65,7 @@ public final class PlatformEngineTest implements EngineError {
     }
 
     @Before
-    public void setUp() {
+    public void before() {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
@@ -79,7 +79,7 @@ public final class PlatformEngineTest implements EngineError {
     }
 
     @After
-    public void tearDown() {
+    public void after() {
         reset(DRIVER, ENGINE, NAVIGATION, PLATFORM_VIEWS);
     }
 

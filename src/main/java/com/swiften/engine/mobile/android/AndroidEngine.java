@@ -6,18 +6,16 @@ import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.param.StartEnvParam;
 import com.swiften.engine.base.param.StopEnvParam;
 import com.swiften.engine.mobile.MobileEngine;
+import com.swiften.engine.mobile.Platform;
 import com.swiften.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.engine.mobile.android.protocol.AndroidDelay;
 import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
-import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
-import org.apache.xpath.operations.Bool;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -194,7 +192,7 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     public Flowable<Boolean> rxStartEmulator(@NotNull StartEnvParam param) {
         final ProcessRunner PROCESS_RUNNER = processRunner();
-        final int RETRIES = param.retriesOnError();
+        final int RETRIES = param.retries();
 
         @SuppressWarnings("WeakerAccess")
         final long DELAY = emulatorBootRetryDelay();
@@ -279,7 +277,7 @@ public class AndroidEngine extends MobileEngine<
 
         return processRunner()
             .rxExecute(command)
-            .retry(param.retriesOnError())
+            .retry(param.retries())
             .map(a -> true);
     }
 
@@ -687,6 +685,13 @@ public class AndroidEngine extends MobileEngine<
         public Builder withAppActivity(@NotNull String appActivity) {
             ENGINE.appActivity = appActivity;
             return this;
+        }
+
+        @NotNull
+        @Override
+        public AndroidEngine build() {
+            withPlatform(Platform.ANDROID);
+            return super.build();
         }
     }
 }

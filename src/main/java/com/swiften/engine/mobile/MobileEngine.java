@@ -124,7 +124,7 @@ public abstract class MobileEngine<
         @NotNull
         public Builder<T> withApp(@NotNull String app) {
             String path = System.getProperty("user.dir");
-            ENGINE.app = String.format("%s/%s", path, app);
+            ENGINE.app = String.format("%s/app/%s", path, app);
             return this;
         }
 
@@ -195,6 +195,25 @@ public abstract class MobileEngine<
         @NotNull
         public Builder<T> withPlatform(@NotNull Platform platform) {
             return withPlatformName(platform.value());
+        }
+
+        /**
+         * Set the {@link #ENGINE#platformVersion} value. Automatically
+         * detect {@link #ENGINE#automationName} as well.
+         * @param version A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withPlatformVersion(@NotNull String version) {
+            ENGINE.platformVersion = version;
+
+            if (version.compareToIgnoreCase("4.2") < 0) {
+                withAutomation(Automation.SELENDROID);
+            } else {
+                withAutomation(Automation.APPIUM);
+            }
+
+            return this;
         }
 
         /**
