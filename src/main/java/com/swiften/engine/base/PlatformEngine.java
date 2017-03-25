@@ -7,11 +7,10 @@ package com.swiften.engine.base;
 import com.swiften.engine.base.param.*;
 import com.swiften.engine.base.protocol.*;
 import com.swiften.util.CollectionUtil;
+import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import javafx.scene.paint.Stop;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -28,8 +27,8 @@ import java.util.concurrent.TimeUnit;
  * should extend this class and provide its own wrappers for Appium methods.
  */
 public abstract class PlatformEngine<T extends WebDriver> implements
-    EngineDelay,
-    EngineError {
+    DelayProtocol,
+    ErrorProtocol {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @Nullable private T driver;
     @Nullable PlatformView platformView;
@@ -41,6 +40,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         PROCESS_RUNNER = ProcessRunner.newBuilder().build();
         browserName = "";
         serverUrl = "http://localhost:4723/wd/hub";
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return capabilities().toString();
     }
 
     /**
@@ -147,7 +152,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         if (hasAllRequiredInformation()) {
             return Completable
                 .fromAction(() -> driver = createDriverInstance())
-                .toFlowable();
+                .<Boolean>toFlowable()
+                .defaultIfEmpty(true);
         }
 
         return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
@@ -160,7 +166,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        return Completable.fromAction(() -> driver().quit()).toFlowable();
+        return Completable.fromAction(() -> driver().quit())
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
     //endregion
 
@@ -206,7 +214,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             }
         }
 
-        return new Back().back(0).toFlowable().map(a -> true);
+        return new Back().back(0).<Boolean>toFlowable().defaultIfEmpty(true);
     }
 
     /**
@@ -221,6 +229,47 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .build();
 
         return rxNavigateBack(param);
+    }
+
+    /**
+     * Dismiss a currently active alert. Either accept or reject.
+     * @param PARAM An {@link AlertParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxDismissAlert(@NotNull final AlertParam PARAM) {
+        return Flowable.just(driver().switchTo().alert())
+            .flatMapCompletable(a -> Completable.fromAction(() -> {
+                if (PARAM.shouldAccept()) {
+                    a.accept();
+                } else {
+                    a.dismiss();
+                }
+            }))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * Same as avove, but uses a default {@link AlertParam}.
+     * @return A {@link Flowable} instance.
+     * @see #rxDismissAlert(AlertParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxAcceptAlert() {
+        AlertParam param = AlertParam.newBuilder().accept().build();
+        return rxDismissAlert(param);
+    }
+
+    /**
+     * Same as avove, but uses a default {@link AlertParam}.
+     * @return A {@link Flowable} instance.
+     * @see #rxDismissAlert(AlertParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxRejectAlert() {
+        AlertParam param = AlertParam.newBuilder().reject().build();
+        return rxDismissAlert(param);
     }
     //endregion
 
@@ -253,6 +302,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%s%s", cls.className(), XPATH))
+            .doOnNext(Log::println)
             .map(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -294,21 +344,32 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsWithText(@NotNull TextParam param) {
-        String xPath = newXPathBuilderInstance()
-            .hasText(param.text())
-            .build()
-            .getAttribute();
+        XPath xPath = newXPathBuilderInstance().hasText(param.text()).build();
 
         ByXPath query = ByXPath.newBuilder()
-            .withClasses(platformView().hasText())
+//            .withClasses(platformView().hasText())
             .withError(noElementsWithText(param.text()))
             .withXPath(xPath)
             .build();
 
         return rxElementsByXPath(query);
+    }
+
+    /**
+     * Same as above, but uses a default {@link TextParam} with a specified
+     * text.
+     * @param text A {@link String} value.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsWithText(TextParam)
+     */
+    @NotNull
+    public Flowable<List<WebElement>> rxElementsWithText(@NotNull String text) {
+        TextParam param = TextParam.newBuilder().withText(text).build();
+        return rxElementsWithText(param);
     }
 
     /**
@@ -337,10 +398,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsContainingText(@NotNull TextParam param) {
-        String xPath = newXPathBuilderInstance()
+        XPath xPath = newXPathBuilderInstance()
             .containsText(param.text())
-            .build()
-            .getAttribute();
+            .build();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().hasText())
@@ -377,13 +437,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsWithHint(@NotNull HintParam param) {
-        String xPath = newXPathBuilderInstance()
-            .hasHint(param.hint())
-            .build()
-            .getAttribute();
+        XPath xPath = newXPathBuilderInstance().hasHint(param.hint()).build();
 
         ByXPath query = ByXPath.newBuilder()
-            .withClasses(platformView().isEditable())
+//            .withClasses(platformView().isEditable())
             .withError(noElementsWithHint(param.hint()))
             .withXPath(xPath)
             .build();
@@ -417,10 +474,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsContainingHint(@NotNull HintParam param) {
-        String xPath = newXPathBuilderInstance()
+        XPath xPath = newXPathBuilderInstance()
             .containsHint(param.hint())
-            .build()
-            .getAttribute();
+            .build();
 
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().isEditable())
@@ -470,8 +526,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<Boolean> rxClearAllEditableElements() {
         return rxAllEditableElements()
             .flatMap(Flowable::fromIterable)
-            .flatMap(a -> Completable.fromAction(a::clear).toFlowable())
-            .map(a -> true);
+            .flatMapCompletable(a -> Completable.fromAction(a::clear))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
     //endregion
 
@@ -483,7 +540,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Flowable<List<WebElement>> rxAllClickableElements() {
         ByXPath query = ByXPath.newBuilder()
-            .withClasses(platformView().isClickable())
+            .withXPath(newXPathBuilderInstance().isClickable(true).build())
             .build();
 
         return rxElementsByXPath(query);

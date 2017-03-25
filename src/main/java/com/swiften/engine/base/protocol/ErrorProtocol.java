@@ -5,10 +5,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/19/17.
  */
-public interface EngineError {
+public interface ErrorProtocol {
     String DRIVER_UNAVAILABLE = "Driver unavailable";
     String PLATFORM_VIEW_UNAVAILABLE = "Platform view unavailable";
     String INSUFFICIENT_SETTINGS = "Insufficient settings";
+    String NO_SUCH_ELEMENT = "No such element";
 
     @NotNull
     default String noElementsWithText(@NotNull String text) {

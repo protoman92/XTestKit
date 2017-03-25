@@ -4,7 +4,7 @@ import com.swiften.engine.base.param.NavigateBack;
 import com.swiften.engine.base.param.StartEnvParam;
 import com.swiften.engine.base.param.protocol.RetryProtocol;
 import com.swiften.engine.mobile.android.AndroidEngine;
-import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
+import com.swiften.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.util.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/22/17.
  */
-public final class AndroidEngineTest implements AndroidEngineError {
+public final class AndroidEngineTest implements AndroidErrorProtocol {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final StartEnvParam START_PARAM;

@@ -2,7 +2,7 @@ package com.swiften.xtestkit.engine;
 
 import com.swiften.engine.base.XPath;
 import com.swiften.engine.base.param.*;
-import com.swiften.engine.base.protocol.EngineError;
+import com.swiften.engine.base.protocol.ErrorProtocol;
 import com.swiften.engine.base.protocol.PlatformProtocol;
 import com.swiften.engine.base.protocol.PlatformView;
 import com.swiften.engine.base.protocol.View;
@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,10 +31,12 @@ import java.util.stream.Collectors;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class PlatformEngineTest implements EngineError {
+public final class PlatformEngineTest implements ErrorProtocol {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
+    @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
+    @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final MockPlatformView PLATFORM_VIEWS;
     private final int ELEMENT_COUNT, TRIES;
 
@@ -57,6 +60,12 @@ public final class PlatformEngineTest implements EngineError {
          * have to rewrite view login for PlatformView */
         PLATFORM_VIEWS = spy(new MockPlatformView());
 
+        /* Return this mock when the driver requests switchTo() */
+        TARGET_LOCATOR = mock(WebDriver.TargetLocator.class);
+
+        /*  */
+        ALERT = mock(Alert.class);
+
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
@@ -69,6 +78,8 @@ public final class PlatformEngineTest implements EngineError {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
+        when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
+        when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
 
         when(DRIVER.findElements(any(By.class))).thenReturn(
             Arrays
@@ -147,14 +158,28 @@ public final class PlatformEngineTest implements EngineError {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-
-        /* Since we are using Completable, we expect that there would not
-         * be any onNext event */
-        subscriber.assertNoValues();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
 
         verify(ENGINE).createDriverInstance();
     }
     //endregion
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_acceptAlert_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ENGINE.rxAcceptAlert().subscribe(subscriber);
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
+        verify(ENGINE).rxDismissAlert(any(AlertParam.class));
+    }
 
     //region Stop Driver
     @Test
@@ -189,10 +214,7 @@ public final class PlatformEngineTest implements EngineError {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-
-        /* Since we are using Completable, we expect that there would not
-         * be any onNext event */
-        subscriber.assertNoValues();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
     }
     //endregion
 
@@ -224,40 +246,26 @@ public final class PlatformEngineTest implements EngineError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_navigateBack_shouldSuccess() {
+    public void mock_navigateBack_shouldSucceed() {
         // Setup
         /* Stub out backNavigationDelay() to avoid long wait */
         long delay = 100;
         doReturn(delay).when(ENGINE).backNavigationDelay();
 
+        int times = TestUtil.randomBetween(1, 100);
+        NavigateBack param = NavigateBack.newBuilder().withTimes(times).build();
         TestSubscriber subscriber = TestSubscriber.create();
 
-        Flowable cases = Flowable.range(1, TRIES)
-            .flatMap(a -> Flowable.just(a)
-                .map(b -> NavigateBack.newBuilder().withTimes(b).build())
-                .flatMap(ENGINE::rxNavigateBack)
-
-                /* Check that back navigation has been invoked a times */
-                .doOnNext(b -> {
-                    verify(NAVIGATION, times(a)).back();
-                })
-                .doOnComplete(() -> {
-                    /* If we reset the driver here, it will no longer return
-                     * NAVIGATION when navigate() is called */
-                    reset(NAVIGATION);
-                }));
-
         // When
-        cases.subscribe(subscriber);
+        ENGINE.rxNavigateBack(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-
-        /* No values due to Completable */
-        subscriber.assertNoValues();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
+        verify(NAVIGATION, times(times)).back();
     }
     //endregion
 
@@ -294,7 +302,7 @@ public final class PlatformEngineTest implements EngineError {
 
         ByXPath param = ByXPath.newBuilder()
             .withClasses(views)
-            .withXPath("")
+            .withXPath(XPath.EMPTY)
             .build();
 
         TestSubscriber subscriber = TestSubscriber.create();
@@ -322,7 +330,7 @@ public final class PlatformEngineTest implements EngineError {
 
         ByXPath param = ByXPath.newBuilder()
             .withClasses(views)
-            .withXPath("")
+            .withXPath(XPath.EMPTY)
             .build();
 
         TestSubscriber subscriber = TestSubscriber.create();

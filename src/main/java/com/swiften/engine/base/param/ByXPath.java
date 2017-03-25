@@ -77,6 +77,17 @@ public class ByXPath {
         }
 
         /**
+         * Add a {@link View} instance to {@link #PARAM#classes}.
+         * @param cls The {@link View} to be added.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder addClasses(@NotNull View cls) {
+            PARAM.classes.add(cls);
+            return this;
+        }
+
+        /**
          * Set the {@link #PARAM#error} value. This error will be used to
          * construct an {@link Exception} when the Appium driver fails to
          * find an element.
@@ -91,14 +102,12 @@ public class ByXPath {
         }
 
         /**
-         * The {@link XPath} query that will be used to
-         * search for elements.
-         * @param xPath The {@link XPath} {@link String}.
+         * The {@link XPath} query that will be used to search for elements.
+         * @param xPath A {@link XPath} instance.
          * @return The current {@link Builder} instance.
          */
-        @NotNull
-        public Builder withXPath(@NotNull String xPath) {
-            PARAM.xPath = xPath;
+        public Builder withXPath(@NotNull XPath xPath) {
+            PARAM.xPath = xPath.getAttribute();
             return this;
         }
 
@@ -121,6 +130,10 @@ public class ByXPath {
 
         @NotNull
         public ByXPath build() {
+            if (PARAM.classes.isEmpty()) {
+                addClasses(View.ANY_VIEW);
+            }
+
             return PARAM;
         }
     }

@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.engine.android.actual;
 
 import com.swiften.engine.mobile.android.AndroidEngine;
-import com.swiften.engine.mobile.android.protocol.AndroidDelay;
+import com.swiften.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.spy;
 /**
  * Created by haipham on 3/23/17.
  */
-public class AndroidEngineTest implements AndroidDelay {
+public class AndroidEngineTest implements AndroidDelayProtocol {
     @NotNull private final AndroidEngine ENGINE;
 
     {

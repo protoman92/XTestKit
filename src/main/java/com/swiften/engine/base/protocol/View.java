@@ -6,6 +6,15 @@ import org.jetbrains.annotations.NotNull;
  * Created by haipham on 3/20/17.
  */
 public interface View {
+    @NotNull
+    View ANY_VIEW = new View() {
+        @NotNull
+        @Override
+        public String className() {
+            return "*";
+        }
+    };
+
     /**
      * Get the {@link View} class name for XPath requests.
      * @return A {@link String} value.
@@ -17,18 +26,24 @@ public interface View {
      * text.
      * @return A {@link Boolean} value.
      */
-    boolean hasText();
+    default boolean hasText() {
+        return false;
+    }
 
     /**
      * Check whether the current {@link View} is clickable. For e.g., Android's
      * Button and iOS's UIButton classes.
      * @return A {@link Boolean} value.
      */
-    boolean isClickable();
+    default boolean isClickable() {
+        return false;
+    }
 
     /**
      * Check whether the current {@link View} is editable.
      * @return A {@link Boolean} value.
      */
-    boolean isEditable();
+    default boolean isEditable() {
+        return false;
+    }
 }

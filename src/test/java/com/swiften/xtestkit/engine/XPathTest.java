@@ -16,7 +16,7 @@ import java.util.List;
  */
 public final class XPathTest {
     @Test
-    public void test_buildXPath_shouldWorkCorrectly() {
+    public void test_buildXPath_shouldSucceed() {
         // Setup
         XPath xPath = XPath.newBuilder(Platform.ANDROID)
             .hasText("Text1")
@@ -24,10 +24,11 @@ public final class XPathTest {
             .hasHint("Hint1")
             .containsHint("Hint2")
             .isEnabled(true)
+            .isClickable(true)
             .build();
 
         // When
-        int groupCount = 5;
+        int groupCount = 6;
         String attribute = xPath.getAttribute();
         String trimmed = attribute.substring(1, attribute.length() - 1);
         List<String> groups = Arrays.asList(trimmed.split("\\]\\["));

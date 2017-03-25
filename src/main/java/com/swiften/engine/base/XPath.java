@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class XPath {
     @NotNull
+    public static XPath EMPTY = new XPath();
+
+    @NotNull
     public static Builder newBuilder(@NotNull PlatformProtocol platform) {
         return new Builder(platform);
     }
@@ -131,7 +134,25 @@ public class XPath {
                 throw new RuntimeException(NO_ATTR_NAME_ERROR);
             }
 
-            String attr = String.format("@%1$s='%2$s'", name, enabled);
+            String attr = String.format("@%1$s='%2$b'", name, enabled);
+            XPATH.appendAttribute(attr);
+            return this;
+        }
+
+        /**
+         * Appends a @clickable attribute.
+         * @param clickable A {@link Boolean} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder isClickable(boolean clickable) {
+            String name = PLATFORM.clickableAttribute();
+
+            if (name.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            String attr = String.format("@%1$s='%2$b'", name, clickable);
             XPATH.appendAttribute(attr);
             return this;
         }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/22/17.
  */
-public interface AndroidEngineError {
+public interface AndroidErrorProtocol {
     String ANDROID_HOME_NOT_SET = "Android Home is not set";
     String NO_OUTPUT_EXPECTED = "No output expected";
 

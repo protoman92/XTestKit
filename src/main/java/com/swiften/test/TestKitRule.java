@@ -1,8 +1,6 @@
 package com.swiften.test;
 
 import com.swiften.kit.TestKit;
-import com.swiften.util.Log;
-import io.reactivex.Completable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * {@link TestKit#rxBeforeClass()} and {@link TestKit#rxAfterClass()} are
  * automatically taken care of.
  */
-public class TestKitRepeat extends RepeatRule implements RepeatRule.Delegate {
+public class TestKitRule extends RepeatRule implements RepeatRule.Delegate {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -26,17 +24,15 @@ public class TestKitRepeat extends RepeatRule implements RepeatRule.Delegate {
 
     //region RepeatRule.Delegate
     @Override
-    public void onNewIteration(int iteration) {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+    public void onIterationStarted(int iteration) {
         TestKit testKit = testKit();
+        testKit.incrementCurrent();
+        testKit.beforeClass();
+    }
 
-        testKit.rxAfterClass()
-            .flatMapCompletable(a -> Completable.fromAction(testKit::incrementCurrent))
-            .toFlowable()
-            .flatMap(a -> testKit.rxBeforeClass())
-            .subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
+    @Override
+    public void onIterationFinished(int iteration) {
+        testKit().afterClass();
     }
     //endregion
 
@@ -51,7 +47,7 @@ public class TestKitRepeat extends RepeatRule implements RepeatRule.Delegate {
 
     public static final class Builder extends RepeatRule.Builder {
         Builder() {
-            super(new TestKitRepeat());
+            super(new TestKitRule());
         }
 
         /**
@@ -61,13 +57,14 @@ public class TestKitRepeat extends RepeatRule implements RepeatRule.Delegate {
          */
         @NotNull
         public Builder withTestKit(@NotNull TestKit testKit) {
-            ((TestKitRepeat)TEST_RULE).testKit = testKit;
+            ((TestKitRule)TEST_RULE).testKit = testKit;
+            withRetries(testKit.engines().size());
             return this;
         }
 
         @NotNull
         public RepeatRule build() {
-            withDelegate((TestKitRepeat)TEST_RULE);
+            withDelegate((TestKitRule)TEST_RULE);
             return super.build();
         }
     }

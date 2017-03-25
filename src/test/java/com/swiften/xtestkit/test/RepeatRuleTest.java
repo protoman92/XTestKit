@@ -18,18 +18,15 @@ public class RepeatRuleTest implements RepeatRule.Delegate {
 
     //region RepeatRule.Delegate
     @Override
-    public void onNewIteration(int i) {}
+    public void onIterationStarted(int i) {
+        Log.println("BeforeClass", i);
+    }
+
+    @Override
+    public void onIterationFinished(int i) {
+        Log.println("AfterClass, i");
+    }
     //endregion
-
-    @BeforeClass
-    public static void beforeClass() {
-        Log.println("beforeClass");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        Log.println("afterClass");
-    }
 
     @Before
     public void before() {
@@ -38,11 +35,11 @@ public class RepeatRuleTest implements RepeatRule.Delegate {
 
     @After
     public void after() {
-        Log.println("Tear Down");
+        Log.println("After");
     }
 
     @Test
     public void mock_runTest_shouldRepeat() {
-        Log.println(TestUtil.randomBetween(0, 10000));
+        Log.println("Running Test", TestUtil.randomBetween(0, 10000));
     }
 }

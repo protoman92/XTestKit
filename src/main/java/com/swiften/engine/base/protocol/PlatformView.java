@@ -3,6 +3,7 @@ package com.swiften.engine.base.protocol;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,11 @@ import java.util.stream.Collectors;
  * Subclass this class to provide platform-specific {@link View}.
  */
 public abstract class PlatformView {
+    @NotNull
+    public List<View> anyView() {
+        return Collections.singletonList(View.ANY_VIEW);
+    }
+
     @NotNull
     public List<View> allViews() {
         return Arrays.asList(getViews());

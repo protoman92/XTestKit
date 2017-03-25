@@ -34,4 +34,14 @@ public interface PlatformProtocol {
     default String enabledAttribute() {
         return "enabled";
     }
+
+    /**
+     * Specify the name for a clickable attribute. Generally should be
+     * 'clickable'.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    default String clickableAttribute() {
+        return "clickable";
+    }
 }

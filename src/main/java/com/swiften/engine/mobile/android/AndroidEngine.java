@@ -1,15 +1,13 @@
 package com.swiften.engine.mobile.android;
 
 import com.swiften.engine.base.PlatformEngine;
-import com.swiften.engine.base.param.ConnectionParam;
-import com.swiften.engine.base.param.NavigateBack;
-import com.swiften.engine.base.param.StartEnvParam;
-import com.swiften.engine.base.param.StopEnvParam;
+import com.swiften.engine.base.param.*;
 import com.swiften.engine.mobile.MobileEngine;
 import com.swiften.engine.mobile.Platform;
 import com.swiften.engine.mobile.android.param.DeviceSettingParam;
-import com.swiften.engine.mobile.android.protocol.AndroidDelay;
-import com.swiften.engine.mobile.android.protocol.AndroidEngineError;
+import com.swiften.engine.mobile.android.protocol.AndroidDelayProtocol;
+import com.swiften.engine.mobile.android.protocol.AndroidErrorProtocol;
+import com.swiften.util.Log;
 import com.swiften.util.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -17,6 +15,8 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
@@ -37,8 +37,8 @@ public class AndroidEngine extends MobileEngine<
     AndroidDriver<AndroidElement>
     >
     implements
-    AndroidDelay,
-    AndroidEngineError {
+    AndroidDelayProtocol,
+    AndroidErrorProtocol {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -60,6 +60,7 @@ public class AndroidEngine extends MobileEngine<
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
         capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage);
+        capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity);
         return capabilities;
     }
 
@@ -130,6 +131,25 @@ public class AndroidEngine extends MobileEngine<
             appActivity);
 
         return processRunner().rxExecute(start).map(a -> true);
+    }
+
+    /**
+     * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
+     * on {@link Platform#ANDROID}, we need a custom solution by using
+     * {@link AndroidDriver#findElementById(String)}.
+     * @param param An {@link AlertParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxDismissAlert(@NotNull AlertParam param) {
+        return Flowable.just(param.shouldAccept())
+            .map(a -> a ? "permission_allow_button" : "permission_deny_button")
+            .map(id -> String.format("com.android.packageinstaller:id/%s", id))
+            .map(id -> driver().findElement(By.id(id)))
+            .filter(Objects::nonNull)
+            .switchIfEmpty(Flowable.error(new Exception(NO_SUCH_ELEMENT)))
+            .map(a -> true);
     }
 
     //region Check Emulator Open
@@ -691,6 +711,7 @@ public class AndroidEngine extends MobileEngine<
         @Override
         public AndroidEngine build() {
             withPlatform(Platform.ANDROID);
+            withPlatformView(new AndroidView());
             return super.build();
         }
     }

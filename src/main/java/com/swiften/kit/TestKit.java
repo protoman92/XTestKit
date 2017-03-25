@@ -4,6 +4,7 @@ import com.swiften.engine.base.PlatformEngine;
 import com.swiften.engine.mobile.Platform;
 import com.swiften.kit.protocol.TestKitError;
 import com.swiften.util.Log;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.intellij.lang.annotations.Flow;
@@ -41,6 +42,19 @@ public class TestKit implements TestKitError {
      */
     public void incrementCurrent() {
         current += 1;
+    }
+
+    /**
+     * Same as above, but returns a {@link Flowable} instance for easy
+     * {@link Flowable} chaining.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxIncrementCurrent() {
+        return Completable
+            .fromAction(this::incrementCurrent)
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 
     /**

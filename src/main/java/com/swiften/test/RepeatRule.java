@@ -1,6 +1,7 @@
 package com.swiften.test;
 
 import com.swiften.engine.base.param.protocol.RetryProtocol;
+import com.swiften.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.rules.TestRule;
@@ -53,12 +54,14 @@ public class RepeatRule implements TestRule, RetryProtocol {
                 Throwable caughtException = null;
 
                 for (int i = 0, retries = retries(); i < retries; i++) {
-                    delegate.onNewIteration(i);
+                    delegate.onIterationStarted(i);
 
                     try {
                         BASE.evaluate();
                     } catch (Throwable t) {
                         caughtException = t;
+                    } finally {
+                        delegate.onIterationFinished(i);
                     }
                 }
 
@@ -113,6 +116,12 @@ public class RepeatRule implements TestRule, RetryProtocol {
          * Call this method when a new loop is run.
          * @param iteration The iteration index.
          */
-        void onNewIteration(int iteration);
+        void onIterationStarted(int iteration);
+
+        /**
+         * Call this method when an iteration is finished.
+         * @param iteration The iteration index.
+         */
+        void onIterationFinished(int iteration);
     }
 }

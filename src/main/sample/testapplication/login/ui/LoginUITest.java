@@ -1,15 +1,17 @@
-package sample.com.swiften.xtestkit.testapplication.login.ui;
+package sample.testapplication.login.ui;
 
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.kit.TestKit;
 import com.swiften.test.RepeatRule;
-import com.swiften.test.TestKitRepeat;
+import com.swiften.test.TestKitRule;
 import com.swiften.util.Log;
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.*;
-import sample.com.swiften.xtestkit.testapplication.Config;
+import sample.testapplication.Config;
+import sample.testapplication.common.Interaction;
 
 /**
  * Created by haipham on 3/24/17.
@@ -20,21 +22,22 @@ public class LoginUITest {
     public final RepeatRule REPEAT_RULE;
 
     @NotNull private final TestKit TEST_KIT;
+    @NotNull private final Interaction INTERACTION;
     @Nullable private PlatformEngine engine;
 
     {
         TEST_KIT = Config.testKit();
+        INTERACTION = new Interaction(TEST_KIT);
 
-        REPEAT_RULE = TestKitRepeat.newBuilder()
-            .withTestKit(TEST_KIT)
-            .withRetries(TEST_KIT.engines().size())
-            .build();
+        /* The TestKitRule class ensures that all PlatformEngines are
+         * initiated and performs tests on them sequentially */
+        REPEAT_RULE = TestKitRule.newBuilder().withTestKit(TEST_KIT).build();
     }
 
     @Before
     public void before() {
-        TEST_KIT.before();
         engine = TEST_KIT.currentEngine();
+        TEST_KIT.before();
     }
 
     @After
@@ -53,13 +56,19 @@ public class LoginUITest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void actual_test() {
+    public void actual_navigateToLoginScreen_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
+        INTERACTION
+            .rx_splash_login_acceptPermission()
+            .flatMap(a -> INTERACTION.rxCheckLoginScreenValidity())
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
 
         // Then
-        Log.println(engine);
+        Log.println(subscriber.getEvents());
     }
 }
