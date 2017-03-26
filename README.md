@@ -19,6 +19,8 @@ Only one device/emulator can be run at a time. If multiple devices are attached 
 
 From **Intellij IDEA**, clone this repository. **Gradle** will be set up automatically.
 
+When prompted to set **Gradle Home**, run **gradlew getHomeDir** from the project directory, and enter the directory path that is returned.
+
 Copy the app bundle (e.g. **'app-debug.apk'**) to the **app** folder.
 
 **npm install -g appium-doctor**: This module checks the system and determines whether **Appium** can be run.
