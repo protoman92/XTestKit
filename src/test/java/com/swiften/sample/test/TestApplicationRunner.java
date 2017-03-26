@@ -1,6 +1,6 @@
 package com.swiften.sample.test;
 
-import com.swiften.test.RepeatTestRunner;
+import com.swiften.xtestkit.test.RepeatTestRunner;
 import com.swiften.sample.Config;
 import org.jetbrains.annotations.NotNull;
 import org.junit.runners.model.InitializationError;
@@ -12,7 +12,7 @@ import org.junit.runners.model.InitializationError;
 /**
  * We subclass {@link RepeatTestRunner} and provide a custom retry count,
  * based on {@link Config#runCount()}, which, in turn, is based on the number
- * of {@link com.swiften.engine.base.PlatformEngine} registered.
+ * of {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered.
  */
 public final class TestApplicationRunner extends RepeatTestRunner {
     public TestApplicationRunner(@NotNull Class<?> cls) throws InitializationError {

@@ -1,7 +1,7 @@
 package com.swiften.sample.login.ui;
 
-import com.swiften.engine.base.PlatformEngine;
-import com.swiften.kit.TestKit;
+import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.sample.protocol.DelayProtocol;
 import com.swiften.sample.test.TestApplicationRunner;
 import io.reactivex.subscribers.TestSubscriber;
@@ -36,8 +36,8 @@ public final class LoginUITest implements DelayProtocol {
 
     {
         INTERACTION = new Interaction(TEST_KIT);
-        USERNAME = "haipham";
-        PASSWORD = "123456";
+        USERNAME = "email@example.com";
+        PASSWORD = "12345678";
     }
 
     @BeforeClass

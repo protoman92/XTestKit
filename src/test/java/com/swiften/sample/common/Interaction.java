@@ -1,8 +1,8 @@
 package com.swiften.sample.common;
 
-import com.swiften.engine.base.PlatformEngine;
-import com.swiften.kit.TestKit;
-import com.swiften.rx.RxExtension;
+import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.rx.RxExtension;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import com.swiften.sample.protocol.DelayProtocol;

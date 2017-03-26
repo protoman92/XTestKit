@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.localizer.actual;
 
-import com.swiften.localizer.Localizer;
-import com.swiften.util.Log;
+import com.swiften.xtestkit.localizer.Localizer;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

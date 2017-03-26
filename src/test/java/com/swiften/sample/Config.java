@@ -1,9 +1,9 @@
 package com.swiften.sample;
 
-import com.swiften.engine.base.PlatformEngine;
-import com.swiften.engine.mobile.TestMode;
-import com.swiften.engine.mobile.android.AndroidEngine;
-import com.swiften.kit.TestKit;
+import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.mobile.TestMode;
+import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
+import com.swiften.xtestkit.kit.TestKit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;

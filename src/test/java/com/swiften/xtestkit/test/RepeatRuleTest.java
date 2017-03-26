@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.test;
 
-import com.swiften.test.RepeatTestRunner;
-import com.swiften.util.Log;
+import com.swiften.xtestkit.util.Log;
 import org.junit.*;
 import org.junit.runner.RunWith;
 

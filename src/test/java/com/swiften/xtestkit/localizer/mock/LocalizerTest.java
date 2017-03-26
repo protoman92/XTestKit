@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.localizer.mock;
 
-import com.swiften.localizer.Localizer;
-import com.swiften.localizer.protocol.LocalizeErrorProtocol;
+import com.swiften.xtestkit.localizer.Localizer;
+import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

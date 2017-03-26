@@ -1,11 +1,11 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.engine.base.XPath;
+import com.swiften.xtestkit.engine.base.XPath;
 
 import static org.junit.Assert.*;
 
-import com.swiften.engine.mobile.Platform;
-import com.swiften.util.Log;
+import com.swiften.xtestkit.engine.mobile.Platform;
+import com.swiften.xtestkit.util.Log;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.engine.android.actual;
 
-import com.swiften.engine.mobile.android.AndroidEngine;
-import com.swiften.engine.mobile.android.protocol.AndroidDelayProtocol;
+import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
+import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;

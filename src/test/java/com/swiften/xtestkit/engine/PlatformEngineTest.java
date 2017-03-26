@@ -1,12 +1,12 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.engine.base.XPath;
-import com.swiften.engine.base.param.*;
-import com.swiften.engine.base.protocol.ErrorProtocol;
-import com.swiften.engine.base.protocol.PlatformProtocol;
-import com.swiften.engine.base.protocol.PlatformView;
-import com.swiften.engine.base.protocol.View;
-import com.swiften.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.base.XPath;
+import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
+import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
+import com.swiften.xtestkit.engine.base.protocol.PlatformView;
+import com.swiften.xtestkit.engine.base.protocol.View;
+import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
