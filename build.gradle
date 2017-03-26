@@ -36,6 +36,7 @@ dependencies {
     compile "org.mockito:mockito-core:$mockito"
 }
 
+/* Get Gradle home directory to set up Gradle project */
 task getHomeDir << {
     println gradle.gradleHomeDir
 }

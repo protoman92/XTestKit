@@ -12,6 +12,7 @@ import com.swiften.util.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +35,7 @@ import java.util.regex.Pattern;
  */
 public class AndroidEngine extends MobileEngine<
     AndroidElement,
-    AndroidDriver<AndroidElement>
-    >
+    AndroidDriver<AndroidElement>>
     implements
     AndroidDelayProtocol,
     AndroidErrorProtocol {
@@ -149,7 +149,9 @@ public class AndroidEngine extends MobileEngine<
             .map(id -> driver().findElement(By.id(id)))
             .filter(Objects::nonNull)
             .switchIfEmpty(Flowable.error(new Exception(NO_SUCH_ELEMENT)))
-            .map(a -> true);
+            .flatMapCompletable(a -> Completable.fromAction(a::click))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 
     //region Check Emulator Open

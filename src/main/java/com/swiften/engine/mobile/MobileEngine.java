@@ -16,8 +16,8 @@ import java.util.*;
  */
 public abstract class MobileEngine<
     E extends WebElement,
-    T extends MobileDriver<E>
-    > extends PlatformEngine<T>
+    T extends MobileDriver<E>>
+    extends PlatformEngine<T>
     implements MobileEngineError {
     @NotNull protected String app;
     @NotNull protected String appPackage;

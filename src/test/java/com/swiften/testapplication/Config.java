@@ -1,9 +1,11 @@
-package sample.testapplication;
+package com.swiften.testapplication;
 
 import com.swiften.engine.mobile.TestMode;
 import com.swiften.engine.mobile.android.AndroidEngine;
 import com.swiften.kit.TestKit;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 /**
  * Created by haipham on 3/25/17.
@@ -27,9 +29,6 @@ public class Config {
     public static TestKit testKit() {
         return TestKit.newBuilder()
             .addEngine(AndroidEngine.newBuilder()
-                /* There will be a permission dialog immediately when the
-                 * app is opened, so we start with the permission activity */
-//                .withAppActivity(ANDROID_PERMISSION_ACTIVITY)
                 .withAppActivity(ANDROID_APP_ACTIVITY)
                 .withApp(ANDROID_APP_NAME)
                 .withAppPackage(APP_PACKAGE)
@@ -37,14 +36,15 @@ public class Config {
                 .withPlatformVersion("6.0")
                 .withTestMode(TestMode.EMULATOR)
                 .build())
-//            .addEngine(AndroidEngine.newBuilder()
-//                .withAppActivity(ANDROID_APP_ACTIVITY)
-//                .withApp(ANDROID_APP_NAME)
-//                .withAppPackage(APP_PACKAGE)
-//                .withDeviceName("Nexus_4_API_22")
-//                .withTestMode(TestMode.EMULATOR)
-//                .withPlatformVersion("5.1")
-//                .build())
+            .addEngine(AndroidEngine.newBuilder()
+                .withAppActivity(ANDROID_APP_ACTIVITY)
+                .withApp(ANDROID_APP_NAME)
+                .withAppPackage(APP_PACKAGE)
+                .withDeviceName("Nexus_4_API_22")
+                .withTestMode(TestMode.EMULATOR)
+                .withPlatformVersion("5.1")
+                .build())
+            .addResourceBundle("Strings", Locale.US)
             .build();
     }
 }

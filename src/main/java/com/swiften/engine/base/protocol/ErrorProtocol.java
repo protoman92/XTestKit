@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface ErrorProtocol {
     String DRIVER_UNAVAILABLE = "Driver unavailable";
     String PLATFORM_VIEW_UNAVAILABLE = "Platform view unavailable";
+    String TEXT_DELEGATE_UNAVAILABLE = "Text delegate unavailable";
     String INSUFFICIENT_SETTINGS = "Insufficient settings";
     String NO_SUCH_ELEMENT = "No such element";
 

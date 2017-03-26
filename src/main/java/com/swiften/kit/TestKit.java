@@ -3,26 +3,31 @@ package com.swiften.kit;
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.engine.mobile.Platform;
 import com.swiften.kit.protocol.TestKitError;
+import com.swiften.localizer.Localizer;
 import com.swiften.util.Log;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import net.sf.cglib.core.Local;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.*;
 
 /**
  * Created by haipham on 3/24/17.
  */
-public class TestKit implements TestKitError {
+public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
     }
 
     @NotNull private final List<PlatformEngine> ENGINES;
+    @Nullable private Localizer localizer;
 
     private int current;
 
@@ -31,9 +36,40 @@ public class TestKit implements TestKitError {
         current = -1;
     }
 
+    //region PlatformEngine.TextDelegate
+    @NotNull
+    @Override
+    public Flowable<String> rxLocalize(@NotNull String text) {
+        return localizer().rxLocalize(text);
+    }
+
+    @NotNull
+    @Override
+    public String localize(@NotNull String text) {
+        return localizer().localize(text);
+    }
+    //endregion
+
+    /**
+     * Get an unmodifiable {@link #ENGINES} clone.
+     * @return A {@link List} of {@link PlatformEngine}.
+     */
     @NotNull
     public List<PlatformEngine> engines() {
         return Collections.unmodifiableList(ENGINES);
+    }
+
+    /**
+     * Get {@link #localizer}.
+     * @return A {@link Localizer} instance.
+     */
+    @NotNull
+    public Localizer localizer() {
+        if (Objects.nonNull(localizer)) {
+            return localizer;
+        }
+
+        throw new RuntimeException(NO_LOCALIZER_FOUND);
     }
 
     /**
@@ -191,10 +227,12 @@ public class TestKit implements TestKitError {
     }
 
     public static final class Builder {
-        @NotNull private TestKit TEST_KIT;
+        @NotNull private final TestKit TEST_KIT;
+        @NotNull private final Localizer.Builder LOCALIZER_BUILDER;
 
         Builder() {
             TEST_KIT = new TestKit();
+            LOCALIZER_BUILDER = Localizer.newBuilder();
         }
 
         /**
@@ -219,9 +257,26 @@ public class TestKit implements TestKitError {
             return this;
         }
 
+        /**
+         * Add a new {@link ResourceBundle} to {@link #TEST_KIT#localizer}.
+         * @param name The name of the {@link ResourceBundle}.
+         * @param locale The {@link Locale} of the {@link ResourceBundle}.
+         * @return The current {@link Builder} instance.
+         * @see Localizer.Builder#addBundleName(String, Locale)
+         */
+        public Builder addResourceBundle(@NotNull String name,
+                                         @NotNull Locale locale) {
+            LOCALIZER_BUILDER.addBundleName(name, locale);
+            return this;
+        }
+
         @NotNull
         public TestKit build() {
-            return TEST_KIT;
+            final TestKit KIT = TEST_KIT;
+            List<PlatformEngine> engines = KIT.engines();
+            engines.forEach(a -> a.setTextDelegate(KIT));
+            KIT.localizer = LOCALIZER_BUILDER.build();
+            return KIT;
         }
     }
 }

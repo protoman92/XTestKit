@@ -1,9 +1,11 @@
 package com.swiften.localizer;
 
 import com.swiften.localizer.protocol.LocalizeErrorProtocol;
+import com.swiften.util.Log;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -51,13 +53,14 @@ public class Localizer implements LocalizeErrorProtocol {
     public Flowable<String> rxLocalize(@NotNull final String TEXT) {
         final List<ResourceBundle> BUNDLES = bundles();
         final List<Locale> LOCALES = locales();
-        int length = LOCALES.size();
+        final int LENGTH = LOCALES.size();
 
-        if (length > 0) {
+        if (LENGTH > 0) {
             class Localize {
                 @NotNull
+                @SuppressWarnings("WeakerAccess")
                 Flowable<String> localize(final int INDEX) {
-                    if (INDEX < length) {
+                    if (INDEX < LENGTH) {
                         Locale.setDefault(LOCALES.get(INDEX));
 
                         return Flowable
@@ -101,11 +104,7 @@ public class Localizer implements LocalizeErrorProtocol {
     @NotNull
     public String getString(@NotNull ResourceBundle bundle,
                             @NotNull String text) {
-        try {
-            return bundle.getString(text);
-        } catch (Exception e) {
-            return "";
-        }
+        return bundle.getString(text);
     }
 
     public static final class Builder {

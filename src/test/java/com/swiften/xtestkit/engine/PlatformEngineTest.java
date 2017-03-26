@@ -34,16 +34,22 @@ import java.util.stream.Collectors;
 public final class PlatformEngineTest implements ErrorProtocol {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
+    @NotNull private final PlatformEngine.TextDelegate LOCALIZER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final MockPlatformView PLATFORM_VIEWS;
+    @NotNull private final String LOCALIZED_TEXT;
     private final int ELEMENT_COUNT, TRIES;
 
     {
         ENGINE = spy(new MockEngine.Builder()
             .withPlatformView(mock(PlatformView.class))
             .build());
+
+        /* Return this localizer when we call ENGINE.localizer() */
+        LOCALIZER = mock(PlatformEngine.TextDelegate.class);
+        LOCALIZED_TEXT = "Localized Result";
 
         /* We initialize a driver here in order to access a common mock that
          * stores call counts on its methods. Tests that require the driver()
@@ -77,6 +83,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
     public void before() {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
+        doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
+        doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
+        doReturn(LOCALIZER).when(ENGINE).localizer();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
         when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
         when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
@@ -471,7 +480,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithText(""));
+        subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
@@ -536,7 +545,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingText(""));
+        subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
@@ -601,7 +610,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithHint(""));
+        subscriber.assertErrorMessage(noElementsWithHint(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
@@ -666,7 +675,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingHint(""));
+        subscriber.assertErrorMessage(noElementsContainingHint(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
         verify(ENGINE).rxElementByXPath(any(ByXPath.class));
