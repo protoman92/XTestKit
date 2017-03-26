@@ -3,6 +3,10 @@ Cross-platform TestKit for mobile apps.
 
 ## Requirements:
 
+**Java 8**.
+
+**Intellij IDEA**.
+
 At lease one **Android Virtual Device**. 
 
 The emulator's name should have spaces replaced by underscores (e.g. **Nexus_4_API_23**) - this name will be used to set up **Appium**.
@@ -12,6 +16,8 @@ Only one device/emulator can be run at a time. If multiple devices are attached 
 **ANDROID_HOME**, **JAVA_HOME** and **${JAVA_HOME/bin}** in PATH.
 
 ## How to start:
+
+From **Intellij IDEA**, clone this repository. **Gradle** will be set up automatically.
 
 Copy the app bundle (e.g. **'app-debug.apk'**) to the **app** folder.
 
