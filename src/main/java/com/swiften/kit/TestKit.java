@@ -94,6 +94,13 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     }
 
     /**
+     * Reset {@link #current} to original value.
+     */
+    public void resetCounter() {
+        current = -1;
+    }
+
+    /**
      * Get {@link #current}.
      * @return An {@link Integer} value.
      */

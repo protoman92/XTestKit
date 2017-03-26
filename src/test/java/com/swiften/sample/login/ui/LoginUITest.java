@@ -1,44 +1,56 @@
-package com.swiften.testapplication.login.ui;
+package com.swiften.sample.login.ui;
 
 import com.swiften.engine.base.PlatformEngine;
 import com.swiften.kit.TestKit;
-import com.swiften.test.RepeatRule;
-import com.swiften.test.TestKitRule;
-import com.swiften.testapplication.protocol.DelayProtocol;
-import com.swiften.util.Log;
+import com.swiften.sample.protocol.DelayProtocol;
+import com.swiften.sample.test.TestApplicationRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.*;
-import com.swiften.testapplication.Config;
-import com.swiften.testapplication.common.Interaction;
-
-import java.util.concurrent.TimeUnit;
+import com.swiften.sample.Config;
+import com.swiften.sample.common.Interaction;
+import org.junit.runner.RunWith;
 
 /**
  * Created by haipham on 3/24/17.
  */
+@RunWith(TestApplicationRunner.class)
 public final class LoginUITest implements DelayProtocol {
-    @Rule
-    @NotNull
-    public final RepeatRule REPEAT_RULE;
+    /**
+     * This needs to be static so that {@link BeforeClass} and
+     * {@link AfterClass} can access its methods. Each test suite will have
+     * one statis {@link TestKit} to avoid synchronization problem with
+     * {@link TestKit#current} value.
+     */
+    @NotNull private static final TestKit TEST_KIT;
 
-    @NotNull private final TestKit TEST_KIT;
     @NotNull private final Interaction INTERACTION;
     @Nullable private PlatformEngine engine;
 
     @NotNull private final String USERNAME, PASSWORD;
 
-    {
+    static {
         TEST_KIT = Config.testKit();
+    }
+
+    {
         INTERACTION = new Interaction(TEST_KIT);
-
-        /* The TestKitRule class ensures that all PlatformEngines are
-         * initiated and performs tests on them sequentially */
-        REPEAT_RULE = TestKitRule.newBuilder().withTestKit(TEST_KIT).build();
-
         USERNAME = "haipham";
         PASSWORD = "123456";
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        /* Calling beforeClass() here ensures that each PlatformEngine will
+         * only start the test environment once */
+        TEST_KIT.incrementCurrent();
+        TEST_KIT.beforeClass();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        TEST_KIT.afterClass();
     }
 
     @Before

@@ -1,4 +1,4 @@
-package com.swiften.testapplication.protocol;
+package com.swiften.sample.protocol;
 
 /**
  * Created by haipham on 3/25/17.

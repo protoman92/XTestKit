@@ -1,56 +1,38 @@
 package com.swiften.xtestkit.test;
 
-import com.swiften.test.RepeatRule;
-import com.swiften.test.TestRunner;
+import com.swiften.test.RepeatTestRunner;
 import com.swiften.util.Log;
-import com.swiften.xtestkit.util.TestUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
 /**
  * Created by haipham on 3/25/17.
  */
-@RunWith(TestRunner.class)
-public class RepeatRuleTest implements RepeatRule.Delegate {
-    private int iteration;
-
-    @Rule
-    public final RepeatRule REPEAT_RULE = RepeatRule
-        .newBuilder()
-        .withRetries(3)
-        .withDelegate(this)
-        .build();
-
-    //region RepeatRule.Delegate
-    @Override
-    public void onIterationStarted(int i) {
-        Log.println("BeforeClass", i);
-        iteration = i;
+@RunWith(RepeatTestRunner.class)
+public class RepeatRuleTest {
+    @BeforeClass
+    public static void beforeClass() {
+        Log.println("Before Class");
     }
 
-    @Override
-    public void onIterationFinished(int i) {
-        Log.println("AfterClass", i);
+    @AfterClass
+    public static void afterClass() {
+        Log.println("After Class");
     }
-    //endregion
 
     @Before
     public void before() {
-        Log.println("Before", iteration);
+        Log.println("Before");
     }
 
     @After
     public void after() {
-        Log.println("After", iteration);
+        Log.println("After");
     }
 
     @Test
-    public void mock_runTest1_shouldRepeat() {
-        Log.println("Running Test 1", iteration);
-    }
+    public void mock_runTest1_shouldRepeat() {}
 
     @Test
-    public void mock_runTest2_shouldRepeat() {
-        Log.println("Running Test 2", iteration);
-    }
+    public void mock_runTest2_shouldRepeat() {}
 }

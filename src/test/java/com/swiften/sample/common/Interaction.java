@@ -1,16 +1,11 @@
-package com.swiften.testapplication.common;
+package com.swiften.sample.common;
 
 import com.swiften.engine.base.PlatformEngine;
-import com.swiften.engine.base.param.TextParam;
-import com.swiften.engine.mobile.Platform;
 import com.swiften.kit.TestKit;
 import com.swiften.rx.RxExtension;
-import com.swiften.util.Log;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import com.swiften.testapplication.protocol.DelayProtocol;
-import org.openqa.selenium.WebElement;
+import com.swiften.sample.protocol.DelayProtocol;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
