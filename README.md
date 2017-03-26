@@ -66,6 +66,28 @@ As an example, we can have an **AndroidEngine** as such:
 
 This class allows for convenient **XPath** scripting. Using **XPath** is a good way to write cross-platform test codes.
 
+## Test flow:
+
+### TestKit starts the test environment specified by the currently active PlatformEngine:
+
+This process is run in @BeforeClass. @BeforeClass will be run every time a new PlatformEngine becomes active.
+
+### TestKit starts the Appium driver with settings provided by the currently active PlatformEngine:
+
+This process is run in @Before.
+
+### Tests are run based on specified settings.
+
+### TestKit stops the Appium driver:
+
+This process is run in @After.
+
+### TestKit stops the test environment:
+
+This process is run in @AfterClass.
+
+### Repeat the avove steps for each new PlatformEngine.
+
 ## Sample:
 
 Tests for a sample app is included in **src/test/java**. They go through basic usage and setup steps required to run the specified tests.
