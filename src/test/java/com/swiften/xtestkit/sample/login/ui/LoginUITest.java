@@ -1,15 +1,15 @@
-package com.swiften.sample.login.ui;
+package com.swiften.xtestkit.sample.login.ui;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.sample.protocol.DelayProtocol;
-import com.swiften.sample.test.TestApplicationRunner;
+import com.swiften.xtestkit.sample.protocol.DelayProtocol;
+import com.swiften.xtestkit.sample.test.TestApplicationRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.*;
-import com.swiften.sample.Config;
-import com.swiften.sample.common.Interaction;
+import com.swiften.xtestkit.sample.Config;
+import com.swiften.xtestkit.sample.common.Interaction;
 import org.junit.runner.RunWith;
 
 /**
@@ -25,14 +25,14 @@ public final class LoginUITest implements DelayProtocol {
      */
     @NotNull private static final TestKit TEST_KIT;
 
+    static {
+        TEST_KIT = Config.testKit();
+    }
+
     @NotNull private final Interaction INTERACTION;
     @Nullable private PlatformEngine engine;
 
     @NotNull private final String USERNAME, PASSWORD;
-
-    static {
-        TEST_KIT = Config.testKit();
-    }
 
     {
         INTERACTION = new Interaction(TEST_KIT);

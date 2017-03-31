@@ -1,4 +1,4 @@
-package com.swiften.sample.protocol;
+package com.swiften.xtestkit.sample.protocol;
 
 /**
  * Created by haipham on 3/25/17.

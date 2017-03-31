@@ -51,6 +51,7 @@ public class IOSEngine extends MobileEngine<
         Map<String,Object> capabilities = super.capabilities();
         capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
         capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
+        capabilities.put(MobileCapabilityType.UDID, deviceUID());
 
         /* Prevent Appium from resetting/shutting down opened simulators */
         capabilities.put(MobileCapabilityType.NO_RESET, true);
@@ -321,13 +322,14 @@ public class IOSEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
-        switch (testMode()) {
-            case EMULATOR:
-                return rxStartSimulator(param);
-
-            default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-        }
+        return Flowable.just(true);
+//        switch (testMode()) {
+//            case EMULATOR:
+//                return rxStartSimulator(param);
+//
+//            default:
+//                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+//        }
     }
 
     /**
@@ -339,13 +341,14 @@ public class IOSEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
-        switch (testMode()) {
-            case EMULATOR:
-                return rxStopSimulator(param);
-
-            default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-        }
+        return Flowable.just(true);
+//        switch (testMode()) {
+//            case EMULATOR:
+//                return rxStopSimulator(param);
+//
+//            default:
+//                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+//        }
     }
     //endregion
 

@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.engine.ios.mock;
 
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;

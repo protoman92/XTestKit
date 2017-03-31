@@ -1,8 +1,7 @@
-package com.swiften.sample;
+package com.swiften.xtestkit.sample;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.mobile.TestMode;
-import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import org.jetbrains.annotations.NotNull;

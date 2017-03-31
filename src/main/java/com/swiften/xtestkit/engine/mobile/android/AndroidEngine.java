@@ -7,6 +7,7 @@ import com.swiften.xtestkit.engine.mobile.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;

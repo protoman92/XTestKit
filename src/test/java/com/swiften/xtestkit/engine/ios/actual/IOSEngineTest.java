@@ -1,16 +1,11 @@
 package com.swiften.xtestkit.engine.ios.actual;
 
-import com.swiften.xtestkit.engine.base.param.StartEnvParam;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
-import com.swiften.xtestkit.util.Log;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by haipham on 3/31/17.

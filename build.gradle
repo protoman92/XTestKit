@@ -12,7 +12,7 @@ buildscript {
 
     ext {
         annotations = '15.0'
-        appium = '5.0.0-BETA3'
+        appium = '5.0.0-BETA6'
         commons_exec = '1.0.1'
         junit = '4.12'
         mockito = '2.2.0'

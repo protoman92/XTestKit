@@ -1,11 +1,11 @@
-package com.swiften.sample.common;
+package com.swiften.xtestkit.sample.common;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.rx.RxExtension;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import com.swiften.sample.protocol.DelayProtocol;
+import com.swiften.xtestkit.sample.protocol.DelayProtocol;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

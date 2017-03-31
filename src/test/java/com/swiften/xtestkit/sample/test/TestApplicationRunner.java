@@ -1,7 +1,7 @@
-package com.swiften.sample.test;
+package com.swiften.xtestkit.sample.test;
 
 import com.swiften.xtestkit.test.RepeatTestRunner;
-import com.swiften.sample.Config;
+import com.swiften.xtestkit.sample.Config;
 import org.jetbrains.annotations.NotNull;
 import org.junit.runners.model.InitializationError;
 
