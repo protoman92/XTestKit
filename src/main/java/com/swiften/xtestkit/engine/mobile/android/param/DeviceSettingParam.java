@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link com.swiften.xtestkit.engine.mobile.android.AndroidEngine#putDeviceSettings(DeviceSettingParam)}
+ * {@link com.swiften.xtestkit.engine.mobile.android.AndroidEngine#cmPutSettings(DeviceSettingParam)}
  */
 public class DeviceSettingParam implements RetryProtocol {
     @NotNull

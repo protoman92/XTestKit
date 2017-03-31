@@ -3,8 +3,12 @@ package com.swiften.xtestkit.kit;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
+import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +32,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     TestKit() {
         ENGINES = new LinkedList<>();
         current = -1;
+        RxUtil.overrideErrorHandler();
     }
 
     //region PlatformEngine.TextDelegate
@@ -44,6 +49,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     }
     //endregion
 
+    //region Getters
     /**
      * Get an unmodifiable {@link #ENGINES} clone.
      * @return A {@link List} of {@link PlatformEngine}.
@@ -65,7 +71,9 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
 
         throw new RuntimeException(NO_LOCALIZER_FOUND);
     }
+    //endregion
 
+    //region Iteration
     /**
      * Increment {@link #current} to access a different {@link PlatformEngine}
      * from {@link #ENGINES}.
@@ -101,6 +109,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     public int currentIndex() {
         return current;
     }
+    //endregion
 
     //region PlatformEngine
     /**
@@ -143,6 +152,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     }
     //endregion
 
+    //region Convenience
     /**
      * Convenience method for {@link org.junit.BeforeClass}.
      * @return A {@link Flowable} instance.
@@ -226,6 +236,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
+    //endregion
 
     public static final class Builder {
         @NotNull private final TestKit TEST_KIT;

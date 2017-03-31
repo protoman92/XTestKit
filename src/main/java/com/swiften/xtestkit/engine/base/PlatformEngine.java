@@ -36,8 +36,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @Nullable private T driver;
     @Nullable PlatformView platformView;
 
-    @NotNull protected String browserName;
-    @NotNull protected String serverUrl;
+    @NotNull String browserName;
+    @NotNull String serverUrl;
 
     public PlatformEngine() {
         PROCESS_RUNNER = ProcessRunner.newBuilder().build();
@@ -51,8 +51,23 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         return capabilities().toString();
     }
 
-    public void setTextDelegate(@NotNull TextDelegate delegate) {
-        textDelegate = new WeakReference<>(delegate);
+    //region Getters
+    /**
+     * Return {@link #serverUrl}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String serverUrl() {
+        return serverUrl;
+    }
+
+    /**
+     * Return {@link #browserName}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String browserName() {
+        return browserName;
     }
 
     @NotNull
@@ -68,6 +83,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         throw new RuntimeException(TEXT_DELEGATE_UNAVAILABLE);
     }
+    //endregion
+
+    //region Setters
+    public void setTextDelegate(@NotNull TextDelegate delegate) {
+        textDelegate = new WeakReference<>(delegate);
+    }
+    //endregion
 
     /**
      * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
@@ -140,7 +162,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = new HashMap<String,Object>();
-        capabilities.put(CapabilityType.BROWSER_NAME, browserName);
+        capabilities.put(CapabilityType.BROWSER_NAME, browserName());
         return capabilities;
     }
 

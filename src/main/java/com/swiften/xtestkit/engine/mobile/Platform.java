@@ -16,8 +16,7 @@ public enum Platform implements PlatformProtocol {
     @NotNull
     public static Optional<Platform> fromValue(@NotNull String value) {
         return Arrays.stream(values())
-            .filter(a -> a.value()
-                .equalsIgnoreCase(value))
+            .filter(a -> a.value().equalsIgnoreCase(value))
             .findFirst();
     }
 
@@ -42,6 +41,9 @@ public enum Platform implements PlatformProtocol {
         switch (this) {
             case ANDROID:
                 return "hint";
+
+            case IOS:
+                return "placeholder";
 
             default:
                 return "";

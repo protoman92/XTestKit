@@ -10,11 +10,15 @@ import java.util.Arrays;
  */
 public class Log {
     public static void println(@Nullable Object object) {
-        System.out.println(object);
+        if (Constants.isLoggingEnabled()) {
+            System.out.println(object);
+        }
     }
 
     @SafeVarargs
     public static <T> void println(@NotNull T...objects) {
-        System.out.println(Arrays.toString(objects));
+        if (Constants.isLoggingEnabled()) {
+            System.out.println(Arrays.toString(objects));
+        }
     }
 }

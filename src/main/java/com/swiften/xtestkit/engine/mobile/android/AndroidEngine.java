@@ -51,15 +51,27 @@ public class AndroidEngine extends MobileEngine<
     }
 
     /**
+     * Return {@link #appActivity}. This can be stubbed out for custom
+     * implementation.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String appActivity() {
+        return appActivity;
+    }
+
+    /**
      * @return A {@link Map} of capabilities.
      * @see MobileEngine#capabilities()
+     * @see #appPackage()
+     * @see #appActivity()
      */
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
-        capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage);
-        capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity);
+        capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage());
+        capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity());
         return capabilities;
     }
 
@@ -71,7 +83,7 @@ public class AndroidEngine extends MobileEngine<
     @Override
     protected AndroidDriver<AndroidElement> createDriverInstance() {
         try {
-            URL url = new URL(serverUrl);
+            URL url = new URL(serverUrl());
             DesiredCapabilities capabilities = desiredCapabilities();
             return new AndroidDriver<>(url, capabilities);
         } catch (MalformedURLException e) {
@@ -79,12 +91,13 @@ public class AndroidEngine extends MobileEngine<
         }
     }
 
+    //region CLI commands
     /**
      * Get ${ANDROID_HOME} from Environment variables.
      * @return A {@link String} value.
      */
     @NotNull
-    public String androidHome() {
+    public String cmAndroidHome() {
         String androidHome = System.getenv("ANDROID_HOME");
 
         if (Objects.isNull(androidHome) || androidHome.isEmpty()) {
@@ -97,40 +110,135 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Get path to adb.
      * @return A {@link String} value.
+     * @see #cmAndroidHome()
      */
     @NotNull
-    public String adb() {
-        return String.format("%s/platform-tools/adb", androidHome());
+    public String cmAdb() {
+        return String.format("%s/platform-tools/adb", cmAndroidHome());
     }
 
     /**
      * Get path to adb shell CLI.
      * @return A {@link String} value.
+     * @see #cmAdb()
      */
     @NotNull
-    public String adbShell() {
-        return String.format("%s shell", adb());
+    public String cmAdbShell() {
+        return String.format("%s shell", cmAdb());
     }
 
     /**
      * Get path to Android emulator CLI.
      * @return A {@link String} value.
+     * @see #cmAndroidHome()
      */
     @NotNull
-    public String emulator() {
-        return String.format("%s/tools/emulator", androidHome());
+    public String cmEmulator() {
+        return String.format("%s/tools/emulator", cmAndroidHome());
     }
+
+    /**
+     * Command to get a list of attached devices.
+     * @return A {@link String} value.
+     * @see #cmAdb()
+     */
+    @NotNull
+    public String cmAdbDevices() {
+        return String.format("%s devices -l", cmAdb());
+    }
+
+    /**
+     * Command to start an emulator whose name is {@link #deviceName}.
+     * @return A {@link String} value.
+     * @see #cmEmulator()
+     * @see #deviceName()
+     */
+    @NotNull
+    public String cmStartEmulator() {
+        return String.format("%1$s -avd %2$s", cmEmulator(), deviceName());
+    }
+
+    /**
+     * Command to check bootanim status from adb shell.
+     * We can check whether the emulator is fully started by checking its
+     * bootanim. If this value is 'stopped', the emulator has booted up
+     * completely.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmBootAnim() {
+        return String.format("%s getprop init.svc.bootanim", cmAdbShell());
+    }
+
+    /**
+     * Command to shut down the emulator. Should not be used for actual
+     * devices because this command will send a shutdown signal.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmStopEmulator() {
+        return String.format("%s reboot -p", cmAdbShell());
+    }
+
+    /**
+     * The command to enable/disable internet connection.
+     * @param param A {@link ConnectionParam} instance.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmToggleConnection(@NotNull ConnectionParam param) {
+        String append = param.enable() ? "enable" : "disable";
+        return String.format("%1$s svc data %2$s", cmAdbShell(), append);
+    }
+
+    /**
+     * Command to check whether keyboard is open.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmCheckKeyboardOpen() {
+        return String.format(
+            "%s dumpsys window InputMethod | grep 'mHasSurface'",
+            cmAdbShell());
+    }
+
+    /**
+     * Command to change device settings.
+     * @param param a {@link DeviceSettingParam} instance.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmPutSettings(@NotNull DeviceSettingParam param) {
+        return String.format("%1$s settings %2$s", cmAdbShell(), param.putCommand());
+    }
+
+    /**
+     * Command to get device settings.
+     * @param param a {@link DeviceSettingParam} instance.
+     * @return A {@link String} value.
+     * @see #cmAdbShell()
+     */
+    @NotNull
+    public String cmGetSettings(@NotNull DeviceSettingParam param) {
+        return String.format("%1$s settings %2$s", cmAdbShell(), param.getCommand());
+    }
+    //endregion
 
     //region Device Methods
-    @NotNull
-    public Flowable<Boolean> rxStartApp() {
-        String start = String.format("%1$s am start -m %2$s/%3$s",
-            androidHome(),
-            appPackage,
-            appActivity);
-
-        return processRunner().rxExecute(start).map(a -> true);
-    }
+//    @NotNull
+//    public Flowable<Boolean> rxStartApp() {
+//        String start = String.format("%1$s am start -m %2$s/%3$s",
+//            cmAndroidHome(),
+//            appPackage(),
+//            appActivity());
+//
+//        return processRunner().rxExecute(start).map(a -> true);
+//    }
 
     /**
      * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
@@ -138,6 +246,7 @@ public class AndroidEngine extends MobileEngine<
      * {@link AndroidDriver#findElementById(String)}.
      * @param param An {@link AlertParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #driver()
      */
     @NotNull
     @Override
@@ -155,23 +264,15 @@ public class AndroidEngine extends MobileEngine<
 
     //region Check Emulator Open
     /**
-     * Command to get a list of attached devices.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String adbDevices() {
-        return String.format("%s devices -l", adb());
-    }
-
-    /**
      * Check if the specified emulator is open. This is a crude workaround
      * that assumes only once device is attached at any moment. Suitable only
      * for isolated tests.
      * @return A {@link Flowable} instance.
+     * @see #cmAdbDevices()
      */
     @NotNull
     public Flowable<Boolean> rxCheckEmulatorOpen() {
-        String command = adbDevices();
+        String command = cmAdbDevices();
 
         return processRunner()
             .rxExecute(command)
@@ -184,31 +285,12 @@ public class AndroidEngine extends MobileEngine<
 
     //region Start Emulator
     /**
-     * Command to start an emulator whose name is {@link #deviceName}.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String startEmulator() {
-        return String.format("%1$s -avd %2$s", emulator(), deviceName);
-    }
-
-    /**
-     * Command to check bootanim status from adb shell.
-     * We can check whether the emulator is fully started by checking its
-     * bootanim. If this value is 'stopped', the emulator has booted up
-     * completely.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String bootAnim() {
-        return String.format("%s getprop init.svc.bootanim", adbShell());
-    }
-
-    /**
      * Start the emulator with the specified settings, mainly
      * {@link #deviceName} and {@link #testMode}. Detect when bootanim is
      * 'closed' and then emit value.
      * @return A {@link Flowable} instance.
+     * @see #cmStartEmulator()
+     * @see #cmBootAnim()
      */
     @NotNull
     public Flowable<Boolean> rxStartEmulator(@NotNull StartEnvParam param) {
@@ -226,14 +308,14 @@ public class AndroidEngine extends MobileEngine<
          * block the rest of the operations */
         new Thread(() -> {
             try {
-                PROCESS_RUNNER.execute(startEmulator());
+                PROCESS_RUNNER.execute(cmStartEmulator());
             } catch (Exception e) {
                 ERRORS.add(e);
             }
         }).start();
 
         return PROCESS_RUNNER
-            .rxExecute(bootAnim())
+            .rxExecute(cmBootAnim())
             .filter(Objects::nonNull)
             .map(String::trim)
 
@@ -278,23 +360,14 @@ public class AndroidEngine extends MobileEngine<
 
     //region Stop Emulator
     /**
-     * Command to shut down the emulator. Should not be used for actual
-     * devices because this command will send a shutdown signal.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String stopEmulator() {
-        return String.format("%s reboot -p", adbShell());
-    }
-
-    /**
-     * Shut down the emulator with {@link #stopEmulator()}.
+     * Shut down the emulator with {@link #cmStopEmulator()}.
      * @param param A {@link StopEnvParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #cmStopEmulator()
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEnvParam param) {
-        String command = stopEmulator();
+        String command = cmStopEmulator();
 
         return processRunner()
             .rxExecute(command)
@@ -316,25 +389,15 @@ public class AndroidEngine extends MobileEngine<
 
     //region Toggle Internet Connection
     /**
-     * The command to enable/disable internet connection.
-     * @param param A {@link ConnectionParam} instance.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String toggleConnectionCommand(@NotNull ConnectionParam param) {
-        String append = param.enable() ? "enable" : "disable";
-        return String.format("%1$s svc data %2$s", adbShell(), append);
-    }
-
-    /**
      * Disable internet connection for a rooted device. We should only use
      * this method for emulators since they are rooted by default.
      * @param param A {@link ConnectionParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #cmToggleConnection(ConnectionParam)
      */
     @NotNull
     public Flowable<Boolean> rxToggleInternetConnection(@NotNull ConnectionParam param) {
-        String command = toggleConnectionCommand(param);
+        String command = cmToggleConnection(param);
         return processRunner().rxExecute(command)
             /* If successful, there should be no output */
             .filter(String::isEmpty)
@@ -377,6 +440,8 @@ public class AndroidEngine extends MobileEngine<
     /**
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxStartTestEnvironment(StartEnvParam)
+     * @see #rxStartEmulator(StartEnvParam)
+     * @see #rxDisableEmulatorAnimations()
      */
     @NotNull
     @Override
@@ -395,6 +460,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxStopTestEnvironment(StopEnvParam)
+     * @see #rxStopEmulator(StopEnvParam)
      */
     @NotNull
     @Override
@@ -411,23 +477,13 @@ public class AndroidEngine extends MobileEngine<
 
     //region Dismiss Keyboard
     /**
-     * Command to check whether keyboard is open.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String checkKeyboardOpen() {
-        return String.format(
-            "%s dumpsys window InputMethod | grep 'mHasSurface'",
-            adbShell());
-    }
-
-    /**
      * Check whether the keyboard is open.
      * @return A {@link Flowable} instance.
+     * @see #cmCheckKeyboardOpen()
      */
     @NotNull
     public Flowable<Boolean> rxCheckKeyboardOpen() {
-        String command = checkKeyboardOpen();
+        String command = cmCheckKeyboardOpen();
 
         return processRunner().rxExecute(command)
             .filter(a -> a != null && !a.isEmpty())
@@ -453,6 +509,8 @@ public class AndroidEngine extends MobileEngine<
      * keyboard is present with {@link #rxCheckKeyboardOpen()}, and then call
      * {@link #rxNavigateBack(NavigateBack)}.
      * @return A {@link Flowable} instance.
+     * @see #rxCheckKeyboardOpen()
+     * @see #rxNavigateBack(NavigateBack)
      */
     @NotNull
     public Flowable<Boolean> rxDismissKeyboard() {
@@ -465,38 +523,20 @@ public class AndroidEngine extends MobileEngine<
 
     //region Change Device Settings
     /**
-     * Command to change device settings.
-     * @param param a {@link DeviceSettingParam} instance.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String putDeviceSettings(@NotNull DeviceSettingParam param) {
-        return String.format("%1$s settings %2$s", adbShell(), param.putCommand());
-    }
-
-    /**
-     * Command to get device settings.
-     * @param param a {@link DeviceSettingParam} instance.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String getDeviceSettings(@NotNull DeviceSettingParam param) {
-        return String.format("%1$s settings %2$s", adbShell(), param.getCommand());
-    }
-
-    /**
      * Change emulator/device settings with
-     * {@link #putDeviceSettings(DeviceSettingParam)}, and then check that the
-     * value is set with {@link #getDeviceSettings(DeviceSettingParam)}.
+     * {@link #cmPutSettings(DeviceSettingParam)}, and then check that the
+     * value is set with {@link #cmGetSettings(DeviceSettingParam)}.
      * @param PARAM A {@link DeviceSettingParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #cmPutSettings(DeviceSettingParam)
+     * @see #cmGetSettings(DeviceSettingParam)
      */
     @NotNull
-    public Flowable<Boolean> rxChangeDeviceSettings(@NotNull final DeviceSettingParam PARAM) {
+    public Flowable<Boolean> rxChangeSettings(@NotNull final DeviceSettingParam PARAM) {
         final ProcessRunner RUNNER = processRunner();
 
-        return RUNNER.rxExecute(putDeviceSettings(PARAM))
-            .flatMap(a -> RUNNER.rxExecute(getDeviceSettings(PARAM)))
+        return RUNNER.rxExecute(cmPutSettings(PARAM))
+            .flatMap(a -> RUNNER.rxExecute(cmGetSettings(PARAM)))
             .filter(a -> a.contains(PARAM.value()))
             .map(a -> true)
             /* Throw error if the returned value does not match the new
@@ -523,31 +563,34 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Command to disable window animation scale.
      * @return A {@link String} value.
+     * @see #disableWindowAnimationScaleParam()
      */
     @NotNull
     public String disableWindowAnimationScale() {
         DeviceSettingParam param = disableWindowAnimationScaleParam();
-        return putDeviceSettings(param);
+        return cmPutSettings(param);
     }
 
     /**
      * Command to get window animation scale.
      * @return A {@link String} value.
+     * @see #disableWindowAnimationScaleParam()
      */
     @NotNull
     public String getWindowAnimationScale() {
         DeviceSettingParam param = disableWindowAnimationScaleParam();
-        return getDeviceSettings(param);
+        return cmGetSettings(param);
     }
 
     /**
      * Disable window animation scale.
      * @return A {@link Flowable} instance.
+     * @see #disableWindowAnimationScaleParam()
      */
     @NotNull
     public Flowable<Boolean> rxDisableWindowAnimationScale() {
         DeviceSettingParam param = disableWindowAnimationScaleParam();
-        return rxChangeDeviceSettings(param);
+        return rxChangeSettings(param);
     }
     //endregion
 
@@ -569,31 +612,34 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Command to disable transition animation scale.
      * @return A {@link String} value.
+     * @see #disableTransitionAnimationScaleParam()
      */
     @NotNull
     public String disableTransitionAnimationScale() {
         DeviceSettingParam param = disableTransitionAnimationScaleParam();
-        return putDeviceSettings(param);
+        return cmPutSettings(param);
     }
 
     /**
      * Command to get transition animation scale.
      * @return A {@link String} value.
+     * @see #disableTransitionAnimationScaleParam()
      */
     @NotNull
     public String getTransitionAnimationScale() {
         DeviceSettingParam param = disableTransitionAnimationScaleParam();
-        return getDeviceSettings(param);
+        return cmGetSettings(param);
     }
 
     /**
      * Disable transition animation scale.
      * @return A {@link Flowable} instance.
+     * @see #disableTransitionAnimationScaleParam()
      */
     @NotNull
     public Flowable<Boolean> rxDisableTransitionAnimationScale() {
         DeviceSettingParam param = disableTransitionAnimationScaleParam();
-        return rxChangeDeviceSettings(param);
+        return rxChangeSettings(param);
     }
     //endregion
 
@@ -615,31 +661,34 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Command to disable animator duration scale.
      * @return A {@link String} value.
+     * @see #disableAnimatorDurationScaleParam()
      */
     @NotNull
     public String disableAnimatorDurationScale() {
         DeviceSettingParam param = disableAnimatorDurationScaleParam();
-        return putDeviceSettings(param);
+        return cmPutSettings(param);
     }
 
     /**
      * Command to get animator duration scale.
      * @return A {@link String} value.
+     * @see #disableAnimatorDurationScaleParam()
      */
     @NotNull
     public String getAnimatorDurationScale() {
         DeviceSettingParam param = disableAnimatorDurationScaleParam();
-        return getDeviceSettings(param);
+        return cmGetSettings(param);
     }
 
     /**
      * Disable animator duration scale.
      * @return A {@link Flowable} instance.
+     * @see #disableAnimatorDurationScaleParam()
      */
     @NotNull
     public Flowable<Boolean> rxDisableAnimatorDurationScale() {
         DeviceSettingParam param = disableAnimatorDurationScaleParam();
-        return rxChangeDeviceSettings(param);
+        return rxChangeSettings(param);
     }
     //endregion
 
@@ -648,6 +697,9 @@ public class AndroidEngine extends MobileEngine<
      * Return an Array of {@link String} commands to disable emulator
      * animations.
      * @return An Array of {@link String}.
+     * @see #disableWindowAnimationScale()
+     * @see #disableTransitionAnimationScale()
+     * @see #disableAnimatorDurationScale()
      */
     @NotNull
     public String[] disableAnimationCommands() {
@@ -658,6 +710,13 @@ public class AndroidEngine extends MobileEngine<
         };
     }
 
+    /**
+     * Return an Array of {@link String} commands to get emulator animations.
+     * @return An Array of {@link String}.
+     * @see #getWindowAnimationScale()
+     * @see #getTransitionAnimationScale()
+     * @see #getAnimatorDurationScale()
+     */
     @NotNull
     public String[] getAnimationValuesCommands() {
         return new String[] {
@@ -672,6 +731,9 @@ public class AndroidEngine extends MobileEngine<
      * times. Note that this is only applicable for rooted devices, and
      * emulators are rooted by default.
      * @return A {@link Flowable} instance.
+     * @see #rxDisableWindowAnimationScale()
+     * @see #rxDisableTransitionAnimationScale()
+     * @see #rxDisableAnimatorDurationScale()
      */
     @NotNull
     @SuppressWarnings("unchecked")

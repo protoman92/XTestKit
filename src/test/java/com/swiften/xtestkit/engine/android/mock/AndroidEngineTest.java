@@ -68,8 +68,8 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_startEmulatorWithBootAnimError_shouldThrow() {
         try {
             // Setup
-            String startEmulator = ENGINE.startEmulator();
-            String bootAnim = ENGINE.bootAnim();
+            String startEmulator = ENGINE.cmStartEmulator();
+            String bootAnim = ENGINE.cmBootAnim();
 
             /* We return a valid output here i.e. when startEmulator is
              * executed, no error will be thrown. If we do not limit the
@@ -131,8 +131,8 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_startEmulator_shouldSucceed() {
         try {
             // Setup
-            String startEmulator = ENGINE.startEmulator();
-            String bootAnim = ENGINE.bootAnim();
+            String startEmulator = ENGINE.cmStartEmulator();
+            String bootAnim = ENGINE.cmBootAnim();
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(eq(startEmulator));
 
             /* Emulate successful bootanim output */
@@ -167,7 +167,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
         try {
             // Setup
             int retries = new RetryProtocol() {}.retries();
-            String command = ENGINE.stopEmulator();
+            String command = ENGINE.cmStopEmulator();
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
             TestSubscriber subscriber = TestSubscriber.create();
 
@@ -271,7 +271,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_checkKeyboardWithNoOutput_shouldEmitFalse() {
         try {
             // Setup
-            String command = ENGINE.checkKeyboardOpen();
+            String command = ENGINE.cmCheckKeyboardOpen();
             doReturn("").when(PROCESS_RUNNER).execute(eq(command));
             TestSubscriber subscriber = TestSubscriber.create();
 
@@ -294,7 +294,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_checkKeyboardOpen_shouldSucceed() {
         try {
             // Setup
-            String command = ENGINE.checkKeyboardOpen();
+            String command = ENGINE.cmCheckKeyboardOpen();
 
             /* The output below represents a typical valid response */
             String valid =

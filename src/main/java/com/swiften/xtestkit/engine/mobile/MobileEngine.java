@@ -18,13 +18,13 @@ public abstract class MobileEngine<
     T extends MobileDriver<E>>
     extends PlatformEngine<T>
     implements MobileEngineError {
-    @NotNull protected String app;
-    @NotNull protected String appPackage;
-    @NotNull protected String appiumVersion;
-    @NotNull protected String automationName;
-    @NotNull protected String deviceName;
-    @NotNull protected String platformName;
-    @NotNull protected String platformVersion;
+    @NotNull String app;
+    @NotNull String appPackage;
+    @NotNull String appiumVersion;
+    @NotNull String automationName;
+    @NotNull String deviceName;
+    @NotNull String platformName;
+    @NotNull String platformVersion;
     @NotNull TestMode testMode;
 
     public MobileEngine() {
@@ -38,41 +38,69 @@ public abstract class MobileEngine<
         testMode = TestMode.EMULATOR;
     }
 
+    //region Getters
     /**
-     * @return A {@link List} of {@link String}.
-     * @see PlatformEngine#requiredCapabilities().
+     * Return {@link #app}.
+     * @return A {@link String} value.
      */
     @NotNull
-    @Override
-    public List<String> requiredCapabilities() {
-        List<String> required = super.requiredCapabilities();
-
-        Collections.addAll(required,
-            app,
-            appPackage,
-            automationName,
-            deviceName,
-            platformName,
-            platformVersion);
-
-        return required;
+    public String app() {
+        return app;
     }
 
     /**
-     * @return A {@link Map} of {@link String} and {@link Object}.
-     * @see PlatformEngine#capabilities()
+     * Return {@link #appiumVersion}.
+     * @return A {@link String} value.
      */
     @NotNull
-    @Override
-    public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = super.capabilities();
-        capabilities.put(MobileCapabilityType.APP, app);
-        capabilities.put(MobileCapabilityType.APPIUM_VERSION, appiumVersion);
-        capabilities.put(MobileCapabilityType.AUTOMATION_NAME, automationName);
-        capabilities.put(MobileCapabilityType.DEVICE_NAME, deviceName);
-        capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName);
-        capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
-        return capabilities;
+    public String appiumVersion() {
+        return appiumVersion;
+    }
+
+    /**
+     * Return {@link #automationName}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String automationName() {
+        return automationName;
+    }
+
+    /**
+     * Return {@link #appPackage}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String appPackage() {
+        return appPackage;
+    }
+
+    /**
+     * Return {@link #deviceName}. This can be stubbed out for custom
+     * implementation.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String deviceName() {
+        return deviceName;
+    }
+
+    /**
+     * Return {@link #platformVersion}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String platformVersion() {
+        return platformVersion;
+    }
+
+    /**
+     * Return {@link #platformName}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String platformName() {
+        return platformName;
     }
 
     /**
@@ -84,6 +112,48 @@ public abstract class MobileEngine<
     public TestMode testMode() {
         return testMode;
     }
+    //endregion
+
+    /**
+     * @return A {@link List} of {@link String}.
+     * @see PlatformEngine#requiredCapabilities().
+     */
+    @NotNull
+    @Override
+    public List<String> requiredCapabilities() {
+        List<String> required = super.requiredCapabilities();
+
+        Collections.addAll(required,
+            app(),
+            appPackage(),
+            automationName(),
+            deviceName(),
+            platformName(),
+            platformVersion());
+
+        return required;
+    }
+
+    /**
+     * @return A {@link Map} of {@link String} and {@link Object}. Do not
+     * set {@link MobileCapabilityType#FULL_RESET} to be true because we
+     * want to start a device and keep it open until all tests for one
+     * {@link MobileEngine} has finished. If necessary, we can clear the
+     * app's data and uninstall manually.
+     * @see PlatformEngine#capabilities()
+     */
+    @NotNull
+    @Override
+    public Map<String,Object> capabilities() {
+        Map<String,Object> capabilities = super.capabilities();
+        capabilities.put(MobileCapabilityType.APP, app());
+        capabilities.put(MobileCapabilityType.APPIUM_VERSION, appiumVersion());
+        capabilities.put(MobileCapabilityType.AUTOMATION_NAME, automationName());
+        capabilities.put(MobileCapabilityType.DEVICE_NAME, deviceName());
+        capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName());
+        capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
+        return capabilities;
+    }
 
     /**
      * @return A {@link XPath.Builder} instance.
@@ -92,7 +162,7 @@ public abstract class MobileEngine<
     @NotNull
     @Override
     protected XPath.Builder newXPathBuilderInstance() {
-        Optional<Platform> platform = Platform.fromValue(platformName);
+        Optional<Platform> platform = Platform.fromValue(platformName());
 
         if (platform.isPresent()) {
             return XPath.newBuilder(platform.get());
