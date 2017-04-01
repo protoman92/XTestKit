@@ -1,6 +1,8 @@
 package com.swiften.xtestkit.engine.ios.mock;
 
+import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
+import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
 import com.swiften.xtestkit.util.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
@@ -16,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/31/17.
  */
-public class IOSEngineTest {
+public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
@@ -42,6 +44,36 @@ public class IOSEngineTest {
     public void after() {
         reset(ENGINE, PROCESS_RUNNER);
     }
+
+    //region Capabilities Setup
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_addInvalidFileName_shouldThrow() {
+        // Setup
+        doReturn(true).when(ENGINE).hasAllRequiredInformation();
+        doReturn(false).when(ENGINE).hasCorrectFileExtension();
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ENGINE.rxStartDriver().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(INVALID_APP_EXTENSION);
+        subscriber.assertNotComplete();
+        verify(ENGINE).hasCorrectFileExtension();
+        verify(ENGINE).rxHasCorrectFileExtension();
+        verify(ENGINE).rxHasAllRequiredInformation();
+        verify(ENGINE).rxStartDriver();
+
+        try {
+            ENGINE.driver();
+        } catch (Exception e) {
+            assertEquals(e.getMessage(), DRIVER_UNAVAILABLE);
+        }
+    }
+    //endregion
 
     //region Start Simulator
     @Test

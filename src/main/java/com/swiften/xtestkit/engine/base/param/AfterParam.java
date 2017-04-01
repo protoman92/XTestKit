@@ -4,29 +4,31 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by haipham on 3/23/17.
+ * Created by haipham on 4/1/17.
  */
+public class AfterParam implements RetryProtocol {
+    @NotNull public static final AfterParam DEFAULT;
 
-/**
- * Parameter object for {@link }
- */
-public class StopEnvParam implements RetryProtocol {
+    static {
+        DEFAULT = new AfterParam();
+    }
+
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    StopEnvParam() {}
+    AfterParam() {}
 
     public static final class Builder {
-        @NotNull private final StopEnvParam PARAM;
+        @NotNull private final AfterParam PARAM;
 
         Builder() {
-            PARAM = new StopEnvParam();
+            PARAM = new AfterParam();
         }
 
         @NotNull
-        public StopEnvParam build() {
+        public AfterParam build() {
             return PARAM;
         }
     }

@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.engine.android.mock;
 
 import com.swiften.xtestkit.engine.base.param.NavigateBack;
-import com.swiften.xtestkit.engine.base.param.StartEnvParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
@@ -9,6 +8,8 @@ import com.swiften.xtestkit.util.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.bcel.generic.RET;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.*;
 public final class AndroidEngineTest implements AndroidErrorProtocol {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final StartEnvParam START_PARAM;
+    @NotNull private final RetryProtocol RETRY;
     private final int RETRIES_ON_ERROR;
 
     {
@@ -40,7 +41,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
         PROCESS_RUNNER = spy(ENGINE.processRunner());
 
         /* Create a mock here to fake retries() */
-        START_PARAM = mock(StartEnvParam.class);
+        RETRY = mock(RetryProtocol.class);
 
         RETRIES_ON_ERROR = 3;
     }
@@ -52,14 +53,15 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
         /* Shorten the delay for testing */
         doReturn(100L).when(ENGINE).emulatorBootRetryDelay();
 
-        /* We specifically mock StartEnvParams because starting emulator
-         * requires rather complicated behaviors */
-        when(START_PARAM.retries()).thenReturn(RETRIES_ON_ERROR);
+        /* We specifically mock this because starting emulator requires rather
+         * complicated behaviors */
+        when(RETRY.minRetries()).thenReturn(RETRIES_ON_ERROR);
+        when(RETRY.maxRetries()).thenReturn(RETRIES_ON_ERROR);
     }
 
     @After
     public void after() {
-        reset(ENGINE, PROCESS_RUNNER, START_PARAM);
+        reset(ENGINE, PROCESS_RUNNER, RETRY);
     }
 
     //region Start Emulator
@@ -80,7 +82,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
+            ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -112,7 +114,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
+            ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -140,7 +142,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartEmulator(START_PARAM).subscribe(subscriber);
+            ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -166,7 +168,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_stopEmulatorWithError_shouldThrow() {
         try {
             // Setup
-            int retries = new RetryProtocol() {}.retries();
+            int retries = new RetryProtocol() {}.minRetries();
             String command = ENGINE.cmStopEmulator();
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
             TestSubscriber subscriber = TestSubscriber.create();

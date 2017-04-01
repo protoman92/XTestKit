@@ -1,12 +1,18 @@
 package com.swiften.xtestkit.kit;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.base.param.AfterClassParam;
+import com.swiften.xtestkit.engine.base.param.AfterParam;
+import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.engine.base.param.BeforeParam;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -149,86 +155,90 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     }
     //endregion
 
-    //region Convenience
+    //region Test Setup
     /**
      * Convenience method for {@link org.junit.BeforeClass}.
+     * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeClass() {
-        return currentEngine().rxStartTestEnvironment();
-    }
-
-    /**
-     * @see #rxBeforeClass()
-     */
-    public void beforeClass() {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxBeforeClass().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-    }
-
-    /**
-     * Convenience method for {@link org.junit.Before}.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxBefore() {
-        return currentEngine().rxStartDriver();
-    }
-
-    /**
-     * @see #rxBefore()
-     */
-    public void before() {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxBefore().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
+    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        return currentEngine().rxBeforeClass(param);
     }
 
     /**
      * Convenience method for {@link org.junit.AfterClass}.
+     * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfterClass(AfterClassParam)
      */
     @NotNull
-    public Flowable<Boolean> rxAfterClass() {
-        if (currentIndex() > -1) {
-            return currentEngine().rxStopTestEnvironment();
-        } else {
-            return Flowable.just(false);
-        }
+    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        return currentEngine().rxAfterClass(param);
     }
 
     /**
-     * @see #rxAfterClass()
+     * Convenience method for {@link org.junit.Before}.
+     * @param param A {@link BeforeParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBefore(BeforeParam)
      */
-    public void afterClass() {
+    @NotNull
+    public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+        return currentEngine().rxBefore(param);
+    }
+
+    /**
+     * Convenience method for {@link org.junit.After}.
+     * @param param A {@link RetryProtocol} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfter(AfterParam)
+     */
+    @NotNull
+    public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+        return currentEngine().rxAfter(param);
+    }
+
+    /**
+     * @see #rxBeforeClass(BeforeClassParam)
+     */
+    public void beforeClass() {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxAfterClass().subscribe(subscriber);
+        rxBeforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
 
     /**
-     * Convenience method for {@link org.junit.After}.
-     * @return A {@link Flowable} instance.
+     * @see #rxBefore(BeforeParam)
      */
-    @NotNull
-    public Flowable<Boolean> rxAfter() {
-        return currentEngine().rxStopDriver();
+    public void before() {
+        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        rxBefore(BeforeParam.DEFAULT).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
     }
 
     /**
-     * @see #rxAfter()
+     * @see #rxAfterClass(AfterClassParam)
+     */
+    public void afterClass() {
+        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        rxAfterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+    }
+
+    /**
+     * @see #rxAfter(AfterParam)
      */
     public void after() {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxAfter().subscribe(subscriber);
+        rxAfter(AfterParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();

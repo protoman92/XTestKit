@@ -20,7 +20,7 @@ public final class TestApplicationRunner extends RepeatTestRunner {
     }
 
     @Override
-    public int retries() {
+    public int minRetries() {
         return Config.runCount();
     }
 }

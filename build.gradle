@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 
 dependencies {
     compile "org.apache.commons:commons-exec:$commons_exec"
-    compile "org.apache.commons:commons-io:$commons_io"
+//    compile "org.apache.commons:commons-io:$commons_io"
     compile "org.jetbrains:annotations-java5:$annotations"
     compile "io.reactivex.rxjava2:rxjava:$rx"
     compile "io.appium:java-client:$appium"

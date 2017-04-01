@@ -2,6 +2,7 @@ package com.swiften.testapplication.sample;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.mobile.TestMode;
+import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import org.jetbrains.annotations.NotNull;
@@ -32,10 +33,10 @@ public class Config {
         ENGINES = new LinkedList<>();
 
         ENGINES.add(IOSEngine.newBuilder()
-            .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
+            .withDeviceUID("D10524D4-939E-46CA-BE40-AB21F8E745A8")
             .withApp(IOS_APP_NAME)
             .withAppPackage(APP_PACKAGE)
-            .withDeviceName("iPhone 7 Plus")
+            .withDeviceName("iPhone 7")
             .withPlatformVersion("10.2")
             .withTestMode(TestMode.EMULATOR)
             .build());

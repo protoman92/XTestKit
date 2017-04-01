@@ -27,6 +27,7 @@ public class ProcessRunner {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
+        Log.println(String.format("Executing command \"%s\"", args));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();

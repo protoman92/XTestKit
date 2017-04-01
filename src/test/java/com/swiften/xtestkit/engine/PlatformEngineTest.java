@@ -2,6 +2,7 @@ package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.engine.base.XPath;
 import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
@@ -733,24 +734,36 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         @NotNull
         @Override
+        public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+            return Flowable.empty();
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+            return Flowable.empty();
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+            return Flowable.empty();
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+            return Flowable.empty();
+        }
+
+        @NotNull
+        @Override
         public XPath.Builder newXPathBuilderInstance() {
             PlatformProtocol platform = mock(PlatformProtocol.class);
             when(platform.enabledAttribute()).thenReturn("enabled");
             when(platform.hintAttribute()).thenReturn("hint");
             when(platform.textAttribute()).thenReturn("text");
             return XPath.newBuilder(platform);
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
-            return Flowable.empty();
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
-            return Flowable.empty();
         }
 
         static final class Builder extends PlatformEngine.Builder<MockEngine> {

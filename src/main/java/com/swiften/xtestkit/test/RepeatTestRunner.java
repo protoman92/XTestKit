@@ -36,7 +36,7 @@ public class RepeatTestRunner extends BlockJUnit4ClassRunner implements RetryPro
      * @return An {@link Integer} value.
      */
     @Override
-    public int retries() {
+    public int minRetries() {
         return 1;
     }
 
@@ -45,7 +45,7 @@ public class RepeatTestRunner extends BlockJUnit4ClassRunner implements RetryPro
         /* For each iteration of run(), @BeforeClass and @AfterClass methods
          * will be run once. We can switch PlatformEngine then to provide
          * different settings for test cases */
-        for (int i = 0, tries = retries(); i < tries; i++) {
+        for (int i = 0, tries = minRetries(); i < tries; i++) {
             super.run(notifier);
         }
     }

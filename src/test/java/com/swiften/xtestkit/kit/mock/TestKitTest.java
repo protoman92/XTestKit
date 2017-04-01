@@ -1,6 +1,10 @@
 package com.swiften.xtestkit.kit.mock;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.base.param.AfterClassParam;
+import com.swiften.xtestkit.engine.base.param.AfterParam;
+import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
@@ -33,10 +37,10 @@ public class TestKitTest {
 
     @Before
     public void before() {
-        doReturn(Flowable.just(true)).when(ENGINE).rxStartTestEnvironment();
-        doReturn(Flowable.just(true)).when(ENGINE).rxStopTestEnvironment();
-        doReturn(Flowable.just(true)).when(ENGINE).rxStartDriver();
-        doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
+        doReturn(Flowable.just(true)).when(ENGINE).rxBeforeClass(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxAfterClass(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxBefore(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxAfter(any());
         doReturn(ENGINE).when(TEST_KIT).currentEngine();
     }
 
@@ -48,7 +52,7 @@ public class TestKitTest {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxBeforeClass().subscribe(subscriber);
+        TEST_KIT.rxBeforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -57,7 +61,7 @@ public class TestKitTest {
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxStartTestEnvironment();
+        verify(ENGINE).rxBeforeClass(any());
     }
     //endregion
 
@@ -69,7 +73,7 @@ public class TestKitTest {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxBefore().subscribe(subscriber);
+        TEST_KIT.rxBefore(BeforeParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -78,7 +82,7 @@ public class TestKitTest {
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxStartDriver();
+        verify(ENGINE).rxBefore(any());
     }
     //endregion
 
@@ -91,7 +95,7 @@ public class TestKitTest {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxAfterClass().subscribe(subscriber);
+        TEST_KIT.rxAfterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -100,27 +104,7 @@ public class TestKitTest {
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxStopTestEnvironment();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mock_afterClassWithInvalidCurrent_shouldDoNothing() {
-        // Setup
-        doReturn(-1).when(TEST_KIT).currentIndex();
-        TestSubscriber subscriber = TestSubscriber.create();
-
-        // When
-        TEST_KIT.rxAfterClass().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertFalse(TestUtil.getFirstNextEvent(subscriber));
-        verify(TEST_KIT, never()).currentEngine();
-        verify(ENGINE, never()).rxStopTestEnvironment();
+        verify(ENGINE).rxAfterClass(any());
     }
     //endregion
 
@@ -132,7 +116,7 @@ public class TestKitTest {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxAfter().subscribe(subscriber);
+        TEST_KIT.rxAfter(AfterParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -141,7 +125,7 @@ public class TestKitTest {
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxStopDriver();
+        verify(ENGINE).rxAfter(any());
     }
     //endregion
 }

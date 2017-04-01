@@ -115,6 +115,7 @@ public abstract class MobileEngine<
     }
     //endregion
 
+    //region Appium Setup
     /**
      * @return A {@link List} of {@link String}.
      * @see PlatformEngine#requiredCapabilities().
@@ -155,6 +156,7 @@ public abstract class MobileEngine<
         capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
         return capabilities;
     }
+    //endregion
 
     /**
      * @return A {@link XPath.Builder} instance.

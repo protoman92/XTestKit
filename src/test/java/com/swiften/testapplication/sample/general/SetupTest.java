@@ -4,6 +4,8 @@ import com.swiften.testapplication.sample.Config;
 import com.swiften.testapplication.sample.test.TestApplicationRunner;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.util.Log;
+import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.*;
@@ -57,12 +59,9 @@ public class SetupTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void actual_startTestEnvironment_shouldSucceed() {
-        // Setup
-//        TestSubscriber subscriber = TestSubscriber.create();
+    public void actual_startTestEnvironment_shouldSucceed() {}
 
-        // When
-
-        // Then
-    }
+    @Test
+    @SuppressWarnings("unchecked")
+    public void actual_startTestEnvironment2_shouldSucceed() {}
 }

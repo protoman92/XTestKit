@@ -6,10 +6,7 @@ import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,29 +17,25 @@ import static org.mockito.Mockito.spy;
  * Created by haipham on 3/23/17.
  */
 public class AndroidEngineTest implements AndroidDelayProtocol {
-    @NotNull private final AndroidEngine ENGINE;
+    @NotNull private static final AndroidEngine ENGINE;
 
-    {
+    static {
         ENGINE = spy(AndroidEngine.newBuilder()
             .withDeviceName("Nexus_4_API_23")
             .build());
     }
 
-    @Before
+    @BeforeClass
     @SuppressWarnings("unchecked")
-    public void before() {
+    public static void beforeClass() {
         TestSubscriber subscriber = TestSubscriber.create();
-
-        ENGINE.rxStartEmulator()
-            .delay(emulatorBootFinishDelay(), TimeUnit.MILLISECONDS)
-            .subscribe(subscriber);
-
+        ENGINE.rxStartEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }
 
-    @After
+    @AfterClass
     @SuppressWarnings("unchecked")
-    public void after() {
+    public static void afterClass() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStopEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();

@@ -5,7 +5,10 @@ package com.swiften.xtestkit.engine.base;
  */
 
 import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.*;
+import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.reactivex.Completable;
@@ -45,11 +48,51 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         serverUrl = "http://localhost:4723/wd/hub";
     }
 
+    //region Test Setup
+    /**
+     * Convenience method for {@link org.junit.BeforeClass}. This method
+     * will be called by {@link TestKit#rxBeforeClass(BeforeClassParam)}.
+     * Subclasses of {@link PlatformEngine} should provide their own
+     * implementations.
+     * @param param A {@link BeforeClassParam} instance.
+     * @return A {@link Flowable} instance.
+     */
     @NotNull
-    @Override
-    public String toString() {
-        return capabilities().toString();
-    }
+    public abstract Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param);
+
+    /**
+     * Convenience method for {@link org.junit.AfterClass}. This method
+     * will be called by {@link TestKit#rxAfterClass(AfterClassParam)}.
+     * Subclasses of {@link PlatformEngine} should provide their own
+     * implementations.
+     * @param param An {@link AfterClassParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public abstract Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param);
+
+    /**
+     * Convenience method for {@link org.junit.Before}. This method will be
+     * called by {@link TestKit#rxBefore(BeforeParam)}.
+     * Subclasses of {@link PlatformEngine} should provide their own
+     * implementations.
+     * @param param A {@link BeforeParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public abstract Flowable<Boolean> rxBefore(@NotNull BeforeParam param);
+
+    /**
+     * Convenience method for {@link org.junit.After}. This method will be
+     * called by {@link TestKit#rxAfter(AfterParam)}.
+     * Subclasses of {@link PlatformEngine} should provide their own
+     * implementations.
+     * @param param A {@link AfterParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public abstract Flowable<Boolean> rxAfter(@NotNull AfterParam param);
+    //endregion
 
     //region Getters
     /**
@@ -83,13 +126,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         throw new RuntimeException(TEXT_DELEGATE_UNAVAILABLE);
     }
-    //endregion
-
-    //region Setters
-    public void setTextDelegate(@NotNull TextDelegate delegate) {
-        textDelegate = new WeakReference<>(delegate);
-    }
-    //endregion
 
     /**
      * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
@@ -127,8 +163,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
     }
+    //endregion
 
-    //region Appium Setup.
+    //region Setters
+    public void setTextDelegate(@NotNull TextDelegate delegate) {
+        textDelegate = new WeakReference<>(delegate);
+    }
+    //endregion
+
+    //region Appium Setup
     /**
      * Get a {@link List} of required capabilities. We convert all values to
      * {@link String} and check if all values are non-empty. If a value is
@@ -642,47 +685,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .fromAction(ELEMENT::click)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
-    }
-    //endregion
-
-    //region Test Environment
-    /**
-     * Start the test environment. E.g. if we are testing mobile apps, start
-     * the emulator.
-     * @param param A {@link StartEnvParam} instance.
-     * @return An {@link Flowable} instance.
-     */
-    @NotNull
-    public abstract Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param);
-
-    /**
-     * Same as above, but uses a default {@link StartEnvParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxStartTestEnvironment(StartEnvParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxStartTestEnvironment() {
-        StartEnvParam param = StartEnvParam.newBuilder().build();
-        return rxStartTestEnvironment(param);
-    }
-
-    /**
-     * Stop the test environement, e.g. by shutting down an emulator.
-     * @param param A {@link StopEnvParam} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public abstract Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param);
-
-    /**
-     * Same as above, but uses a default {@link StopEnvParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxStopTestEnvironment(StopEnvParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxStopTestEnvironment() {
-        StopEnvParam param = StopEnvParam.newBuilder().build();
-        return rxStopTestEnvironment(param);
     }
     //endregion
 

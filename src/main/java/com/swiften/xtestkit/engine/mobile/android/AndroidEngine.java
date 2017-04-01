@@ -2,12 +2,12 @@ package com.swiften.xtestkit.engine.mobile.android;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.mobile.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -51,6 +51,7 @@ public class AndroidEngine extends MobileEngine<
         appActivity = "";
     }
 
+    //region Getters
     /**
      * Return {@link #appActivity}. This can be stubbed out for custom
      * implementation.
@@ -60,7 +61,74 @@ public class AndroidEngine extends MobileEngine<
     public String appActivity() {
         return appActivity;
     }
+    //endregion
 
+    //region Test Setup
+    /**
+     * @param param A {@link BeforeClassParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see #rxStartEmulator()
+     * @see #rxDisableEmulatorAnimations()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        switch (testMode()) {
+            case EMULATOR:
+                return rxStartEmulator(param)
+                    /* Disable animations to avoid erratic behaviors */
+                    .flatMap(a -> rxDisableEmulatorAnimations());
+
+            default:
+                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+        }
+    }
+
+    /**
+     * @param param A {@link AfterClassParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfterClass(AfterClassParam)
+     * @see #rxStopEmulator(RetryProtocol)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        switch (testMode()) {
+            case EMULATOR:
+                return rxStopEmulator(param);
+
+            default:
+                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+        }
+    }
+
+    /**
+     * @param param A {@link BeforeParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBefore(BeforeParam)
+     * @see #rxStartDriver()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+        return rxStartDriver();
+    }
+
+    /**
+     * @param param A {@link AfterParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfter(AfterParam)
+     * @see #rxStopDriver()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+        return rxStopDriver();
+    }
+    //endregion
+
+    //region Appium Setup
     /**
      * @return A {@link Map} of capabilities.
      * @see MobileEngine#capabilities()
@@ -91,6 +159,7 @@ public class AndroidEngine extends MobileEngine<
             throw new RuntimeException(e);
         }
     }
+    //endregion
 
     //region CLI commands
     /**
@@ -231,16 +300,6 @@ public class AndroidEngine extends MobileEngine<
     //endregion
 
     //region Device Methods
-//    @NotNull
-//    public Flowable<Boolean> rxStartApp() {
-//        String start = String.format("%1$s am start -m %2$s/%3$s",
-//            cmAndroidHome(),
-//            appPackage(),
-//            appActivity());
-//
-//        return processRunner().rxExecute(start).map(a -> true);
-//    }
-
     /**
      * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
      * on {@link Platform#ANDROID}, we need a custom solution by using
@@ -294,9 +353,9 @@ public class AndroidEngine extends MobileEngine<
      * @see #cmBootAnim()
      */
     @NotNull
-    public Flowable<Boolean> rxStartEmulator(@NotNull StartEnvParam param) {
+    public Flowable<Boolean> rxStartEmulator(@NotNull RetryProtocol param) {
         final ProcessRunner PROCESS_RUNNER = processRunner();
-        final int RETRIES = param.retries();
+        final int RETRIES = param.maxRetries();
 
         @SuppressWarnings("WeakerAccess")
         final long DELAY = emulatorBootRetryDelay();
@@ -348,43 +407,49 @@ public class AndroidEngine extends MobileEngine<
     }
 
     /**
-     * Same as above, but uses a default {@link StartEnvParam} instance.
+     * Same as above, but uses a default {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxStartEmulator(StartEnvParam)
+     * @see #rxStartEmulator(RetryProtocol)
      */
     @NotNull
     public Flowable<Boolean> rxStartEmulator() {
-        StartEnvParam param = StartEnvParam.newBuilder().build();
-        return rxStartEmulator(param);
+        return rxStartEmulator(new RetryProtocol() {
+            @Override
+            public int minRetries() {
+                /* We have to use a large retry count because starting an
+                 * emulator may take quite a while. A low retry count will
+                 * fail the bootanim test rather quickly */
+                return 100;
+            }
+        });
     }
     //endregion
 
     //region Stop Emulator
     /**
      * Shut down the emulator with {@link #cmStopEmulator()}.
-     * @param param A {@link StopEnvParam} instance.
+     * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopEmulator()
      */
     @NotNull
-    public Flowable<Boolean> rxStopEmulator(@NotNull StopEnvParam param) {
+    public Flowable<Boolean> rxStopEmulator(@NotNull RetryProtocol param) {
         String command = cmStopEmulator();
 
         return processRunner()
             .rxExecute(command)
-            .retry(param.retries())
+            .retry(param.minRetries())
             .map(a -> true);
     }
 
     /**
-     * Same as above, but uses a default {@link StopEnvParam} instance.
+     * Same as above, but uses a default {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxStopEmulator(StopEnvParam)
+     * @see #rxStopEmulator(RetryProtocol)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator() {
-        StopEnvParam param = StopEnvParam.newBuilder().build();
-        return rxStopEmulator(param);
+        return rxStopEmulator(RetryProtocol.DEFAULT);
     }
     //endregion
 
@@ -434,45 +499,6 @@ public class AndroidEngine extends MobileEngine<
             .build();
 
         return rxToggleInternetConnection(param);
-    }
-    //endregion
-
-    //region Start and Stop Test Environment
-    /**
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxStartTestEnvironment(StartEnvParam)
-     * @see #rxStartEmulator(StartEnvParam)
-     * @see #rxDisableEmulatorAnimations()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
-        switch (testMode()) {
-            case EMULATOR:
-                return rxStartEmulator(param)
-                    /* Disable animations to avoid erratic behaviors */
-                    .flatMap(a -> rxDisableEmulatorAnimations());
-
-            default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-        }
-    }
-
-    /**
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxStopTestEnvironment(StopEnvParam)
-     * @see #rxStopEmulator(StopEnvParam)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
-        switch (testMode()) {
-            case EMULATOR:
-                return rxStopEmulator(param);
-
-            default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-        }
     }
     //endregion
 

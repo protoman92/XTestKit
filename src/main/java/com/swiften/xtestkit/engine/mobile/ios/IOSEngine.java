@@ -1,14 +1,16 @@
 package com.swiften.xtestkit.engine.mobile.ios;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.StartEnvParam;
-import com.swiften.xtestkit.engine.base.param.StopEnvParam;
+import com.swiften.xtestkit.engine.base.param.AfterClassParam;
+import com.swiften.xtestkit.engine.base.param.AfterParam;
+import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.engine.base.param.BeforeParam;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.Automation;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.mobile.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
@@ -17,6 +19,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -52,70 +55,6 @@ public class IOSEngine extends MobileEngine<
         launchTimeout = simulatorLaunchTimeout();
     }
 
-    @NotNull
-    @Override
-    public List<String> requiredCapabilities() {
-        List<String> required = super.requiredCapabilities();
-        Collections.addAll(required, deviceUID());
-        return required;
-    }
-
-    @NotNull
-    @Override
-    public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = super.capabilities();
-        capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
-        capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
-
-        /* Prevent Appium from resetting/shutting down opened simulators */
-        capabilities.put(MobileCapabilityType.NO_RESET, true);
-
-        /* We need to add different capabilities depending on whether the
-         * tests are running on simulator or real device */
-        switch (testMode()) {
-            case DEVICE:
-                capabilities.put(MobileCapabilityType.UDID, deviceUID());
-                break;
-
-            default:
-                break;
-        }
-
-        return capabilities;
-    }
-
-    /**
-     * Override
-     * {@link com.swiften.xtestkit.engine.base.PlatformEngine#rxHasAllRequiredInformation()}
-     * to add {@link #rxHasCorrectCapabilities()} validation.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxHasAllRequiredInformation()
-     * @see #rxHasCorrectCapabilities()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxHasAllRequiredInformation() {
-        return Flowable
-            .concat(
-                super.rxHasAllRequiredInformation(),
-                rxHasCorrectCapabilities()
-            )
-            .all(a -> a)
-            .toFlowable();
-    }
-
-    @NotNull
-    @Override
-    protected IOSDriver<IOSElement> createDriverInstance() {
-        try {
-            URL url = new URL(serverUrl());
-            DesiredCapabilities capabilities = desiredCapabilities();
-            return new IOSDriver<>(url, capabilities);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     //region Getters
     /**
      * Return {@link #deviceUID}.
@@ -132,24 +71,6 @@ public class IOSEngine extends MobileEngine<
      */
     public long launchTimeout() {
         return launchTimeout;
-    }
-
-    /**
-     * Check whether the information passed to {@link DesiredCapabilities}
-     * is correct. For e.g., we can check the app file extension to make sure
-     * that simulator builds have .app extension, while device builds have
-     * .ipa.
-     * @return A {@link Boolean} value.
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxHasCorrectCapabilities() {
-        return Flowable
-            .concatArray(
-                rxHasCorrectFileExtension()
-            )
-            .all(a -> a)
-            .toFlowable();
     }
 
     /**
@@ -185,7 +106,135 @@ public class IOSEngine extends MobileEngine<
             return Flowable.just(true);
         }
 
-        return Flowable.error(new Exception(APP_EXTENSION_INCORRECT));
+        return Flowable.error(new Exception(INVALID_APP_EXTENSION));
+    }
+    //endregion
+
+    //region Test Setup
+    /**
+     * @param param A {@link RetryProtocol} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see #rxStartDriver()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        return rxStartDriver();
+    }
+
+    /**
+     * @param PARAM A {@link AfterClassParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfterClass(AfterClassParam)
+     * @see #rxStopDriver()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfterClass(@NotNull final AfterClassParam PARAM) {
+        return rxStopDriver().flatMap(a -> {
+            switch (testMode()) {
+                case EMULATOR:
+                    return rxStopSimulator(PARAM);
+
+                default:
+                    Exception error = new Exception(PLATFORM_UNAVAILABLE);
+                    return Flowable.error(error);
+            }
+        });
+    }
+
+    /**
+     * @param param A {@link BeforeParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBefore(BeforeParam)
+     * @see #rxInstallApp()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+//        return Flowable.just(true);
+        return rxInstallApp();
+    }
+
+    /**
+     * @param param A {@link AfterParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfter(AfterParam)
+     * @see #rxUninstallApp()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+//        return Flowable.just(true);
+        return rxUninstallApp();
+    }
+    //endregion
+
+    //region Appium Setup
+    @NotNull
+    @Override
+    public List<String> requiredCapabilities() {
+        List<String> required = super.requiredCapabilities();
+        Collections.addAll(required, deviceUID());
+        return required;
+    }
+
+    @NotNull
+    @Override
+    public Map<String,Object> capabilities() {
+        Map<String,Object> capabilities = super.capabilities();
+        capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
+        capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
+//        capabilities.put("autoLaunch", false);
+
+        /* Prevent Appium from resetting/shutting down opened simulators */
+        capabilities.put(MobileCapabilityType.NO_RESET, true);
+
+        /* We need to add different capabilities depending on whether the
+         * tests are running on simulator or real device */
+        switch (testMode()) {
+            case DEVICE:
+                capabilities.put(MobileCapabilityType.UDID, deviceUID());
+                break;
+
+            default:
+                break;
+        }
+
+        return capabilities;
+    }
+
+    /**
+     * Override
+     * {@link com.swiften.xtestkit.engine.base.PlatformEngine#rxHasAllRequiredInformation()}
+     * to add additional validations.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxHasAllRequiredInformation()
+     * @see #rxHasCorrectFileExtension()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxHasAllRequiredInformation() {
+        return Flowable
+            .concat(
+                super.rxHasAllRequiredInformation(),
+                rxHasCorrectFileExtension()
+            )
+            .all(a -> a)
+            .toFlowable();
+    }
+
+    @NotNull
+    @Override
+    protected IOSDriver<IOSElement> createDriverInstance() {
+        try {
+            URL url = new URL(serverUrl());
+            DesiredCapabilities capabilities = desiredCapabilities();
+            return new IOSDriver<>(url, capabilities);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
     //endregion
 
@@ -316,6 +365,39 @@ public class IOSEngine extends MobileEngine<
     public String cmCheckSimulatorBooted() {
         return cmGetHomeEnv();
     }
+
+    /**
+     * Command to install app.
+     * @return A {@link String} value.
+     * @see #cmSimctl()
+     * @see #app()
+     */
+    @NotNull
+    public String cmInstallApp() {
+        return String.format("%1$s install booted %2$s", cmSimctl(), app());
+    }
+
+    /**
+     * Command to launch app.
+     * @return A {@link String} value.
+     * @see #cmSimctl()
+     * @see #appPackage()
+     */
+    @NotNull
+    public String cmLaunchApp() {
+        return String.format("%1$s launch booted %2$s", cmSimctl(), appPackage());
+    }
+
+    /**
+     * Command to uninstall an application.
+     * @return A {@link String} value.
+     * @see #cmSimctl()
+     * @see #appPackage()
+     */
+    @NotNull
+    public String cmUninstallApp() {
+        return String.format("%1$s uninstall booted %2$s", cmSimctl(), appPackage());
+    }
     //endregion
 
     //region Start Simulator
@@ -334,14 +416,14 @@ public class IOSEngine extends MobileEngine<
 
     /**
      * Start a simulator whose name is specified by {@link #deviceName()}.
-     * @param param A {@link StartEnvParam} instance.
+     * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStartSimulator()
      * @see #rxCheckSimulatorBooted()
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxStartSimulator(@NotNull StartEnvParam param) {
+    public Flowable<Boolean> rxStartSimulator(@NotNull RetryProtocol param) {
         final ProcessRunner RUNNER = processRunner();
         final String COMMAND = cmStartSimulator();
         final List<Exception> ERRORS = new ArrayList<>();
@@ -373,25 +455,24 @@ public class IOSEngine extends MobileEngine<
     }
 
     /**
-     * Same as above, but uses a default {@link StartEnvParam}.
+     * Same as above, but uses a default {@link RetryProtocol}.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxStartSimulator() {
-        StartEnvParam param = StartEnvParam.newBuilder().build();
-        return rxStartSimulator(param);
+        return rxStartSimulator(RetryProtocol.DEFAULT);
     }
     //endregion
 
     //region Stop Simulator
     /**
      * Stop the currently active simulator.
-     * @param param A {@link StopEnvParam} instance.
+     * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopSimulator()
      */
     @NotNull
-    public Flowable<Boolean> rxStopSimulator(@NotNull StopEnvParam param) {
+    public Flowable<Boolean> rxStopSimulator(@NotNull RetryProtocol param) {
         ProcessRunner processRunner = processRunner();
         String command = cmStopSimulator();
 
@@ -402,53 +483,39 @@ public class IOSEngine extends MobileEngine<
     }
 
     /**
-     * Same as above, but uses a default {@link StopEnvParam} instance.
+     * Same as above, but uses a default {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxStopSimulator() {
-        StopEnvParam param = StopEnvParam.newBuilder().build();
-        return rxStopSimulator(param);
+        return rxStopSimulator(RetryProtocol.DEFAULT);
     }
     //endregion
 
-    //region Start and Stop Test Environment
+    //region Device Methods
+
     /**
-     * @param param A {@link StartEnvParam} instance.
+     * Install an app as specified by {@link #app()}.
      * @return A {@link Flowable} instance.
-     * @see com.swiften.xtestkit.engine.base.PlatformEngine#rxStartTestEnvironment(StartEnvParam)
-     * @see #rxStartSimulator(StartEnvParam)
+     * @see #cmInstallApp()
      */
     @NotNull
-    @Override
-    public Flowable<Boolean> rxStartTestEnvironment(@NotNull StartEnvParam param) {
-        return Flowable.just(true);
-//        switch (testMode()) {
-//            case EMULATOR:
-//                return rxStartSimulator(param);
-//
-//            default:
-//                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-//        }
+    public Flowable<Boolean> rxInstallApp() {
+        ProcessRunner processRunner = processRunner();
+        String command = cmInstallApp();
+        return processRunner.rxExecute(command).map(a -> true);
     }
 
     /**
-     * @param param A {@link StopEnvParam} instance.
+     * Uninstall an app as specified by {@link #appPackage()}.
      * @return A {@link Flowable} instance.
-     * @see com.swiften.xtestkit.engine.base.PlatformEngine#rxStopTestEnvironment(StopEnvParam)
-     * @see #rxStopSimulator(StopEnvParam)
+     * @see #cmUninstallApp()
      */
     @NotNull
-    @Override
-    public Flowable<Boolean> rxStopTestEnvironment(@NotNull StopEnvParam param) {
-        return Flowable.just(true);
-//        switch (testMode()) {
-//            case EMULATOR:
-//                return rxStopSimulator(param);
-//
-//            default:
-//                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
-//        }
+    public Flowable<Boolean> rxUninstallApp() {
+        ProcessRunner processRunner = processRunner();
+        String command = cmUninstallApp();
+        return processRunner.rxExecute(command).map(a -> true);
     }
     //endregion
 
