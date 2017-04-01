@@ -9,6 +9,6 @@ public interface IOSDelayProtocol {
     }
 
     default long simulatorLaunchTimeout() {
-        return 60000;
+        return 600000;
     }
 }

@@ -1,11 +1,14 @@
 package com.swiften.xtestkit.engine.mobile.ios;
 
+import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.StartEnvParam;
 import com.swiften.xtestkit.engine.base.param.StopEnvParam;
 import com.swiften.xtestkit.engine.mobile.Automation;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.mobile.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
+import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
@@ -13,12 +16,15 @@ import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +36,8 @@ public class IOSEngine extends MobileEngine<
     IOSElement,
     IOSDriver<IOSElement>>
     implements
-    IOSDelayProtocol {
+    IOSDelayProtocol,
+    IOSErrorProtocol {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -47,15 +54,54 @@ public class IOSEngine extends MobileEngine<
 
     @NotNull
     @Override
+    public List<String> requiredCapabilities() {
+        List<String> required = super.requiredCapabilities();
+        Collections.addAll(required, deviceUID());
+        return required;
+    }
+
+    @NotNull
+    @Override
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
         capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
         capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
-        capabilities.put(MobileCapabilityType.UDID, deviceUID());
 
         /* Prevent Appium from resetting/shutting down opened simulators */
         capabilities.put(MobileCapabilityType.NO_RESET, true);
+
+        /* We need to add different capabilities depending on whether the
+         * tests are running on simulator or real device */
+        switch (testMode()) {
+            case DEVICE:
+                capabilities.put(MobileCapabilityType.UDID, deviceUID());
+                break;
+
+            default:
+                break;
+        }
+
         return capabilities;
+    }
+
+    /**
+     * Override
+     * {@link com.swiften.xtestkit.engine.base.PlatformEngine#rxHasAllRequiredInformation()}
+     * to add {@link #rxHasCorrectCapabilities()} validation.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxHasAllRequiredInformation()
+     * @see #rxHasCorrectCapabilities()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxHasAllRequiredInformation() {
+        return Flowable
+            .concat(
+                super.rxHasAllRequiredInformation(),
+                rxHasCorrectCapabilities()
+            )
+            .all(a -> a)
+            .toFlowable();
     }
 
     @NotNull
@@ -86,6 +132,60 @@ public class IOSEngine extends MobileEngine<
      */
     public long launchTimeout() {
         return launchTimeout;
+    }
+
+    /**
+     * Check whether the information passed to {@link DesiredCapabilities}
+     * is correct. For e.g., we can check the app file extension to make sure
+     * that simulator builds have .app extension, while device builds have
+     * .ipa.
+     * @return A {@link Boolean} value.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public Flowable<Boolean> rxHasCorrectCapabilities() {
+        return Flowable
+            .concatArray(
+                rxHasCorrectFileExtension()
+            )
+            .all(a -> a)
+            .toFlowable();
+    }
+
+    /**
+     * Check whether the app file extension matches {@link #testMode()}.
+     * @return A {@link Boolean} value.
+     * @see #testMode()
+     */
+    public boolean hasCorrectFileExtension() {
+        String extension = FilenameUtils.getExtension(app());
+
+        switch (testMode()) {
+            case EMULATOR:
+                return extension.equalsIgnoreCase("app");
+
+            case DEVICE:
+                return extension.equalsIgnoreCase("ipa");
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Same as above, but returns a {@link Flowable} which may emit an
+     * {@link Exception} for easier chaining.
+     * @return A {@link Flowable} instance.
+     * @see #hasCorrectFileExtension()
+     */
+    public Flowable<Boolean> rxHasCorrectFileExtension() {
+        boolean correct = hasCorrectFileExtension();
+
+        if (correct) {
+            return Flowable.just(true);
+        }
+
+        return Flowable.error(new Exception(APP_EXTENSION_INCORRECT));
     }
     //endregion
 
@@ -386,7 +486,7 @@ public class IOSEngine extends MobileEngine<
         @Override
         public IOSEngine build() {
             withPlatform(Platform.IOS);
-            withAutomation(Automation.APPIUM);
+            withAutomation(Automation.XC_UI_TEST);
             return super.build();
         }
     }

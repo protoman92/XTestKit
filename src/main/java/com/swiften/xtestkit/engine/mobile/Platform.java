@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine.mobile;
 
 import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
+import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -25,10 +26,10 @@ public enum Platform implements PlatformProtocol {
     public String value() {
         switch (this) {
             case ANDROID:
-                return "Android";
+                return MobilePlatform.ANDROID;
 
             case IOS:
-                return "IOS";
+                return MobilePlatform.IOS;
 
             default:
                 return "";

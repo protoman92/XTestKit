@@ -7,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum Automation {
     APPIUM,
-    SELENDROID;
+    SELENDROID,
+    XC_UI_TEST;
 
     @NotNull
     public String value() {
@@ -17,6 +18,9 @@ public enum Automation {
 
             case SELENDROID:
                 return "Selendroid";
+
+            case XC_UI_TEST:
+                return "XCUITest";
 
             default:
                 return "";

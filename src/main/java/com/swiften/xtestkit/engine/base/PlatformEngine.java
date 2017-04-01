@@ -156,6 +156,22 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
+     * Same as above, but returns a {@link Flowable} for easier chaining
+     * and composition.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxHasAllRequiredInformation() {
+        boolean correct = hasAllRequiredInformation();
+
+        if (correct) {
+            return Flowable.just(true);
+        }
+
+        return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
+    }
+
+    /**
      * Get a {@link Map} of capabilities to pass to Appium driver.
      * @return A {@link Map} instance.
      */
@@ -189,17 +205,18 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Start the Appium driver. If {@link #hasAllRequiredInformation()}
      * returns false, throw an {@link Exception}.
      * @return A {@link Flowable} instance.
+     * @see #hasAllRequiredInformation()
+     * @see #rxHasAllRequiredInformation()
+     * @see #createDriverInstance()
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver() {
-        if (hasAllRequiredInformation()) {
-            return Completable
-                .fromAction(() -> driver = createDriverInstance())
-                .<Boolean>toFlowable()
-                .defaultIfEmpty(true);
-        }
-
-        return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
+        return rxHasAllRequiredInformation()
+            .flatMapCompletable(a -> Completable.fromAction(() -> {
+                driver = createDriverInstance();
+            }))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.rx;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
