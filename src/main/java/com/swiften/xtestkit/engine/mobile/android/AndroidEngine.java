@@ -4,7 +4,7 @@ import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
-import com.swiften.xtestkit.engine.mobile.Platform;
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;

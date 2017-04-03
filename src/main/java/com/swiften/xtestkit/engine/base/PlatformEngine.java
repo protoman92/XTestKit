@@ -8,6 +8,7 @@ import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.*;
+import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.ProcessRunner;
@@ -40,11 +41,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @Nullable PlatformView platformView;
 
     @NotNull String browserName;
+    @NotNull String platformName;
     @NotNull String serverUrl;
 
     public PlatformEngine() {
         PROCESS_RUNNER = ProcessRunner.newBuilder().build();
         browserName = "";
+        platformName = "";
         serverUrl = "http://localhost:4723/wd/hub";
     }
 
@@ -111,6 +114,31 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public String browserName() {
         return browserName;
+    }
+
+    /**
+     * Return {@link #platformName}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String platformName() {
+        return platformName;
+    }
+
+    /**
+     * Return a {@link Platform} instance based on {@link #platformName()}.
+     * @return A {@link Platform} instance.
+     * @see #platformName()
+     */
+    @NotNull
+    public Platform platform() {
+        Optional<Platform> platform = Platform.fromValue(platformName());
+
+        if (platform.isPresent()) {
+            return platform.get();
+        }
+
+        throw new RuntimeException(PLATFORM_UNAVAILABLE);
     }
 
     @NotNull
@@ -382,7 +410,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link XPath.Builder} instance.
      */
     @NotNull
-    protected abstract XPath.Builder newXPathBuilderInstance();
+    protected XPath.Builder newXPathBuilderInstance() {
+        return XPath.newBuilder(platform());
+    }
 
     /**
      * Find all elements that satisfies an {@link XPath} request.
@@ -696,6 +726,18 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         /**
+         * Set the {@link #ENGINE#browserName} value. This is useful for
+         * Web app testing.
+         * @param name A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withBrowserName(@NotNull String name) {
+            ENGINE.browserName = name;
+            return this;
+        }
+
+        /**
          * Set the {@link #ENGINE#platformView} value.
          * @param platformView A {@link PlatformView} instance.
          * @return The current {@link Builder} instance.
@@ -716,6 +758,27 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         public Builder<T> withServerUrl(@NotNull String url) {
             ENGINE.serverUrl = url;
             return this;
+        }
+
+        /**
+         * Set the {@link #ENGINE#platformName} value.
+         * @param name The name of the platform for which tests are executed.
+         * @return The current {@link MobileEngine.Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withPlatformName(@NotNull String name) {
+            ENGINE.platformName = name;
+            return this;
+        }
+
+        /**
+         * Same as above, but use a {@link Platform} instance.
+         * @param platform A {@link Platform} instance.
+         * @return The current {@link MobileEngine.Builder} instance.
+         */
+        @NotNull
+        public Builder<T> withPlatform(@NotNull Platform platform) {
+            return withPlatformName(platform.value());
         }
 
         @NotNull

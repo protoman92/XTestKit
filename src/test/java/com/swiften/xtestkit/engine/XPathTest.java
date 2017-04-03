@@ -4,7 +4,7 @@ import com.swiften.xtestkit.engine.base.XPath;
 
 import static org.junit.Assert.*;
 
-import com.swiften.xtestkit.engine.mobile.Platform;
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.util.Log;
 import org.junit.Test;
 

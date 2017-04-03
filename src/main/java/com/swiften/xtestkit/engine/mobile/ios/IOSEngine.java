@@ -8,7 +8,7 @@ import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.Automation;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
-import com.swiften.xtestkit.engine.mobile.Platform;
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
 import com.swiften.xtestkit.util.ProcessRunner;
@@ -19,9 +19,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
@@ -115,59 +113,54 @@ public class IOSEngine extends MobileEngine<
      * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
-     * @see #rxStartDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return rxStartDriver();
+        /* We are not actually doing anything here */
+        return Flowable.just(true);
     }
 
     /**
      * @param PARAM A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
-     * @see #rxStopDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxAfterClass(@NotNull final AfterClassParam PARAM) {
-        return rxStopDriver().flatMap(a -> {
-            switch (testMode()) {
-                case EMULATOR:
-                    return rxStopSimulator(PARAM);
+        switch (testMode()) {
+            case EMULATOR:
+                return rxStopSimulator(PARAM);
 
-                default:
-                    Exception error = new Exception(PLATFORM_UNAVAILABLE);
-                    return Flowable.error(error);
-            }
-        });
+            default:
+                Exception error = new Exception(PLATFORM_UNAVAILABLE);
+                return Flowable.error(error);
+        }
     }
 
     /**
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBefore(BeforeParam)
-     * @see #rxInstallApp()
+     * @see #rxStartDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
-//        return Flowable.just(true);
-        return rxInstallApp();
+        return rxStartDriver();
     }
 
     /**
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfter(AfterParam)
-     * @see #rxUninstallApp()
+     * @see #rxStopDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
-//        return Flowable.just(true);
-        return rxUninstallApp();
+        return rxStopDriver();
     }
     //endregion
 
@@ -189,7 +182,8 @@ public class IOSEngine extends MobileEngine<
 //        capabilities.put("autoLaunch", false);
 
         /* Prevent Appium from resetting/shutting down opened simulators */
-        capabilities.put(MobileCapabilityType.NO_RESET, true);
+//        capabilities.put(MobileCapabilityType.NO_RESET, true);
+//        capabilities.put(MobileCapabilityType.FULL_RESET, true);
 
         /* We need to add different capabilities depending on whether the
          * tests are running on simulator or real device */
@@ -493,7 +487,6 @@ public class IOSEngine extends MobileEngine<
     //endregion
 
     //region Device Methods
-
     /**
      * Install an app as specified by {@link #app()}.
      * @return A {@link Flowable} instance.

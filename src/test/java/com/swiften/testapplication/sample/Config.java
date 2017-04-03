@@ -32,11 +32,20 @@ public class Config {
 
         ENGINES = new LinkedList<>();
 
+//        ENGINES.add(IOSEngine.newBuilder()
+//            .withDeviceUID("D10524D4-939E-46CA-BE40-AB21F8E745A8")
+//            .withApp(IOS_APP_NAME)
+//            .withAppPackage(APP_PACKAGE)
+//            .withDeviceName("iPhone 7")
+//            .withPlatformVersion("10.2")
+//            .withTestMode(TestMode.EMULATOR)
+//            .build());
+
         ENGINES.add(IOSEngine.newBuilder()
-            .withDeviceUID("D10524D4-939E-46CA-BE40-AB21F8E745A8")
+            .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
             .withApp(IOS_APP_NAME)
             .withAppPackage(APP_PACKAGE)
-            .withDeviceName("iPhone 7")
+            .withDeviceName("iPhone 7 Plus")
             .withPlatformVersion("10.2")
             .withTestMode(TestMode.EMULATOR)
             .build());

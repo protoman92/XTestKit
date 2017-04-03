@@ -58,10 +58,12 @@ public class SetupTest {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings("unchecked")
     public void actual_startTestEnvironment_shouldSucceed() {}
 
     @Test
+    @Ignore
     @SuppressWarnings("unchecked")
     public void actual_startTestEnvironment2_shouldSucceed() {}
 }

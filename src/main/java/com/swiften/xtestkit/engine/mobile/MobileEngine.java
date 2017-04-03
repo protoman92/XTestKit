@@ -1,11 +1,11 @@
 package com.swiften.xtestkit.engine.mobile;
 
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.XPath;
 import com.swiften.xtestkit.engine.mobile.protocol.MobileEngineError;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 
@@ -24,7 +24,6 @@ public abstract class MobileEngine<
     @NotNull String appiumVersion;
     @NotNull String automationName;
     @NotNull String deviceName;
-    @NotNull String platformName;
     @NotNull String platformVersion;
     @NotNull TestMode testMode;
 
@@ -34,7 +33,6 @@ public abstract class MobileEngine<
         appiumVersion = "1.6.3";
         automationName = "";
         deviceName = "";
-        platformName = "";
         platformVersion = "";
         testMode = TestMode.EMULATOR;
     }
@@ -96,15 +94,6 @@ public abstract class MobileEngine<
     }
 
     /**
-     * Return {@link #platformName}.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String platformName() {
-        return platformName;
-    }
-
-    /**
      * Return {@link #testMode}. This can be stubbed out for custom
      * implementation.
      * @return The specified {@link #testMode} {@link TestMode}.
@@ -157,22 +146,6 @@ public abstract class MobileEngine<
         return capabilities;
     }
     //endregion
-
-    /**
-     * @return A {@link XPath.Builder} instance.
-     * @see MobileEngine#newXPathBuilderInstance()
-     */
-    @NotNull
-    @Override
-    protected XPath.Builder newXPathBuilderInstance() {
-        Optional<Platform> platform = Platform.fromValue(platformName());
-
-        if (platform.isPresent()) {
-            return XPath.newBuilder(platform.get());
-        }
-
-        throw new RuntimeException(new Error(PLATFORM_UNAVAILABLE));
-    }
 
     public static abstract class Builder<T extends MobileEngine> extends
         PlatformEngine.Builder<T> {
@@ -246,27 +219,6 @@ public abstract class MobileEngine<
         public Builder<T> withDeviceName(@NotNull String deviceName) {
             ENGINE.deviceName = deviceName;
             return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#platformName} value.
-         * @param name The name of the platform for which tests are executed.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withPlatformName(@NotNull String name) {
-            ENGINE.platformName = name;
-            return this;
-        }
-
-        /**
-         * Same as above, but use a {@link Platform} instance.
-         * @param platform A {@link Platform} instance.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withPlatform(@NotNull Platform platform) {
-            return withPlatformName(platform.value());
         }
 
         /**

@@ -46,7 +46,12 @@ public final class Interaction implements DelayProtocol {
     @NotNull
     public Flowable<Boolean> rxCheckToolbarValidity() {
         final PlatformEngine<?> ENGINE = engine();
-        return ENGINE.rxElementWithText("app_title").map(a -> true);
+
+        if (ENGINE.platform().isAndroidPlatform()) {
+            return ENGINE.rxElementWithText("app_title").map(a -> true);
+        }
+
+        return Flowable.just(true);
     }
     //endregion
 
