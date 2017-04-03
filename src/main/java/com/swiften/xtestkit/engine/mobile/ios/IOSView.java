@@ -1,51 +1,46 @@
-package com.swiften.xtestkit.engine.mobile.android;
+package com.swiften.xtestkit.engine.mobile.ios;
+
+/**
+ * Created by haipham on 4/3/17.
+ */
 
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
 import com.swiften.xtestkit.engine.base.protocol.View;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by haipham on 3/20/17.
+ * Provide {@link com.swiften.xtestkit.engine.base.Platform#IOS} {@link View}
  */
-
-/**
- * Provide {@link com.swiften.xtestkit.engine.base.Platform#ANDROID} {@link View}.
- */
-public class AndroidView extends PlatformView {
+public class IOSView extends PlatformView {
     enum ViewType implements View {
-        BUTTON,
-        EDIT_TEXT,
-        LINEAR_LAYOUT,
-        TEXT_VIEW;
+        UI_BUTTON,
+        UI_LABEL,
+        UI_TEXTFIELD;
 
         @NotNull
         @Override
         public String className() {
             switch (this) {
-                case BUTTON:
-                    return "android.widget.Button";
+                case UI_BUTTON:
+                    return "XCUIElementTypeButton";
 
-                case EDIT_TEXT:
-                    return "android.widget.EditText";
+                case UI_LABEL:
+                    return "XCUIElementTypeLabel";
 
-                case LINEAR_LAYOUT:
-                    return "android.widget.LinearLayout";
-
-                case TEXT_VIEW:
-                    return "android.widget.TextView";
+                case UI_TEXTFIELD:
+                    return "XCUIElementTypeTextField";
 
                 default:
-                    throw new RuntimeException();
+                    return "";
             }
         }
 
         @Override
         public boolean hasText() {
             switch (this) {
-                case BUTTON:
-                case EDIT_TEXT:
-                case LINEAR_LAYOUT:
-                case TEXT_VIEW:
+                case UI_BUTTON:
+                case UI_LABEL:
+                case UI_TEXTFIELD:
                     return true;
 
                 default:
@@ -56,9 +51,7 @@ public class AndroidView extends PlatformView {
         @Override
         public boolean isClickable() {
             switch (this) {
-                case BUTTON:
-                case EDIT_TEXT:
-                case TEXT_VIEW:
+                case UI_BUTTON:
                     return true;
 
                 default:
@@ -69,7 +62,7 @@ public class AndroidView extends PlatformView {
         @Override
         public boolean isEditable() {
             switch (this) {
-                case EDIT_TEXT:
+                case UI_TEXTFIELD:
                     return true;
 
                 default:
@@ -80,7 +73,7 @@ public class AndroidView extends PlatformView {
 
     @NotNull
     @Override
-    protected View[] getViews() {
+    public View[] getViews() {
         return ViewType.values();
     }
 }

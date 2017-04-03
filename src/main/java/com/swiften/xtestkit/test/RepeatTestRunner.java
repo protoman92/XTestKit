@@ -12,15 +12,16 @@ import org.junit.runners.model.InitializationError;
  */
 
 /**
- * We need to use this runner to make sure that {@link com.swiften.xtestkit.kit.TestKit}
- * based tests are repeated as long as there are more than 1
- * {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered. Since runners
- * are set via {@link org.junit.runner.RunWith}, we must subclass this to
- * provide different retry count values. Each test suite should have one
- * static {@link com.swiften.xtestkit.kit.TestKit} so that {@link org.junit.BeforeClass}
- * and {@link org.junit.AfterClass} methods can access it and call
- * {@link TestKit#beforeClass()}, {@link TestKit#afterClass()} and
- * {@link TestKit#incrementCurrent()}.
+ * We need to use this {@link org.junit.runner.Runner} to ensure
+ * {@link com.swiften.xtestkit.kit.TestKit} based tests are repeated as long
+ * as there are more than 1
+ * {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered. Since
+ * runners are set via {@link org.junit.runner.RunWith}, we must subclass this
+ * to provide different retry count values. Each test suite should have one
+ * static {@link com.swiften.xtestkit.kit.TestKit} so that
+ * {@link org.junit.BeforeClass} and {@link org.junit.AfterClass} methods can
+ * access it and call {@link TestKit#beforeClass()},
+ * {@link TestKit#afterClass()} and {@link TestKit#incrementCurrent()}.
  * We should call {@link TestKit#incrementCurrent()} in
  * {@link org.junit.BeforeClass} to make sure the test cases being run has
  * access to the current {@link com.swiften.xtestkit.engine.base.PlatformEngine}

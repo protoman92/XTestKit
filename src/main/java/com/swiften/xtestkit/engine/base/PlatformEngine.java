@@ -11,6 +11,7 @@ import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.CollectionUtil;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -435,6 +436,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%s%s", cls.className(), XPATH))
+            .doOnNext(a -> {
+                Log.println(String.format("Searching for \"%s\"", a));
+            })
             .map(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -651,8 +655,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxAllEditableElements() {
+//        XPath xPath = newXPathBuilderInstance().isEditable(true).build();
+
         ByXPath query = ByXPath.newBuilder()
             .withClasses(platformView().isEditable())
+//            .withXPath(xPath)
             .build();
 
         return rxElementsByXPath(query);

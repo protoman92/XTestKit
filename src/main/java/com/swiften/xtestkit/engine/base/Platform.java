@@ -70,16 +70,37 @@ public enum Platform implements PlatformProtocol {
 
     @NotNull
     @Override
-    public String hintAttribute() {
+    public Attribute hintAttribute() {
         switch (this) {
             case ANDROID:
-                return "hint";
+                return Attribute.withSingleAttribute("hint");
 
             case IOS:
-                return "placeholder";
+                return Attribute.withSingleAttribute("placeholder");
 
             default:
-                return "";
+                return Attribute.BLANK;
+        }
+    }
+
+    @NotNull
+    @Override
+    public Attribute textAttribute() {
+        switch (this) {
+            case ANDROID:
+                return Attribute.withSingleAttribute("text");
+
+            case IOS:
+                return Attribute.newBuilder()
+                    .addAttribute("title")
+                    .addAttribute("text")
+                    .addAttribute("value")
+                    .addAttribute("name")
+                    .withMode(Attribute.Mode.OR)
+                    .build();
+
+            default:
+                return Attribute.BLANK;
         }
     }
 }

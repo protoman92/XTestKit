@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.engine;
 
+import com.swiften.xtestkit.engine.base.Attribute;
 import com.swiften.xtestkit.engine.base.XPath;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
@@ -760,9 +761,16 @@ public final class PlatformEngineTest implements ErrorProtocol {
         @Override
         public XPath.Builder newXPathBuilderInstance() {
             PlatformProtocol platform = mock(PlatformProtocol.class);
-            when(platform.enabledAttribute()).thenReturn("enabled");
-            when(platform.hintAttribute()).thenReturn("hint");
-            when(platform.textAttribute()).thenReturn("text");
+
+            when(platform.enabledAttribute())
+                .thenReturn(Attribute.withSingleAttribute("enabled"));
+
+            when(platform.hintAttribute())
+                .thenReturn(Attribute.withSingleAttribute("hint"));
+
+            when(platform.textAttribute())
+                .thenReturn(Attribute.withSingleAttribute("text"));
+
             return XPath.newBuilder(platform);
         }
 

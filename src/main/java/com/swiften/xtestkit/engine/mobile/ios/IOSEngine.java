@@ -545,8 +545,9 @@ public class IOSEngine extends MobileEngine<
         @NotNull
         @Override
         public IOSEngine build() {
-            withPlatform(Platform.IOS);
             withAutomation(Automation.XC_UI_TEST);
+            withPlatform(Platform.IOS);
+            withPlatformView(new IOSView());
             return super.build();
         }
     }

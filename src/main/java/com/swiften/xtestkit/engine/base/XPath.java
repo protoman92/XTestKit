@@ -3,6 +3,9 @@ package com.swiften.xtestkit.engine.base;
 import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by haipham on 3/19/17.
  */
@@ -47,21 +50,49 @@ public class XPath {
         }
 
         /**
+         * With an {@link Attribute} instance, construct an attribute
+         * {@link String} using the specified {@link Attribute.Mode}.
+         * @param attribute An {@link Attribute} instance.
+         * @param FORMAT A {@link String} value. This is the attribute format
+         *               that will be passed to
+         *               {@link String#format(String, Object...)}, along with
+         *               the attribute name and a specified value.
+         * @param VALUE A {@link String} value. This will be passed to
+         *              {@link String#format(String, Object...)} along with
+         *              the attribute name.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder appendAttribute(@NotNull Attribute attribute,
+                                       @NotNull final String FORMAT,
+                                       @NotNull final String VALUE) {
+            List<String> attributes = attribute
+                .attributes()
+                .stream()
+                .map(a -> String.format(FORMAT, a, VALUE))
+                .collect(Collectors.toList());
+
+            if (attributes.isEmpty()) {
+                throw new RuntimeException(NO_ATTR_NAME_ERROR);
+            }
+
+            Attribute.Mode mode = attribute.mode();
+            String joiner = String.format(" %s ", mode.joiner());
+            String append = String.join(joiner, attributes);
+            XPATH.appendAttribute(append);
+            return this;
+        }
+
+        /**
          * Appends a @text attribute.
          * @param text The text to be appended.
          * @return The current {@link Builder} instance.
          */
         @NotNull
         public Builder hasText(@NotNull String text) {
-            String name = PLATFORM.textAttribute();
-
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("@%1$s='%2$s'", name, text);
-            XPATH.appendAttribute(attr);
-            return this;
+            Attribute attribute = PLATFORM.textAttribute();
+            String format = "@%1$s='%2$s'";
+            return appendAttribute(attribute, format, text);
         }
 
         /**
@@ -71,15 +102,9 @@ public class XPath {
          */
         @NotNull
         public Builder containsText(@NotNull String text) {
-            String name = PLATFORM.textAttribute();
-
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("contains(@%1$s, '%2$s')", name, text);
-            XPATH.appendAttribute(attr);
-            return this;
+            Attribute attribute = PLATFORM.textAttribute();
+            String format = "contains(@%1$s, '%2$s')";
+            return appendAttribute(attribute, format, text);
         }
 
         /**
@@ -90,15 +115,9 @@ public class XPath {
          */
         @NotNull
         public Builder hasHint(@NotNull String hint) {
-            String name = PLATFORM.hintAttribute();
-
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("@%1$s='%2$s'", name, hint);
-            XPATH.appendAttribute(attr);
-            return this;
+            Attribute attribute = PLATFORM.hintAttribute();
+            String format = "@%1$s='%2$s'";
+            return appendAttribute(attribute, format, hint);
         }
 
         /**
@@ -109,15 +128,9 @@ public class XPath {
          */
         @NotNull
         public Builder containsHint(@NotNull String hint) {
-            String name = PLATFORM.hintAttribute();
-
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("contains(@%1$s, '%2$s')", name, hint);
-            XPATH.appendAttribute(attr);
-            return this;
+            Attribute attribute = PLATFORM.hintAttribute();
+            String format = "contains(@%1$s, '%2$s')";
+            return appendAttribute(attribute, format, hint);
         }
 
         /**
@@ -127,15 +140,9 @@ public class XPath {
          */
         @NotNull
         public Builder isEnabled(boolean enabled) {
-            String name = PLATFORM.enabledAttribute();
-
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("@%1$s='%2$b'", name, enabled);
-            XPATH.appendAttribute(attr);
-            return this;
+            Attribute attribute = PLATFORM.enabledAttribute();
+            String format = "@%1$s='%2$b'";
+            return appendAttribute(attribute, format, String.valueOf(enabled));
         }
 
         /**
@@ -145,15 +152,21 @@ public class XPath {
          */
         @NotNull
         public Builder isClickable(boolean clickable) {
-            String name = PLATFORM.clickableAttribute();
+            Attribute attribute = PLATFORM.clickableAttribute();
+            String format = "@%1$s='%2$b'";
+            return appendAttribute(attribute, format, String.valueOf(clickable));
+        }
 
-            if (name.isEmpty()) {
-                throw new RuntimeException(NO_ATTR_NAME_ERROR);
-            }
-
-            String attr = String.format("@%1$s='%2$b'", name, clickable);
-            XPATH.appendAttribute(attr);
-            return this;
+        /**
+         * Appends a @editable attribute.
+         * @param editable A {@link Boolean} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder isEditable(boolean editable) {
+            Attribute attribute = PLATFORM.editableAttribute();
+            String format = "@%1$s='%2$b'";
+            return appendAttribute(attribute, format, String.valueOf(editable));
         }
 
         @NotNull

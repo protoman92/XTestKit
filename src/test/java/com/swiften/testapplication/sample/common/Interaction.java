@@ -1,8 +1,10 @@
 package com.swiften.testapplication.sample.common;
 
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.rx.RxExtension;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import com.swiften.testapplication.sample.protocol.DelayProtocol;
@@ -60,6 +62,7 @@ public final class Interaction implements DelayProtocol {
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxCheckLoginScreenValidity() {
         final PlatformEngine<?> ENGINE = engine();
+        final Platform PLATFORM = ENGINE.platform();
 
         return Flowable
             .concatArray(
@@ -70,8 +73,19 @@ public final class Interaction implements DelayProtocol {
                     .switchIfEmpty(Flowable.error(new Exception())),
 
                 ENGINE.rxElementWithText("auth_title_signInOrRegister"),
-                ENGINE.rxElementWithText("auth_title_email"),
-                ENGINE.rxElementContainingText("auth_title_password")
+
+                Flowable
+                    .create(obs -> {
+                        if (PLATFORM.isAndroidPlatform()) {
+                            obs.onNext(true);
+                        }
+
+                        obs.onComplete();
+                    }, BackpressureStrategy.BUFFER)
+                    .flatMap(a -> Flowable.concatArray(
+                        ENGINE.rxElementWithText("auth_title_email"),
+                        ENGINE.rxElementContainingText("auth_title_password")
+                    ))
             )
             .toList()
             .toFlowable()
