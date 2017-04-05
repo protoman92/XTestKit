@@ -6,8 +6,8 @@ package com.swiften.xtestkit.engine.base;
 
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.*;
+import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.CollectionUtil;
@@ -54,8 +54,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Test Setup
     /**
-     * Convenience method for {@link org.junit.BeforeClass}. This method
-     * will be called by {@link TestKit#rxBeforeClass(BeforeClassParam)}.
+     * Convenience method for {@link org.testng.annotations.BeforeClass}.
+     * This method will be called by
+     * {@link TestKit#rxBeforeClass(BeforeClassParam)}.
      * Subclasses of {@link PlatformEngine} should provide their own
      * implementations.
      * @param param A {@link BeforeClassParam} instance.
@@ -65,8 +66,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public abstract Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param);
 
     /**
-     * Convenience method for {@link org.junit.AfterClass}. This method
-     * will be called by {@link TestKit#rxAfterClass(AfterClassParam)}.
+     * Convenience method for {@link org.testng.annotations.AfterClass}.
+     * This method will be called by
+     * {@link TestKit#rxAfterClass(AfterClassParam)}.
      * Subclasses of {@link PlatformEngine} should provide their own
      * implementations.
      * @param param An {@link AfterClassParam} instance.
@@ -76,26 +78,27 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public abstract Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param);
 
     /**
-     * Convenience method for {@link org.junit.Before}. This method will be
-     * called by {@link TestKit#rxBefore(BeforeParam)}.
+     * Convenience method for {@link org.testng.annotations.BeforeMethod}.
+     * This method will be
+     * called by {@link TestKit#rxBeforeMethod(BeforeParam)}.
      * Subclasses of {@link PlatformEngine} should provide their own
      * implementations.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxBefore(@NotNull BeforeParam param);
+    public abstract Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param);
 
     /**
-     * Convenience method for {@link org.junit.After}. This method will be
-     * called by {@link TestKit#rxAfter(AfterParam)}.
+     * Convenience method for {@link org.testng.annotations.AfterMethod}.
+     * This method will be called by {@link TestKit#rxAfterMethod(AfterParam)}.
      * Subclasses of {@link PlatformEngine} should provide their own
      * implementations.
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxAfter(@NotNull AfterParam param);
+    public abstract Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param);
     //endregion
 
     //region Getters

@@ -1,4 +1,4 @@
-package com.swiften.xtestkit.engine.base;
+package com.swiften.xtestkit.engine.base.xpath;
 
 /**
  * Created by haipham on 4/4/17.
@@ -14,7 +14,7 @@ import java.util.List;
  * describe the same thing. For example,
  * {@link com.swiften.xtestkit.engine.base.Platform#IOS} may use both
  * 'title' and 'text' to describe an element that has a text. To be used
- * with {@link com.swiften.xtestkit.engine.base.XPath}.
+ * with {@link XPath}.
  */
 public final class Attribute {
     @NotNull

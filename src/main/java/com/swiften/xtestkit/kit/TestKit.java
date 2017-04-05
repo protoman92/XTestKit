@@ -9,10 +9,8 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.util.RxUtil;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +28,8 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     @NotNull private final List<PlatformEngine> ENGINES;
     @Nullable private Localizer localizer;
 
-    private int current;
-
     TestKit() {
         ENGINES = new LinkedList<>();
-        current = -1;
         RxUtil.overrideErrorHandler();
     }
 
@@ -76,44 +71,6 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
     }
     //endregion
 
-    //region Iteration
-    /**
-     * Increment {@link #current} to access a different {@link PlatformEngine}
-     * from {@link #ENGINES}.
-     */
-    public void incrementCurrent() {
-        current += 1;
-    }
-
-    /**
-     * Same as above, but returns a {@link Flowable} instance for easy
-     * {@link Flowable} chaining.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxIncrementCurrent() {
-        return Completable
-            .fromAction(this::incrementCurrent)
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
-    /**
-     * Reset {@link #current} to original value.
-     */
-    public void resetCounter() {
-        current = -1;
-    }
-
-    /**
-     * Get {@link #current}.
-     * @return An {@link Integer} value.
-     */
-    public int currentIndex() {
-        return current;
-    }
-    //endregion
-
     //region PlatformEngine
     /**
      * Get the current active {@link PlatformEngine}.
@@ -121,8 +78,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
      * @throws RuntimeException If no non-null {@link PlatformEngine} found.
      */
     @NotNull
-    public PlatformEngine<?> currentEngine() {
-        int current = currentIndex();
+    public PlatformEngine<?> engine(int current) {
         List<PlatformEngine> engines = engines();
 
         if (current > -1 && current < engines.size()) {
@@ -131,24 +87,6 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
             if (Objects.nonNull(engine)) {
                 return engine;
             }
-        }
-
-        throw new RuntimeException(NO_TEST_ENGINE_FOUND);
-    }
-
-    /**
-     * Get the current active {@link T}.
-     * @param cls A {@link T} instance.
-     * @param <T> Generics that extends {@link PlatformEngine}.
-     * @return A {@link T} instance.
-     * @throws RuntimeException If no non-null {@link T} found.
-     */
-    @NotNull
-    public <T extends PlatformEngine> T currentEngine(@NotNull Class<T> cls) {
-        PlatformEngine engine = currentEngine();
-
-        if (cls.isInstance(engine)) {
-            return cls.cast(engine);
         }
 
         throw new RuntimeException(NO_TEST_ENGINE_FOUND);
@@ -164,7 +102,7 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return currentEngine().rxBeforeClass(param);
+        return engine(param.index()).rxBeforeClass(param);
     }
 
     /**
@@ -175,70 +113,74 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
      */
     @NotNull
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-        return currentEngine().rxAfterClass(param);
+        return engine(param.index()).rxAfterClass(param);
     }
 
     /**
      * Convenience method for {@link org.junit.Before}.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBefore(BeforeParam)
+     * @see PlatformEngine#rxBeforeMethod(BeforeParam)
      */
     @NotNull
-    public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
-        return currentEngine().rxBefore(param);
+    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
+        return engine(param.index()).rxBeforeMethod(param);
     }
 
     /**
      * Convenience method for {@link org.junit.After}.
      * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfter(AfterParam)
+     * @see PlatformEngine#rxAfterMethod(AfterParam)
      */
     @NotNull
-    public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
-        return currentEngine().rxAfter(param);
+    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+        return engine(param.index()).rxAfterMethod(param);
     }
 
     /**
+     * @param param A {@link BeforeClassParam} instance.
      * @see #rxBeforeClass(BeforeClassParam)
      */
-    public void beforeClass() {
+    public void beforeClass(@NotNull BeforeClassParam param) {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxBeforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
+        rxBeforeClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
 
     /**
-     * @see #rxBefore(BeforeParam)
+     * @param param A {@link BeforeParam} instance.
+     * @see #rxBeforeMethod(BeforeParam)
      */
-    public void before() {
+    public void before(@NotNull BeforeParam param) {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxBefore(BeforeParam.DEFAULT).subscribe(subscriber);
+        rxBeforeMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
 
     /**
+     * @param param An {@link AfterClassParam} instance.
      * @see #rxAfterClass(AfterClassParam)
      */
-    public void afterClass() {
+    public void afterClass(@NotNull AfterClassParam param) {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxAfterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
+        rxAfterClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
 
     /**
-     * @see #rxAfter(AfterParam)
+     * @param param An {@link AfterParam} instance.
+     * @see #rxAfterMethod(AfterParam)
      */
-    public void after() {
+    public void after(@NotNull AfterParam param) {
         TestSubscriber<Boolean> subscriber = TestSubscriber.create();
-        rxAfter(AfterParam.DEFAULT).subscribe(subscriber);
+        rxAfterMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();

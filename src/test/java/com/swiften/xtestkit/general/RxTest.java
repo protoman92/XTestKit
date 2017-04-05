@@ -3,7 +3,7 @@ package com.swiften.xtestkit.general;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 /**
  * Created by haipham on 3/25/17.

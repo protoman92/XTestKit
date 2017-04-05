@@ -28,7 +28,7 @@ public final class Interaction implements DelayProtocol {
 
     @NotNull
     private PlatformEngine<?> engine() {
-        return TEST_KIT.currentEngine();
+        return TEST_KIT.engine(1);
     }
 
     //region Splash Screen

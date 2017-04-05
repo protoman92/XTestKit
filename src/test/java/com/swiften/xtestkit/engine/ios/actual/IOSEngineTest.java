@@ -4,8 +4,8 @@ import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * Created by haipham on 3/31/17.
@@ -20,17 +20,17 @@ public class IOSEngineTest implements IOSDelayProtocol {
             .build();
     }
 
-    @Before
+    @BeforeMethod
     @SuppressWarnings("unchecked")
-    public void before() {
+    public void beforeMethod() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStartSimulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }
 
-    @After
+    @AfterMethod
     @SuppressWarnings("unchecked")
-    public void after() {
+    public void afterMethod() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStopSimulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();

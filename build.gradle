@@ -16,6 +16,7 @@ buildscript {
         commons_exec = '1.0.1'
         commons_io = '2.5'
         junit = '4.12'
+        testng = '6.10'
         mockito = '2.2.0'
         rx = '2.0.7'
     }
@@ -34,7 +35,8 @@ dependencies {
     compile "org.jetbrains:annotations-java5:$annotations"
     compile "io.reactivex.rxjava2:rxjava:$rx"
     compile "io.appium:java-client:$appium"
-    compile "junit:junit:$junit"
+//    compile "junit:junit:$junit"
+    compile "org.testng:testng:$testng"
     compile "org.mockito:mockito-core:$mockito"
 }
 

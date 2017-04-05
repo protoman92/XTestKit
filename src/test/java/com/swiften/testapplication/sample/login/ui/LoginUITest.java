@@ -1,76 +1,32 @@
 package com.swiften.testapplication.sample.login.ui;
 
+import com.swiften.testapplication.sample.common.BaseUITest;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.testapplication.sample.protocol.DelayProtocol;
-import com.swiften.testapplication.sample.test.TestApplicationRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.junit.*;
 import com.swiften.testapplication.sample.Config;
 import com.swiften.testapplication.sample.common.Interaction;
-import org.junit.runner.RunWith;
+import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 /**
  * Created by haipham on 3/24/17.
  */
-@RunWith(TestApplicationRunner.class)
-public final class LoginUITest implements DelayProtocol {
-    /**
-     * This needs to be static so that {@link BeforeClass} and
-     * {@link AfterClass} can access its methods. Each test suite will have
-     * one statis {@link TestKit} to avoid synchronization problem with
-     * {@link TestKit#current} value.
-     */
-    @NotNull private static final TestKit TEST_KIT;
-
-    static {
-        TEST_KIT = Config.testKit();
-    }
-
-    @NotNull private final Interaction INTERACTION;
-    @Nullable private PlatformEngine engine;
-
+public final class LoginUITest extends BaseUITest implements DelayProtocol {
     @NotNull private final String USERNAME, PASSWORD;
 
     {
-        INTERACTION = new Interaction(TEST_KIT);
         USERNAME = "email@example.com";
         PASSWORD = "12345678";
     }
 
-    @BeforeClass
-    public static void beforeClass() {
-        /* Calling beforeClass() here ensures that each PlatformEngine will
-         * only start the test environment once */
-        TEST_KIT.incrementCurrent();
-        TEST_KIT.beforeClass();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        TEST_KIT.afterClass();
-    }
-
-    @Before
-    public void before() {
-        engine = TEST_KIT.currentEngine();
-        TEST_KIT.before();
-    }
-
-    @After
-    public void after() {
-        TEST_KIT.after();
-    }
-
-    @NotNull
-    private PlatformEngine engine() {
-        if (engine != null) {
-            return engine;
-        }
-
-        throw new RuntimeException("Engine cannot be null");
+    public LoginUITest(int index) {
+        super(index);
     }
 
     @Test

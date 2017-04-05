@@ -15,19 +15,17 @@ import java.util.Locale;
  * Created by haipham on 3/25/17.
  */
 public class Config {
-    private static final String APP_PACKAGE;
-    private static final String ANDROID_APP_NAME;
-    private static final String ANDROID_APP_ACTIVITY;
-
-    private static final String IOS_APP_NAME;
-
-    public static final List<PlatformEngine> ENGINES;
+    @NotNull private static final String APP_PACKAGE;
+    @NotNull private static final String ANDROID_APP_NAME;
+    @NotNull private static final String ANDROID_APP_ACTIVITY;
+    @NotNull private static final String IOS_APP_NAME;
+    @NotNull private static final List<PlatformEngine> ENGINES;
+    @NotNull public static final TestKit TEST_KIT;
 
     static {
         APP_PACKAGE = "com.swiften.testapplication";
         ANDROID_APP_ACTIVITY = ".LoginActivity";
         ANDROID_APP_NAME = "app-debug.apk";
-
         IOS_APP_NAME = "app-debug.app";
 
         ENGINES = new LinkedList<>();
@@ -67,17 +65,14 @@ public class Config {
             .withTestMode(TestMode.EMULATOR)
             .withPlatformVersion("5.1")
             .build());
+
+        TEST_KIT = TestKit.newBuilder()
+            .withEngines(ENGINES)
+            .addResourceBundle("Strings", Locale.US)
+            .build();
     }
 
     public static int runCount() {
         return ENGINES.size();
-    }
-
-    @NotNull
-    public static TestKit testKit() {
-        return TestKit.newBuilder()
-            .withEngines(ENGINES)
-            .addResourceBundle("Strings", Locale.US)
-            .build();
     }
 }

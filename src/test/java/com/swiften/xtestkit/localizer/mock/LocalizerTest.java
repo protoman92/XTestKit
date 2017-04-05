@@ -5,9 +5,11 @@ import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.testng.Assert.*;
+
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.*;
 
@@ -33,8 +35,8 @@ public class LocalizerTest implements LocalizeErrorProtocol {
         };
     }
 
-    @Before
-    public void before() {
+    @BeforeMethod
+    public void beforeMethod() {
         ResourceBundle bundle = mock(ResourceBundle.class);
         Locale locale = Locale.US;
         List<ResourceBundle> bundles = new ArrayList<>();
@@ -47,6 +49,11 @@ public class LocalizerTest implements LocalizeErrorProtocol {
 
         doReturn(bundles).when(LOCALIZER).bundles();
         doReturn(locales).when(LOCALIZER).locales();
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+        reset(LOCALIZER);
     }
 
     @Test

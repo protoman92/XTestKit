@@ -7,12 +7,11 @@ import com.swiften.xtestkit.util.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -32,16 +31,16 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         PROCESS_RUNNER = spy(ENGINE.processRunner());
     }
 
-    @Before
-    public void before() {
+    @BeforeMethod
+    public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ENGINE).simulatorBootRetryDelay();
     }
 
-    @After
-    public void after() {
+    @AfterMethod
+    public void afterMethod() {
         reset(ENGINE, PROCESS_RUNNER);
     }
 

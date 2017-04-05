@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.localizer;
 
 import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
+import com.swiften.xtestkit.util.Log;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,8 +101,7 @@ public class Localizer implements LocalizeErrorProtocol {
     }
 
     @NotNull
-    public String getString(@NotNull ResourceBundle bundle,
-                            @NotNull String text) {
+    public String getString(@NotNull ResourceBundle bundle, @NotNull String text) {
         return bundle.getString(text);
     }
 

@@ -1,0 +1,370 @@
+package com.swiften.xtestkit.test;
+
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.util.Log;
+import io.reactivex.Completable;
+import io.reactivex.subscribers.TestSubscriber;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.testng.*;
+import org.testng.annotations.*;
+import org.testng.xml.XmlSuite;
+
+import java.lang.annotation.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.IntStream;
+
+/**
+ * Created by haipham on 3/26/17.
+ */
+
+/**
+ * We need to use this class to ensure {@link com.swiften.xtestkit.kit.TestKit}
+ * based tests are repeated as long as there are more than 1
+ * {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered.
+ * To use this class, we should ideally create a class that implements
+ * {@link TestRunner}, with a static {@link RepeatRunner} instance so that
+ * it is not recreated every time a new iteration is run (if it is not static,
+ * {@link RepeatRunner#PAGINATION} will be recreated as well, leading to wrong
+ * pagination.
+ */
+public class RepeatRunner implements
+    IAnnotationTransformer2,
+    ITestListener,
+    ITestNGListener {
+    @NotNull
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    @NotNull private final Pagination PAGINATION;
+    @NotNull final List<Class<?>> TEST_CLASSES;
+
+    int verbosity;
+
+    RepeatRunner() {
+        TEST_CLASSES = new LinkedList<>();
+        PAGINATION = new Pagination();
+    }
+
+    //region IAnnotationTransformer2
+    @Override
+    public void transform(@NotNull ITestAnnotation annotation,
+                          @Nullable Class testClass,
+                          @Nullable Constructor testConstructor,
+                          @Nullable Method testMethod) {
+        if (testMethod != null) {
+            Annotation skippable = testMethod.getAnnotation(TestRunnerMethod.class);
+
+            if (Objects.nonNull(skippable)) {
+                annotation.setEnabled(false);
+            }
+        }
+    }
+
+    @Override
+    public void transform(@NotNull IConfigurationAnnotation annotation,
+                          @Nullable Class testClass,
+                          @Nullable Constructor testConstructor,
+                          @Nullable Method testMethod) {}
+
+    @Override
+    public void transform(@NotNull IDataProviderAnnotation annotation,
+                          @Nullable Method method) {}
+
+    @Override
+    public void transform(@NotNull IFactoryAnnotation annotation,
+                          @Nullable Method method) {}
+    //endregion
+
+    //region ITestListener
+    @Override
+    public void onTestStart(@NotNull ITestResult result) {}
+
+    @Override
+    public void onTestSuccess(@NotNull ITestResult result) {}
+
+    @Override
+    public void onTestFailure(@NotNull ITestResult result) {}
+
+    @Override
+    public void onTestSkipped(@NotNull ITestResult result) {}
+
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(@NotNull ITestResult result) {}
+
+    @Override
+    public void onStart(@NotNull ITestContext context) {}
+
+    @Override
+    public void onFinish(@NotNull ITestContext context) {}
+    //endregion
+
+    //region Getters
+    /**
+     * Return {@link #TEST_CLASSES}.
+     * @return A {@link List} of {@link Class}.
+     */
+    @NotNull
+    public List<Class<?>> testClasses() {
+        return TEST_CLASSES;
+    }
+
+    /**
+     * Return {@link #testClasses()} as an Array.
+     * @return An Array of {@link Class}.
+     */
+    @NotNull
+    public Class[] testClassesArray() {
+        List<Class<?>> testClasses = testClasses();
+        return testClasses.toArray(new Class[testClasses.size()]);
+    }
+
+    /**
+     * Create a fresh {@link TestNG} instance to avoid internal cache. If
+     * we use only one instance of {@link TestNG}, when we batch tests some
+     * will be repeated (probably due to each {@link TestNG} instance keeping
+     * a record of tests and replaying them every iteration.
+     * @return A {@link TestNG} instance.
+     */
+    @NotNull
+    public TestNG createRunner() {
+        TestNG testRunner = new TestNG();
+        testRunner.setTestClasses(testClassesArray());
+        testRunner.setVerbose(verbosity);
+        testRunner.setAnnotationTransformer(this);
+        testRunner.addListener(this);
+        testRunner.setParallel(XmlSuite.ParallelMode.INSTANCES);
+        return testRunner;
+    }
+
+    /**
+     * Return {@link #PAGINATION#indexParameters()}.
+     * @return An {@link Integer} Array.
+     */
+    @NotNull
+    public int[] indexParameters() {
+        return PAGINATION.indexParameters();
+    }
+
+    /**
+     * Return {@link #PAGINATION#dataParameters()}.
+     * @return An {@link Iterator} of {@link Object} Array.
+     */
+    @NotNull
+    public Iterator<Object[]> dataParameters() {
+        return PAGINATION.dataParameters();
+    }
+    //endregion
+
+    @SuppressWarnings("unchecked")
+    public void run() {
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        @SuppressWarnings("unchecked")
+        final Pagination PG = this.PAGINATION;
+        final int PARTITION = PG.partitionCount();
+
+        class Run {
+            @NotNull
+            @SuppressWarnings("WeakerAccess")
+            Completable run(final int INDEX) {
+                if (INDEX < PARTITION) {
+                    /* Refer to explanation for createRunner() as to why
+                     * we need to create a new TestNg instance for every
+                     * iteration */
+                    final TestNG RUNNER = createRunner();
+
+                    return Completable
+                        .fromAction(RUNNER::run)
+                        .toFlowable()
+                        .defaultIfEmpty(true)
+                        .flatMapCompletable(a -> PG.rxSetCurrentIndex(INDEX + 1))
+                        .toFlowable()
+                        .defaultIfEmpty(true)
+                        .flatMapCompletable(a -> new Run().run(PG.currentIndex));
+                }
+
+                return PG.rxResetIndex();
+            }
+        }
+
+        new Run().run(0).toFlowable().subscribe(subscriber);
+        subscriber.assertNoErrors();
+    }
+
+    //region Builder
+    public static final class Builder {
+        @NotNull private final RepeatRunner RUNNER;
+
+        Builder() {
+            RUNNER = new RepeatRunner();
+        }
+
+        /**
+         * Add a test {@link Class} to be passed to {@link #RUNNER#TEST_RUNNER}.
+         * @param cls A {@link Class} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder addTestClass(@NotNull Class<?> cls) {
+            RUNNER.TEST_CLASSES.add(cls);
+            return this;
+        }
+
+        /**
+         * Set {@link TestNG#m_verbose} level to control the level of logging.
+         * @param level An {@link Integer} value.
+         * @return THe current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withVerboseLevel(int level) {
+            RUNNER.verbosity = level;
+            return this;
+        }
+
+        /**
+         * Set the {@link Pagination#retries} value.
+         * @param retries An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withRetryCount(int retries) {
+            RUNNER.PAGINATION.retries = retries;
+            return this;
+        }
+
+        /**
+         * Set the {@link Pagination#partitionSize} value. This batches the test
+         * runners into sets of tests.
+         * @param partition An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withPartitionSize(int partition) {
+            RUNNER.PAGINATION.partitionSize = partition;
+            return this;
+        }
+
+        @NotNull
+        public RepeatRunner build() {
+            return RUNNER;
+        }
+    }
+    //endregion
+
+    //region Pagination
+    public static final class Pagination implements RetryProtocol {
+        int retries;
+        int partitionSize;
+        int currentIndex;
+
+        Pagination() {}
+
+        //region RetryProtocol
+        /**
+         * Override this method to provide custom retry count.
+         * @return An {@link Integer} value.
+         */
+        @Override
+        public int minRetries() {
+            return retries;
+        }
+        //endregion
+
+        /**
+         * Partition the retries to run test parallel tests.
+         * @return An {@link Integer} value.
+         */
+        public int partitionSize() {
+            return partitionSize;
+        }
+
+        /**
+         * Return the number of partitions to separate the tests by.
+         * @return An {@link Integer} value.
+         */
+        public int partitionCount() {
+            return (int)Math.ceil((double)minRetries() / partitionSize());
+        }
+
+        /**
+         * Increment the {@link #currentIndex} value in order to provide the
+         * next set of parameters when another round of tests commences.
+         * @return A {@link Completable} instance.
+         */
+        @NotNull
+        public Completable rxIncrementIndex() {
+            return Completable.fromAction(() -> currentIndex += 1);
+        }
+
+        /**
+         * Set the {@link #currentIndex} value in order to provide the next
+         * set of parameters when another round of tests commences.
+         * @return A {@link Completable} instance.
+         */
+        @NotNull
+        public Completable rxSetCurrentIndex(final int INDEX) {
+            return Completable.fromAction((() -> currentIndex = INDEX));
+        }
+
+        /**
+         * Get the appropriate index parameters after each batch run.
+         * @return An {@link Integer} array.
+         */
+        @NotNull
+        public int[] indexParameters() {
+            final int CURRENT = currentIndex;
+            final int SIZE = partitionSize();
+            double tries = minRetries();
+            final int RUNS = (int)Math.min(tries - CURRENT * SIZE, SIZE);
+            return IntStream.range(0, RUNS).map(a -> CURRENT * SIZE + a).toArray();
+        }
+
+        /**
+         * To be used with {@link DataProvider}.
+         * @return An {@link Iterator} of {@link Object} Array.
+         */
+        @NotNull
+        public Iterator<Object[]> dataParameters() {
+            List<Object[]> params = new LinkedList<>();
+            int[] indexes = indexParameters();
+            IntStream.of(indexes).forEach(a -> params.add(new Object[] { a }));
+            return params.iterator();
+        }
+
+        /**
+         * Reset {@link #currentIndex} to original value.
+         * @return A {@link Completable} instance.
+         */
+        @NotNull
+        public Completable rxResetIndex() {
+            return Completable.fromAction(() -> currentIndex = 0);
+        }
+    }
+    //endregion
+
+    @FunctionalInterface
+    public interface TestRunner {
+        /**
+         * Call this method to run all tests registered in a
+         * {@link RepeatRunner} instance.
+         */
+        @Test
+        void runTests();
+    }
+
+    /**
+     * Mark test methods with this {@link java.lang.annotation.Annotation} in
+     * order to detect which {@link org.testng.annotations.Test} method is used
+     * to run {@link RepeatRunner#run()}. That method will be skipped when
+     * {@link com.swiften.xtestkit.test.RepeatRunner} processes
+     * {@link java.lang.annotation.Annotation} in order to prevent infinitely
+     * recursive tests.
+     */
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface TestRunnerMethod {}
+}

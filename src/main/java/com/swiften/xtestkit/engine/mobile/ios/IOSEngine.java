@@ -142,24 +142,24 @@ public class IOSEngine extends MobileEngine<
     /**
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBefore(BeforeParam)
+     * @see PlatformEngine#rxBeforeMethod(BeforeParam)
      * @see #rxStartDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return rxStartDriver();
     }
 
     /**
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfter(AfterParam)
+     * @see PlatformEngine#rxAfterMethod(AfterParam)
      * @see #rxStopDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
         return rxStopDriver();
     }
     //endregion

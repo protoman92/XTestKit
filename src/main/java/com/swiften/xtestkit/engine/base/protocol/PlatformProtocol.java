@@ -1,10 +1,7 @@
 package com.swiften.xtestkit.engine.base.protocol;
 
-import com.swiften.xtestkit.engine.base.Attribute;
+import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by haipham on 3/21/17.
@@ -16,7 +13,8 @@ public interface PlatformProtocol {
      * Specify the name for a text attribute. Generally should be 'text'.
       * @return A {@link Attribute} value.
      */
-    @NotNull Attribute textAttribute();
+    @NotNull
+    Attribute textAttribute();
 
     /**
      * Specify the name for a hint attribute. For e.g., on Android it could

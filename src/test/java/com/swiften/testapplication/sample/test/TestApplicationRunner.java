@@ -1,26 +1,43 @@
 package com.swiften.testapplication.sample.test;
 
-import com.swiften.xtestkit.test.RepeatTestRunner;
 import com.swiften.testapplication.sample.Config;
+import com.swiften.testapplication.sample.login.ui.LoginUITest;
+import com.swiften.xtestkit.test.RepeatRunner;
 import org.jetbrains.annotations.NotNull;
-import org.junit.runners.model.InitializationError;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.util.Iterator;
 
 /**
  * Created by haipham on 3/26/17.
  */
 
-/**
- * We subclass {@link RepeatTestRunner} and provide a custom retry count,
- * based on {@link Config#runCount()}, which, in turn, is based on the number
- * of {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered.
- */
-public final class TestApplicationRunner extends RepeatTestRunner {
-    public TestApplicationRunner(@NotNull Class<?> cls) throws InitializationError {
-        super(cls);
+public final class TestApplicationRunner implements RepeatRunner.TestRunner {
+    /**
+     * This {@link RepeatRunner} must be static to avoid it being recreated
+     * upon every test iteration.
+     */
+    @NotNull private static final RepeatRunner RUNNER;
+
+    static {
+        RUNNER = RepeatRunner.newBuilder()
+            .addTestClass(LoginUITest.class)
+            .withRetryCount(Config.runCount())
+            .withPartitionSize(2)
+            .withVerboseLevel(0)
+            .build();
     }
 
+    @NotNull
+    @DataProvider
+    public static Iterator<Object[]> dataProvider() {
+        return RUNNER.dataParameters();
+    }
+
+    @Test
     @Override
-    public int minRetries() {
-        return Config.runCount();
+    public void runTests() {
+        RUNNER.run();
     }
 }

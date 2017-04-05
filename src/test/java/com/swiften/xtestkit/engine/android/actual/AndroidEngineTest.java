@@ -6,7 +6,10 @@ import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +30,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
 
     @BeforeClass
     @SuppressWarnings("unchecked")
-    public static void beforeClass() {
+    public void beforeClass() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStartEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -35,7 +38,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
 
     @AfterClass
     @SuppressWarnings("unchecked")
-    public static void afterClass() {
+    public void afterClass() {
         TestSubscriber subscriber = TestSubscriber.create();
         ENGINE.rxStopEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -62,7 +65,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Assert.assertTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
     }
 
     @Test
@@ -99,6 +102,6 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Assert.assertTrue(TestUtil.getFirstNextEvent(subscriber));
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
     }
 }

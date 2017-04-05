@@ -10,11 +10,13 @@ import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
+import static org.testng.Assert.*;
+
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -35,13 +37,18 @@ public class TestKitTest {
         TEST_KIT = spy(TestKit.newBuilder().build());
     }
 
-    @Before
-    public void before() {
+    @BeforeMethod
+    public void beforeMethod() {
         doReturn(Flowable.just(true)).when(ENGINE).rxBeforeClass(any());
         doReturn(Flowable.just(true)).when(ENGINE).rxAfterClass(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxBefore(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxAfter(any());
-        doReturn(ENGINE).when(TEST_KIT).currentEngine();
+        doReturn(Flowable.just(true)).when(ENGINE).rxBeforeMethod(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxAfterMethod(any());
+        doReturn(ENGINE).when(TEST_KIT).engine(anyInt());
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+        reset(ENGINE, TEST_KIT);
     }
 
     //region BeforeClass
@@ -60,20 +67,20 @@ public class TestKitTest {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
-        verify(TEST_KIT).currentEngine();
+        verify(TEST_KIT).engine(anyInt());
         verify(ENGINE).rxBeforeClass(any());
     }
     //endregion
 
-    //region Before
+    //region BeforeMethod
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_before_shouldSucceed() {
+    public void mock_beforeMethod_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxBefore(BeforeParam.DEFAULT).subscribe(subscriber);
+        TEST_KIT.rxBeforeMethod(BeforeParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -81,8 +88,8 @@ public class TestKitTest {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
-        verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxBefore(any());
+        verify(TEST_KIT).engine(anyInt());
+        verify(ENGINE).rxBeforeMethod(any());
     }
     //endregion
 
@@ -91,7 +98,6 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_afterClass_shouldSucceed() {
         // Setup
-        doReturn(0).when(TEST_KIT).currentIndex();
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -103,7 +109,7 @@ public class TestKitTest {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
-        verify(TEST_KIT).currentEngine();
+        verify(TEST_KIT).engine(anyInt());
         verify(ENGINE).rxAfterClass(any());
     }
     //endregion
@@ -111,12 +117,12 @@ public class TestKitTest {
     //region After
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_after_shouldSucceed() {
+    public void mock_afterMethod_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        TEST_KIT.rxAfter(AfterParam.DEFAULT).subscribe(subscriber);
+        TEST_KIT.rxAfterMethod(AfterParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -124,8 +130,8 @@ public class TestKitTest {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
-        verify(TEST_KIT).currentEngine();
-        verify(ENGINE).rxAfter(any());
+        verify(TEST_KIT).engine(anyInt());
+        verify(ENGINE).rxAfterMethod(any());
     }
     //endregion
 }

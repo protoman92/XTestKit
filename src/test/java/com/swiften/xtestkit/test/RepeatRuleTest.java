@@ -1,33 +1,42 @@
 package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.util.Log;
-import org.junit.*;
-import org.junit.runner.RunWith;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.testng.annotations.*;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by haipham on 3/25/17.
  */
-@RunWith(RepeatTestRunner.class)
 public class RepeatRuleTest {
-    @BeforeClass
-    public static void beforeClass() {
-        Log.println("Before Class");
+    private final int INDEX;
+
+    @Factory(
+        dataProviderClass = RepeatRuleTestRunner.class,
+        dataProvider = "dataProvider"
+    )
+    public RepeatRuleTest(int index) {
+        Log.println("Current thread", Thread.currentThread().getId(), index);
+        INDEX = index;
     }
+
+    @BeforeClass
+    public void beforeClass() {}
 
     @AfterClass
-    public static void afterClass() {
-        Log.println("After Class");
-    }
+    public void afterClass() {}
 
-    @Before
-    public void before() {
-        Log.println("Before");
-    }
+    @BeforeMethod
+    public void beforeMethod() {}
 
-    @After
-    public void after() {
-        Log.println("After");
-    }
+    @AfterMethod
+    public void afterMethod() {}
 
     @Test
     public void mock_runTest1_shouldRepeat() {}

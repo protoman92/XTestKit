@@ -1,4 +1,4 @@
-package com.swiften.xtestkit.engine.base;
+package com.swiften.xtestkit.engine.base.xpath;
 
 import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +37,8 @@ public class XPath {
     void appendAttribute(@NotNull String attr) {
         attribute = String.format("%1$s[%2$s]", attribute, attr);
     }
+
+
 
     public static class Builder {
         @NotNull private final XPath XPATH;

@@ -1,9 +1,8 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.xtestkit.engine.base.Attribute;
-import com.swiften.xtestkit.engine.base.XPath;
+import com.swiften.xtestkit.engine.base.xpath.Attribute;
+import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.base.param.*;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
@@ -14,18 +13,16 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.mockito.Mockito.*;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import static org.testng.Assert.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,8 +78,8 @@ public final class PlatformEngineTest implements ErrorProtocol {
         TRIES = 10;
     }
 
-    @Before
-    public void before() {
+    @BeforeMethod
+    public void beforeMethod() {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
@@ -100,8 +97,8 @@ public final class PlatformEngineTest implements ErrorProtocol {
         );
     }
 
-    @After
-    public void after() {
+    @AfterMethod
+    public void afterMethod() {
         reset(DRIVER, ENGINE, NAVIGATION, PLATFORM_VIEWS);
     }
 
@@ -747,13 +744,13 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         @NotNull
         @Override
-        public Flowable<Boolean> rxBefore(@NotNull BeforeParam param) {
+        public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
             return Flowable.empty();
         }
 
         @NotNull
         @Override
-        public Flowable<Boolean> rxAfter(@NotNull AfterParam param) {
+        public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
             return Flowable.empty();
         }
 

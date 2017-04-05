@@ -4,7 +4,7 @@ import com.swiften.xtestkit.localizer.Localizer;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.Locale;
 
