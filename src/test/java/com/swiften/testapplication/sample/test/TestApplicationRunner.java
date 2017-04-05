@@ -12,7 +12,6 @@ import java.util.Iterator;
 /**
  * Created by haipham on 3/26/17.
  */
-
 public final class TestApplicationRunner implements RepeatRunner.TestRunner {
     /**
      * This {@link RepeatRunner} must be static to avoid it being recreated
@@ -26,17 +25,19 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
             .withRetryCount(Config.runCount())
             .withPartitionSize(2)
             .withVerboseLevel(0)
+            .withParameterConsumer(Config.TEST_KIT)
             .build();
     }
 
     @NotNull
-    @DataProvider
+    @DataProvider(parallel = true)
     public static Iterator<Object[]> dataProvider() {
         return RUNNER.dataParameters();
     }
 
     @Test
     @Override
+    @RepeatRunner.TestRunnerMethod
     public void runTests() {
         RUNNER.run();
     }

@@ -5,24 +5,35 @@ import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Random;
 
 /**
  * Created by haipham on 4/5/17.
  */
-public class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
-    @NotNull
-    private static final RepeatRunner RUNNER;
+public class RepeatRuleTestRunner implements
+    RepeatRunner.TestRunner {
+    @NotNull private static final RepeatRunner RUNNER;
+    @NotNull private static final RepeatRunner.IndexConsumer PC;
+    @NotNull private static final Random RAND;
 
     static {
+        RAND = new Random();
+
+        PC = new RepeatRunner.IndexConsumer() {
+            @Override
+            public int consumptionCount(@NotNull int[] indexes) {
+                int def = RepeatRunner.IndexConsumer.super.consumptionCount(indexes);
+                return def;
+            }
+        };
+
         RUNNER = RepeatRunner.newBuilder()
             .addTestClass(RepeatRuleTest.class)
             .withVerboseLevel(0)
             .withRetryCount(11)
             .withPartitionSize(3)
+            .withParameterConsumer(PC)
             .build();
     }
 

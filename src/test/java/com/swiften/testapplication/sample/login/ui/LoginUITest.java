@@ -1,6 +1,7 @@
 package com.swiften.testapplication.sample.login.ui;
 
 import com.swiften.testapplication.sample.common.BaseUITest;
+import com.swiften.testapplication.sample.test.TestApplicationRunner;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.kit.TestKit;
@@ -25,6 +26,10 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
         PASSWORD = "12345678";
     }
 
+    @Factory(
+        dataProviderClass = TestApplicationRunner.class,
+        dataProvider = "dataProvider"
+    )
     public LoginUITest(int index) {
         super(index);
     }

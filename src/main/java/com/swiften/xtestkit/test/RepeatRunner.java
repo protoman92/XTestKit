@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -33,7 +34,8 @@ import java.util.stream.IntStream;
 public class RepeatRunner implements
     IAnnotationTransformer2,
     ITestListener,
-    ITestNGListener {
+    ITestNGListener,
+    RepeatRunnerError {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -165,33 +167,36 @@ public class RepeatRunner implements
 
         @SuppressWarnings("unchecked")
         final Pagination PG = this.PAGINATION;
-        final int PARTITION = PG.partitionCount();
 
         class Run {
             @NotNull
             @SuppressWarnings("WeakerAccess")
-            Completable run(final int INDEX) {
-                if (INDEX < PARTITION) {
+            Completable run() {
+                if (PG.isAvailable()) {
                     /* Refer to explanation for createRunner() as to why
                      * we need to create a new TestNg instance for every
                      * iteration */
                     final TestNG RUNNER = createRunner();
+                    int[] indexes = PG.indexParameters();
+                    final int CONSUMED = indexes.length;
+
+                    Log.println(Arrays.toString(indexes));
 
                     return Completable
                         .fromAction(RUNNER::run)
                         .toFlowable()
                         .defaultIfEmpty(true)
-                        .flatMapCompletable(a -> PG.rxSetCurrentIndex(INDEX + 1))
+                        .flatMapCompletable(a -> PG.rxAppendConsumed(CONSUMED))
                         .toFlowable()
                         .defaultIfEmpty(true)
-                        .flatMapCompletable(a -> new Run().run(PG.currentIndex));
+                        .flatMapCompletable(a -> new Run().run());
                 }
 
                 return PG.rxResetIndex();
             }
         }
 
-        new Run().run(0).toFlowable().subscribe(subscriber);
+        new Run().run().toFlowable().subscribe(subscriber);
         subscriber.assertNoErrors();
     }
 
@@ -248,6 +253,17 @@ public class RepeatRunner implements
             return this;
         }
 
+        /**
+         * Set the {@link #RUNNER#indexConsumer} instance.
+         * @param consumer A {@link IndexConsumer} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withParameterConsumer(@NotNull IndexConsumer consumer) {
+            RUNNER.PAGINATION.indexConsumer = consumer;
+            return this;
+        }
+
         @NotNull
         public RepeatRunner build() {
             return RUNNER;
@@ -257,11 +273,25 @@ public class RepeatRunner implements
 
     //region Pagination
     public static final class Pagination implements RetryProtocol {
+        @Nullable IndexConsumer indexConsumer;
         int retries;
         int partitionSize;
-        int currentIndex;
+        int consumed;
 
         Pagination() {}
+
+        /**
+         * Return {@link #indexConsumer}.
+         * @return A {@link IndexConsumer} instance.
+         */
+        @NotNull
+        public IndexConsumer indexConsumer() {
+            if (Objects.nonNull(indexConsumer)) {
+                return indexConsumer;
+            }
+
+            throw new RuntimeException(PARAMETER_CONSUMER_UNAVAILABLE);
+        }
 
         //region RetryProtocol
         /**
@@ -283,31 +313,13 @@ public class RepeatRunner implements
         }
 
         /**
-         * Return the number of partitions to separate the tests by.
-         * @return An {@link Integer} value.
-         */
-        public int partitionCount() {
-            return (int)Math.ceil((double)minRetries() / partitionSize());
-        }
-
-        /**
-         * Increment the {@link #currentIndex} value in order to provide the
-         * next set of parameters when another round of tests commences.
-         * @return A {@link Completable} instance.
-         */
-        @NotNull
-        public Completable rxIncrementIndex() {
-            return Completable.fromAction(() -> currentIndex += 1);
-        }
-
-        /**
-         * Set the {@link #currentIndex} value in order to provide the next
+         * Set the {@link #consumed} value in order to provide the next
          * set of parameters when another round of tests commences.
          * @return A {@link Completable} instance.
          */
         @NotNull
-        public Completable rxSetCurrentIndex(final int INDEX) {
-            return Completable.fromAction((() -> currentIndex = INDEX));
+        public Completable rxAppendConsumed(final int ADDITION) {
+            return Completable.fromAction((() -> consumed += ADDITION));
         }
 
         /**
@@ -316,11 +328,19 @@ public class RepeatRunner implements
          */
         @NotNull
         public int[] indexParameters() {
-            final int CURRENT = currentIndex;
-            final int SIZE = partitionSize();
+            IndexConsumer indexConsumer = indexConsumer();
+            final int CONSUMED = consumed;
+            int size = partitionSize();
             double tries = minRetries();
-            final int RUNS = (int)Math.min(tries - CURRENT * SIZE, SIZE);
-            return IntStream.range(0, RUNS).map(a -> CURRENT * SIZE + a).toArray();
+            int end = (int)Math.min(tries - CONSUMED, size);
+
+            int[] newIndexes = IntStream
+                .range(0, end)
+                .map(a -> CONSUMED + a)
+                .toArray();
+
+            int toBeConsumed = indexConsumer.consumptionCount(newIndexes);
+            return IntStream.of(newIndexes).limit(toBeConsumed).toArray();
         }
 
         /**
@@ -336,12 +356,20 @@ public class RepeatRunner implements
         }
 
         /**
-         * Reset {@link #currentIndex} to original value.
+         * Reset {@link #consumed} to original value.
          * @return A {@link Completable} instance.
          */
         @NotNull
         public Completable rxResetIndex() {
-            return Completable.fromAction(() -> currentIndex = 0);
+            return Completable.fromAction(() -> consumed = 0);
+        }
+
+        /**
+         * Check whether pagination has ended.
+         * @return A {@link Boolean} value.
+         */
+        public boolean isAvailable() {
+            return consumed < minRetries();
         }
     }
     //endregion
@@ -356,11 +384,25 @@ public class RepeatRunner implements
         void runTests();
     }
 
+    public interface IndexConsumer {
+        /**
+         * Get the number of consumptions, based on
+         * {@link Pagination#indexParameters()}. For example, there might
+         * be clashes that prevent two consumers from consuming their
+         * respective indexes.
+         * @param indexes An Array of {@link Integer}.
+         * @return An {@link Integer} value.
+         */
+        default int consumptionCount(@NotNull int[] indexes) {
+            return indexes.length;
+        }
+    }
+
     /**
      * Mark test methods with this {@link java.lang.annotation.Annotation} in
      * order to detect which {@link org.testng.annotations.Test} method is used
      * to run {@link RepeatRunner#run()}. That method will be skipped when
-     * {@link com.swiften.xtestkit.test.RepeatRunner} processes
+     * {@link RepeatRunner} processes
      * {@link java.lang.annotation.Annotation} in order to prevent infinitely
      * recursive tests.
      */

@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.kit;
 
+import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.AfterClassParam;
 import com.swiften.xtestkit.engine.base.param.AfterParam;
@@ -8,6 +9,8 @@ import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
+import com.swiften.xtestkit.test.RepeatRunner;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -19,7 +22,10 @@ import java.util.*;
 /**
  * Created by haipham on 3/24/17.
  */
-public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
+public class TestKit implements
+    RepeatRunner.IndexConsumer,
+    PlatformEngine.TextDelegate,
+    TestKitError {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -32,6 +38,34 @@ public class TestKit implements PlatformEngine.TextDelegate, TestKitError {
         ENGINES = new LinkedList<>();
         RxUtil.overrideErrorHandler();
     }
+
+    //region RepeatRunner.ParameterConsumer
+
+    /**
+     * If two consecutive {@link PlatformEngine} are of the same {@link Class}
+     * (for e.g., two consecutive
+     * {@link com.swiften.xtestkit.engine.mobile.android.AndroidEngine}, we
+     * return immediately because usually each {@link Platform} CLI tools do
+     * not allow two different instances running at the same time.
+     * @param indexes An Array of {@link Integer}.
+     * @return An {@link Integer} value.
+     */
+    @Override
+    public int consumptionCount(@NotNull int[] indexes) {
+        for (int i = 0, length = indexes.length; i < length; i++) {
+            if (i < length - 1) {
+                PlatformEngine<?> first = engine(i);
+                PlatformEngine<?> second = engine(i + 1);
+
+                if (first.getClass().equals(second.getClass())) {
+                    return i + 1;
+                }
+            }
+        }
+
+        return RepeatRunner.IndexConsumer.super.consumptionCount(indexes);
+    }
+    //endregion
 
     //region PlatformEngine.TextDelegate
     @NotNull

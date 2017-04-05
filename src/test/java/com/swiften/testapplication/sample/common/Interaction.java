@@ -22,13 +22,16 @@ import java.util.concurrent.TimeUnit;
 public final class Interaction implements DelayProtocol {
     @NotNull private final TestKit TEST_KIT;
 
-    public Interaction(@NotNull TestKit testKit) {
+    private final int INDEX;
+
+    public Interaction(@NotNull TestKit testKit, int index) {
         TEST_KIT = testKit;
+        INDEX = index;
     }
 
     @NotNull
     private PlatformEngine<?> engine() {
-        return TEST_KIT.engine(1);
+        return TEST_KIT.engine(INDEX);
     }
 
     //region Splash Screen

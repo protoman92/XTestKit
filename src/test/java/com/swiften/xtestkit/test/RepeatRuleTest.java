@@ -3,6 +3,7 @@ package com.swiften.xtestkit.test;
 import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Constructor;
@@ -22,7 +23,6 @@ public class RepeatRuleTest {
         dataProvider = "dataProvider"
     )
     public RepeatRuleTest(int index) {
-        Log.println("Current thread", Thread.currentThread().getId(), index);
         INDEX = index;
     }
 

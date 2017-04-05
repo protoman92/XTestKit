@@ -8,6 +8,7 @@ import com.swiften.xtestkit.engine.base.param.AfterParam;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.testng.annotations.*;
@@ -41,17 +42,10 @@ public class BaseUITest {
 
     protected final int INDEX;
 
-    {
-        TEST_KIT = Config.TEST_KIT;
-        INTERACTION = new Interaction(TEST_KIT);
-    }
-
-    @Test(
-        dataProviderClass = TestApplicationRunner.class,
-        dataProvider = "dataProvider"
-    )
     public BaseUITest(int index) {
         INDEX = index;
+        TEST_KIT = Config.TEST_KIT;
+        INTERACTION = new Interaction(TEST_KIT, index);
     }
 
     @BeforeClass
