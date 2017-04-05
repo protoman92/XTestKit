@@ -1,9 +1,12 @@
 package com.swiften.xtestkit.test;
 
+import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.Log;
+import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import static org.mockito.Mockito.*;
+
+import org.testng.annotations.*;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -15,6 +18,7 @@ public class RepeatRuleTestRunner implements
     RepeatRunner.TestRunner {
     @NotNull private static final RepeatRunner RUNNER;
     @NotNull private static final RepeatRunner.IndexConsumer PC;
+    @NotNull private static final TestListener LISTENER;
     @NotNull private static final Random RAND;
 
     static {
@@ -23,10 +27,12 @@ public class RepeatRuleTestRunner implements
         PC = new RepeatRunner.IndexConsumer() {
             @Override
             public int consumptionCount(@NotNull int[] indexes) {
-                int def = RepeatRunner.IndexConsumer.super.consumptionCount(indexes);
+                int def = indexes.length;
                 return def;
             }
         };
+
+        LISTENER = mock(TestListener.class);
 
         RUNNER = RepeatRunner.newBuilder()
             .addTestClass(RepeatRuleTest.class)
@@ -34,6 +40,7 @@ public class RepeatRuleTestRunner implements
             .withRetryCount(11)
             .withPartitionSize(3)
             .withParameterConsumer(PC)
+            .addListener(LISTENER)
             .build();
     }
 
@@ -43,11 +50,29 @@ public class RepeatRuleTestRunner implements
         return RUNNER.dataParameters();
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        doReturn(Flowable.just(true)).when(LISTENER).onInitialStart();
+        doReturn(Flowable.just(true)).when(LISTENER).onAllTestsFinished();
+    }
+
+    @AfterClass
+    public void afterClass() {
+        reset(LISTENER);
+    }
+
     //region RepeatRunner.TestRunner
     @Test
     @Override
     public void runTests() {
+        // Setup
+
+        // When
         RUNNER.run();
+
+        // Then
+        verify(LISTENER).onInitialStart();
+        verify(LISTENER).onAllTestsFinished();
     }
     //endregion
 }

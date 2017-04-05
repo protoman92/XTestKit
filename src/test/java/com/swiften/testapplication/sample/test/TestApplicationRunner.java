@@ -22,10 +22,10 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
     static {
         RUNNER = RepeatRunner.newBuilder()
             .addTestClass(LoginUITest.class)
+            .withParameterConsumer(Config.TEST_KIT)
             .withRetryCount(Config.runCount())
             .withPartitionSize(2)
             .withVerboseLevel(0)
-            .withParameterConsumer(Config.TEST_KIT)
             .build();
     }
 

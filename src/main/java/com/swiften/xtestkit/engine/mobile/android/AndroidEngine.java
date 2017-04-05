@@ -8,7 +8,7 @@ import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
-import com.swiften.xtestkit.util.ProcessRunner;
+import com.swiften.xtestkit.engine.base.ProcessRunner;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -152,7 +152,7 @@ public class AndroidEngine extends MobileEngine<
     @Override
     protected AndroidDriver<AndroidElement> createDriverInstance() {
         try {
-            URL url = new URL(serverUrl());
+            URL url = new URL(serverUri());
             DesiredCapabilities capabilities = desiredCapabilities();
             return new AndroidDriver<>(url, capabilities);
         } catch (MalformedURLException e) {

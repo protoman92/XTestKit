@@ -3,7 +3,7 @@ package com.swiften.xtestkit.engine.ios.mock;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.util.ProcessRunner;
+import com.swiften.xtestkit.engine.base.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

@@ -11,7 +11,7 @@ import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.util.ProcessRunner;
+import com.swiften.xtestkit.engine.base.ProcessRunner;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
@@ -223,7 +223,7 @@ public class IOSEngine extends MobileEngine<
     @Override
     protected IOSDriver<IOSElement> createDriverInstance() {
         try {
-            URL url = new URL(serverUrl());
+            URL url = new URL(serverUri());
             DesiredCapabilities capabilities = desiredCapabilities();
             return new IOSDriver<>(url, capabilities);
         } catch (MalformedURLException e) {

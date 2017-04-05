@@ -10,10 +10,13 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.test.RepeatRunner;
+import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.bcel.generic.FLOAD;
+import org.apache.xpath.operations.Bool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +28,8 @@ import java.util.*;
 public class TestKit implements
     RepeatRunner.IndexConsumer,
     PlatformEngine.TextDelegate,
-    TestKitError {
+    TestKitError,
+    TestListener {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -40,7 +44,6 @@ public class TestKit implements
     }
 
     //region RepeatRunner.ParameterConsumer
-
     /**
      * If two consecutive {@link PlatformEngine} are of the same {@link Class}
      * (for e.g., two consecutive
@@ -64,6 +67,32 @@ public class TestKit implements
         }
 
         return RepeatRunner.IndexConsumer.super.consumptionCount(indexes);
+    }
+    //endregion
+
+    //region TestListener
+    @NotNull
+    @Override
+    public Flowable<Boolean> onInitialStart() {
+        return Flowable
+            .fromIterable(engines())
+            .flatMap(PlatformEngine::onInitialStart)
+            .toList()
+            .toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> onAllTestsFinished() {
+        return Flowable
+            .fromIterable(engines())
+            .flatMap(PlatformEngine::onAllTestsFinished)
+            .toList()
+            .toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
     }
     //endregion
 
@@ -129,7 +158,7 @@ public class TestKit implements
 
     //region Test Setup
     /**
-     * Convenience method for {@link org.junit.BeforeClass}.
+     * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
@@ -140,7 +169,7 @@ public class TestKit implements
     }
 
     /**
-     * Convenience method for {@link org.junit.AfterClass}.
+     * Convenience method for {@link org.testng.annotations.AfterClass}.
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
@@ -151,7 +180,7 @@ public class TestKit implements
     }
 
     /**
-     * Convenience method for {@link org.junit.Before}.
+     * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeMethod(BeforeParam)
@@ -162,7 +191,7 @@ public class TestKit implements
     }
 
     /**
-     * Convenience method for {@link org.junit.After}.
+     * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterMethod(AfterParam)
@@ -221,6 +250,7 @@ public class TestKit implements
     }
     //endregion
 
+    //region Builder
     public static final class Builder {
         @NotNull private final TestKit TEST_KIT;
         @NotNull private final Localizer.Builder LOCALIZER_BUILDER;
@@ -274,4 +304,5 @@ public class TestKit implements
             return KIT;
         }
     }
+    //endregion
 }

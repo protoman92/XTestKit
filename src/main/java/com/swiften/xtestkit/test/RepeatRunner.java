@@ -2,8 +2,11 @@ package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
+import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +38,8 @@ public class RepeatRunner implements
     IAnnotationTransformer2,
     ITestListener,
     ITestNGListener,
-    RepeatRunnerError {
+    RepeatRunnerError,
+    TestListener {
     @NotNull
     public static Builder newBuilder() {
         return new Builder();
@@ -43,12 +47,14 @@ public class RepeatRunner implements
 
     @NotNull private final Pagination PAGINATION;
     @NotNull final List<Class<?>> TEST_CLASSES;
+    @NotNull final Collection<TestListener> LISTENERS;
 
     int verbosity;
 
     RepeatRunner() {
         TEST_CLASSES = new LinkedList<>();
         PAGINATION = new Pagination();
+        LISTENERS = new HashSet<>();
     }
 
     //region IAnnotationTransformer2
@@ -161,6 +167,34 @@ public class RepeatRunner implements
     }
     //endregion
 
+    //region Test Run
+
+    //region TestListener
+    @NotNull
+    @Override
+    public Flowable<Boolean> onInitialStart() {
+        return Flowable
+            .fromIterable(LISTENERS)
+            .flatMap(TestListener::onInitialStart)
+            .toList()
+            .<Boolean>toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> onAllTestsFinished() {
+        return Flowable
+            .fromIterable(LISTENERS)
+            .flatMap(TestListener::onAllTestsFinished)
+            .toList()
+            .<Boolean>toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+    //endregion
+
     @SuppressWarnings("unchecked")
     public void run() {
         TestSubscriber subscriber = TestSubscriber.create();
@@ -180,8 +214,6 @@ public class RepeatRunner implements
                     int[] indexes = PG.indexParameters();
                     final int CONSUMED = indexes.length;
 
-                    Log.println(Arrays.toString(indexes));
-
                     return Completable
                         .fromAction(RUNNER::run)
                         .toFlowable()
@@ -192,13 +224,20 @@ public class RepeatRunner implements
                         .flatMapCompletable(a -> new Run().run());
                 }
 
-                return PG.rxResetIndex();
+                return onAllTestsFinished()
+                    .flatMapCompletable(a -> PG.rxResetIndex());
             }
         }
 
-        new Run().run().toFlowable().subscribe(subscriber);
+        onInitialStart()
+            .flatMapCompletable(a -> new Run().run())
+            .toFlowable()
+            .defaultIfEmpty(true)
+            .subscribe(subscriber);
+
         subscriber.assertNoErrors();
     }
+    //endregion
 
     //region Builder
     public static final class Builder {
@@ -261,6 +300,17 @@ public class RepeatRunner implements
         @NotNull
         public Builder withParameterConsumer(@NotNull IndexConsumer consumer) {
             RUNNER.PAGINATION.indexConsumer = consumer;
+            return this;
+        }
+
+        /**
+         * Add a {@link TestListener} instance to {@link #RUNNER#LISTENERS}.
+         * @param listener A {@link TestListener} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder addListener(@NotNull TestListener listener) {
+            RUNNER.LISTENERS.add(listener);
             return this;
         }
 

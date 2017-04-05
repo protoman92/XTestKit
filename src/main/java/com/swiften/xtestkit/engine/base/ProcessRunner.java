@@ -1,5 +1,6 @@
-package com.swiften.xtestkit.util;
+package com.swiften.xtestkit.engine.base;
 
+import com.swiften.xtestkit.util.Log;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.apache.commons.exec.CommandLine;
@@ -27,7 +28,6 @@ public class ProcessRunner {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-        Log.println(String.format("Executing command '%s'", args));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();

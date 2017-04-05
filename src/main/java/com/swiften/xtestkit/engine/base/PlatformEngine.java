@@ -10,9 +10,10 @@ import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.test.RepeatRunner;
+import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.Log;
-import com.swiften.xtestkit.util.ProcessRunner;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,8 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class PlatformEngine<T extends WebDriver> implements
     DelayProtocol,
-    ErrorProtocol {
+    ErrorProtocol,
+    TestListener {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
     @Nullable private WeakReference<TextDelegate> textDelegate;
@@ -43,14 +45,28 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @NotNull String browserName;
     @NotNull String platformName;
-    @NotNull String serverUrl;
+    @NotNull ServerAddress serverAddress;
 
     public PlatformEngine() {
         PROCESS_RUNNER = ProcessRunner.newBuilder().build();
         browserName = "";
         platformName = "";
-        serverUrl = "http://localhost:4723/wd/hub";
+        serverAddress = ServerAddress.DEFAULT;
     }
+
+    //region TestListener
+    @NotNull
+    @Override
+    public Flowable<Boolean> onInitialStart() {
+        return Flowable.just(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> onAllTestsFinished() {
+        return Flowable.just(true);
+    }
+    //endregion
 
     //region Test Setup
     /**
@@ -103,12 +119,21 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Getters
     /**
-     * Return {@link #serverUrl}.
+     * Return {@link #serverAddress}.
      * @return A {@link String} value.
      */
     @NotNull
-    public String serverUrl() {
-        return serverUrl;
+    public ServerAddress serverAddress() {
+        return serverAddress;
+    }
+
+    /**
+     * Get the {@link #serverAddress()} uri address.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String serverUri() {
+        return serverAddress().uri();
     }
 
     /**
@@ -215,7 +240,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public List<String> requiredCapabilities() {
         List<String> required = Collections.singletonList(
-            serverUrl
+            serverAddress.uri()
         );
 
         return new ArrayList<>(required);
@@ -728,6 +753,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
+    //region Builder
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
 
@@ -759,14 +785,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         /**
-         * Set the {@link #ENGINE#serverUrl}. This {@link String} represents
+         * Set the {@link #ENGINE#serverAddress}. This {@link String} represents
          * the Appium server address.
-         * @param url The server url.
+         * @param address A {@link ServerAddress} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder<T> withServerUrl(@NotNull String url) {
-            ENGINE.serverUrl = url;
+        public Builder<T> withServerUrl(@NotNull ServerAddress address) {
+            ENGINE.serverAddress = address;
             return this;
         }
 
@@ -799,6 +825,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         @NotNull
         protected abstract T createEngineInstance();
     }
+    //endregion
 
     /**
      * Implement this interface to localize text when needed
