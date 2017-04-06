@@ -4,6 +4,7 @@ package com.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
+import com.google.common.base.Strings;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.protocol.*;
@@ -14,8 +15,10 @@ import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -115,6 +118,56 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public abstract Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param);
+
+    /**
+     * Start appium with a specified {@link #serverUri()}.
+     * @return A {@link Flowable} instance.
+     * @see #cmWhichAppium()
+     * @see #processRunner()
+     */
+    @NotNull
+    public Flowable<Boolean> rxStartLocalAppiumServer() {
+        final ProcessRunner RUNNER = processRunner();
+        String whichAppium = cmWhichAppium();
+
+        return RUNNER.rxExecute(whichAppium)
+            .filter(StringUtil::isNotNullOrEmpty)
+            .map(a -> a.replace("\n", ""))
+            .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
+            .doOnNext(RUNNER::execute)
+            .map(a -> true)
+            .delay(appiumStartDelay(), TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Stop all local appium instances.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxStopAllLocalAppiumServers() {
+        String stop = cmStopAppium();
+        return processRunner().rxExecute(stop).map(a -> true);
+    }
+    //endregion
+
+    //region CLI commands
+    /**
+     * Command to detect where appium is installed.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmWhichAppium() {
+        return "which appium";
+    }
+
+    /**
+     * Command to stop all local Appium instances.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmStopAppium() {
+        return "killall node appium";
+    }
     //endregion
 
     //region Getters

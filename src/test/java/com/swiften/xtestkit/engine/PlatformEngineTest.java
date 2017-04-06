@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.engine;
 
+import com.swiften.xtestkit.engine.base.ProcessRunner;
 import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.base.param.*;
@@ -8,6 +9,7 @@ import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
 import com.swiften.xtestkit.engine.base.protocol.View;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public final class PlatformEngineTest implements ErrorProtocol {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
+    @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final PlatformEngine.TextDelegate LOCALIZER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
@@ -45,6 +48,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
         ENGINE = spy(new MockEngine.Builder()
             .withPlatformView(mock(PlatformView.class))
             .build());
+
+        /* Return this processRunner when we call ENGINE.processRunner() */
+        PROCESS_RUNNER = spy(ProcessRunner.newBuilder().build());
 
         /* Return this localizer when we call ENGINE.localizer() */
         LOCALIZER = mock(PlatformEngine.TextDelegate.class);
@@ -81,6 +87,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @BeforeMethod
     public void beforeMethod() {
         doReturn(DRIVER).when(ENGINE).driver();
+        doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
@@ -99,7 +106,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
     @AfterMethod
     public void afterMethod() {
-        reset(DRIVER, ENGINE, NAVIGATION, PLATFORM_VIEWS);
+        reset(DRIVER, ENGINE, PROCESS_RUNNER, NAVIGATION, PLATFORM_VIEWS);
     }
 
     //region Engine Setup
@@ -109,6 +116,79 @@ public final class PlatformEngineTest implements ErrorProtocol {
         // When
         // Then
         assertTrue(ENGINE.hasAllRequiredInformation());
+    }
+    //endregion
+
+    //region Appium Server
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_startAppiumServerWithoutCLI_shouldThrow() {
+        try {
+            // Setup
+            String whichAppium = ENGINE.cmWhichAppium();
+            doReturn("").when(PROCESS_RUNNER).execute(eq(whichAppium));
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxStartLocalAppiumServer().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertErrorMessage(APPIUM_NOT_INSTALLED);
+            subscriber.assertNotComplete();
+            verify(PROCESS_RUNNER).execute(anyString());
+            verify(PROCESS_RUNNER).rxExecute(anyString());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_startAppiumServer_shouldSucceed() {
+        try {
+            // Setup
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            doReturn(100L).when(ENGINE).appiumStartDelay();
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxStartLocalAppiumServer().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(PROCESS_RUNNER, times(2)).execute(anyString());
+            verify(PROCESS_RUNNER).rxExecute(anyString());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_stopAppiumServer_shouldSucceed() {
+        try {
+            // Setup
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxStopAllLocalAppiumServers().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(PROCESS_RUNNER).execute(anyString());
+            verify(PROCESS_RUNNER).rxExecute(anyString());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
     //endregion
 
@@ -172,6 +252,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     }
     //endregion
 
+    //region Alert
     @Test
     @SuppressWarnings("unchecked")
     public void mock_acceptAlert_shouldSucceed() {
@@ -188,6 +269,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
         verify(ENGINE).rxDismissAlert(any(AlertParam.class));
     }
+    //endregion
 
     //region Stop Driver
     @Test

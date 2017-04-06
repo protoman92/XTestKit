@@ -9,6 +9,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.util.Objects;
 
 /**
  * Created by haipham on 3/22/17.
@@ -39,9 +40,11 @@ public class ProcessRunner {
 
         try {
             executor.execute(commandLine);
-            return outputStream.toString();
+            String output = outputStream.toString();
+            return Objects.nonNull(output) ? output : "";
         } catch (IOException e) {
             String error = outputStream.toString();
+            e.printStackTrace();
             throw new IOException(error);
         }
     }

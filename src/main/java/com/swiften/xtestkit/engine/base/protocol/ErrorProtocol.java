@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by haipham on 3/19/17.
  */
 public interface ErrorProtocol {
+    String APPIUM_NOT_INSTALLED = "Appium not installed";
     String DRIVER_UNAVAILABLE = "Driver unavailable";
     String PLATFORM_VIEW_UNAVAILABLE = "Platform view unavailable";
     String PLATFORM_UNAVAILABLE = "Platform unavailable";

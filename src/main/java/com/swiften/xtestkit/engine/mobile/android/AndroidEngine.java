@@ -9,6 +9,7 @@ import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.util.StringUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -170,11 +171,11 @@ public class AndroidEngine extends MobileEngine<
     public String cmAndroidHome() {
         String androidHome = System.getenv("ANDROID_HOME");
 
-        if (Objects.isNull(androidHome) || androidHome.isEmpty()) {
-            throw new RuntimeException(ANDROID_HOME_NOT_SET);
+        if (StringUtil.isNotNullOrEmpty(androidHome)) {
+            return androidHome;
         }
 
-        return androidHome;
+        throw new RuntimeException(ANDROID_HOME_NOT_SET);
     }
 
     /**
@@ -513,7 +514,7 @@ public class AndroidEngine extends MobileEngine<
         String command = cmCheckKeyboardOpen();
 
         return processRunner().rxExecute(command)
-            .filter(a -> a != null && !a.isEmpty())
+            .filter(StringUtil::isNotNullOrEmpty)
             .map(output -> {
                 String regex = "mHasSurface=(\\w+)";
                 Pattern pattern = Pattern.compile(regex);

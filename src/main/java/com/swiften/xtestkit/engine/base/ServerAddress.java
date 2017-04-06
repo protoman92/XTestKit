@@ -1,11 +1,9 @@
 package com.swiften.xtestkit.engine.base;
 
-import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by haipham on 4/5/17.
@@ -27,8 +25,8 @@ public class ServerAddress {
 
     @NotNull public static final ServerAddress DEFAULT;
     @NotNull private static final List<Integer> USED_PORTS;
-    @NotNull private static final String LOCAL_URI_FORMAT;
-    private static final int BASE_PORT;
+    @NotNull public static final String LOCAL_URI_FORMAT;
+    public static final int BASE_PORT;
 
     static {
         USED_PORTS = new ArrayList<>();
@@ -37,42 +35,24 @@ public class ServerAddress {
         DEFAULT = new ServerAddress();
     }
 
+    @NotNull private Mode mode;
+    @NotNull private String uri;
+    private int port;
+
+    ServerAddress() {
+        mode = Mode.LOCAL;
+        uri = "";
+        port = 0;
+    }
+
     /**
      * Get a default uri based on {@link #LOCAL_URI_FORMAT}.
      * @param port An {@link Integer} value.
      * @return A {@link String} value.
      */
     @NotNull
-    private static String defaultLocalUri(int port) {
+    public String defaultLocalUri(int port) {
         return String.format(LOCAL_URI_FORMAT, port);
-    }
-
-    /**
-     * If {@link #USED_PORTS} is empty, use {@link #BASE_PORT}. Otherwise,
-     * use the last used port, incremented by 1.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    private static String defaultLocalUri() {
-        List<Integer> usedPorts = USED_PORTS;
-
-        if (usedPorts.isEmpty()) {
-            int port = BASE_PORT;
-            usedPorts.add(port);
-            return defaultLocalUri(port);
-        }
-
-        int newPort = usedPorts.get(usedPorts.size() - 1) + 1;
-        usedPorts.add(newPort);
-        return defaultLocalUri(newPort);
-    }
-
-    @NotNull private Mode mode;
-    @NotNull private String uri;
-
-    ServerAddress() {
-        mode = Mode.LOCAL;
-        uri = "";
     }
 
     /**
@@ -82,10 +62,39 @@ public class ServerAddress {
     @NotNull
     public String uri() {
         if (uri.isEmpty()) {
-            return defaultLocalUri();
+            return defaultLocalUri(newPort());
         }
 
         return uri;
+    }
+
+    /**
+     * Return {@link #port).
+     * @return An {@link Integer} value.
+     */
+    public int port() {
+        return port;
+    }
+
+    /**
+     * Return {@link #port}. If it is not available, return a default port
+     * for local environment.
+     * @return An {@link Integer} value.
+     */
+    public int newPort() {
+        List<Integer> usedPorts = USED_PORTS;
+
+        if (port == 0 || usedPorts.contains(port)) {
+            if (usedPorts.isEmpty()) {
+                port = BASE_PORT;
+            } else {
+                port = usedPorts.get(usedPorts.size() - 1) + 1;
+            }
+
+            usedPorts.add(port);
+        }
+
+        return port;
     }
 
     public static final class Builder {

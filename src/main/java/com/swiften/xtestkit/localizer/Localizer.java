@@ -2,6 +2,7 @@ package com.swiften.xtestkit.localizer;
 
 import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
 import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,7 +66,7 @@ public class Localizer implements LocalizeErrorProtocol {
                         return Flowable
                             .fromIterable(BUNDLES)
                             .map(a -> getString(a, TEXT))
-                            .filter(a -> Objects.nonNull(a) && !a.isEmpty())
+                            .filter(StringUtil::isNotNullOrEmpty)
                             .firstElement()
                             .toFlowable()
                             .switchIfEmpty(new Localize().localize(INDEX + 1));
@@ -77,7 +78,7 @@ public class Localizer implements LocalizeErrorProtocol {
 
             return new Localize()
                 .localize(0)
-                .filter(a -> Objects.nonNull(a) && !a.isEmpty())
+                .filter(StringUtil::isNotNullOrEmpty)
                 .defaultIfEmpty(TEXT);
         } else {
             return Flowable.just(TEXT);
@@ -93,7 +94,7 @@ public class Localizer implements LocalizeErrorProtocol {
     public String localize(@NotNull String text) {
         String result = rxLocalize(text).blockingSingle();
 
-        if (result != null && !result.isEmpty()) {
+        if (StringUtil.isNotNullOrEmpty(result)) {
             return result;
         } else {
             return text;
