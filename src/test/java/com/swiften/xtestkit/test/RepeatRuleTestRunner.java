@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.Log;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
@@ -52,8 +51,8 @@ public class RepeatRuleTestRunner implements
 
     @BeforeClass
     public static void beforeClass() {
-        doReturn(Flowable.just(true)).when(LISTENER).onInitialStart();
-        doReturn(Flowable.just(true)).when(LISTENER).onAllTestsFinished();
+        doReturn(Flowable.just(true)).when(LISTENER).rxOnFreshStart();
+        doReturn(Flowable.just(true)).when(LISTENER).rxOnAllTestsFinished();
     }
 
     @AfterClass
@@ -71,8 +70,8 @@ public class RepeatRuleTestRunner implements
         RUNNER.run();
 
         // Then
-        verify(LISTENER).onInitialStart();
-        verify(LISTENER).onAllTestsFinished();
+        verify(LISTENER).rxOnFreshStart();
+        verify(LISTENER).rxOnAllTestsFinished();
     }
     //endregion
 }

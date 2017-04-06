@@ -13,7 +13,7 @@ public interface TestListener {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> onInitialStart();
+    Flowable<Boolean> rxOnFreshStart();
 
     /**
      * Call this method when all tests have finished, typically at the
@@ -22,5 +22,5 @@ public interface TestListener {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> onAllTestsFinished();
+    Flowable<Boolean> rxOnAllTestsFinished();
 }

@@ -117,8 +117,7 @@ public class IOSEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        /* We are not actually doing anything here */
-        return Flowable.just(true);
+        return rxStartLocalAppiumServer();
     }
 
     /**

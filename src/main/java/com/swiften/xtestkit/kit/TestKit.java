@@ -11,12 +11,9 @@ import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.bcel.generic.FLOAD;
-import org.apache.xpath.operations.Bool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,10 +70,10 @@ public class TestKit implements
     //region TestListener
     @NotNull
     @Override
-    public Flowable<Boolean> onInitialStart() {
+    public Flowable<Boolean> rxOnFreshStart() {
         return Flowable
             .fromIterable(engines())
-            .flatMap(PlatformEngine::onInitialStart)
+            .flatMap(PlatformEngine::rxOnFreshStart)
             .toList()
             .toFlowable()
             .map(a -> true)
@@ -85,10 +82,10 @@ public class TestKit implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> onAllTestsFinished() {
+    public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable
             .fromIterable(engines())
-            .flatMap(PlatformEngine::onAllTestsFinished)
+            .flatMap(PlatformEngine::rxOnAllTestsFinished)
             .toList()
             .toFlowable()
             .map(a -> true)

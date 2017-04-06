@@ -74,12 +74,14 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         switch (testMode()) {
             case EMULATOR:
                 return rxStartEmulator(param)
                     /* Disable animations to avoid erratic behaviors */
-                    .flatMap(a -> rxDisableEmulatorAnimations());
+                    .flatMap(a -> rxDisableEmulatorAnimations())
+                    .flatMap(a -> rxStartLocalAppiumServer());
 
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));

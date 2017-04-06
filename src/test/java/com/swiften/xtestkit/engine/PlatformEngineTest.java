@@ -9,7 +9,6 @@ import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
 import com.swiften.xtestkit.engine.base.protocol.View;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -139,6 +138,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertNotComplete();
             verify(PROCESS_RUNNER).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(ENGINE).rxStartLocalAppiumServer();
+            verify(ENGINE).processRunner();
+            verify(ENGINE, atLeastOnce()).cmWhichAppium();
+            verify(ENGINE, never()).cmStartAppium(anyString());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -163,6 +166,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertComplete();
             verify(PROCESS_RUNNER, times(2)).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(ENGINE).cmStartAppium(anyString());
+            verify(ENGINE).rxStartLocalAppiumServer();
+            verify(ENGINE).processRunner();
+            verify(ENGINE, atLeastOnce()).cmWhichAppium();
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -177,7 +184,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStopAllLocalAppiumServers().subscribe(subscriber);
+            ENGINE.rxStopLocalAppiumServers().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -186,6 +193,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertComplete();
             verify(PROCESS_RUNNER).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(ENGINE).rxStopLocalAppiumServers();
+            verify(ENGINE).processRunner();
+            verify(ENGINE).cmStopAppium();
         } catch (Exception e) {
             fail(e.getMessage());
         }

@@ -5,7 +5,6 @@ import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +94,9 @@ public class RepeatRunner implements
     public void onTestSuccess(@NotNull ITestResult result) {}
 
     @Override
-    public void onTestFailure(@NotNull ITestResult result) {}
+    public void onTestFailure(@NotNull ITestResult result) {
+        Log.println(result.getThrowable());
+    }
 
     @Override
     public void onTestSkipped(@NotNull ITestResult result) {}
@@ -172,10 +173,10 @@ public class RepeatRunner implements
     //region TestListener
     @NotNull
     @Override
-    public Flowable<Boolean> onInitialStart() {
+    public Flowable<Boolean> rxOnFreshStart() {
         return Flowable
             .fromIterable(LISTENERS)
-            .flatMap(TestListener::onInitialStart)
+            .flatMap(TestListener::rxOnFreshStart)
             .toList()
             .<Boolean>toFlowable()
             .map(a -> true)
@@ -184,10 +185,10 @@ public class RepeatRunner implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> onAllTestsFinished() {
+    public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable
             .fromIterable(LISTENERS)
-            .flatMap(TestListener::onAllTestsFinished)
+            .flatMap(TestListener::rxOnAllTestsFinished)
             .toList()
             .<Boolean>toFlowable()
             .map(a -> true)
@@ -224,12 +225,12 @@ public class RepeatRunner implements
                         .flatMapCompletable(a -> new Run().run());
                 }
 
-                return onAllTestsFinished()
+                return rxOnAllTestsFinished()
                     .flatMapCompletable(a -> PG.rxResetIndex());
             }
         }
 
-        onInitialStart()
+        rxOnFreshStart()
             .flatMapCompletable(a -> new Run().run())
             .toFlowable()
             .defaultIfEmpty(true)

@@ -29,6 +29,7 @@ public class ProcessRunner {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
+        Log.println(args);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();
@@ -44,7 +45,6 @@ public class ProcessRunner {
             return Objects.nonNull(output) ? output : "";
         } catch (IOException e) {
             String error = outputStream.toString();
-            e.printStackTrace();
             throw new IOException(error);
         }
     }

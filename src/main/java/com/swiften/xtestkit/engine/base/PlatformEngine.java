@@ -4,21 +4,18 @@ package com.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import com.google.common.base.Strings;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -60,13 +57,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //region TestListener
     @NotNull
     @Override
-    public Flowable<Boolean> onInitialStart() {
+    public Flowable<Boolean> rxOnFreshStart() {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> onAllTestsFinished() {
+    public Flowable<Boolean> rxOnAllTestsFinished() {
+        if (serverAddress().isLocalInstance()) {
+            return rxStopLocalAppiumServers().onErrorReturnItem(true);
+        }
+
         return Flowable.just(true);
     }
     //endregion
@@ -134,7 +135,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
-            .doOnNext(RUNNER::execute)
+            .map(this::cmStartAppium)
+            .doOnNext(a -> new Thread(() -> {
+                try {
+                    RUNNER.execute(a);
+                } catch (Exception e) {
+                    Log.println(e);
+                }
+            }).start())
             .map(a -> true)
             .delay(appiumStartDelay(), TimeUnit.MILLISECONDS);
     }
@@ -144,7 +152,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxStopAllLocalAppiumServers() {
+    public Flowable<Boolean> rxStopLocalAppiumServers() {
         String stop = cmStopAppium();
         return processRunner().rxExecute(stop).map(a -> true);
     }
@@ -167,6 +175,20 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public String cmStopAppium() {
         return "killall node appium";
+    }
+
+    /**
+     * Command to start an Appium instance.
+     * @param exePath The path to Appium CLI. A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmStartAppium(@NotNull String exePath) {
+        return AppiumCommand.newBuilder()
+            .withBase(exePath)
+            .withPort(serverAddress().newPort())
+            .build()
+            .command();
     }
     //endregion
 

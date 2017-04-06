@@ -16,6 +16,16 @@ import java.util.List;
 public class ServerAddress {
     public enum Mode {
         LOCAL;
+
+        boolean isLocalInstance() {
+            switch (this) {
+                case LOCAL:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
     }
 
     @NotNull
@@ -42,7 +52,7 @@ public class ServerAddress {
     ServerAddress() {
         mode = Mode.LOCAL;
         uri = "";
-        port = 0;
+        port = BASE_PORT;
     }
 
     /**
@@ -56,13 +66,22 @@ public class ServerAddress {
     }
 
     /**
+     * Return {@link #mode}.
+     * @return A {@link Mode} instance.
+     */
+    @NotNull
+    public Mode mode() {
+        return mode;
+    }
+
+    /**
      * Return {@link #uri}.
      * @return A {@link String} value.
      */
     @NotNull
-    public String uri() {
+    public synchronized String uri() {
         if (uri.isEmpty()) {
-            return defaultLocalUri(newPort());
+            return defaultLocalUri(port());
         }
 
         return uri;
@@ -72,8 +91,16 @@ public class ServerAddress {
      * Return {@link #port).
      * @return An {@link Integer} value.
      */
-    public int port() {
+    public synchronized int port() {
         return port;
+    }
+
+    /**
+     * Check whether Appium should be started locally.
+     * @return A {@link Boolean} value.
+     */
+    public boolean isLocalInstance() {
+        return mode().isLocalInstance();
     }
 
     /**
@@ -81,7 +108,7 @@ public class ServerAddress {
      * for local environment.
      * @return An {@link Integer} value.
      */
-    public int newPort() {
+    public synchronized int newPort() {
         List<Integer> usedPorts = USED_PORTS;
 
         if (port == 0 || usedPorts.contains(port)) {
@@ -90,7 +117,9 @@ public class ServerAddress {
             } else {
                 port = usedPorts.get(usedPorts.size() - 1) + 1;
             }
+        }
 
+        if (!usedPorts.contains(port)) {
             usedPorts.add(port);
         }
 

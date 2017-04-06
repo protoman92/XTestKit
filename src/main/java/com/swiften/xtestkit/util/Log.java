@@ -15,6 +15,12 @@ public class Log {
         }
     }
 
+    public static void println(@NotNull Throwable t) {
+        if (Constants.isLoggingEnabled()) {
+            t.printStackTrace();
+        }
+    }
+
     @SafeVarargs
     public static <T> void println(@NotNull T...objects) {
         if (Constants.isLoggingEnabled()) {
