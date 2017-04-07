@@ -4,7 +4,9 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableTransformer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 import java.util.Collection;
 
@@ -12,6 +14,20 @@ import java.util.Collection;
  * Created by haipham on 3/26/17.
  */
 public class RxExtension {
+    /**
+     * Apply a {@link FlowableTransformer} to an existing {@link Flowable}.
+     * Applicable to {@link Flowable#compose(FlowableTransformer)}.
+     * @param <T> Generics parameter.
+     * @return A {@link FlowableTransformer} instance.
+     * @see Flowable#compose(FlowableTransformer)
+     */
+    @NotNull
+    public static <T> FlowableTransformer<T,T> withCommonSchedulers() {
+        return a -> a
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(Schedulers.trampoline());
+    }
+
     /**
      * Create a {@link Flowable} from a {@link Collection} of {@link T}. This
      * {@link Flowable} emits {@link Index}, allowing us to access to original

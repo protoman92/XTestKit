@@ -2,9 +2,11 @@ package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.test.protocol.TestListener;
 import io.reactivex.Flowable;
+import org.apache.bcel.generic.RET;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
+import org.mockito.ArgumentCaptor;
 import org.testng.annotations.*;
 
 import java.util.Iterator;
@@ -18,10 +20,15 @@ public class RepeatRuleTestRunner implements
     @NotNull private static final RepeatRunner RUNNER;
     @NotNull private static final RepeatRunner.IndexConsumer PC;
     @NotNull private static final TestListener LISTENER;
-    @NotNull private static final Random RAND;
+
+    private static final int RETRY;
+    private static final int PARTITION_SIZE;
+    private static final int PARTITION_COUNT;
 
     static {
-        RAND = new Random();
+        RETRY = 11;
+        PARTITION_SIZE = 3;
+        PARTITION_COUNT = (int)Math.ceil((double)RETRY / PARTITION_SIZE);
 
         PC = new RepeatRunner.IndexConsumer() {
             @Override
@@ -36,8 +43,8 @@ public class RepeatRuleTestRunner implements
         RUNNER = RepeatRunner.builder()
             .addTestClass(RepeatRuleTest.class)
             .withVerboseLevel(0)
-            .withRetryCount(11)
-            .withPartitionSize(3)
+            .withRetryCount(RETRY)
+            .withPartitionSize(PARTITION_SIZE)
             .withParameterConsumer(PC)
             .addListener(LISTENER)
             .build();
@@ -52,7 +59,8 @@ public class RepeatRuleTestRunner implements
     @BeforeClass
     public static void beforeClass() {
         doReturn(Flowable.just(true)).when(LISTENER).rxOnFreshStart();
-        doReturn(Flowable.just(true)).when(LISTENER).rxOnBatchStart(any());
+        doReturn(Flowable.just(true)).when(LISTENER).rxOnBatchStarted(any());
+        doReturn(Flowable.just(true)).when(LISTENER).rxOnBatchFinished(any());
         doReturn(Flowable.just(true)).when(LISTENER).rxOnAllTestsFinished();
     }
 
@@ -72,6 +80,8 @@ public class RepeatRuleTestRunner implements
 
         // Then
         verify(LISTENER).rxOnFreshStart();
+        verify(LISTENER, atLeast(PARTITION_COUNT)).rxOnBatchStarted(any());
+        verify(LISTENER, atLeast(PARTITION_COUNT)).rxOnBatchFinished(any());
         verify(LISTENER).rxOnAllTestsFinished();
     }
     //endregion

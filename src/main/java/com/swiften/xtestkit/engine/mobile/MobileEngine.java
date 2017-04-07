@@ -36,6 +36,11 @@ public abstract class MobileEngine<
         testMode = TestMode.EMULATOR;
     }
 
+    @NotNull
+    public String toString() {
+        return deviceName();
+    }
+
     //region Getters
     /**
      * Return {@link #app}.
@@ -146,6 +151,7 @@ public abstract class MobileEngine<
     }
     //endregion
 
+    //region Builder
     public static abstract class Builder<T extends MobileEngine> extends
         PlatformEngine.Builder<T> {
         /**
@@ -251,4 +257,5 @@ public abstract class MobileEngine<
             return this;
         }
     }
+    //endregion
 }

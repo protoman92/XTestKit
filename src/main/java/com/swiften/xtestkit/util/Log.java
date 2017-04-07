@@ -27,4 +27,10 @@ public class Log {
             System.out.println(Arrays.toString(objects));
         }
     }
+
+    public static void printf(@NotNull String format, @Nullable Object...object) {
+        if (Constants.isLoggingEnabled()) {
+            println(String.format(format, object));
+        }
+    }
 }

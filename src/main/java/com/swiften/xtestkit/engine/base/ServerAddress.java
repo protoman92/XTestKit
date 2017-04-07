@@ -56,6 +56,11 @@ public class ServerAddress implements ServerAddressError {
         port = BASE_PORT;
     }
 
+    @NotNull
+    public String toString() {
+        return uri();
+    }
+
     /**
      * Get a default uri based on {@link #LOCAL_URI_FORMAT}.
      * @param port An {@link Integer} value.

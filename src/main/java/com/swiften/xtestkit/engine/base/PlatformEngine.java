@@ -84,7 +84,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
         if (serverAddress().isLocalInstance()) {
             return rxStartLocalAppiumInstance();
         }
@@ -94,11 +94,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnAllTestsFinished() {
+    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
         if (serverAddress().isLocalInstance()) {
-            return rxStopLocalAppiumInstance().onErrorReturnItem(true);
+            return rxStopLocalAppiumInstance();
         }
 
+        return Flowable.just(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable.just(true);
     }
     //endregion
@@ -166,7 +172,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
-            .flatMap(this::rxStartLocalAppiumInstance)
+            .doOnNext(this::rxStartLocalAppiumInstance)
             .map(a -> true)
             .delay(appiumStartDelay(), TimeUnit.MILLISECONDS);
     }
@@ -175,22 +181,19 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Start a new local Appium instance. This will be run in a different
      * thread.
      * @param CLI The path to Appium CLI. A {@link String} value.
-     * @return A {@link Flowable} instance.
      * @see #cmStartLocalAppiumInstance(String, int)
      */
-    @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxStartLocalAppiumInstance(@NotNull final String CLI) {
-        NetworkHandler handler = NETWORK_HANDLER;
+    public void rxStartLocalAppiumInstance(@NotNull final String CLI) {
         final ProcessRunner RUNNER = processRunner();
         final ServerAddress ADDRESS = serverAddress();
 
-        return handler.rxCheckUntilPortAvailable(ADDRESS.port())
+        networkHandler().rxCheckUntilPortAvailable(ADDRESS.port())
             .doOnNext(a -> {
-                Log.println(a);
                 ADDRESS.setPort(a);
-
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
+
+                Log.printf("Port %d is available for %s", ADDRESS.port(), this);
 
                 /* Need to start on a new Thread, or else it will block */
                 new Thread(() -> {
@@ -201,18 +204,20 @@ public abstract class PlatformEngine<T extends WebDriver> implements
                     }
                 }).start();
             })
-            .map(a -> true);
+            .map(a -> true)
+            .subscribe();
     }
 
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see #cmStopLocalAppiumInstance()
+     * @see NetworkHandler#rxKillProcessWithPort(int)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
-        String stop = cmStopLocalAppiumInstance();
-        return processRunner().rxExecute(stop).map(a -> true);
+        int port = serverAddress().port();
+        Log.printf("Stopping appium instance at port %d for %s", port, this);
+        return networkHandler().rxKillProcessWithPort(port);
     }
     //endregion
 
@@ -224,15 +229,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public String cmWhichAppium() {
         return "which appium";
-    }
-
-    /**
-     * Command to stop all local Appium instances.
-     * @return A {@link String} value.
-     */
-    @NotNull
-    public String cmStopLocalAppiumInstance() {
-        return "killall node appium";
     }
 
     /**
@@ -456,9 +452,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver() {
+        Log.printf("Starting driver at %1$s for %2$s", serverAddress().uri(), this);
+
         return rxHasAllRequiredInformation()
             .flatMapCompletable(a -> Completable.fromAction(() -> {
-                Log.println(serverAddress.port());
                 driver = createDriverInstance();
             }))
             .<Boolean>toFlowable()
@@ -472,6 +469,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
+        Log.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
+
         return Completable.fromAction(() -> driver().quit())
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);

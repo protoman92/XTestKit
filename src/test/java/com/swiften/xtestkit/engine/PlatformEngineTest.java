@@ -114,7 +114,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
     @AfterMethod
     public void afterMethod() {
-        reset(DRIVER, ENGINE, PROCESS_RUNNER, NAVIGATION, PLATFORM_VIEWS);
+        reset(DRIVER, ENGINE, PROCESS_RUNNER, NETWORK_HANDLER, NAVIGATION, PLATFORM_VIEWS);
     }
 
     //region Engine Setup
@@ -203,11 +203,20 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(PROCESS_RUNNER, times(2)).execute(anyString());
+            verify(PROCESS_RUNNER, times(2)).rxExecute(anyString());
+            verify(ENGINE).serverAddress();
             verify(ENGINE).rxStopLocalAppiumInstance();
-            verify(ENGINE).processRunner();
-            verify(ENGINE).cmStopLocalAppiumInstance();
+            verify(ENGINE).networkHandler();
+            verify(ENGINE, times(2)).rxExecute(anyString());
+            verify(ENGINE, times(2)).processRunner();
+            verify(NETWORK_HANDLER).processRunner();
+            verify(NETWORK_HANDLER).cmFindPID(anyInt());
+            verify(NETWORK_HANDLER).cmKillPID(anyString());
+            verify(NETWORK_HANDLER).rxKillProcessWithPort(anyInt());
+            verifyNoMoreInteractions(PROCESS_RUNNER);
+            verifyNoMoreInteractions(ENGINE);
+            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }

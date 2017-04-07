@@ -9,9 +9,11 @@ import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
+import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.BoxUtil;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -72,6 +74,8 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
+        Log.println("Fresh start for all tests");
+
         return Flowable
             .fromIterable(engines())
             .flatMap(PlatformEngine::rxOnFreshStart)
@@ -81,19 +85,47 @@ public class TestKit implements
             .defaultIfEmpty(true);
     }
 
+    /**
+     * Convenient method to get {@link PlatformEngine} from {@link #ENGINES}
+     * based on an Array of {@link Integer} indexes.
+     * @param indexes An Array of {@link Integer}.
+     * @return A {@link Flowable} instance.
+     * @see #rxOnBatchStarted(int[])
+     * @see #rxOnBatchFinished(int[])
+     */
     @NotNull
-    @Override
-    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+    private Flowable<PlatformEngine> rxEnginesFromIndexes(@NotNull int[] indexes) {
         final List<PlatformEngine> ENGINES = engines();
         final int SIZE = ENGINES.size();
 
         return Flowable
-            .fromArray(BoxUtil.box(INDEXES))
+            .fromArray(BoxUtil.box(indexes))
             .filter(a -> a >= 0 && a < SIZE)
             .map(ENGINES::get)
             .filter(Objects::nonNull)
-            .switchIfEmpty(Flowable.error(new Exception(PLATFORM_ENGINE_UNAVAILABLE)))
-            .flatMap(a -> a.rxOnBatchStart(INDEXES))
+            .switchIfEmpty(Flowable.error(new Exception(PLATFORM_ENGINE_UNAVAILABLE)));
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
+        Log.printf("Starting batch with indexes %s", Arrays.toString(INDEXES));
+
+        return rxEnginesFromIndexes(INDEXES)
+            .flatMap(a -> a.rxOnBatchStarted(INDEXES))
+            .toList()
+            .toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
+        Log.printf("Finishing batch with indexes %s", Arrays.toString(INDEXES));
+
+        return rxEnginesFromIndexes(INDEXES)
+            .flatMap(a -> a.rxOnBatchFinished(INDEXES))
             .toList()
             .toFlowable()
             .map(a -> true)
@@ -103,6 +135,8 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
+        Log.println("All tests finished");
+
         return Flowable
             .fromIterable(engines())
             .flatMap(PlatformEngine::rxOnAllTestsFinished)
@@ -182,7 +216,9 @@ public class TestKit implements
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return engine(param.index()).rxBeforeClass(param);
+        return engine(param.index())
+            .rxBeforeClass(param)
+            .compose(RxExtension.withCommonSchedulers());
     }
 
     /**
@@ -193,7 +229,9 @@ public class TestKit implements
      */
     @NotNull
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-        return engine(param.index()).rxAfterClass(param);
+        return engine(param.index())
+            .rxAfterClass(param)
+            .compose(RxExtension.withCommonSchedulers());
     }
 
     /**
@@ -204,7 +242,9 @@ public class TestKit implements
      */
     @NotNull
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-        return engine(param.index()).rxBeforeMethod(param);
+        return engine(param.index())
+            .rxBeforeMethod(param)
+            .compose(RxExtension.withCommonSchedulers());
     }
 
     /**
@@ -215,7 +255,9 @@ public class TestKit implements
      */
     @NotNull
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        return engine(param.index()).rxAfterMethod(param);
+        return engine(param.index())
+            .rxAfterMethod(param)
+            .compose(RxExtension.withCommonSchedulers());
     }
 
     /**

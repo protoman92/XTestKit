@@ -1,10 +1,11 @@
 package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -168,16 +169,28 @@ public class RepeatRunner implements
     public Iterator<Object[]> dataParameters() {
         return PAGINATION.dataParameters();
     }
-    //endregion
 
-    //region Test Run
+    /**
+     * Return {@link #LISTENERS}.
+     * @return A {@link Collection} of {@link TestListener}.
+     * @throws RuntimeException If {@link #LISTENERS} is empty.
+     */
+    @NotNull
+    public Collection<TestListener> testListeners() {
+        if (LISTENERS.isEmpty()) {
+            throw new RuntimeException(LISTENERS_EMPTY);
+        }
+
+        return LISTENERS;
+    }
+    //endregion
 
     //region TestListener
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
         return Flowable
-            .fromIterable(LISTENERS)
+            .fromIterable(testListeners())
             .flatMap(TestListener::rxOnFreshStart)
             .toList()
             .<Boolean>toFlowable()
@@ -187,10 +200,22 @@ public class RepeatRunner implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
         return Flowable
-            .fromIterable(LISTENERS)
-            .flatMap(a -> a.rxOnBatchStart(INDEXES))
+            .fromIterable(testListeners())
+            .flatMap(a -> a.rxOnBatchStarted(INDEXES))
+            .toList()
+            .<Boolean>toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
+        return Flowable
+            .fromIterable(testListeners())
+            .flatMap(a -> a.rxOnBatchFinished(INDEXES))
             .toList()
             .<Boolean>toFlowable()
             .map(a -> true)
@@ -201,7 +226,7 @@ public class RepeatRunner implements
     @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable
-            .fromIterable(LISTENERS)
+            .fromIterable(testListeners())
             .flatMap(TestListener::rxOnAllTestsFinished)
             .toList()
             .<Boolean>toFlowable()
@@ -210,6 +235,7 @@ public class RepeatRunner implements
     }
     //endregion
 
+    //region Test Run
     @SuppressWarnings("unchecked")
     public void run() {
         TestSubscriber subscriber = TestSubscriber.create();
@@ -226,21 +252,21 @@ public class RepeatRunner implements
                      * we need to create a new TestNg instance for every
                      * iteration */
                     final TestNG RUNNER = createRunner();
-                    int[] indexes = PG.indexParameters();
-                    final int CONSUMED = indexes.length;
+                    final int[] INDEXES = PG.indexParameters();
+                    final int CONSUMED = INDEXES.length;
 
-                    return rxOnBatchStart(indexes)
+                    return rxOnBatchStarted(INDEXES)
                         .flatMapCompletable(a -> Completable.fromAction(RUNNER::run))
                         .toFlowable()
                         .defaultIfEmpty(true)
                         .flatMapCompletable(a -> PG.rxAppendConsumed(CONSUMED))
                         .toFlowable()
                         .defaultIfEmpty(true)
+                        .flatMap(a -> rxOnBatchFinished(INDEXES))
                         .flatMapCompletable(a -> new Run().run());
                 }
 
-                return rxOnAllTestsFinished()
-                    .flatMapCompletable(a -> PG.rxResetIndex());
+                return PG.rxResetIndex();
             }
         }
 
@@ -248,8 +274,10 @@ public class RepeatRunner implements
             .flatMapCompletable(a -> new Run().run())
             .toFlowable()
             .defaultIfEmpty(true)
+            .flatMap(a -> rxOnAllTestsFinished())
             .subscribe(subscriber);
 
+        subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
     }
     //endregion

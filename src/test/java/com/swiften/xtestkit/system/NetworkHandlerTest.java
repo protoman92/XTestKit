@@ -156,6 +156,5 @@ public class NetworkHandlerTest implements NetworkHandlerError {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        Log.println(subscriber.getEvents());
     }
 }

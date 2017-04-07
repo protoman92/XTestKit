@@ -8,7 +8,9 @@ import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
+import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.StringUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -16,6 +18,7 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
+import org.apache.bcel.generic.RET;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -52,6 +55,16 @@ public class AndroidEngine extends MobileEngine<
         appActivity = "";
     }
 
+    //region TestListener
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnFreshStart() {
+        /* We restart adb server at the start of all tests to avoid problems
+         * with inactive adb instances */
+        return super.rxOnFreshStart().flatMap(a -> rxRestartAdb());
+    }
+    //endregion
+
     //region Getters
     /**
      * Return {@link #appActivity}. This can be stubbed out for custom
@@ -80,8 +93,7 @@ public class AndroidEngine extends MobileEngine<
             case EMULATOR:
                 return rxStartEmulator(param)
                     /* Disable animations to avoid erratic behaviors */
-                    .flatMap(a -> rxDisableEmulatorAnimations())
-                    .flatMap(a -> rxStartLocalAppiumInstance());
+                    .flatMap(a -> rxDisableEmulatorAnimations());
 
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
@@ -164,6 +176,26 @@ public class AndroidEngine extends MobileEngine<
     }
     //endregion
 
+    //region Adb setup
+    /**
+     * Restart adb server in order to avoid problem with adb not acknowledging
+     * the first command at the start of a test batch.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxRestartAdb() {
+        final ProcessRunner RUNNER = processRunner();
+        NetworkHandler handler = networkHandler();
+
+        return handler
+            .rxKillProcessWithName("adb")
+            .onErrorResumeNext(Flowable.just(true))
+            .map(a -> cmLaunchAdb())
+            .flatMap(RUNNER::rxExecute)
+            .map(a -> true);
+    }
+    //endregion
+
     //region CLI commands
     /**
      * Get ${ANDROID_HOME} from Environment variables.
@@ -188,6 +220,15 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     public String cmAdb() {
         return String.format("%s/platform-tools/adb", cmAndroidHome());
+    }
+
+    /**
+     * Command to launch adb.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmLaunchAdb() {
+        return String.format("%s start-server", cmAdb());
     }
 
     /**
@@ -361,6 +402,9 @@ public class AndroidEngine extends MobileEngine<
         @SuppressWarnings("WeakerAccess")
         final long DELAY = emulatorBootRetryDelay();
 
+        @SuppressWarnings("WeakerAccess")
+        final long TIMEOUT = emulatorBoothTimeout();
+
         /* Append any error when starting up the emulator to this list, and
          * have retryWhen read it to determine whether to continue retrying */
         final List<Exception> ERRORS = new ArrayList<>();
@@ -404,7 +448,13 @@ public class AndroidEngine extends MobileEngine<
                         return Flowable.<Long>error(e);
                     }
                 }))
-            .map(a -> true);
+            .map(a -> true)
+
+            /* timeout is used here in case processRunner() fails to poll
+             * for bootanim. The timeout will be a reasonable value so that,
+             * at the end of the interval, the emulator would have been
+             * started up anyway */
+            .timeout(TIMEOUT, TimeUnit.MILLISECONDS, Flowable.just(true));
     }
 
     /**
@@ -779,6 +829,7 @@ public class AndroidEngine extends MobileEngine<
     //endregion
     //endregion
 
+    //region Builder
     public static final class Builder extends MobileEngine.Builder<AndroidEngine> {
         @NotNull
         @Override
@@ -806,4 +857,5 @@ public class AndroidEngine extends MobileEngine<
             return super.build();
         }
     }
+    //endregion
 }

@@ -4,6 +4,7 @@ import com.swiften.xtestkit.engine.base.param.NavigateBack;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
+import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
@@ -26,12 +27,16 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final RetryProtocol RETRY;
+    @NotNull private final NetworkHandler NETWORK_HANDLER;
     private final int RETRIES_ON_ERROR;
 
     {
         ENGINE = spy(AndroidEngine.builder()
             .withDeviceName("Nexus_4_API_23")
             .build());
+
+        /* We return this networkHandler when calling ENGINE.networkHandler() */
+        NETWORK_HANDLER = spy(NetworkHandler.builder().build());
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ENGINE.processRunner());
@@ -45,6 +50,8 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     @BeforeMethod
     public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
+        doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
+        doReturn(ENGINE).when(NETWORK_HANDLER).processRunner();
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ENGINE).emulatorBootRetryDelay();
@@ -57,8 +64,47 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
 
     @AfterMethod
     public void afterMethod() {
-        reset(ENGINE, PROCESS_RUNNER, RETRY);
+        reset(ENGINE, PROCESS_RUNNER, NETWORK_HANDLER, RETRY);
     }
+
+    //region Adb Setup
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_restartAdb_shouldSucceed() {
+        try {
+            // Setup
+            TestSubscriber subscriber = TestSubscriber.create();
+
+            // When
+            ENGINE.rxRestartAdb().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ENGINE).cmAndroidHome();
+            verify(ENGINE).cmAdb();
+            verify(ENGINE).cmLaunchAdb();
+            verify(ENGINE).rxRestartAdb();
+            verify(ENGINE, times(4)).processRunner();
+            verify(ENGINE).networkHandler();
+            verify(ENGINE, times(2)).rxExecute(anyString());
+            verify(PROCESS_RUNNER, times(3)).execute(anyString());
+            verify(PROCESS_RUNNER, times(3)).rxExecute(anyString());
+            verify(NETWORK_HANDLER, times(2)).processRunner();
+            verify(NETWORK_HANDLER).cmFindPID(anyString());
+            verify(NETWORK_HANDLER).cmKillPID(anyString());
+            verify(NETWORK_HANDLER).rxKillProcessWithName(anyString());
+            verify(NETWORK_HANDLER).rxKillProcessWithPid(anyString());
+            verifyNoMoreInteractions(ENGINE);
+            verifyNoMoreInteractions(PROCESS_RUNNER);
+            verifyNoMoreInteractions(NETWORK_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+    //endregion
 
     //region Start Emulator
     @Test

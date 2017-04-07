@@ -30,7 +30,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-        Log.println(args);
+        Log.printf("Executing '%s'", args);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();
@@ -65,6 +65,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
                 observer.onNext(output);
                 observer.onComplete();
             } catch (IOException e) {
+                Log.printf("Execution error: %s", e.getMessage());
                 observer.onError(e);
             }
         }, BackpressureStrategy.BUFFER);

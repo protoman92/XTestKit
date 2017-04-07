@@ -15,12 +15,9 @@ public class RxUtil {
     public static void overrideErrorHandler() {
         final Consumer<? super Throwable> HANDLER = RxJavaPlugins.getErrorHandler();
 
-        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
-                Log.println(throwable);
-                HANDLER.accept(throwable);
-            }
+        RxJavaPlugins.setErrorHandler(t -> {
+            Log.println(t);
+            HANDLER.accept(t);
         });
     }
 }

@@ -6,6 +6,7 @@ import com.swiften.xtestkit.engine.base.param.AfterParam;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.*;
 
@@ -43,6 +44,8 @@ public class BaseUITest {
 
     @BeforeClass
     public void beforeClass() {
+        Log.printf("BeforeClass for %s", TEST_KIT.engine(INDEX));
+
         /* Calling beforeClass() here ensures that each PlatformEngine will
          * only start the test environment once */
         TEST_KIT.beforeClass(beforeClassParam());
@@ -50,6 +53,7 @@ public class BaseUITest {
 
     @AfterClass
     public void afterClass() {
+        Log.printf("AfterClass for %s", TEST_KIT.engine(INDEX));
         TEST_KIT.afterClass(afterClassParam());
     }
 

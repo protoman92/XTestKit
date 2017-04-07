@@ -4,11 +4,14 @@ import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
 import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +20,12 @@ import java.util.regex.Pattern;
  * Created by haipham on 4/7/17.
  */
 public class NetworkHandler implements NetworkHandlerError {
+    @NotNull private static Collection<Integer> USED_PORTS;
+
+    static {
+        USED_PORTS = new HashSet<>();
+    }
+
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -71,12 +80,22 @@ public class NetworkHandler implements NetworkHandlerError {
      * @return A {@link Boolean} value.
      */
     public boolean isPortAvailable(@NotNull String output, int port) {
+        if (USED_PORTS.contains(port)) {
+            return false;
+        }
+
         /* The output we are looking for is *.${PORT} (LISTEN).
          * E.g., *.4723 (LISTEN) */
         String regex = String.format("\\*.%d( \\(LISTEN\\))?", port);
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(output);
-        return !matcher.find();
+
+        if (!matcher.find()) {
+            USED_PORTS.add(port);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -94,6 +113,7 @@ public class NetworkHandler implements NetworkHandlerError {
              * but it works correctly */
             .flatMap(a -> {
                 if (BooleanUtil.isTrue(a)) {
+                    Log.printf("Port %d is currently available", PORT);
                     return Flowable.just(PORT);
                 }
 
@@ -125,6 +145,53 @@ public class NetworkHandler implements NetworkHandlerError {
     }
 
     /**
+     * Kill a process using its PID value.
+     * @param pid A {@link String} value.
+     * @return A {@link Flowable} instance.
+     * @see #cmKillPID(String)
+     */
+    @NotNull
+    public Flowable<Boolean> rxKillProcessWithPid(@NotNull String pid) {
+        ProcessRunnerProtocol runner = processRunner();
+        String command = cmKillPID(pid);
+        return runner.rxExecute(command).map(a -> true);
+    }
+
+    /**
+     * Kill a process that is listening to a port.
+     * @param port An {@link Integer} value.
+     * @return A {@link Flowable} instance.
+     * @see #cmFindPID(int)
+     * @see #rxKillProcessWithPid(String)
+     */
+    @NotNull
+    public Flowable<Boolean> rxKillProcessWithPort(int port) {
+        return processRunner()
+            .rxExecute(cmFindPID(port))
+            .filter(StringUtil::isNotNullOrEmpty)
+            .map(a -> a.replace("\n", ""))
+            .flatMap(this::rxKillProcessWithPid)
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * Kill a process using its name.
+     * @param name A {@link String} value.
+     * @return A {@link Flowable} instance.
+     * @see #cmFindPID(String)
+     */
+    @NotNull
+    public Flowable<Boolean> rxKillProcessWithName(@NotNull String name) {
+        return processRunner()
+            .rxExecute(cmFindPID(name))
+            .filter(StringUtil::isNotNullOrEmpty)
+            .map(a -> a.replace("\n", ""))
+            .flatMap(this::rxKillProcessWithPid)
+            .defaultIfEmpty(true);
+    }
+
+    //region CLI
+    /**
      * Command to list all used ports.
      * @return A {@link String} value.
      */
@@ -133,6 +200,38 @@ public class NetworkHandler implements NetworkHandlerError {
         return "lsof -i";
     }
 
+    /**
+     * Command to get a PID process that is listing to a port.
+     * @param port An {@link Integer} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmFindPID(int port) {
+        return String.format("lsof -t -i:%d", port);
+    }
+
+    /**
+     * Command to stop a PID process.
+     * @param pid The PID the process. A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmKillPID(@NotNull String pid) {
+        return String.format("kill %s", pid);
+    }
+
+    /**
+     * Command to find a process PID using its name.
+     * @param name The name of the process. A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmFindPID(@NotNull String name) {
+        return String.format("pgrep %s", name);
+    }
+    //endregion
+
+    //region Builder
     public static final class Builder {
         @NotNull private final NetworkHandler HANDLER;
 
@@ -160,4 +259,5 @@ public class NetworkHandler implements NetworkHandlerError {
             return HANDLER;
         }
     }
+    //endregion
 }

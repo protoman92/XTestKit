@@ -34,7 +34,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
         super(index);
     }
 
-    @Test
+    @Test(enabled = false)
     @SuppressWarnings("unchecked")
     public void actual_openApp_shouldSucceed() {
         // Setup
@@ -54,7 +54,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
         subscriber.assertComplete();
     }
 
-    @Test
+    @Test(enabled = false)
     @SuppressWarnings("unchecked")
     public void actual_navigateToLoginScreen_shouldSucceed() {
         // Setup
@@ -74,7 +74,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
         subscriber.assertComplete();
     }
 
-    @Test
+    @Test(enabled = false)
     @SuppressWarnings("unchecked")
     public void actual_inputCredentials_shouldSucceed() {
         // Setup

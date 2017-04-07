@@ -99,6 +99,5 @@ public class ProcessRunnerTest {
         subscriber.awaitTerminalEvent();
 
         // Then
-        Log.println(subscriber.getEvents());
     }
 }
