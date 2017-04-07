@@ -617,9 +617,14 @@ public class AndroidEngine extends MobileEngine<
             .flatMap(a -> RUNNER.rxExecute(cmGetSettings(PARAM)))
             .filter(a -> a.contains(PARAM.value()))
             .map(a -> true)
+            .onErrorResumeNext(Flowable.empty())
             /* Throw error if the returned value does not match the new
              * setting value */
-            .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))));
+            .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))))
+
+            /* Sometimes an adb error may be thrown if the currently active
+             * adb instance does not acknowledge the request */
+            .retry(PARAM.minRetries());
     }
     //endregion
 

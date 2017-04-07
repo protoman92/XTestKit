@@ -46,6 +46,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
             return Objects.nonNull(output) ? output : "";
         } catch (IOException e) {
             String error = outputStream.toString();
+            Log.printf("Execution error: %s, output: ", e.getMessage(), error);
             throw new IOException(error);
         }
     }
@@ -65,7 +66,6 @@ public class ProcessRunner implements ProcessRunnerProtocol {
                 observer.onNext(output);
                 observer.onComplete();
             } catch (IOException e) {
-                Log.printf("Execution error: %s", e.getMessage());
                 observer.onError(e);
             }
         }, BackpressureStrategy.BUFFER);
