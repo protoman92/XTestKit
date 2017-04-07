@@ -11,7 +11,7 @@ import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
@@ -40,7 +40,7 @@ public class IOSEngine extends MobileEngine<
     IOSDelayProtocol,
     IOSErrorProtocol {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -117,7 +117,7 @@ public class IOSEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return rxStartLocalAppiumServer();
+        return rxStartLocalAppiumInstance();
     }
 
     /**

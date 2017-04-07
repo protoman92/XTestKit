@@ -4,7 +4,7 @@ import com.swiften.xtestkit.engine.base.param.NavigateBack;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -29,7 +29,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     private final int RETRIES_ON_ERROR;
 
     {
-        ENGINE = spy(AndroidEngine.newBuilder()
+        ENGINE = spy(AndroidEngine.builder()
             .withDeviceName("Nexus_4_API_23")
             .build());
 

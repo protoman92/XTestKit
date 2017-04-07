@@ -27,7 +27,7 @@ public class LocalizerTest implements LocalizeErrorProtocol {
     private int BUNDLE_COUNT = 3;
 
     {
-        LOCALIZER = spy(Localizer.newBuilder().build());
+        LOCALIZER = spy(Localizer.builder().build());
 
         STRINGS = new String[] {
             "helloWorld",

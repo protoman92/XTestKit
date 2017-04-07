@@ -20,7 +20,7 @@ public class BeforeParam implements IndexProtocol, RetryProtocol {
     }
 
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

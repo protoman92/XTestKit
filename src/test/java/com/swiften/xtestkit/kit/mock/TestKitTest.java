@@ -34,7 +34,7 @@ public class TestKitTest {
 
         /* Redirect all calls to TestKit here and check that method call
          * counts are correct */
-        TEST_KIT = spy(TestKit.newBuilder().build());
+        TEST_KIT = spy(TestKit.builder().build());
     }
 
     @BeforeMethod

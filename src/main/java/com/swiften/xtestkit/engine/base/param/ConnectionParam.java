@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ConnectionParam implements RetryProtocol {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

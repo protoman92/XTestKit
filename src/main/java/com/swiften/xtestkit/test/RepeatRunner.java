@@ -3,6 +3,7 @@ package com.swiften.xtestkit.test;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
+import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -40,7 +41,7 @@ public class RepeatRunner implements
     RepeatRunnerError,
     TestListener {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -95,6 +96,7 @@ public class RepeatRunner implements
 
     @Override
     public void onTestFailure(@NotNull ITestResult result) {
+        Log.println(result.getName());
         Log.println(result.getThrowable());
     }
 
@@ -185,6 +187,18 @@ public class RepeatRunner implements
 
     @NotNull
     @Override
+    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+        return Flowable
+            .fromIterable(LISTENERS)
+            .flatMap(a -> a.rxOnBatchStart(INDEXES))
+            .toList()
+            .<Boolean>toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable
             .fromIterable(LISTENERS)
@@ -215,8 +229,8 @@ public class RepeatRunner implements
                     int[] indexes = PG.indexParameters();
                     final int CONSUMED = indexes.length;
 
-                    return Completable
-                        .fromAction(RUNNER::run)
+                    return rxOnBatchStart(indexes)
+                        .flatMapCompletable(a -> Completable.fromAction(RUNNER::run))
                         .toFlowable()
                         .defaultIfEmpty(true)
                         .flatMapCompletable(a -> PG.rxAppendConsumed(CONSUMED))

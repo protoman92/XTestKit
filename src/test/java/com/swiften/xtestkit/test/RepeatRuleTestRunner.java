@@ -33,7 +33,7 @@ public class RepeatRuleTestRunner implements
 
         LISTENER = mock(TestListener.class);
 
-        RUNNER = RepeatRunner.newBuilder()
+        RUNNER = RepeatRunner.builder()
             .addTestClass(RepeatRuleTest.class)
             .withVerboseLevel(0)
             .withRetryCount(11)
@@ -52,6 +52,7 @@ public class RepeatRuleTestRunner implements
     @BeforeClass
     public static void beforeClass() {
         doReturn(Flowable.just(true)).when(LISTENER).rxOnFreshStart();
+        doReturn(Flowable.just(true)).when(LISTENER).rxOnBatchStart(any());
         doReturn(Flowable.just(true)).when(LISTENER).rxOnAllTestsFinished();
     }
 

@@ -19,7 +19,7 @@ public class XPath {
     public static XPath EMPTY = new XPath();
 
     @NotNull
-    public static Builder newBuilder(@NotNull PlatformProtocol platform) {
+    public static Builder builder(@NotNull PlatformProtocol platform) {
         return new Builder(platform);
     }
 

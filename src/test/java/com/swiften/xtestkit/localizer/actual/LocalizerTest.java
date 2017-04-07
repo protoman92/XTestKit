@@ -20,7 +20,7 @@ public class LocalizerTest {
     private int BUNDLE_COUNT = 3;
 
     {
-        LOCALIZER = spy(Localizer.newBuilder()
+        LOCALIZER = spy(Localizer.builder()
             .addBundleName("Strings", Locale.US)
             .build());
 

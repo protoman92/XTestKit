@@ -11,6 +11,7 @@ import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
+import com.swiften.xtestkit.util.BoxUtil;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -28,7 +29,7 @@ public class TestKit implements
     TestKitError,
     TestListener {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -74,6 +75,25 @@ public class TestKit implements
         return Flowable
             .fromIterable(engines())
             .flatMap(PlatformEngine::rxOnFreshStart)
+            .toList()
+            .toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+        final List<PlatformEngine> ENGINES = engines();
+        final int SIZE = ENGINES.size();
+
+        return Flowable
+            .fromArray(BoxUtil.box(INDEXES))
+            .filter(a -> a >= 0 && a < SIZE)
+            .map(ENGINES::get)
+            .filter(Objects::nonNull)
+            .switchIfEmpty(Flowable.error(new Exception(PLATFORM_ENGINE_UNAVAILABLE)))
+            .flatMap(a -> a.rxOnBatchStart(INDEXES))
             .toList()
             .toFlowable()
             .map(a -> true)
@@ -254,7 +274,7 @@ public class TestKit implements
 
         Builder() {
             TEST_KIT = new TestKit();
-            LOCALIZER_BUILDER = Localizer.newBuilder();
+            LOCALIZER_BUILDER = Localizer.builder();
         }
 
         /**

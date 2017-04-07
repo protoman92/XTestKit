@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ByXPath {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

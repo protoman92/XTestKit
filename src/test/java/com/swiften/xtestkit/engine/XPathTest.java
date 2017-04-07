@@ -17,7 +17,7 @@ public final class XPathTest {
     @Test
     public void test_buildXPath_shouldSucceed() {
         // Setup
-        XPath xPath = XPath.newBuilder(Platform.ANDROID)
+        XPath xPath = XPath.builder(Platform.ANDROID)
             .hasText("Text1")
             .containsText("Text2")
             .hasHint("Hint1")

@@ -10,6 +10,9 @@ import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.system.NetworkHandler;
+import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.Log;
@@ -24,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -35,8 +39,10 @@ import java.util.concurrent.TimeUnit;
 public abstract class PlatformEngine<T extends WebDriver> implements
     DelayProtocol,
     ErrorProtocol,
+    ProcessRunnerProtocol,
     TestListener {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private WeakReference<TextDelegate> textDelegate;
 
@@ -48,11 +54,26 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull ServerAddress serverAddress;
 
     public PlatformEngine() {
-        PROCESS_RUNNER = ProcessRunner.newBuilder().build();
+        PROCESS_RUNNER = ProcessRunner.builder().build();
+        NETWORK_HANDLER = NetworkHandler.builder().withProcessRunner(this).build();
         browserName = "";
         platformName = "";
         serverAddress = ServerAddress.DEFAULT;
     }
+
+    //region ProcessRunnerProtocol
+    @NotNull
+    @Override
+    public String execute(@NotNull String args) throws IOException {
+        return processRunner().execute(args);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<String> rxExecute(@NotNull String args) {
+        return processRunner().rxExecute(args);
+    }
+    //endregion
 
     //region TestListener
     @NotNull
@@ -63,9 +84,19 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @NotNull
     @Override
+    public Flowable<Boolean> rxOnBatchStart(@NotNull final int[] INDEXES) {
+        if (serverAddress().isLocalInstance()) {
+            return rxStartLocalAppiumInstance();
+        }
+
+        return Flowable.just(true);
+    }
+
+    @NotNull
+    @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
         if (serverAddress().isLocalInstance()) {
-            return rxStopLocalAppiumServers().onErrorReturnItem(true);
+            return rxStopLocalAppiumInstance().onErrorReturnItem(true);
         }
 
         return Flowable.just(true);
@@ -127,7 +158,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean> rxStartLocalAppiumServer() {
+    public Flowable<Boolean> rxStartLocalAppiumInstance() {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
 
@@ -135,25 +166,52 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
-            .map(this::cmStartAppium)
-            .doOnNext(a -> new Thread(() -> {
-                try {
-                    RUNNER.execute(a);
-                } catch (Exception e) {
-                    Log.println(e);
-                }
-            }).start())
+            .flatMap(this::rxStartLocalAppiumInstance)
             .map(a -> true)
             .delay(appiumStartDelay(), TimeUnit.MILLISECONDS);
     }
 
     /**
-     * Stop all local appium instances.
+     * Start a new local Appium instance. This will be run in a different
+     * thread.
+     * @param CLI The path to Appium CLI. A {@link String} value.
      * @return A {@link Flowable} instance.
+     * @see #cmStartLocalAppiumInstance(String, int)
      */
     @NotNull
-    public Flowable<Boolean> rxStopLocalAppiumServers() {
-        String stop = cmStopAppium();
+    @SuppressWarnings("unchecked")
+    public Flowable<Boolean> rxStartLocalAppiumInstance(@NotNull final String CLI) {
+        NetworkHandler handler = NETWORK_HANDLER;
+        final ProcessRunner RUNNER = processRunner();
+        final ServerAddress ADDRESS = serverAddress();
+
+        return handler.rxCheckUntilPortAvailable(ADDRESS.port())
+            .doOnNext(a -> {
+                Log.println(a);
+                ADDRESS.setPort(a);
+
+                final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
+
+                /* Need to start on a new Thread, or else it will block */
+                new Thread(() -> {
+                    try {
+                        RUNNER.execute(COMMAND);
+                    } catch (IOException e) {
+                        Log.println(e);
+                    }
+                }).start();
+            })
+            .map(a -> true);
+    }
+
+    /**
+     * Stop all local appium instances.
+     * @return A {@link Flowable} instance.
+     * @see #cmStopLocalAppiumInstance()
+     */
+    @NotNull
+    public Flowable<Boolean> rxStopLocalAppiumInstance() {
+        String stop = cmStopLocalAppiumInstance();
         return processRunner().rxExecute(stop).map(a -> true);
     }
     //endregion
@@ -173,20 +231,22 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link String} value.
      */
     @NotNull
-    public String cmStopAppium() {
+    public String cmStopLocalAppiumInstance() {
         return "killall node appium";
     }
 
     /**
      * Command to start an Appium instance.
-     * @param exePath The path to Appium CLI. A {@link String} value.
+     * @param cli The path to Appium CLI. A {@link String} value.
+     * @param port The port to be used to start a new Appium instance. An
+     *             {@link Integer} value.
      * @return A {@link String} value.
      */
     @NotNull
-    public String cmStartAppium(@NotNull String exePath) {
-        return AppiumCommand.newBuilder()
-            .withBase(exePath)
-            .withPort(serverAddress().newPort())
+    public String cmStartLocalAppiumInstance(@NotNull String cli, int port) {
+        return AppiumCommand.builder()
+            .withBase(cli)
+            .withPort(port)
             .build()
             .command();
     }
@@ -267,6 +327,16 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public ProcessRunner processRunner() {
         return PROCESS_RUNNER;
+    }
+
+    /**
+     * Return {@link #NETWORK_HANDLER}. This method can be used to stub out
+     * {@link #NETWORK_HANDLER}.
+     * @return {@link #NETWORK_HANDLER}.
+     */
+    @NotNull
+    public NetworkHandler networkHandler() {
+        return NETWORK_HANDLER;
     }
 
     /**
@@ -368,7 +438,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
-    //region Driver Methods.
+    //region Driver Methods
     /**
      * Create a {@link T} instance in order to navigate UI tests.
      * @return A {@link T} instance.
@@ -388,6 +458,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<Boolean> rxStartDriver() {
         return rxHasAllRequiredInformation()
             .flatMapCompletable(a -> Completable.fromAction(() -> {
+                Log.println(serverAddress.port());
                 driver = createDriverInstance();
             }))
             .<Boolean>toFlowable()
@@ -459,7 +530,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxNavigateBack() {
-        NavigateBack param = NavigateBack.newBuilder()
+        NavigateBack param = NavigateBack.builder()
             .withTimes(1)
             .build();
 
@@ -492,7 +563,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxAcceptAlert() {
-        AlertParam param = AlertParam.newBuilder().accept().build();
+        AlertParam param = AlertParam.builder().accept().build();
         return rxDismissAlert(param);
     }
 
@@ -503,7 +574,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxRejectAlert() {
-        AlertParam param = AlertParam.newBuilder().reject().build();
+        AlertParam param = AlertParam.builder().reject().build();
         return rxDismissAlert(param);
     }
     //endregion
@@ -515,7 +586,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     protected XPath.Builder newXPathBuilderInstance() {
-        return XPath.newBuilder(platform());
+        return XPath.builder(platform());
     }
 
     /**
@@ -591,7 +662,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .hasText(localizer().localize(param.text()))
             .build();
 
-        ByXPath query = ByXPath.newBuilder().withXPath(xPath).build();
+        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -604,7 +675,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsWithText(@NotNull String text) {
-        TextParam param = TextParam.newBuilder().withText(text).build();
+        TextParam param = TextParam.builder().withText(text).build();
         return rxElementsWithText(param);
     }
 
@@ -616,7 +687,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withParent(rxElementsWithText(param))
             .withError(noElementsWithText(localizer().localize(param.text())))
             .build();
@@ -632,7 +703,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithText(@NotNull String text) {
-        TextParam param = TextParam.newBuilder().withText(text).build();
+        TextParam param = TextParam.builder().withText(text).build();
         return rxElementWithText(param);
     }
     //endregion
@@ -650,7 +721,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .containsText(localizer().localize(param.text()))
             .build();
 
-        ByXPath query = ByXPath.newBuilder().withXPath(xPath).build();
+        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -662,7 +733,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withParent(rxElementsContainingText(param))
             .withError(noElementsContainingText(localizer().localize(param.text())))
             .build();
@@ -678,7 +749,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingText(@NotNull String text) {
-        TextParam param = TextParam.newBuilder().withText(text).build();
+        TextParam param = TextParam.builder().withText(text).build();
         return rxElementContainingText(param);
     }
     //endregion
@@ -696,7 +767,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .hasHint(localizer().localize(param.hint()))
             .build();
 
-        ByXPath query = ByXPath.newBuilder().withXPath(xPath).build();
+        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -708,7 +779,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withParent(rxElementsWithHint(param))
             .withError(noElementsWithHint(localizer().localize(param.hint())))
             .build();
@@ -730,7 +801,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .containsHint(localizer().localize(param.hint()))
             .build();
 
-        ByXPath query = ByXPath.newBuilder().withXPath(xPath).build();
+        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -742,7 +813,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingHint(@NotNull HintParam param) {
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withParent(rxElementsContainingHint(param))
             .withError(noElementsContainingHint(localizer().localize(param.hint())))
             .build();
@@ -760,7 +831,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<List<WebElement>> rxAllEditableElements() {
 //        XPath xPath = newXPathBuilderInstance().isEditable(true).build();
 
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withClasses(platformView().isEditable())
 //            .withXPath(xPath)
             .build();
@@ -789,7 +860,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxAllClickableElements() {
-        ByXPath query = ByXPath.newBuilder()
+        ByXPath query = ByXPath.builder()
             .withXPath(newXPathBuilderInstance().isClickable(true).build())
             .build();
 

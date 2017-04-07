@@ -14,7 +14,7 @@ public class IOSEngineTest implements IOSDelayProtocol {
     @NotNull private final IOSEngine ENGINE;
 
     {
-        ENGINE = IOSEngine.newBuilder()
+        ENGINE = IOSEngine.builder()
             .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
             .withDeviceName("iPhone 7 Plus")
             .build();

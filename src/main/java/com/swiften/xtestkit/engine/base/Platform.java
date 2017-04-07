@@ -92,7 +92,7 @@ public enum Platform implements PlatformProtocol {
                 return Attribute.withSingleAttribute("text");
 
             case IOS:
-                return Attribute.newBuilder()
+                return Attribute.builder()
                     .addAttribute("title")
                     .addAttribute("text")
                     .addAttribute("value")

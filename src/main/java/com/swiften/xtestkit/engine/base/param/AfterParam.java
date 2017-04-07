@@ -15,7 +15,7 @@ public class AfterParam implements IndexProtocol, RetryProtocol {
     }
 
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

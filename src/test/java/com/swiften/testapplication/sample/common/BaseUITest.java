@@ -1,24 +1,17 @@
 package com.swiften.testapplication.sample.common;
 
 import com.swiften.testapplication.sample.Config;
-import com.swiften.testapplication.sample.test.TestApplicationRunner;
-import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.AfterClassParam;
 import com.swiften.xtestkit.engine.base.param.AfterParam;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.BeforeParam;
 import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.testng.annotations.*;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.IntUnaryOperator;
-import java.util.stream.IntStream;
 
 /**
  * Created by haipham on 4/4/17.
@@ -72,21 +65,21 @@ public class BaseUITest {
 
     @NotNull
     private BeforeClassParam beforeClassParam() {
-        return BeforeClassParam.newBuilder().withIndex(INDEX).build();
+        return BeforeClassParam.builder().withIndex(INDEX).build();
     }
 
     @NotNull
     private AfterClassParam afterClassParam() {
-        return AfterClassParam.newBuilder().withIndex(INDEX).build();
+        return AfterClassParam.builder().withIndex(INDEX).build();
     }
 
     @NotNull
     private BeforeParam beforeParam() {
-        return BeforeParam.newBuilder().withIndex(INDEX).build();
+        return BeforeParam.builder().withIndex(INDEX).build();
     }
 
     @NotNull
     private AfterParam afterParam() {
-        return AfterParam.newBuilder().withIndex(INDEX).build();
+        return AfterParam.builder().withIndex(INDEX).build();
     }
 }

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HintParam implements RetryProtocol {
     @NotNull
-    public static HintParam.Builder newBuilder() {
+    public static HintParam.Builder builder() {
         return new Builder();
     }
 

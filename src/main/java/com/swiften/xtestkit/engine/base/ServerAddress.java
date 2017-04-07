@@ -1,9 +1,7 @@
 package com.swiften.xtestkit.engine.base;
 
+import com.swiften.xtestkit.engine.base.protocol.ServerAddressError;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by haipham on 4/5/17.
@@ -13,7 +11,7 @@ import java.util.List;
  * This class shall take care of Appium's server address. It provides some
  * convenience methods for when {@link Mode#LOCAL} is used.
  */
-public class ServerAddress {
+public class ServerAddress implements ServerAddressError {
     public enum Mode {
         LOCAL;
 
@@ -29,17 +27,20 @@ public class ServerAddress {
     }
 
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
+    public static ServerAddress localInstanceWithPort(int port) {
+        return ServerAddress.builder().withMode(Mode.LOCAL).build();
+    }
+
     @NotNull public static final ServerAddress DEFAULT;
-    @NotNull private static final List<Integer> USED_PORTS;
-    @NotNull public static final String LOCAL_URI_FORMAT;
-    public static final int BASE_PORT;
+    @NotNull private static final String LOCAL_URI_FORMAT;
+
+    private static final int BASE_PORT;
 
     static {
-        USED_PORTS = new ArrayList<>();
         LOCAL_URI_FORMAT = "http://localhost:%d/wd/hub";
         BASE_PORT = 4723;
         DEFAULT = new ServerAddress();
@@ -79,7 +80,7 @@ public class ServerAddress {
      * @return A {@link String} value.
      */
     @NotNull
-    public synchronized String uri() {
+    public String uri() {
         if (uri.isEmpty()) {
             return defaultLocalUri(port());
         }
@@ -91,8 +92,16 @@ public class ServerAddress {
      * Return {@link #port).
      * @return An {@link Integer} value.
      */
-    public synchronized int port() {
+    public int port() {
         return port;
+    }
+
+    /**
+     * Set {@link #port}.
+     * @param port An {@link Integer} value.
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 
     /**
@@ -101,29 +110,6 @@ public class ServerAddress {
      */
     public boolean isLocalInstance() {
         return mode().isLocalInstance();
-    }
-
-    /**
-     * Return {@link #port}. If it is not available, return a default port
-     * for local environment.
-     * @return An {@link Integer} value.
-     */
-    public synchronized int newPort() {
-        List<Integer> usedPorts = USED_PORTS;
-
-        if (port == 0 || usedPorts.contains(port)) {
-            if (usedPorts.isEmpty()) {
-                port = BASE_PORT;
-            } else {
-                port = usedPorts.get(usedPorts.size() - 1) + 1;
-            }
-        }
-
-        if (!usedPorts.contains(port)) {
-            usedPorts.add(port);
-        }
-
-        return port;
     }
 
     public static final class Builder {
@@ -152,6 +138,17 @@ public class ServerAddress {
         @NotNull
         public Builder withUri(@NotNull String uri) {
             SERVER.uri = uri;
+            return this;
+        }
+
+        /**
+         * Set the {@link #SERVER#port} value.
+         * @param port An {@link Integer} value.
+         * @return THe current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withPort(int port) {
+            SERVER.port = port;
             return this;
         }
 

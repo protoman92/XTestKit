@@ -1,19 +1,16 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
@@ -25,7 +22,7 @@ public class ProcessRunnerTest {
     @NotNull private final ProcessRunner RUNNER;
 
     {
-        RUNNER = spy(ProcessRunner.newBuilder().build());
+        RUNNER = spy(ProcessRunner.builder().build());
     }
 
     @AfterMethod

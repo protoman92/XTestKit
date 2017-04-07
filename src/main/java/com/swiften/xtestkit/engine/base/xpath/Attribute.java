@@ -21,13 +21,13 @@ public final class Attribute {
     public static final Attribute BLANK = new Attribute();
 
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
     @NotNull
     public static Attribute withSingleAttribute(@NotNull String attribute) {
-        return newBuilder().addAttribute(attribute).build();
+        return builder().addAttribute(attribute).build();
     }
 
     public enum Mode {

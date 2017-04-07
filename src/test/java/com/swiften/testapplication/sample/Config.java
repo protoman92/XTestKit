@@ -30,7 +30,7 @@ public class Config {
 
         ENGINES = new LinkedList<>();
 
-        ENGINES.add(IOSEngine.newBuilder()
+        ENGINES.add(IOSEngine.builder()
             .withDeviceUID("D10524D4-939E-46CA-BE40-AB21F8E745A8")
             .withApp(IOS_APP_NAME)
             .withAppPackage(APP_PACKAGE)
@@ -39,7 +39,7 @@ public class Config {
             .withTestMode(TestMode.EMULATOR)
             .build());
 
-        ENGINES.add(AndroidEngine.newBuilder()
+        ENGINES.add(AndroidEngine.builder()
             .withAppActivity(ANDROID_APP_ACTIVITY)
             .withApp(ANDROID_APP_NAME)
             .withAppPackage(APP_PACKAGE)
@@ -48,7 +48,7 @@ public class Config {
             .withTestMode(TestMode.EMULATOR)
             .build());
 
-        ENGINES.add(IOSEngine.newBuilder()
+        ENGINES.add(IOSEngine.builder()
             .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
             .withApp(IOS_APP_NAME)
             .withAppPackage(APP_PACKAGE)
@@ -57,7 +57,7 @@ public class Config {
             .withTestMode(TestMode.EMULATOR)
             .build());
 
-        ENGINES.add(AndroidEngine.newBuilder()
+        ENGINES.add(AndroidEngine.builder()
             .withAppActivity(ANDROID_APP_ACTIVITY)
             .withApp(ANDROID_APP_NAME)
             .withAppPackage(APP_PACKAGE)
@@ -66,7 +66,7 @@ public class Config {
             .withPlatformVersion("5.1")
             .build());
 
-        TEST_KIT = TestKit.newBuilder()
+        TEST_KIT = TestKit.builder()
             .withEngines(ENGINES)
             .addResourceBundle("Strings", Locale.US)
             .build();

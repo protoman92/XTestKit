@@ -44,7 +44,7 @@ public class ServerAddressTest {
         Log.println(ports);
         verify(SERVER_ADDRESS, times(tries)).uri();
         verify(SERVER_ADDRESS, times(tries)).defaultLocalUri(anyInt());
-        verify(SERVER_ADDRESS, times(tries)).port();
+        verify(SERVER_ADDRESS, times(tries * 2)).port();
         verifyNoMoreInteractions(SERVER_ADDRESS);
     }
 }

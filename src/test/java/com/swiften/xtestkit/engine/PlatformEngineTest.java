@@ -1,6 +1,6 @@
 package com.swiften.xtestkit.engine;
 
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.base.param.*;
@@ -9,6 +9,7 @@ import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.protocol.PlatformView;
 import com.swiften.xtestkit.engine.base.protocol.View;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -35,6 +36,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final PlatformEngine.TextDelegate LOCALIZER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
@@ -49,7 +51,12 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .build());
 
         /* Return this processRunner when we call ENGINE.processRunner() */
-        PROCESS_RUNNER = spy(ProcessRunner.newBuilder().build());
+        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+
+        /* Return this networkHandler when we call ENGINE.networkHandler().
+         * On the other hand, return ENGINE when we call
+         * NETWORK_HANDLER.processRunner() */
+        NETWORK_HANDLER = spy(NetworkHandler.builder().build());
 
         /* Return this localizer when we call ENGINE.localizer() */
         LOCALIZER = mock(PlatformEngine.TextDelegate.class);
@@ -87,6 +94,8 @@ public final class PlatformEngineTest implements ErrorProtocol {
     public void beforeMethod() {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
+        doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
+        doReturn(ENGINE).when(NETWORK_HANDLER).processRunner();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
@@ -129,7 +138,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppiumServer().subscribe(subscriber);
+            ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -138,10 +147,11 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertNotComplete();
             verify(PROCESS_RUNNER).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(ENGINE).rxStartLocalAppiumServer();
+            verify(ENGINE).rxStartLocalAppiumInstance();
             verify(ENGINE).processRunner();
             verify(ENGINE, atLeastOnce()).cmWhichAppium();
-            verify(ENGINE, never()).cmStartAppium(anyString());
+            verify(ENGINE, never()).rxStartLocalAppiumInstance(anyString());
+            verify(ENGINE, never()).cmStartLocalAppiumInstance(anyString(), anyInt());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -153,23 +163,25 @@ public final class PlatformEngineTest implements ErrorProtocol {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxCheckPortAvailable(anyInt());
             doReturn(100L).when(ENGINE).appiumStartDelay();
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppiumServer().subscribe(subscriber);
+            ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
+            verify(ENGINE).rxStartLocalAppiumInstance(anyString());
+            verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
+            verify(ENGINE).rxStartLocalAppiumInstance();
+            verify(ENGINE, times(2)).processRunner();
+            verify(ENGINE, atLeastOnce()).cmWhichAppium();
             verify(PROCESS_RUNNER, times(2)).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(ENGINE).cmStartAppium(anyString());
-            verify(ENGINE).rxStartLocalAppiumServer();
-            verify(ENGINE).processRunner();
-            verify(ENGINE, atLeastOnce()).cmWhichAppium();
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -184,7 +196,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             TestSubscriber subscriber = TestSubscriber.create();
 
             // When
-            ENGINE.rxStopLocalAppiumServers().subscribe(subscriber);
+            ENGINE.rxStopLocalAppiumInstance().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -193,9 +205,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertComplete();
             verify(PROCESS_RUNNER).execute(anyString());
             verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(ENGINE).rxStopLocalAppiumServers();
+            verify(ENGINE).rxStopLocalAppiumInstance();
             verify(ENGINE).processRunner();
-            verify(ENGINE).cmStopAppium();
+            verify(ENGINE).cmStopLocalAppiumInstance();
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -329,7 +341,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         TestSubscriber subscriber = TestSubscriber.create();
 
-        NavigateBack param = NavigateBack.newBuilder()
+        NavigateBack param = NavigateBack.builder()
             .withTimes(1)
             .build();
 
@@ -353,7 +365,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         doReturn(delay).when(ENGINE).backNavigationDelay();
 
         int times = TestUtil.randomBetween(1, 100);
-        NavigateBack param = NavigateBack.newBuilder().withTimes(times).build();
+        NavigateBack param = NavigateBack.builder().withTimes(times).build();
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -375,7 +387,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     public void mock_elementsByXPathWithNoDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
-        ByXPath param = ByXPath.newBuilder().build();
+        ByXPath param = ByXPath.builder().build();
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -400,7 +412,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         List<View> views = PLATFORM_VIEWS.allViews();
 
-        ByXPath param = ByXPath.newBuilder()
+        ByXPath param = ByXPath.builder()
             .withClasses(views)
             .withXPath(XPath.EMPTY)
             .build();
@@ -428,7 +440,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         // Setup
         List<View> views = PLATFORM_VIEWS.allViews();
 
-        ByXPath param = ByXPath.newBuilder()
+        ByXPath param = ByXPath.builder()
             .withClasses(views)
             .withXPath(XPath.EMPTY)
             .build();
@@ -485,7 +497,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         Flowable<List<WebElement>> parent = Flowable.just(result);
 
-        ByXPath param = ByXPath.newBuilder()
+        ByXPath param = ByXPath.builder()
             .withParent(parent)
             .build();
 
@@ -514,7 +526,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         doReturn(Flowable.just(result))
             .when(ENGINE).rxElementsByXPath(any(ByXPath.class));
 
-        ByXPath param = ByXPath.newBuilder()
+        ByXPath param = ByXPath.builder()
             .withClasses(PLATFORM_VIEWS.allViews())
             .withError("")
             .build();
@@ -860,7 +872,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             when(platform.textAttribute())
                 .thenReturn(Attribute.withSingleAttribute("text"));
 
-            return XPath.newBuilder(platform);
+            return XPath.builder(platform);
         }
 
         static final class Builder extends PlatformEngine.Builder<MockEngine> {

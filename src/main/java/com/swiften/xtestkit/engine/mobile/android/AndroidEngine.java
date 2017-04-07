@@ -8,7 +8,7 @@ import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.StringUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -41,7 +41,7 @@ public class AndroidEngine extends MobileEngine<
     AndroidDelayProtocol,
     AndroidErrorProtocol {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -81,7 +81,7 @@ public class AndroidEngine extends MobileEngine<
                 return rxStartEmulator(param)
                     /* Disable animations to avoid erratic behaviors */
                     .flatMap(a -> rxDisableEmulatorAnimations())
-                    .flatMap(a -> rxStartLocalAppiumServer());
+                    .flatMap(a -> rxStartLocalAppiumInstance());
 
             default:
                 return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
@@ -274,9 +274,7 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public String cmCheckKeyboardOpen() {
-        return String.format(
-            "%s dumpsys window InputMethod | grep 'mHasSurface'",
-            cmAdbShell());
+        return String.format("%s dumpsys window InputMethod", cmAdbShell());
     }
 
     /**
@@ -482,7 +480,7 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     public Flowable<Boolean> rxEnableInternetConnection() {
         ConnectionParam param = ConnectionParam
-            .newBuilder()
+            .builder()
             .shouldEnable(true)
             .build();
 
@@ -497,7 +495,7 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     public Flowable<Boolean> rxDisableInternetConnection() {
         ConnectionParam param = ConnectionParam
-            .newBuilder()
+            .builder()
             .shouldEnable(false)
             .build();
 
@@ -583,7 +581,7 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public DeviceSettingParam disableWindowAnimationScaleParam() {
-        return DeviceSettingParam.newBuilder()
+        return DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("window_animation_scale")
             .withValue("0")
@@ -632,7 +630,7 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public DeviceSettingParam disableTransitionAnimationScaleParam() {
-        return DeviceSettingParam.newBuilder()
+        return DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("transition_animation_scale")
             .withValue("0")
@@ -681,7 +679,7 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public DeviceSettingParam disableAnimatorDurationScaleParam() {
-        return DeviceSettingParam.newBuilder()
+        return DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("animator_duration_scale")
             .withValue("0")

@@ -3,7 +3,7 @@ package com.swiften.xtestkit.engine.ios.mock;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.engine.base.ProcessRunner;
+import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
     {
-        ENGINE = spy(IOSEngine.newBuilder()
+        ENGINE = spy(IOSEngine.builder()
             .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
             .withDeviceName("iPhone 7 Plus")
             .build());

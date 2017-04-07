@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AppiumCommand {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

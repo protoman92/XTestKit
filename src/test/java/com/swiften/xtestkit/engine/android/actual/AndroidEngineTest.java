@@ -11,8 +11,6 @@ import org.testng.annotations.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 
@@ -23,7 +21,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @NotNull private static final AndroidEngine ENGINE;
 
     static {
-        ENGINE = spy(AndroidEngine.newBuilder()
+        ENGINE = spy(AndroidEngine.builder()
             .withDeviceName("Nexus_4_API_23")
             .build());
     }

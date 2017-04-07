@@ -20,7 +20,7 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
     @NotNull private static final RepeatRunner RUNNER;
 
     static {
-        RUNNER = RepeatRunner.newBuilder()
+        RUNNER = RepeatRunner.builder()
             .addTestClass(LoginUITest.class)
             .withParameterConsumer(Config.TEST_KIT)
             .withRetryCount(Config.runCount())

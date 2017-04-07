@@ -16,6 +16,14 @@ public interface TestListener {
     Flowable<Boolean> rxOnFreshStart();
 
     /**
+     * Call this method when a batch of tests is started.
+     * @param indexes The indexes of batch items. An Array of {@link Integer}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    Flowable<Boolean> rxOnBatchStart(@NotNull int[] indexes);
+
+    /**
      * Call this method when all tests have finished, typically at the
      * end of {@link RepeatRunner#run()}, after all iterations have been
      * executed.

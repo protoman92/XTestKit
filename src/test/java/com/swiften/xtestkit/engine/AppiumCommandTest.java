@@ -17,7 +17,7 @@ public class AppiumCommandTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        builder = AppiumCommand.newBuilder();
+        builder = AppiumCommand.builder();
     }
 
     @Test

@@ -1,5 +1,6 @@
-package com.swiften.xtestkit.engine.base;
+package com.swiften.xtestkit.system;
 
+import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -14,9 +15,9 @@ import java.util.Objects;
 /**
  * Created by haipham on 3/22/17.
  */
-public class ProcessRunner {
+public class ProcessRunner implements ProcessRunnerProtocol {
     @NotNull
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -56,6 +57,7 @@ public class ProcessRunner {
      * @return A {@link Flowable} instance.
      */
     @NotNull
+    @Override
     public Flowable<String> rxExecute(@NotNull final String ARGS) {
         return Flowable.create(observer -> {
             try {
