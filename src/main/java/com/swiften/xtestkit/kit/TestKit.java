@@ -10,6 +10,9 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.rx.RxExtension;
+import com.swiften.xtestkit.system.NetworkHandler;
+import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.BoxUtil;
@@ -17,9 +20,12 @@ import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.nio.ch.Net;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -28,6 +34,7 @@ import java.util.*;
 public class TestKit implements
     RepeatRunner.IndexConsumer,
     PlatformEngine.TextDelegate,
+    ProcessRunnerProtocol,
     TestKitError,
     TestListener {
     @NotNull
@@ -35,13 +42,31 @@ public class TestKit implements
         return new Builder();
     }
 
+    @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final List<PlatformEngine> ENGINES;
     @Nullable private Localizer localizer;
 
     TestKit() {
+        PROCESS_RUNNER = ProcessRunner.builder().build();
+        NETWORK_HANDLER = NetworkHandler.builder().withProcessRunner(this).build();
         ENGINES = new LinkedList<>();
         RxUtil.overrideErrorHandler();
     }
+
+    //region ProcessRunnerProtocol
+    @NotNull
+    @Override
+    public String execute(@NotNull String args) throws IOException {
+        return processRunner().execute(args);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<String> rxExecute(@NotNull String args) {
+        return processRunner().rxExecute(args);
+    }
+    //endregion
 
     //region RepeatRunner.ParameterConsumer
     /**
@@ -71,14 +96,35 @@ public class TestKit implements
     //endregion
 
     //region TestListener
+
+    /**
+     * Return a distinct stream of {@link PlatformEngine} based on each of
+     * the engine's {@link Class}. This is useful for one-time setup, such
+     * as {@link #rxOnFreshStart()} and {@link #rxOnAllTestsFinished()}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<PlatformEngine> rxDistinctEngines() {
+        return Flowable
+            .fromIterable(engines())
+            .distinct(PlatformEngine::getClass);
+    }
+
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
         Log.println("Fresh start for all tests");
 
         return Flowable
-            .fromIterable(engines())
-            .flatMap(PlatformEngine::rxOnFreshStart)
+            .concat(
+                networkHandler()
+                    .rxKillAll("node appium")
+
+                    /* If no instance is found, an error will be thrown */
+                    .onErrorResumeNext(Flowable.just(true)),
+
+                rxDistinctEngines().flatMap(PlatformEngine::rxOnFreshStart)
+            )
             .toList()
             .toFlowable()
             .map(a -> true)
@@ -94,7 +140,7 @@ public class TestKit implements
      * @see #rxOnBatchFinished(int[])
      */
     @NotNull
-    private Flowable<PlatformEngine> rxEnginesFromIndexes(@NotNull int[] indexes) {
+    public Flowable<PlatformEngine> rxEnginesFromIndexes(@NotNull int[] indexes) {
         final List<PlatformEngine> ENGINES = engines();
         final int SIZE = ENGINES.size();
 
@@ -138,8 +184,15 @@ public class TestKit implements
         Log.println("All tests finished");
 
         return Flowable
-            .fromIterable(engines())
-            .flatMap(PlatformEngine::rxOnAllTestsFinished)
+            .concat(
+                networkHandler()
+                    .rxKillAll("node appium")
+
+                    /* If no instance is found, an error will be thrown */
+                    .onErrorResumeNext(Flowable.just(true)),
+
+                rxDistinctEngines().flatMap(PlatformEngine::rxOnAllTestsFinished)
+            )
             .toList()
             .toFlowable()
             .map(a -> true)
@@ -162,6 +215,24 @@ public class TestKit implements
     //endregion
 
     //region Getters
+    /**
+     * Return {@link #PROCESS_RUNNER}.
+     * @return A {@link ProcessRunner} instance.
+     */
+    @NotNull
+    public ProcessRunner processRunner() {
+        return PROCESS_RUNNER;
+    }
+
+    /**
+     * Return {@link #NETWORK_HANDLER}.
+     * @return A {@link NetworkHandler} instance.
+     */
+    @NotNull
+    public NetworkHandler networkHandler() {
+        return NETWORK_HANDLER;
+    }
+
     /**
      * Get an unmodifiable {@link #ENGINES} clone.
      * @return A {@link List} of {@link PlatformEngine}.

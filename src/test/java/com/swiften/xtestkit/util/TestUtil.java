@@ -70,6 +70,12 @@ public class TestUtil {
 
     @NotNull
     @SuppressWarnings("unchecked")
+    public static List getNextEvents(@NotNull TestSubscriber subscriber) {
+        return (List)subscriber.getEvents().get(0);
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
     public static <T> T getFirstNextEvent(@NotNull List<Object> events) {
         return (T)getNextEvents(events).get(0);
     }

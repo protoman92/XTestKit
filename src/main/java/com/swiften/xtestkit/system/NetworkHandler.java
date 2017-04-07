@@ -190,7 +190,28 @@ public class NetworkHandler implements NetworkHandlerError {
             .defaultIfEmpty(true);
     }
 
+    /**
+     * Kill all instances of a process.
+     * @param name The process' name. A {@link String} value.
+     * @return A {@link Flowable} instance.
+     * @see #cmKillAll(String)
+     */
+    @NotNull
+    public Flowable<Boolean> rxKillAll(@NotNull String name) {
+        return processRunner().rxExecute(cmKillAll(name)).map(a -> true);
+    }
+
     //region CLI
+    /**
+     * Command to kill all instances of a process name.
+     * @param name A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmKillAll(@NotNull String name) {
+        return String.format("killall %s", name);
+    }
+
     /**
      * Command to list all used ports.
      * @return A {@link String} value.

@@ -39,24 +39,24 @@ public class Config {
             .withTestMode(TestMode.EMULATOR)
             .build());
 
-//        ENGINES.add(AndroidEngine.builder()
-//            .withAppActivity(ANDROID_APP_ACTIVITY)
-//            .withApp(ANDROID_APP_NAME)
-//            .withAppPackage(APP_PACKAGE)
-//            .withDeviceName("Nexus_4_API_23")
-//            .withPlatformVersion("6.0")
-//            .withTestMode(TestMode.EMULATOR)
-//            .build());
-//
-//        ENGINES.add(IOSEngine.builder()
-//            .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
-//            .withApp(IOS_APP_NAME)
-//            .withAppPackage(APP_PACKAGE)
-//            .withDeviceName("iPhone 7 Plus")
-//            .withPlatformVersion("10.2")
-//            .withTestMode(TestMode.EMULATOR)
-//            .build());
-//
+        ENGINES.add(AndroidEngine.builder()
+            .withAppActivity(ANDROID_APP_ACTIVITY)
+            .withApp(ANDROID_APP_NAME)
+            .withAppPackage(APP_PACKAGE)
+            .withDeviceName("Nexus_4_API_23")
+            .withPlatformVersion("6.0")
+            .withTestMode(TestMode.EMULATOR)
+            .build());
+
+        ENGINES.add(IOSEngine.builder()
+            .withDeviceUID("CF6E7ACD-F818-4145-A140-75CF1F229A8C")
+            .withApp(IOS_APP_NAME)
+            .withAppPackage(APP_PACKAGE)
+            .withDeviceName("iPhone 7 Plus")
+            .withPlatformVersion("10.2")
+            .withTestMode(TestMode.EMULATOR)
+            .build());
+
         ENGINES.add(AndroidEngine.builder()
             .withAppActivity(ANDROID_APP_ACTIVITY)
             .withApp(ANDROID_APP_NAME)
