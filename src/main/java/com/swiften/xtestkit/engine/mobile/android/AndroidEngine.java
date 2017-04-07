@@ -59,7 +59,7 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
-        /* We restart adb server at the start of all tests to avoid problems
+        /* We restart adb server at the start of all test to avoid problems
          * with inactive adb instances */
         return super.rxOnFreshStart().flatMap(a -> rxRestartAdb());
     }
@@ -89,15 +89,24 @@ public class AndroidEngine extends MobileEngine<
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        Flowable<Boolean> source;
+
         switch (testMode()) {
             case EMULATOR:
-                return rxStartEmulator(param)
+                source = rxStartEmulator(param)
                     /* Disable animations to avoid erratic behaviors */
                     .flatMap(a -> rxDisableEmulatorAnimations());
 
+                break;
+
             default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                source = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                break;
         }
+
+        return Flowable
+            .concat(source, super.rxBeforeClass(param))
+            .toList().toFlowable().map(a -> true);
     }
 
     /**
@@ -109,37 +118,21 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        Flowable<Boolean> source;
+
         switch (testMode()) {
             case EMULATOR:
-                return rxStopEmulator(param);
+                source = rxStopEmulator(param);
+                break;
 
             default:
-                return Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                source = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                break;
         }
-    }
 
-    /**
-     * @param param A {@link BeforeParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBeforeMethod(BeforeParam)
-     * @see #rxStartDriver()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-        return rxStartDriver();
-    }
-
-    /**
-     * @param param A {@link AfterParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfterMethod(AfterParam)
-     * @see #rxStopDriver()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        return rxStopDriver();
+        return Flowable
+            .concat(source, super.rxAfterClass(param))
+            .toList().toFlowable().map(a -> true);
     }
     //endregion
 
@@ -368,7 +361,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Check if the specified emulator is open. This is a crude workaround
      * that assumes only once device is attached at any moment. Suitable only
-     * for isolated tests.
+     * for isolated test.
      * @return A {@link Flowable} instance.
      * @see #cmAdbDevices()
      */
@@ -810,7 +803,7 @@ public class AndroidEngine extends MobileEngine<
     }
 
     /**
-     * Disable emulator animations for UI tests to prevent unexpected wait
+     * Disable emulator animations for UI test to prevent unexpected wait
      * times. Note that this is only applicable for rooted devices, and
      * emulators are rooted by default.
      * @return A {@link Flowable} instance.

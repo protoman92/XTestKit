@@ -2,6 +2,7 @@ package com.swiften.xtestkit.engine.android.actual;
 
 import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -29,7 +30,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @BeforeClass
     @SuppressWarnings("unchecked")
     public void beforeClass() {
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         ENGINE.rxStartEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }
@@ -37,7 +38,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @AfterClass
     @SuppressWarnings("unchecked")
     public void afterClass() {
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         ENGINE.rxStopEmulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         reset(ENGINE);
@@ -47,7 +48,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_enableDisableConnection_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxDisableInternetConnection()
@@ -70,7 +71,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_checkKeyboardOpen_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxCheckKeyboardOpen().subscribe(subscriber);
@@ -86,7 +87,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_disableEmulatorAnimations_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxDisableEmulatorAnimations()

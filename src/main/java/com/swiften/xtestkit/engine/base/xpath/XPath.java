@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Use this utility class to easily compose {@link XPath} queries in order
- * to write cross-platform tests.
+ * to write cross-platform test.
  */
 public class XPath {
     @NotNull

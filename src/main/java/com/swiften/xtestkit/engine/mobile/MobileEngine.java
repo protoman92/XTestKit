@@ -1,11 +1,16 @@
 package com.swiften.xtestkit.engine.mobile;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
+import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.protocol.MobileEngineError;
+import com.swiften.xtestkit.util.Log;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 
 import java.util.*;
@@ -37,6 +42,7 @@ public abstract class MobileEngine<
     }
 
     @NotNull
+    @Override
     public String toString() {
         return deviceName();
     }
@@ -108,6 +114,36 @@ public abstract class MobileEngine<
     }
     //endregion
 
+    //region Test Setup
+    /**
+     * @param param A {@link BeforeParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBeforeMethod(BeforeParam)
+     * @see #rxStartDriver(StartDriverParam)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
+        return Flowable
+            .concat(rxStartDriver(StartDriverParam.DEFAULT), super.rxBeforeMethod(param))
+            .toList().toFlowable().map(a -> true);
+    }
+
+    /**
+     * @param param A {@link AfterParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfterMethod(AfterParam)
+     * @see #rxStopDriver()
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+        return Flowable
+            .concat(rxStopDriver(), super.rxAfterMethod(param))
+            .toList().toFlowable().map(a -> true);
+    }
+    //endregion
+
     //region Appium Setup
     /**
      * @return A {@link List} of {@link String}.
@@ -132,7 +168,7 @@ public abstract class MobileEngine<
     /**
      * @return A {@link Map} of {@link String} and {@link Object}. Do not
      * set {@link MobileCapabilityType#FULL_RESET} to be true because we
-     * want to start a device and keep it open until all tests for one
+     * want to start a device and keep it open until all test for one
      * {@link MobileEngine} has finished. If necessary, we can clear the
      * app's data and uninstall manually.
      * @see PlatformEngine#capabilities()
@@ -156,7 +192,7 @@ public abstract class MobileEngine<
         PlatformEngine.Builder<T> {
         /**
          * Set the {@link #ENGINE#appiumVersion} value.
-         * @param version The Appium version that will run the tests.
+         * @param version The Appium version that will run the test.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -217,7 +253,7 @@ public abstract class MobileEngine<
 
         /**
          * Set the {@link #ENGINE#deviceName} value.
-         * @param deviceName The device name on which tests will be executed.
+         * @param deviceName The device name on which test will be executed.
          * @return The current {@link Builder} instance.
          */
         @NotNull

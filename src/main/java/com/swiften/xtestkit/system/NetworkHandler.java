@@ -79,7 +79,7 @@ public class NetworkHandler implements NetworkHandlerError {
      * @param port An {@link Integer} value.
      * @return A {@link Boolean} value.
      */
-    public boolean isPortAvailable(@NotNull String output, int port) {
+    public synchronized boolean isPortAvailable(@NotNull String output, int port) {
         if (USED_PORTS.contains(port)) {
             return false;
         }

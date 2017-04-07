@@ -4,6 +4,7 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.RxUtil;
 import io.reactivex.Completable;
@@ -27,7 +28,7 @@ import java.util.stream.IntStream;
 
 /**
  * We need to use this class to ensure {@link com.swiften.xtestkit.kit.TestKit}
- * based tests are repeated as long as there are more than 1
+ * based test are repeated as long as there are more than 1
  * {@link com.swiften.xtestkit.engine.base.PlatformEngine} registered.
  * To use this class, we should ideally create a class that implements
  * {@link TestRunner}, with a static {@link RepeatRunner} instance so that
@@ -136,9 +137,9 @@ public class RepeatRunner implements
 
     /**
      * Create a fresh {@link TestNG} instance to avoid internal cache. If
-     * we use only one instance of {@link TestNG}, when we batch tests some
+     * we use only one instance of {@link TestNG}, when we batch test some
      * will be repeated (probably due to each {@link TestNG} instance keeping
-     * a record of tests and replaying them every iteration.
+     * a record of test and replaying them every iteration.
      * @return A {@link TestNG} instance.
      */
     @NotNull
@@ -238,7 +239,7 @@ public class RepeatRunner implements
     //region Test Run
     @SuppressWarnings("unchecked")
     public void run() {
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         @SuppressWarnings("unchecked")
         final Pagination PG = this.PAGINATION;
@@ -325,7 +326,7 @@ public class RepeatRunner implements
 
         /**
          * Set the {@link Pagination#partitionSize} value. This batches the test
-         * runners into sets of tests.
+         * runners into sets of test.
          * @param partition An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -398,7 +399,7 @@ public class RepeatRunner implements
         //endregion
 
         /**
-         * Partition the retries to run test parallel tests.
+         * Partition the retries to run test parallel test.
          * @return An {@link Integer} value.
          */
         public int partitionSize() {
@@ -407,7 +408,7 @@ public class RepeatRunner implements
 
         /**
          * Set the {@link #consumed} value in order to provide the next
-         * set of parameters when another round of tests commences.
+         * set of parameters when another round of test commences.
          * @return A {@link Completable} instance.
          */
         @NotNull
@@ -470,7 +471,7 @@ public class RepeatRunner implements
     @FunctionalInterface
     public interface TestRunner {
         /**
-         * Call this method to run all tests registered in a
+         * Call this method to run all test registered in a
          * {@link RepeatRunner} instance.
          */
         @Test
@@ -497,7 +498,7 @@ public class RepeatRunner implements
      * to run {@link RepeatRunner#run()}. That method will be skipped when
      * {@link RepeatRunner} processes
      * {@link java.lang.annotation.Annotation} in order to prevent infinitely
-     * recursive tests.
+     * recursive test.
      */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)

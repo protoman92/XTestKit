@@ -1,4 +1,4 @@
-package com.swiften.testapplication.sample.common;
+package com.swiften.testapplication.test.common;
 
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
@@ -7,7 +7,7 @@ import com.swiften.xtestkit.rx.RxExtension;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import com.swiften.testapplication.sample.protocol.DelayProtocol;
+import com.swiften.testapplication.test.protocol.DelayProtocol;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * Common app interactions that can be reused across tests.
+ * Common app interactions that can be reused across test.
  */
 public final class Interaction implements DelayProtocol {
     @NotNull private final TestKit TEST_KIT;

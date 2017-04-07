@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.system;
 
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
@@ -51,7 +52,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             int tries = 10;
             doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
             doReturn(true).when(HANDLER).isPortAvailable(anyString(), eq(tries));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             HANDLER.rxCheckUntilPortAvailable(1).subscribe(subscriber);
@@ -82,7 +83,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
         try {
             // Setup
             doReturn("").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             HANDLER.rxCheckUntilPortAvailable(0).subscribe(subscriber);
@@ -114,7 +115,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             // Setup
             int tries = 10;
             doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             HANDLER.rxCheckUntilPortAvailable(1, tries).subscribe(subscriber);
@@ -146,7 +147,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
     @SuppressWarnings("unchecked")
     public void actual_checkPortAvailable_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         HANDLER.rxCheckUntilPortAvailable(4723, 4725).subscribe(subscriber);

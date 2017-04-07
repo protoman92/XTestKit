@@ -1,9 +1,11 @@
 package com.swiften.xtestkit.engine.ios.mock;
 
+import com.swiften.xtestkit.engine.base.param.StartDriverParam;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +53,10 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         // Setup
         doReturn(true).when(ENGINE).hasAllRequiredInformation();
         doReturn(false).when(ENGINE).hasCorrectFileExtension();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver().subscribe(subscriber);
+        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -64,7 +66,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         verify(ENGINE).hasCorrectFileExtension();
         verify(ENGINE).rxHasCorrectFileExtension();
         verify(ENGINE).rxHasAllRequiredInformation();
-        verify(ENGINE).rxStartDriver();
+        verify(ENGINE).rxStartDriver(any());
 
         try {
             ENGINE.driver();
@@ -81,7 +83,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         try {
             // Setup
             String start = ENGINE.cmStartSimulator();
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
             doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(eq(start));
 
             // When
@@ -106,7 +108,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartSimulator().subscribe(subscriber);
@@ -134,7 +136,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         try {
             // Setup
             doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStopSimulator().subscribe(subscriber);

@@ -35,7 +35,6 @@ public class ServerAddress implements ServerAddressError {
         return ServerAddress.builder().withMode(Mode.LOCAL).build();
     }
 
-    @NotNull public static final ServerAddress DEFAULT;
     @NotNull private static final String LOCAL_URI_FORMAT;
 
     private static final int BASE_PORT;
@@ -43,7 +42,17 @@ public class ServerAddress implements ServerAddressError {
     static {
         LOCAL_URI_FORMAT = "http://localhost:%d/wd/hub";
         BASE_PORT = 4723;
-        DEFAULT = new ServerAddress();
+    }
+
+    /**
+     * We should not have a static DEFAULT instance, because we will be
+     * changing {@link ServerAddress#port} quite often. A singleton instance
+     * will override necessary changes and produce bugs.
+     * @return A {@link ServerAddress} instance.
+     */
+    @NotNull
+    public static ServerAddress defaultInstance() {
+        return new ServerAddress();
     }
 
     @NotNull private Mode mode;

@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -36,7 +37,7 @@ public class ProcessRunnerTest {
         try {
             // Setup
             doThrow(new IOException()).when(RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             RUNNER.rxExecute("").subscribe(subscriber);
@@ -60,7 +61,7 @@ public class ProcessRunnerTest {
         try {
             // Setup
             doReturn("Valid Output").when(RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             RUNNER.rxExecute("").subscribe(subscriber);
@@ -84,7 +85,7 @@ public class ProcessRunnerTest {
         // Setup
         final String APPIUM = "which appium";
         final String STOP = "killall node appium";
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Flowable.timer(2000, TimeUnit.MILLISECONDS)

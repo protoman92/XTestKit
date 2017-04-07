@@ -2,6 +2,7 @@ package com.swiften.xtestkit.localizer.mock;
 
 import com.swiften.xtestkit.localizer.Localizer;
 import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +63,7 @@ public class LocalizerTest implements LocalizeErrorProtocol {
         // Setup
         int times = (int)(Math.pow(BUNDLE_COUNT, 2) * STRINGS.length);
         doReturn("").when(LOCALIZER).getString(any(), anyString());
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Flowable.fromArray(STRINGS)
@@ -84,7 +85,7 @@ public class LocalizerTest implements LocalizeErrorProtocol {
         // Setup
         final String CORRECT = "Correct Result";
         doReturn(CORRECT).when(LOCALIZER).getString(any(), anyString());
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Flowable.fromArray(STRINGS)

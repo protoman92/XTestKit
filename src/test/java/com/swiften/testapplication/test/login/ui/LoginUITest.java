@@ -1,19 +1,12 @@
-package com.swiften.testapplication.sample.login.ui;
+package com.swiften.testapplication.test.login.ui;
 
-import com.swiften.testapplication.sample.common.BaseUITest;
-import com.swiften.testapplication.sample.test.TestApplicationRunner;
-import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
-import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.testapplication.sample.protocol.DelayProtocol;
+import com.swiften.testapplication.test.common.BaseUITest;
+import com.swiften.testapplication.runner.TestApplicationRunner;
+import com.swiften.testapplication.test.protocol.DelayProtocol;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.swiften.testapplication.sample.Config;
-import com.swiften.testapplication.sample.common.Interaction;
 import org.testng.annotations.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 /**
  * Created by haipham on 3/24/17.
@@ -38,7 +31,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_openApp_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         INTERACTION
@@ -58,7 +51,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_navigateToLoginScreen_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         INTERACTION
@@ -78,7 +71,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_inputCredentials_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         INTERACTION
@@ -98,7 +91,7 @@ public final class LoginUITest extends BaseUITest implements DelayProtocol {
     @SuppressWarnings("unchecked")
     public void actual_submitCredentials_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         INTERACTION

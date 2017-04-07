@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.localizer.actual;
 
 import com.swiften.xtestkit.localizer.Localizer;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,7 @@ public class LocalizerTest {
     @SuppressWarnings("unchecked")
     public void actual_rxLocalizeText_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Flowable.fromArray(STRINGS)

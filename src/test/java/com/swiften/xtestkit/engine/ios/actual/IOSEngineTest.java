@@ -2,6 +2,7 @@ package com.swiften.xtestkit.engine.ios.actual;
 
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;
@@ -23,7 +24,7 @@ public class IOSEngineTest implements IOSDelayProtocol {
     @BeforeMethod
     @SuppressWarnings("unchecked")
     public void beforeMethod() {
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         ENGINE.rxStartSimulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }
@@ -31,7 +32,7 @@ public class IOSEngineTest implements IOSDelayProtocol {
     @AfterMethod
     @SuppressWarnings("unchecked")
     public void afterMethod() {
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         ENGINE.rxStopSimulator().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }

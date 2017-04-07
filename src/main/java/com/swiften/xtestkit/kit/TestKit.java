@@ -15,9 +15,7 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.RepeatRunner;
 import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.BoxUtil;
-import com.swiften.xtestkit.util.Log;
-import com.swiften.xtestkit.util.RxUtil;
+import com.swiften.xtestkit.util.*;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.intellij.lang.annotations.Flow;
@@ -27,6 +25,7 @@ import sun.nio.ch.Net;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by haipham on 3/24/17.
@@ -79,19 +78,19 @@ public class TestKit implements
      * @return An {@link Integer} value.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public int consumptionCount(@NotNull int[] indexes) {
-        for (int i = 0, length = indexes.length; i < length; i++) {
-            if (i < length - 1) {
-                PlatformEngine<?> first = engine(i);
-                PlatformEngine<?> second = engine(i + 1);
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
-                if (first.getClass().equals(second.getClass())) {
-                    return i + 1;
-                }
-            }
-        }
+        Flowable
+            .fromArray(BoxUtil.box(indexes))
+            .map(this::engine)
+            .distinct(PlatformEngine::getComparisonObject)
+            .count()
+            .toFlowable()
+            .subscribe(subscriber);
 
-        return RepeatRunner.IndexConsumer.super.consumptionCount(indexes);
+        return TestUtil.<Long>getFirstNextEvent(subscriber).intValue();
     }
     //endregion
 
@@ -113,7 +112,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
-        Log.println("Fresh start for all tests");
+        Log.println("Fresh start for all test");
 
         return Flowable
             .concat(
@@ -181,7 +180,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
-        Log.println("All tests finished");
+        Log.println("All test finished");
 
         return Flowable
             .concat(
@@ -336,7 +335,7 @@ public class TestKit implements
      * @see #rxBeforeClass(BeforeClassParam)
      */
     public void beforeClass(@NotNull BeforeClassParam param) {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxBeforeClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
@@ -348,7 +347,7 @@ public class TestKit implements
      * @see #rxBeforeMethod(BeforeParam)
      */
     public void before(@NotNull BeforeParam param) {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxBeforeMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
@@ -360,7 +359,7 @@ public class TestKit implements
      * @see #rxAfterClass(AfterClassParam)
      */
     public void afterClass(@NotNull AfterClassParam param) {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxAfterClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
@@ -372,7 +371,7 @@ public class TestKit implements
      * @see #rxAfterMethod(AfterParam)
      */
     public void after(@NotNull AfterParam param) {
-        TestSubscriber<Boolean> subscriber = TestSubscriber.create();
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxAfterMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();

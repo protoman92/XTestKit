@@ -11,6 +11,7 @@ import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
@@ -91,7 +92,7 @@ public class TestKitTest {
             engine1, engine2, engine3, engine4
         )).when(TEST_KIT).engines();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         TEST_KIT.rxDistinctEngines().subscribe(subscriber);
@@ -113,7 +114,44 @@ public class TestKitTest {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            TEST_KIT.rxOnFreshStart().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ENGINE).rxOnFreshStart();
+            verify(TEST_KIT).rxOnFreshStart();
+            verify(TEST_KIT).networkHandler();
+            verify(TEST_KIT).processRunner();
+            verify(TEST_KIT).engines();
+            verify(TEST_KIT).rxExecute(anyString());
+            verify(TEST_KIT).rxDistinctEngines();
+            verify(PROCESS_RUNNER).execute(anyString());
+            verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(NETWORK_HANDLER).processRunner();
+            verify(NETWORK_HANDLER).cmKillAll(anyString());
+            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verifyNoMoreInteractions(ENGINE);
+            verifyNoMoreInteractions(TEST_KIT);
+            verifyNoMoreInteractions(PROCESS_RUNNER);
+            verifyNoMoreInteractions(NETWORK_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_beforeAllTestWithKillAllError_shouldSucceed() {
+        try {
+            // Setup
+            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             TEST_KIT.rxOnFreshStart().subscribe(subscriber);
@@ -150,7 +188,44 @@ public class TestKitTest {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            TEST_KIT.rxOnAllTestsFinished().subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ENGINE).rxOnAllTestsFinished();
+            verify(TEST_KIT).rxOnAllTestsFinished();
+            verify(TEST_KIT).networkHandler();
+            verify(TEST_KIT).processRunner();
+            verify(TEST_KIT).engines();
+            verify(TEST_KIT).rxExecute(anyString());
+            verify(TEST_KIT).rxDistinctEngines();
+            verify(PROCESS_RUNNER).execute(anyString());
+            verify(PROCESS_RUNNER).rxExecute(anyString());
+            verify(NETWORK_HANDLER).processRunner();
+            verify(NETWORK_HANDLER).cmKillAll(anyString());
+            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verifyNoMoreInteractions(ENGINE);
+            verifyNoMoreInteractions(TEST_KIT);
+            verifyNoMoreInteractions(PROCESS_RUNNER);
+            verifyNoMoreInteractions(NETWORK_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_afterAllTestWithKillAllError_shouldSucceed() {
+        try {
+            // Setup
+            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             TEST_KIT.rxOnAllTestsFinished().subscribe(subscriber);
@@ -186,7 +261,7 @@ public class TestKitTest {
     public void mock_beforeBatchTests_shouldSucceed() {
         try {
             // Setup
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             TEST_KIT.rxOnBatchStarted(new int[1]).subscribe(subscriber);
@@ -214,7 +289,7 @@ public class TestKitTest {
     public void mock_afterBatchTests_shouldSucceed() {
         try {
             // Setup
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             TEST_KIT.rxOnBatchFinished(new int[1]).subscribe(subscriber);
@@ -243,7 +318,7 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_beforeClass_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         TEST_KIT.rxBeforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
@@ -269,7 +344,7 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_beforeMethod_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         TEST_KIT.rxBeforeMethod(BeforeParam.DEFAULT).subscribe(subscriber);
@@ -295,7 +370,7 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_afterClass_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         TEST_KIT.rxAfterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
@@ -321,7 +396,7 @@ public class TestKitTest {
     @SuppressWarnings("unchecked")
     public void mock_afterMethod_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         TEST_KIT.rxAfterMethod(AfterParam.DEFAULT).subscribe(subscriber);

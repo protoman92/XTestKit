@@ -6,6 +6,7 @@ package com.swiften.xtestkit.engine.base;
 
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
 import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
@@ -19,6 +20,8 @@ import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -38,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class PlatformEngine<T extends WebDriver> implements
     DelayProtocol,
+    Distinctive,
     ErrorProtocol,
     ProcessRunnerProtocol,
     TestListener {
@@ -58,7 +62,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         NETWORK_HANDLER = NetworkHandler.builder().withProcessRunner(this).build();
         browserName = "";
         platformName = "";
-        serverAddress = ServerAddress.DEFAULT;
+        serverAddress = ServerAddress.defaultInstance();
+    }
+
+    /**
+     * This should be used with {@link Flowable#distinct(Function)}.
+     * @return An {@link Object} instance.
+     * @see Flowable#distinct(Function)
+     */
+    @NotNull
+    public Object getComparisonObject() {
+        return getClass();
     }
 
     //region ProcessRunnerProtocol
@@ -120,7 +134,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param);
+    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        return Flowable.just(true);
+    }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterClass}.
@@ -132,7 +148,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param);
+    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        return Flowable.just(true);
+    }
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
@@ -144,7 +162,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param);
+    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
+        return Flowable.just(true);
+    }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
@@ -155,7 +175,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public abstract Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param);
+    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+        return Flowable.just(true);
+    }
 
     /**
      * Start appium with a specified {@link #serverUri()}.
@@ -191,18 +213,21 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         networkHandler().rxCheckUntilPortAvailable(ADDRESS.port())
             .doOnNext(a -> {
                 ADDRESS.setPort(a);
+                Log.printf("Set port %d for %s", a, this);
+
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
 
-                Log.printf("Port %d is available for %s", ADDRESS.port(), this);
-
                 /* Need to start on a new Thread, or else it will block */
-                new Thread(() -> {
+                Thread thread = new Thread(() -> {
                     try {
                         RUNNER.execute(COMMAND);
                     } catch (IOException e) {
                         Log.println(e);
                     }
-                }).start();
+                });
+
+                Log.printf("Starting instance with %1$d, thread %2$d", a, thread.getId());
+                thread.start();
             })
             .map(a -> true)
             .subscribe();
@@ -436,7 +461,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Driver Methods
     /**
-     * Create a {@link T} instance in order to navigate UI tests.
+     * Create a {@link T} instance in order to navigate UI test.
      * @return A {@link T} instance.
      */
     @NotNull
@@ -445,13 +470,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Start the Appium driver. If {@link #hasAllRequiredInformation()}
      * returns false, throw an {@link Exception}.
+     * @param PARAM A {@link StartDriverParam} instance.
      * @return A {@link Flowable} instance.
      * @see #hasAllRequiredInformation()
      * @see #rxHasAllRequiredInformation()
      * @see #createDriverInstance()
      */
     @NotNull
-    public Flowable<Boolean> rxStartDriver() {
+    public Flowable<Boolean> rxStartDriver(@NotNull final StartDriverParam PARAM) {
         Log.printf("Starting driver at %1$s for %2$s", serverAddress().uri(), this);
 
         return rxHasAllRequiredInformation()
@@ -459,7 +485,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
                 driver = createDriverInstance();
             }))
             .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+            .defaultIfEmpty(true)
+            .retry(PARAM.minRetries());
     }
 
     /**
@@ -943,7 +970,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         /**
          * Set the {@link #ENGINE#platformName} value.
-         * @param name The name of the platform for which tests are executed.
+         * @param name The name of the platform for which test are executed.
          * @return The current {@link MobileEngine.Builder} instance.
          */
         @NotNull

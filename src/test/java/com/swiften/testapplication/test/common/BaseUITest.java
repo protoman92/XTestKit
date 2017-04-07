@@ -1,6 +1,6 @@
-package com.swiften.testapplication.sample.common;
+package com.swiften.testapplication.test.common;
 
-import com.swiften.testapplication.sample.Config;
+import com.swiften.testapplication.test.Config;
 import com.swiften.xtestkit.engine.base.param.AfterClassParam;
 import com.swiften.xtestkit.engine.base.param.AfterParam;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;

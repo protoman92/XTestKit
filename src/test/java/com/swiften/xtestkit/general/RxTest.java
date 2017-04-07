@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.general;
 
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.Log;
 import io.reactivex.Completable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -13,7 +14,7 @@ public class RxTest {
     @SuppressWarnings("unchecked")
     public void mock_completable() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Completable

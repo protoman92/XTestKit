@@ -6,6 +6,8 @@ import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -73,7 +75,8 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_restartAdb_shouldSucceed() {
         try {
             // Setup
-            TestSubscriber subscriber = TestSubscriber.create();
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxRestartAdb().subscribe(subscriber);
@@ -87,7 +90,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             verify(ENGINE).cmAdb();
             verify(ENGINE).cmLaunchAdb();
             verify(ENGINE).rxRestartAdb();
-            verify(ENGINE, times(4)).processRunner();
+            verify(ENGINE, atLeast(3)).processRunner();
             verify(ENGINE).networkHandler();
             verify(ENGINE, times(2)).rxExecute(anyString());
             verify(PROCESS_RUNNER, times(3)).execute(anyString());
@@ -121,7 +124,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
              * indefinitely */
             doReturn("Valid output").when(PROCESS_RUNNER).execute(startEmulator);
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(bootAnim);
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
@@ -153,7 +156,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
              * error, bootAnim loop will be notified. This is because the
              * former is run on a different Thread */
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
@@ -181,7 +184,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
 
             /* Emulate successful bootanim output */
             doReturn("stopped").when(PROCESS_RUNNER).execute(eq(bootAnim));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartEmulator(RETRY).subscribe(subscriber);
@@ -213,7 +216,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             int retries = new RetryProtocol() {}.minRetries();
             String command = ENGINE.cmStopEmulator();
             doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStopEmulator().subscribe(subscriber);
@@ -238,7 +241,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStopEmulator().subscribe(subscriber);
@@ -263,7 +266,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             // Setup
             /* We expect no output when enabling/disabling connection */
             doReturn("Invalid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxEnableInternetConnection()
@@ -289,7 +292,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             // Setup
             /* We expect no output when enabling/disabling connection */
             doReturn("").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxEnableInternetConnection()
@@ -317,7 +320,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             // Setup
             String command = ENGINE.cmCheckKeyboardOpen();
             doReturn("").when(PROCESS_RUNNER).execute(eq(command));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxCheckKeyboardOpen().subscribe(subscriber);
@@ -347,7 +350,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
                 "isReadyForDisplay()=true";
 
             doReturn(valid).when(PROCESS_RUNNER).execute(eq(command));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxCheckKeyboardOpen().subscribe(subscriber);
@@ -369,7 +372,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
     public void mock_dismissHiddenKeyboard_shouldDoNothing() {
         // Setup
         doReturn(Flowable.just(false)).when(ENGINE).rxCheckKeyboardOpen();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxDismissKeyboard().subscribe(subscriber);
@@ -392,7 +395,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
         doReturn(Flowable.just(true))
             .when(ENGINE).rxNavigateBack(any(NavigateBack.class));
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxDismissKeyboard().subscribe(subscriber);
@@ -427,7 +430,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             /* The correct output should be 0. We return 1 here to simulate
              * an error */
             doReturn("1").when(PROCESS_RUNNER).execute(eq(randomCommand));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxDisableEmulatorAnimations().subscribe(subscriber);
@@ -438,7 +441,6 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
             subscriber.assertError(Exception.class);
             subscriber.assertNoValues();
             subscriber.assertNotComplete();
-            verify(PROCESS_RUNNER, times(2)).execute(anyString());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -459,7 +461,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
                     }
                 });
 
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxDisableEmulatorAnimations().subscribe(subscriber);
@@ -467,9 +469,8 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
 
             // Then
             subscriber.assertSubscribed();
-            subscriber.assertError(IOException.class);
+            subscriber.assertError(Exception.class);
             subscriber.assertNotComplete();
-            verify(PROCESS_RUNNER).execute(anyString());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -500,7 +501,7 @@ public final class AndroidEngineTest implements AndroidErrorProtocol {
                     }
                 });
 
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxDisableEmulatorAnimations().subscribe(subscriber);

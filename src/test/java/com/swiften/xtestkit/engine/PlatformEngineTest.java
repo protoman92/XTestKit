@@ -10,6 +10,7 @@ import com.swiften.xtestkit.engine.base.protocol.PlatformView;
 import com.swiften.xtestkit.engine.base.protocol.View;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.system.NetworkHandler;
+import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -86,7 +87,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
-        /* The number of tries for certain tests */
+        /* The number of tries for certain test */
         TRIES = 10;
     }
 
@@ -135,7 +136,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             // Setup
             String whichAppium = ENGINE.cmWhichAppium();
             doReturn("").when(PROCESS_RUNNER).execute(eq(whichAppium));
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
@@ -165,7 +166,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
             doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxCheckPortAvailable(anyInt());
             doReturn(100L).when(ENGINE).appiumStartDelay();
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
@@ -193,7 +194,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = TestSubscriber.create();
+            TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
             ENGINE.rxStopLocalAppiumInstance().subscribe(subscriber);
@@ -210,10 +211,11 @@ public final class PlatformEngineTest implements ErrorProtocol {
             verify(ENGINE).networkHandler();
             verify(ENGINE, times(2)).rxExecute(anyString());
             verify(ENGINE, times(2)).processRunner();
-            verify(NETWORK_HANDLER).processRunner();
+            verify(NETWORK_HANDLER, times(2)).processRunner();
             verify(NETWORK_HANDLER).cmFindPID(anyInt());
             verify(NETWORK_HANDLER).cmKillPID(anyString());
             verify(NETWORK_HANDLER).rxKillProcessWithPort(anyInt());
+            verify(NETWORK_HANDLER).rxKillProcessWithPid(anyString());
             verifyNoMoreInteractions(PROCESS_RUNNER);
             verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(NETWORK_HANDLER);
@@ -229,10 +231,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
     public void mock_startDriverWithWrongConfigs_shouldThrow() {
         // Setup
         doReturn(false).when(ENGINE).hasAllRequiredInformation();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver().subscribe(subscriber);
+        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -250,10 +252,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .when(ENGINE)
             .createDriverInstance();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver().subscribe(subscriber);
+        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -267,10 +269,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_startDriver_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver().subscribe(subscriber);
+        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -288,7 +290,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_acceptAlert_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxAcceptAlert().subscribe(subscriber);
@@ -308,7 +310,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     public void mock_stopUnavailableDriver_shouldThrow() {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxStopDriver().subscribe(subscriber);
@@ -325,7 +327,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_stopAvailableDriver_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxStopDriver().subscribe(subscriber);
@@ -348,7 +350,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .when(ENGINE)
             .driver();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         NavigateBack param = NavigateBack.builder()
             .withTimes(1)
@@ -375,7 +377,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
         int times = TestUtil.randomBetween(1, 100);
         NavigateBack param = NavigateBack.builder().withTimes(times).build();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxNavigateBack(param).subscribe(subscriber);
@@ -397,7 +399,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         // Setup
         doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
         ByXPath param = ByXPath.builder().build();
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementsByXPath(param).subscribe(subscriber);
@@ -426,7 +428,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .withXPath(XPath.EMPTY)
             .build();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementsByXPath(param).subscribe(subscriber);
@@ -454,7 +456,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .withXPath(XPath.EMPTY)
             .build();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementsByXPath(param).subscribe(subscriber);
@@ -482,7 +484,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         when(DRIVER.findElements(any(By.ByXPath.class))).thenReturn(result);
 
         ByXPath param = mock(ByXPath.class);
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementByXPath(param).subscribe(subscriber);
@@ -510,7 +512,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .withParent(parent)
             .build();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementByXPath(param).subscribe(subscriber);
@@ -540,7 +542,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
             .withError("")
             .build();
 
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         ENGINE.rxElementByXPath(param).subscribe(subscriber);
@@ -560,7 +562,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementsWithText_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -579,7 +581,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementWithTextWithNoElement_shouldThrow() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -602,7 +604,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementWithText_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -625,7 +627,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementsContainingText_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -644,7 +646,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementContainingTextWithNoElement_shouldThrow() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -667,7 +669,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementContainingText_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
         when(param.text()).thenReturn("");
 
@@ -690,7 +692,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementsWithHint_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 
@@ -709,7 +711,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementWithHintWithNoElement_shouldThrow() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 
@@ -732,7 +734,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementWithHint_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 
@@ -755,7 +757,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementsContainingHint_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 
@@ -774,7 +776,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementContainingHintWithNoElement_shouldThrow() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 
@@ -797,7 +799,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_elementContainingHint_shouldSucceed() {
         // Setup
-        TestSubscriber subscriber = TestSubscriber.create();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
         when(param.hint()).thenReturn("");
 

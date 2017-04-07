@@ -110,56 +110,30 @@ public class IOSEngine extends MobileEngine<
 
     //region Test Setup
     /**
-     * @param param A {@link RetryProtocol} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return Flowable.just(true);
-    }
-
-    /**
-     * @param PARAM A {@link AfterClassParam} instance.
+     * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
+     * @see #rxStopSimulator(RetryProtocol)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxAfterClass(@NotNull final AfterClassParam PARAM) {
+    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        Flowable<Boolean> source;
+
         switch (testMode()) {
             case EMULATOR:
-                return rxStopSimulator(PARAM);
+                source = rxStopSimulator(param);
+                break;
 
             default:
                 Exception error = new Exception(PLATFORM_UNAVAILABLE);
-                return Flowable.error(error);
+                source = Flowable.error(error);
+                break;
         }
-    }
 
-    /**
-     * @param param A {@link BeforeParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBeforeMethod(BeforeParam)
-     * @see #rxStartDriver()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-        return rxStartDriver();
-    }
-
-    /**
-     * @param param A {@link AfterParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfterMethod(AfterParam)
-     * @see #rxStopDriver()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        return rxStopDriver();
+        return Flowable
+            .concat(source, super.rxAfterClass(param))
+            .toList().toFlowable().map(a -> true);
     }
     //endregion
 
@@ -185,7 +159,7 @@ public class IOSEngine extends MobileEngine<
 //        capabilities.put(MobileCapabilityType.FULL_RESET, true);
 
         /* We need to add different capabilities depending on whether the
-         * tests are running on simulator or real device */
+         * test are running on simulator or real device */
         switch (testMode()) {
             case DEVICE:
                 capabilities.put(MobileCapabilityType.UDID, deviceUID());

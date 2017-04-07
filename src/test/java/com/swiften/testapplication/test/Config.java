@@ -1,4 +1,4 @@
-package com.swiften.testapplication.sample;
+package com.swiften.testapplication.test;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.mobile.TestMode;

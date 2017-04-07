@@ -18,7 +18,7 @@ public class ServerAddressTest {
     @NotNull private final ServerAddress SERVER_ADDRESS;
 
     {
-        SERVER_ADDRESS = spy(ServerAddress.DEFAULT);
+        SERVER_ADDRESS = spy(ServerAddress.defaultInstance());
     }
 
     @AfterMethod

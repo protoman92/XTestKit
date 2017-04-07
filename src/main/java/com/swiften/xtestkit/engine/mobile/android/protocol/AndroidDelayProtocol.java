@@ -9,7 +9,7 @@ public interface AndroidDelayProtocol {
     }
 
     default long emulatorBoothTimeout() {
-        return 30000;
+        return 50000;
     }
 
     default long emulatorBootRetryDelay() {
