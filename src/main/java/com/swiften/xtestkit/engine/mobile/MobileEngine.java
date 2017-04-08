@@ -44,7 +44,7 @@ public abstract class MobileEngine<
     @NotNull
     @Override
     public String toString() {
-        return deviceName();
+        return deviceName;
     }
 
     //region Getters

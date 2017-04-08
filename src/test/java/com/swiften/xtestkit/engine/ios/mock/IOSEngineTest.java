@@ -32,7 +32,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
             .build());
 
         /* We spy this class to check for method calls */
-        PROCESS_RUNNER = spy(ENGINE.processRunner());
+        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
 
         /* Use this parameter when a RetryProtocol is needed */
         RETRY = mock(RetryProtocol.class);
@@ -41,9 +41,6 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @BeforeMethod
     public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
-
-        /* Shorten the delay for testing */
-        doReturn(100L).when(ENGINE).simulatorBootRetryDelay();
         doReturn(3).when(RETRY).minRetries();
     }
 
@@ -69,95 +66,18 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(INVALID_APP_EXTENSION);
         subscriber.assertNotComplete();
+        verify(ENGINE).hasAllRequiredInformation();
         verify(ENGINE).hasCorrectFileExtension();
+        verify(ENGINE).startDriverDelay();
         verify(ENGINE).rxHasCorrectFileExtension();
         verify(ENGINE).rxHasAllRequiredInformation();
         verify(ENGINE).rxStartDriver(any());
+        verifyNoMoreInteractions(ENGINE);
 
         try {
             ENGINE.driver();
         } catch (Exception e) {
             assertEquals(e.getMessage(), DRIVER_UNAVAILABLE);
-        }
-    }
-    //endregion
-
-    //region Start Simulator
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mock_startSimulatorWithError_shouldThrow() {
-        try {
-            // Setup
-            String start = ENGINE.cmStartSimulator();
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(eq(start));
-
-            // When
-            ENGINE.rxStartSimulator().subscribe(subscriber);
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertError(RuntimeException.class);
-            subscriber.assertNotComplete();
-            verify(ENGINE, atLeastOnce()).rxCheckSimulatorBooted();
-            verify(PROCESS_RUNNER, atLeastOnce()).execute(anyString());
-            verify(PROCESS_RUNNER, atLeastOnce()).rxExecute(anyString());
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mock_startSimulator_shouldSucceed() {
-        try {
-            // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rxStartSimulator().subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            assertTrue(TestUtil.getFirstNextEvent(subscriber));
-            verify(ENGINE).rxCheckSimulatorBooted();
-            verify(PROCESS_RUNNER, times(2)).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-    //endregion
-
-    //region Stop Simulator
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mock_stopSimulatorWithError_shouldSucceed() {
-        try {
-            // Setup
-            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rxStopSimulator().subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            assertTrue(TestUtil.getFirstNextEvent(subscriber));
-            verify(ENGINE).rxStopSimulator();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-        } catch (Exception e) {
-            fail(e.getMessage());
         }
     }
     //endregion

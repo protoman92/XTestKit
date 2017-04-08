@@ -479,7 +479,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
-        Log.printf("Starting driver at %1$s for %2$s", serverAddress().uri(), this);
+        Log.printf("Starting driver at %1$s for %2$s", serverAddress.uri(), this);
 
         return rxHasAllRequiredInformation()
             .delay(startDriverDelay(), TimeUnit.MILLISECONDS)

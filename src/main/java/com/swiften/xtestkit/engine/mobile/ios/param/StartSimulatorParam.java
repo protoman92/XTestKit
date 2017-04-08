@@ -1,34 +1,34 @@
-package com.swiften.xtestkit.engine.mobile.android.param;
-
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import org.jetbrains.annotations.NotNull;
+package com.swiften.xtestkit.engine.mobile.ios.param;
 
 /**
  * Created by haipham on 4/8/17.
  */
 
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Parameter object for
- * {@link com.swiften.xtestkit.engine.mobile.android.ADBHandler#rxStartEmulator(StartEmulatorParam)}
+ * {@link com.swiften.xtestkit.engine.mobile.ios.XCRunHandler#rxStartSimulator(StartSimulatorParam)}
  */
-public class StartEmulatorParam implements RetryProtocol {
-    @NotNull public static StartEmulatorParam DEFAULT;
+public class StartSimulatorParam implements RetryProtocol {
+    @NotNull public static StartSimulatorParam DEFAULT;
 
     static {
-        DEFAULT = new StartEmulatorParam();
+        DEFAULT = new StartSimulatorParam();
     }
 
     @NotNull
-    public static Builder builder() {
-        return new Builder();
+    public static StartSimulatorParam.Builder builder() {
+        return new StartSimulatorParam.Builder();
     }
 
-    @NotNull private String deviceName;
+    @NotNull private String deviceUID;
 
     private int minRetries, maxRetries;
 
-    StartEmulatorParam() {
-        deviceName = "";
+    StartSimulatorParam() {
+        deviceUID = "";
     }
 
     @Override
@@ -42,25 +42,25 @@ public class StartEmulatorParam implements RetryProtocol {
     }
 
     @NotNull
-    public String deviceName() {
-        return deviceName;
+    public String deviceUID() {
+        return deviceUID;
     }
 
     public static final class Builder {
-        @NotNull final StartEmulatorParam PARAM;
+        @NotNull final StartSimulatorParam PARAM;
 
         Builder() {
-            PARAM = new StartEmulatorParam();
+            PARAM = new StartSimulatorParam();
         }
 
         /**
-         * Set the {@link #PARAM#deviceName} value.
+         * Set the {@link #PARAM#deviceUID} value.
          * @param name A {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceName(@NotNull String name) {
-            PARAM.deviceName = name;
+        public Builder withDeviceUID(@NotNull String name) {
+            PARAM.deviceUID = name;
             return this;
         }
 
@@ -98,8 +98,9 @@ public class StartEmulatorParam implements RetryProtocol {
         }
 
         @NotNull
-        public StartEmulatorParam build() {
+        public StartSimulatorParam build() {
             return PARAM;
         }
     }
 }
+
