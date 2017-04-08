@@ -5,13 +5,16 @@ import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
+import com.swiften.xtestkit.engine.mobile.TestMode;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -26,7 +29,8 @@ import java.util.Objects;
  */
 public class AndroidEngine extends MobileEngine<
     AndroidElement,
-    AndroidDriver<AndroidElement>> {
+    AndroidDriver<AndroidElement>> implements
+    AndroidErrorProtocol {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -34,6 +38,7 @@ public class AndroidEngine extends MobileEngine<
 
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull String appActivity;
+    @Nullable AndroidInstance androidInstance;
 
     AndroidEngine() {
         super();
@@ -70,11 +75,24 @@ public class AndroidEngine extends MobileEngine<
     public String appActivity() {
         return appActivity;
     }
+
+    /**
+     * Return {@link #androidInstance}.
+     * @return An {@link AndroidInstance} instance.
+     */
+    @NotNull
+    public AndroidInstance androidInstance() {
+        if (Objects.nonNull(androidInstance)) {
+            return androidInstance;
+        }
+
+        throw new RuntimeException(ANDROID_INSTANCE_UNAVAILABLE);
+    }
     //endregion
 
     //region Test Setup
     /**
-     * @param param A {@link BeforeClassParam} instance.
+     * @param PARAM A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations()
@@ -82,20 +100,23 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+    public Flowable<Boolean> rxBeforeClass(@NotNull final BeforeClassParam PARAM) {
         Flowable<Boolean> source;
 
         switch (testMode()) {
             case EMULATOR:
                 final ADBHandler HANDLER = adbHandler();
+                final AndroidInstance ANDROID_INSTANCE = androidInstance();
 
-                StartEmulatorParam sParam = StartEmulatorParam
-                    .builder()
-                    .withDeviceName(deviceName())
-                    .withRetryProtocol(param)
-                    .build();
+                source = HANDLER.rxFindAvailablePort()
+                    .doOnNext(ANDROID_INSTANCE::setPort)
+                    .map(a -> StartEmulatorParam.builder()
+                        .withDeviceName(deviceName())
+                        .withRetryProtocol(PARAM)
+                        .withAndroidInstance(ANDROID_INSTANCE)
+                        .build())
+                    .flatMap(HANDLER::rxStartEmulator)
 
-                source = HANDLER.rxStartEmulator(sParam)
                     /* Disable animations to avoid erratic behaviors */
                     .flatMap(a -> HANDLER.rxDisableEmulatorAnimations());
 
@@ -107,7 +128,7 @@ public class AndroidEngine extends MobileEngine<
         }
 
         return Flowable
-            .concat(source, super.rxBeforeClass(param))
+            .concat(source, super.rxBeforeClass(PARAM))
             .toList().toFlowable().map(a -> true);
     }
 
@@ -216,6 +237,13 @@ public class AndroidEngine extends MobileEngine<
 
     //region Builder
     public static final class Builder extends MobileEngine.Builder<AndroidEngine> {
+        @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
+
+        Builder() {
+            super();
+            ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
+        }
+
         @NotNull
         @Override
         protected AndroidEngine createEngineInstance() {
@@ -223,12 +251,31 @@ public class AndroidEngine extends MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#appActivity} value. This value is used to
-         * determine which Activity is started first.
-         * @param appActivity A {@link String} value.
-         * @return A {@link Builder} instance.
+         * Override to set {@link AndroidInstance#deviceName}.
+         * @param name A {@link String} value.
+         * @return The current {@link Builder} instance.
+         * @see MobileEngine.Builder#withDeviceName(String)
          */
         @NotNull
+        @Override
+        public MobileEngine.Builder<AndroidEngine> withDeviceName(@NotNull String name) {
+            ANDROID_INSTANCE_BUILDER.withDeviceName(name);
+            return super.withDeviceName(name);
+        }
+
+        /**
+         * Override to set {@link AndroidInstance#mode}.
+         * @param mode A {@link TestMode} instance.
+         * @return The current {@link Builder} instance.
+         * @see MobileEngine.Builder#withTestMode(TestMode)
+         */
+        @NotNull
+        @Override
+        public MobileEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
+            ANDROID_INSTANCE_BUILDER.withTestMode(mode);
+            return super.withTestMode(mode);
+        }
+
         public Builder withAppActivity(@NotNull String appActivity) {
             ENGINE.appActivity = appActivity;
             return this;
@@ -239,6 +286,7 @@ public class AndroidEngine extends MobileEngine<
         public AndroidEngine build() {
             withPlatform(Platform.ANDROID);
             withPlatformView(new AndroidView());
+            ENGINE.androidInstance = ANDROID_INSTANCE_BUILDER.build();
             return super.build();
         }
     }

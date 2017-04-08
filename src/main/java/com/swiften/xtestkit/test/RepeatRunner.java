@@ -66,9 +66,9 @@ public class RepeatRunner implements
                           @Nullable Constructor testConstructor,
                           @Nullable Method testMethod) {
         if (testMethod != null) {
-            Annotation skippable = testMethod.getAnnotation(TestRunnerMethod.class);
+            Annotation skipMT = testMethod.getAnnotation(TestRunnerMethod.class);
 
-            if (Objects.nonNull(skippable)) {
+            if (Objects.nonNull(skipMT)) {
                 annotation.setEnabled(false);
             }
         }

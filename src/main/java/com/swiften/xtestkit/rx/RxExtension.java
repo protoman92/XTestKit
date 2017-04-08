@@ -24,7 +24,7 @@ public class RxExtension {
     @NotNull
     public static <T> FlowableTransformer<T,T> withCommonSchedulers() {
         return a -> a
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.trampoline());
     }
 

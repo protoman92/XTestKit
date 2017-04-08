@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine.mobile.android.param;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.mobile.android.AndroidInstance;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -118,6 +119,18 @@ public class StartEmulatorParam implements RetryProtocol {
             return this
                 .withMinRetries(param.minRetries())
                 .withMaxRetries(param.maxRetries());
+        }
+
+        /**
+         * Set properties from an {@link AndroidInstance} instance.
+         * @param instance An {@link AndroidInstance} instance.
+         * @return A {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withAndroidInstance(@NotNull AndroidInstance instance) {
+            return this
+                .withDeviceName(instance.deviceName())
+                .withPort(instance.port());
         }
 
         @NotNull

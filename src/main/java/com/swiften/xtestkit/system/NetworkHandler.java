@@ -55,6 +55,15 @@ public class NetworkHandler implements NetworkHandlerError {
     public boolean isPortAvailable(int port) {
         return !USED_PORTS.contains(port);
     }
+
+    /**
+     * Check if all ports in a {@link Collection} has been marked as used.
+     * @param ports A {@link Collection} of {@link Integer}.
+     * @return A {@link Boolean} value.
+     */
+    public boolean checkPortsMarkedAsUsed(@NotNull Collection<Integer> ports) {
+        return USED_PORTS.containsAll(ports);
+    }
     //endregion
 
     //region Setters

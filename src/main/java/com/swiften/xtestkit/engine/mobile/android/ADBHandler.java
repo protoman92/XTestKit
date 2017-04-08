@@ -10,19 +10,25 @@ import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.util.BooleanUtil;
+import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.NumberUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import sun.nio.ch.Net;
+import sun.security.x509.AVA;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by haipham on 4/8/17.
@@ -39,6 +45,33 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     public static final int MIN_PORT = 5554;
     public static final int MAX_PORT = 5585;
+
+    @NotNull public static final Collection<Integer> AVAILABLE_PORTS;
+
+    static {
+        AVAILABLE_PORTS = IntStream
+            .range(MIN_PORT, MAX_PORT + 1)
+            .filter(NumberUtil::isEven)
+            .boxed()
+            .collect(Collectors.toList());;
+    }
+
+    /**
+     * Get a count of available ports between {@link #MIN_PORT} and
+     * {@link #MAX_PORT}. Only even ports are counted.
+     * @return An {@link Integer} value.
+     */
+    public static int availablePortsCount() {
+        int total = MAX_PORT - MIN_PORT + 1;
+
+        if (NumberUtil.isEven(MIN_PORT) && NumberUtil.isEven(MAX_PORT)) {
+            return (total - 1) / 2 + 1;
+        } else if (NumberUtil.isOdd(MIN_PORT) && NumberUtil.isOdd(MAX_PORT)) {
+            return (total - 1) / 2;
+        } else {
+            return total / 2;
+        }
+    }
 
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -59,6 +92,15 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     }
 
     /**
+     * Get all available ports.
+     * @return A {@link Collection} of {@link Integer}.
+     */
+    @NotNull
+    public Collection<Integer> availablePorts() {
+        return AVAILABLE_PORTS;
+    }
+
+    /**
      * Return {@link #NETWORK_HANDLER}.
      * @return A {@link NetworkHandler} instance.
      */
@@ -74,7 +116,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * @return A {@link Boolean} value.
      */
     public boolean isAcceptablePort(int port) {
-        return port >= MIN_PORT && port <= MAX_PORT && port % 2 == 0;
+        return port >= MIN_PORT && port <= MAX_PORT && NumberUtil.isEven(port);
     }
     //endregion
 
@@ -95,27 +137,6 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
             .map(a -> cmLaunchAdb())
             .flatMap(RUNNER::rxExecute)
             .map(a -> true);
-    }
-    //endregion
-
-    //region Check Emulator Open
-    /**
-     * Check if the specified emulator is open. This is a crude workaround
-     * that assumes only once device is attached at any moment. Suitable only
-     * for isolated test.
-     * @return A {@link Flowable} instance.
-     * @see #cmAdbDevices()
-     */
-    @NotNull
-    public Flowable<Boolean> rxCheckEmulatorOpen() {
-        String command = cmAdbDevices();
-
-        return processRunner()
-            .rxExecute(command)
-            .map(a -> a.split("\n"))
-            .filter(a -> a.length >= 2)
-            .map(a -> true)
-            .defaultIfEmpty(false);
     }
     //endregion
 
@@ -140,6 +161,10 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public Flowable<Integer> rxFindAvailablePort() {
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
+        if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts())) {
+            return Flowable.error(new Exception(NO_PORT_AVAILABLE));
+        }
+
         class CheckPort {
             @NotNull
             @SuppressWarnings("WeakerAccess")
@@ -155,6 +180,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
                         .toFlowable()
                         .map(a -> PORT)
                         .doOnNext(NETWORK_HANDLER::markPortAsUsed)
+                        .doOnNext(Log::println)
                         .switchIfEmpty(new CheckPort().check(PORT + 1));
                 }
 

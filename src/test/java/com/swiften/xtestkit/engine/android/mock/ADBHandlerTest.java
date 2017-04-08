@@ -4,9 +4,11 @@ import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
+import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
+import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -135,10 +137,33 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         subscriber.assertNotComplete();
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER).availablePorts();
         verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
         verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(anyInt());
         verify(NETWORK_HANDLER, never()).markPortAsUsed(anyInt());
+        verifyNoMoreInteractions(ADB_HANDLER);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_findPortWithAllUsed_shouldThrow() {
+        // Setup
+        doReturn(true).when(NETWORK_HANDLER).checkPortsMarkedAsUsed(any());
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxFindAvailablePort().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
+        subscriber.assertNotComplete();
+        verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER).networkHandler();
+        verify(ADB_HANDLER).availablePorts();
+        verify(NETWORK_HANDLER).checkPortsMarkedAsUsed(any());
         verifyNoMoreInteractions(ADB_HANDLER);
     }
 
@@ -163,6 +188,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         assertEquals(TestUtil.<Integer>getFirstNextEvent(subscriber).intValue(), correctPort);
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER).availablePorts();
         verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
         verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(anyInt());
