@@ -119,13 +119,13 @@ public abstract class MobileEngine<
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeMethod(BeforeParam)
-     * @see #rxStartDriver(StartDriverParam)
+     * @see #rxStartDriver(RetryProtocol)
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return Flowable
-            .concat(rxStartDriver(StartDriverParam.DEFAULT), super.rxBeforeMethod(param))
+            .concat(rxStartDriver(param), super.rxBeforeMethod(param))
             .toList().toFlowable().map(a -> true);
     }
 

@@ -37,14 +37,19 @@ public class BaseUITest {
     protected final int INDEX;
 
     public BaseUITest(int index) {
+        Log.printf("Starting test on thread %d", Thread.currentThread().getId());
         INDEX = index;
         TEST_KIT = Config.TEST_KIT;
         INTERACTION = new Interaction(TEST_KIT, index);
     }
 
+    protected long currentThread() {
+        return Thread.currentThread().getId();
+    }
+
     @BeforeClass
     public void beforeClass() {
-        Log.printf("BeforeClass for %s", TEST_KIT.engine(INDEX));
+        Log.printf(">>> BeforeClass for %s, thread %d <<<", TEST_KIT.engine(INDEX), currentThread());
 
         /* Calling beforeClass() here ensures that each PlatformEngine will
          * only start the test environment once */
@@ -53,7 +58,7 @@ public class BaseUITest {
 
     @AfterClass
     public void afterClass() {
-        Log.printf("AfterClass for %s", TEST_KIT.engine(INDEX));
+        Log.printf(">>> AfterClass for %s, thread %d <<<", TEST_KIT.engine(INDEX), currentThread());
         TEST_KIT.afterClass(afterClassParam());
     }
 

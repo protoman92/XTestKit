@@ -7,6 +7,7 @@ package com.swiften.xtestkit.engine.base;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
@@ -59,7 +60,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     public PlatformEngine() {
         PROCESS_RUNNER = ProcessRunner.builder().build();
-        NETWORK_HANDLER = NetworkHandler.builder().withProcessRunner(this).build();
+        NETWORK_HANDLER = NetworkHandler.builder().build();
         browserName = "";
         platformName = "";
         serverAddress = ServerAddress.defaultInstance();
@@ -470,17 +471,18 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Start the Appium driver. If {@link #hasAllRequiredInformation()}
      * returns false, throw an {@link Exception}.
-     * @param PARAM A {@link StartDriverParam} instance.
+     * @param PARAM A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see #hasAllRequiredInformation()
      * @see #rxHasAllRequiredInformation()
      * @see #createDriverInstance()
      */
     @NotNull
-    public Flowable<Boolean> rxStartDriver(@NotNull final StartDriverParam PARAM) {
+    public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
         Log.printf("Starting driver at %1$s for %2$s", serverAddress().uri(), this);
 
         return rxHasAllRequiredInformation()
+            .delay(startDriverDelay(), TimeUnit.MILLISECONDS)
             .flatMapCompletable(a -> Completable.fromAction(() -> {
                 driver = createDriverInstance();
             }))
@@ -498,7 +500,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<Boolean> rxStopDriver() {
         Log.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
 
-        return Completable.fromAction(() -> driver().quit())
+        return Completable
+            .timer(startDriverDelay(), TimeUnit.MILLISECONDS)
+            .andThen(Completable.fromAction(() -> driver().quit()))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

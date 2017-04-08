@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.engine;
 
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
@@ -14,6 +15,8 @@ import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.bcel.generic.RET;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.*;
@@ -44,6 +47,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final MockPlatformView PLATFORM_VIEWS;
     @NotNull private final String LOCALIZED_TEXT;
+    @NotNull private final RetryProtocol RETRY;
     private final int ELEMENT_COUNT, TRIES;
 
     {
@@ -87,6 +91,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
+        /* Use this parameter when a RetryProtocol is needed */
+        RETRY = mock(RetryProtocol.class);
+
         /* The number of tries for certain test */
         TRIES = 10;
     }
@@ -101,6 +108,8 @@ public final class PlatformEngineTest implements ErrorProtocol {
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
         doReturn(LOCALIZER).when(ENGINE).localizer();
+        doReturn(TRIES).when(RETRY).minRetries();
+        doReturn(TRIES).when(RETRY).maxRetries();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
         when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
         when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
@@ -146,8 +155,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertSubscribed();
             subscriber.assertErrorMessage(APPIUM_NOT_INSTALLED);
             subscriber.assertNotComplete();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
             verify(ENGINE).rxStartLocalAppiumInstance();
             verify(ENGINE).processRunner();
             verify(ENGINE, atLeastOnce()).cmWhichAppium();
@@ -181,8 +188,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
             verify(ENGINE).rxStartLocalAppiumInstance();
             verify(ENGINE, times(2)).processRunner();
             verify(ENGINE, atLeastOnce()).cmWhichAppium();
-            verify(PROCESS_RUNNER, times(2)).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -204,21 +209,12 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(PROCESS_RUNNER, times(2)).execute(anyString());
-            verify(PROCESS_RUNNER, times(2)).rxExecute(anyString());
             verify(ENGINE).serverAddress();
             verify(ENGINE).rxStopLocalAppiumInstance();
             verify(ENGINE).networkHandler();
             verify(ENGINE, times(2)).rxExecute(anyString());
             verify(ENGINE, times(2)).processRunner();
-            verify(NETWORK_HANDLER, times(2)).processRunner();
-            verify(NETWORK_HANDLER).cmFindPID(anyInt());
-            verify(NETWORK_HANDLER).cmKillPID(anyString());
-            verify(NETWORK_HANDLER).rxKillProcessWithPort(anyInt());
-            verify(NETWORK_HANDLER).rxKillProcessWithPid(anyString());
-            verifyNoMoreInteractions(PROCESS_RUNNER);
             verifyNoMoreInteractions(ENGINE);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -234,7 +230,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -255,14 +251,14 @@ public final class PlatformEngineTest implements ErrorProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
-        verify(ENGINE).createDriverInstance();
+        verify(ENGINE, times(TRIES + 1)).createDriverInstance();
     }
 
     @Test
@@ -272,7 +268,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -280,7 +276,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
-
         verify(ENGINE).createDriverInstance();
     }
     //endregion
@@ -439,10 +434,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertEquals(TestUtil.<List>getFirstNextEvent(subscriber).size(), 0);
-
-        views.forEach(a -> {
-            verify(a).className();
-        });
+        views.forEach(a -> verify(a).className());
     }
 
     @Test

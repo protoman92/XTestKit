@@ -131,15 +131,8 @@ public class TestKitTest {
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(NETWORK_HANDLER).processRunner();
-            verify(NETWORK_HANDLER).cmKillAll(anyString());
             verify(NETWORK_HANDLER).rxKillAll(anyString());
-            verifyNoMoreInteractions(ENGINE);
-            verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
+            verifyNoMoreInteractions(TEST_KIT);;
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -168,15 +161,8 @@ public class TestKitTest {
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(NETWORK_HANDLER).processRunner();
-            verify(NETWORK_HANDLER).cmKillAll(anyString());
             verify(NETWORK_HANDLER).rxKillAll(anyString());
-            verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -205,15 +191,8 @@ public class TestKitTest {
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(NETWORK_HANDLER).processRunner();
-            verify(NETWORK_HANDLER).cmKillAll(anyString());
             verify(NETWORK_HANDLER).rxKillAll(anyString());
-            verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -242,15 +221,8 @@ public class TestKitTest {
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
-            verify(NETWORK_HANDLER).processRunner();
-            verify(NETWORK_HANDLER).cmKillAll(anyString());
             verify(NETWORK_HANDLER).rxKillAll(anyString());
-            verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -275,10 +247,7 @@ public class TestKitTest {
             verify(TEST_KIT).rxEnginesFromIndexes(any());
             verify(TEST_KIT).rxOnBatchStarted(any());
             verify(TEST_KIT).engines();
-            verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -303,10 +272,7 @@ public class TestKitTest {
             verify(TEST_KIT).rxEnginesFromIndexes(any());
             verify(TEST_KIT).rxOnBatchFinished(any());
             verify(TEST_KIT).engines();
-            verifyNoMoreInteractions(ENGINE);
             verifyNoMoreInteractions(TEST_KIT);
-            verifyNoMoreInteractions(PROCESS_RUNNER);
-            verifyNoMoreInteractions(NETWORK_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -333,9 +299,6 @@ public class TestKitTest {
         verify(TEST_KIT).rxBeforeClass(any());
         verify(ENGINE).rxBeforeClass(any());
         verifyNoMoreInteractions(TEST_KIT);
-        verifyNoMoreInteractions(ENGINE);
-        verifyNoMoreInteractions(NETWORK_HANDLER);
-        verifyNoMoreInteractions(PROCESS_RUNNER);
     }
     //endregion
 
@@ -359,9 +322,6 @@ public class TestKitTest {
         verify(TEST_KIT).rxBeforeMethod(any());
         verify(ENGINE).rxBeforeMethod(any());
         verifyNoMoreInteractions(TEST_KIT);
-        verifyNoMoreInteractions(ENGINE);
-        verifyNoMoreInteractions(NETWORK_HANDLER);
-        verifyNoMoreInteractions(PROCESS_RUNNER);
     }
     //endregion
 
@@ -385,9 +345,6 @@ public class TestKitTest {
         verify(TEST_KIT).rxAfterClass(any());
         verify(ENGINE).rxAfterClass(any());
         verifyNoMoreInteractions(TEST_KIT);
-        verifyNoMoreInteractions(ENGINE);
-        verifyNoMoreInteractions(NETWORK_HANDLER);
-        verifyNoMoreInteractions(PROCESS_RUNNER);
     }
     //endregion
 
@@ -411,9 +368,6 @@ public class TestKitTest {
         verify(TEST_KIT).rxAfterMethod(any());
         verify(ENGINE).rxAfterMethod(any());
         verifyNoMoreInteractions(TEST_KIT);
-        verifyNoMoreInteractions(ENGINE);
-        verifyNoMoreInteractions(NETWORK_HANDLER);
-        verifyNoMoreInteractions(PROCESS_RUNNER);
     }
     //endregion
 }

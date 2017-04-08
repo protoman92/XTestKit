@@ -48,7 +48,7 @@ public class TestKit implements
 
     TestKit() {
         PROCESS_RUNNER = ProcessRunner.builder().build();
-        NETWORK_HANDLER = NetworkHandler.builder().withProcessRunner(this).build();
+        NETWORK_HANDLER = NetworkHandler.builder().build();
         ENGINES = new LinkedList<>();
         RxUtil.overrideErrorHandler();
     }

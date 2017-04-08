@@ -63,14 +63,11 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             assertEquals(TestUtil.getFirstNextEvent(subscriber), Integer.valueOf(tries));
-            verify(PROCESS_RUNNER, times(tries)).execute(anyString());
-            verify(PROCESS_RUNNER, times(tries)).rxExecute(anyString());
             verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
             verify(HANDLER, times(tries)).rxCheckPortAvailable(anyInt());
             verify(HANDLER, times(tries)).rxCheckUntilPortAvailable(anyInt());
-            verifyNoMoreInteractions(PROCESS_RUNNER);
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -94,14 +91,11 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             assertEquals(TestUtil.getFirstNextEvent(subscriber), Integer.valueOf(0));
-            verify(PROCESS_RUNNER).execute(anyString());
-            verify(PROCESS_RUNNER).rxExecute(anyString());
             verify(HANDLER).processRunner();
             verify(HANDLER).cmListAllPorts();
             verify(HANDLER).rxCheckPortAvailable(anyInt());
             verify(HANDLER).rxCheckUntilPortAvailable(anyInt());
             verify(HANDLER).isPortAvailable(anyString(), anyInt());
-            verifyNoMoreInteractions(PROCESS_RUNNER);
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -125,8 +119,6 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             subscriber.assertSubscribed();
             subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
             subscriber.assertNotComplete();
-            verify(PROCESS_RUNNER, times(tries)).execute(anyString());
-            verify(PROCESS_RUNNER, times(tries)).rxExecute(anyString());
             verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
@@ -135,8 +127,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             /* tries + 1 because the last iteration returns an error Flowable,
              * so the other methods are only run 1 * tries times */
             verify(HANDLER, times(tries + 1)).rxCheckUntilPortAvailable(anyInt(), anyInt());
-
-            verifyNoMoreInteractions(PROCESS_RUNNER);
+            
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());

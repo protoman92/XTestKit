@@ -77,6 +77,10 @@ public class LocalizerTest implements LocalizeErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         verify(LOCALIZER, times(times)).getString(any(), anyString());
+        verify(LOCALIZER, times(STRINGS.length)).rxLocalize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).bundles();
+        verify(LOCALIZER, times(STRINGS.length)).locales();
+        verifyNoMoreInteractions(LOCALIZER);
     }
 
     @Test
@@ -99,6 +103,10 @@ public class LocalizerTest implements LocalizeErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         verify(LOCALIZER, times(STRINGS.length)).getString(any(), anyString());
+        verify(LOCALIZER, times(STRINGS.length)).rxLocalize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).bundles();
+        verify(LOCALIZER, times(STRINGS.length)).locales();
+        verifyNoMoreInteractions(LOCALIZER);
     }
 
     @Test
@@ -116,6 +124,11 @@ public class LocalizerTest implements LocalizeErrorProtocol {
 
         // Then
         verify(LOCALIZER, times(times)).getString(any(), anyString());
+        verify(LOCALIZER, times(STRINGS.length)).localize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).rxLocalize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).bundles();
+        verify(LOCALIZER, times(STRINGS.length)).locales();
+        verifyNoMoreInteractions(LOCALIZER);
     }
 
     @Test
@@ -133,5 +146,10 @@ public class LocalizerTest implements LocalizeErrorProtocol {
 
         // Then
         verify(LOCALIZER, times(STRINGS.length)).getString(any(), anyString());
+        verify(LOCALIZER, times(STRINGS.length)).localize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).rxLocalize(anyString());
+        verify(LOCALIZER, times(STRINGS.length)).bundles();
+        verify(LOCALIZER, times(STRINGS.length)).locales();
+        verifyNoMoreInteractions(LOCALIZER);
     }
 }

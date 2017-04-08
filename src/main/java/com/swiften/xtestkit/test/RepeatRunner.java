@@ -256,6 +256,8 @@ public class RepeatRunner implements
                     final int[] INDEXES = PG.indexParameters();
                     final int CONSUMED = INDEXES.length;
 
+                    Log.printf(Arrays.toString(INDEXES));
+
                     return rxOnBatchStarted(INDEXES)
                         .flatMapCompletable(a -> Completable.fromAction(RUNNER::run))
                         .toFlowable()

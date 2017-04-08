@@ -7,7 +7,6 @@ import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -31,27 +30,20 @@ public class NetworkHandler implements NetworkHandlerError {
         return new Builder();
     }
 
-    @Nullable private WeakReference<ProcessRunnerProtocol> processRunner;
+    @NotNull private final ProcessRunner PROCESS_RUNNER;
 
-    NetworkHandler() {}
+    NetworkHandler() {
+        PROCESS_RUNNER = ProcessRunner.builder().build();
+    }
 
     /**
      * Return a {@link ProcessRunnerProtocol} instance from
-     * {@link #processRunner}.
+     * {@link #PROCESS_RUNNER}.
      * @return A {@link ProcessRunnerProtocol} instance.
      */
     @NotNull
     public ProcessRunnerProtocol processRunner() {
-        ProcessRunnerProtocol runner;
-
-        if
-            (Objects.nonNull(processRunner) &&
-            (Objects.nonNull(runner = processRunner.get())))
-        {
-            return runner;
-        }
-
-        throw new RuntimeException(PROCESS_RUNNER_UNAVAILABLE);
+        return PROCESS_RUNNER;
     }
 
     /**
@@ -258,21 +250,6 @@ public class NetworkHandler implements NetworkHandlerError {
 
         Builder() {
             HANDLER = new NetworkHandler();
-        }
-
-        /**
-         * Set the {@link #HANDLER#processRunner} instance. We wrap it in
-         * a {@link WeakReference} to avoid circular references, since it is
-         * likely that an {@link Object} that implements
-         * {@link ProcessRunnerProtocol} also has this {@link NetworkHandler}
-         * as an instance variable.
-         * @param runner A {@link ProcessRunnerProtocol} instance.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder withProcessRunner(@NotNull ProcessRunnerProtocol runner) {
-            HANDLER.processRunner = new WeakReference<>(runner);
-            return this;
         }
 
         @NotNull

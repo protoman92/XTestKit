@@ -2,15 +2,12 @@ package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.test.protocol.TestListener;
 import io.reactivex.Flowable;
-import org.apache.bcel.generic.RET;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
-import org.mockito.ArgumentCaptor;
 import org.testng.annotations.*;
 
 import java.util.Iterator;
-import java.util.Random;
 
 /**
  * Created by haipham on 4/5/17.
@@ -33,15 +30,14 @@ public class RepeatRuleTestRunner implements
         PC = new RepeatRunner.IndexConsumer() {
             @Override
             public int consumptionCount(@NotNull int[] indexes) {
-                int def = indexes.length;
-                return def;
+                return 2;
             }
         };
 
         LISTENER = mock(TestListener.class);
 
         RUNNER = RepeatRunner.builder()
-            .addTestClass(RepeatRuleTest.class)
+            .addTestClass(RepeatRunnerTest.class)
             .withVerboseLevel(0)
             .withRetryCount(RETRY)
             .withPartitionSize(PARTITION_SIZE)

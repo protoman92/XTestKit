@@ -1,6 +1,6 @@
 package com.swiften.xtestkit.engine.ios.mock;
 
-import com.swiften.xtestkit.engine.base.param.StartDriverParam;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.ErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
@@ -8,6 +8,7 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterMethod;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
+    @NotNull private final RetryProtocol RETRY;
 
     {
         ENGINE = spy(IOSEngine.builder()
@@ -31,6 +33,9 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ENGINE.processRunner());
+
+        /* Use this parameter when a RetryProtocol is needed */
+        RETRY = mock(RetryProtocol.class);
     }
 
     @BeforeMethod
@@ -39,6 +44,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ENGINE).simulatorBootRetryDelay();
+        doReturn(3).when(RETRY).minRetries();
     }
 
     @AfterMethod
@@ -56,7 +62,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(StartDriverParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then

@@ -1,37 +1,43 @@
 package com.swiften.xtestkit.engine.android.actual;
 
-import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
-import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidDelayProtocol;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
+import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
+
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-
 /**
  * Created by haipham on 3/23/17.
  */
-public class AndroidEngineTest implements AndroidDelayProtocol {
-    @NotNull private static final AndroidEngine ENGINE;
+public class ADBHandlerTest {
+    @NotNull private final ADBHandler ADB_HANDLER;
+    @NotNull private final StartEmulatorParam SE_PARAM;
+    @NotNull private final String DEVICE_NAME;
 
-    static {
-        ENGINE = spy(AndroidEngine.builder()
-            .withDeviceName("Nexus_4_API_23")
-            .build());
+    {
+        ADB_HANDLER = spy(ADBHandler.builder().build());
+        SE_PARAM = mock(StartEmulatorParam.class);
+
+        /* Return this when calling SE_PARAM#deviceName() */
+        DEVICE_NAME = "Nexus_4_API_23";
     }
 
     @BeforeClass
     @SuppressWarnings("unchecked")
     public void beforeClass() {
+        doReturn(DEVICE_NAME).when(SE_PARAM).deviceName();
+        doReturn(100).when(SE_PARAM).maxRetries();
         TestSubscriber subscriber = CustomTestSubscriber.create();
-        ENGINE.rxStartEmulator().subscribe(subscriber);
+        ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
     }
 
@@ -39,9 +45,9 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
     @SuppressWarnings("unchecked")
     public void afterClass() {
         TestSubscriber subscriber = CustomTestSubscriber.create();
-        ENGINE.rxStopEmulator().subscribe(subscriber);
+        ADB_HANDLER.rxStopEmulator(RetryProtocol.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
-        reset(ENGINE);
+        reset(ADB_HANDLER);
     }
 
     @Test
@@ -51,9 +57,9 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxDisableInternetConnection()
+        ADB_HANDLER.rxDisableInternetConnection()
             .filter(success -> success)
-            .flatMap(a -> ENGINE.rxEnableInternetConnection())
+            .flatMap(a -> ADB_HANDLER.rxEnableInternetConnection())
             .filter(success -> success)
             .switchIfEmpty(Flowable.error(new Exception()))
             .subscribe(subscriber);
@@ -74,7 +80,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxCheckKeyboardOpen().subscribe(subscriber);
+        ADB_HANDLER.rxCheckKeyboardOpen().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -90,7 +96,7 @@ public class AndroidEngineTest implements AndroidDelayProtocol {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxDisableEmulatorAnimations()
+        ADB_HANDLER.rxDisableEmulatorAnimations()
             .filter(success -> success)
             .switchIfEmpty(Flowable.error(new Exception()))
             .subscribe(subscriber);

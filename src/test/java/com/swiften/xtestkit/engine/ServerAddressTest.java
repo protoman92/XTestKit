@@ -40,8 +40,6 @@ public class ServerAddressTest {
         }
 
         // Then
-        Log.println(uris);
-        Log.println(ports);
         verify(SERVER_ADDRESS, times(tries)).uri();
         verify(SERVER_ADDRESS, times(tries)).defaultLocalUri(anyInt());
         verify(SERVER_ADDRESS, times(tries * 2)).port();

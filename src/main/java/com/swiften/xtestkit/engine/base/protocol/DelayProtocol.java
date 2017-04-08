@@ -11,4 +11,12 @@ public interface DelayProtocol {
     default long backNavigationDelay() {
         return 1000;
     }
+
+    default long startDriverDelay() {
+        return 3000;
+    }
+
+    default long stopDriverDelay() {
+        return 3000;
+    }
 }
