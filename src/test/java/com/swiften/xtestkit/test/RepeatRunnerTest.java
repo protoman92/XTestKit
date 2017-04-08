@@ -23,6 +23,7 @@ public class RepeatRuleTest {
         dataProvider = "dataProvider"
     )
     public RepeatRuleTest(int index) {
+        Log.printf("Starting test %1$d on thread %2$d", index, Thread.currentThread().getId());
         INDEX = index;
     }
 
@@ -39,8 +40,12 @@ public class RepeatRuleTest {
     public void afterMethod() {}
 
     @Test
-    public void mock_runTest1_shouldRepeat() {}
+    public void mock_runTest1_shouldRepeat() {
+        Log.printf("Mock 1, test %1$d, thread %2$d", INDEX, Thread.currentThread().getId());
+    }
 
     @Test
-    public void mock_runTest2_shouldRepeat() {}
+    public void mock_runTest2_shouldRepeat() {
+        Log.printf("Mock 2, test %1$d, thread %2$d", INDEX, Thread.currentThread().getId());
+    }
 }
