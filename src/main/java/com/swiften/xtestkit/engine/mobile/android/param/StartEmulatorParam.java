@@ -25,7 +25,7 @@ public class StartEmulatorParam implements RetryProtocol {
 
     @NotNull private String deviceName;
 
-    private int minRetries, maxRetries;
+    private int port, minRetries, maxRetries;
 
     StartEmulatorParam() {
         deviceName = "";
@@ -41,9 +41,21 @@ public class StartEmulatorParam implements RetryProtocol {
         return maxRetries;
     }
 
+    /**
+     * Return {@link #deviceName).
+     * @return A {@link String} value.
+     */
     @NotNull
     public String deviceName() {
         return deviceName;
+    }
+
+    /**
+     * Return {@link #port}.
+     * @return An {@link Integer} value.
+     */
+    public int port() {
+        return port;
     }
 
     public static final class Builder {
@@ -82,6 +94,17 @@ public class StartEmulatorParam implements RetryProtocol {
          */
         public Builder withMaxRetries(int retries) {
             PARAM.maxRetries = retries;
+            return this;
+        }
+
+        /**
+         * Set the {@link #PARAM#port} value.
+         * @param port An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withPort(int port) {
+            PARAM.port = port;
             return this;
         }
 

@@ -8,7 +8,9 @@ import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -20,9 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 /**
  * Created by haipham on 4/8/17.
@@ -66,6 +66,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ADB_HANDLER).processRunner();
         doReturn(NETWORK_HANDLER).when(ADB_HANDLER).networkHandler();
+        doReturn(true).when(ADB_HANDLER).isAcceptablePort(anyInt());
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ADB_HANDLER).emulatorBootRetryDelay();
@@ -116,7 +117,83 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     }
     //endregion
 
+    //region Check port
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_findPortWithNoneAvailable_shouldThrow() {
+        // Setup
+        doReturn(false).when(ADB_HANDLER).isAcceptablePort(anyInt());
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxFindAvailablePort().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
+        subscriber.assertNotComplete();
+        verify(ADB_HANDLER).networkHandler();
+        verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
+        verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
+        verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(anyInt());
+        verify(NETWORK_HANDLER, never()).markPortAsUsed(anyInt());
+        verifyNoMoreInteractions(ADB_HANDLER);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_findPort_shouldSucceed() {
+        // Setup
+        int correctPort = ADBHandler.MAX_PORT - 1;
+        doReturn(false).when(ADB_HANDLER).isAcceptablePort(anyInt());
+        doReturn(true).when(ADB_HANDLER).isAcceptablePort(correctPort);
+        doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxCheckPortAvailable(correctPort);
+        TestSubscriber subscriber = TestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxFindAvailablePort().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertEquals(TestUtil.<Integer>getFirstNextEvent(subscriber).intValue(), correctPort);
+        verify(ADB_HANDLER).networkHandler();
+        verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
+        verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
+        verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(anyInt());
+        verify(NETWORK_HANDLER).markPortAsUsed(correctPort);
+        verifyNoMoreInteractions(ADB_HANDLER);
+        assertFalse(NETWORK_HANDLER.isPortAvailable(correctPort));
+    }
+    //endregion
+
     //region Start Emulator
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_startEmulatorWithInvalidPort_shouldThrow() {
+        // Setup
+        doReturn(false).when(ADB_HANDLER).isAcceptablePort(anyInt());
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertError(Exception.class);
+        subscriber.assertNotComplete();
+        verify(ADB_HANDLER).rxStartEmulator(any());
+        verify(ADB_HANDLER).unacceptablePort(anyInt());
+        verify(ADB_HANDLER).isAcceptablePort(anyInt());
+        verifyNoMoreInteractions(ADB_HANDLER);
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void mock_startEmulatorWithBootAnimError_shouldThrow() {
@@ -145,6 +222,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER).cmEmulator();
             verify(ADB_HANDLER).cmStartEmulator(anyString());
             verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
             verify(ADB_HANDLER).rxStartEmulator(any());
@@ -180,6 +258,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER).cmBootAnim();
             verify(ADB_HANDLER).cmEmulator();
             verify(ADB_HANDLER).cmStartEmulator(anyString());
+            verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
@@ -214,6 +293,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER).cmBootAnim();
             verify(ADB_HANDLER).cmEmulator();
             verify(ADB_HANDLER).cmStartEmulator(anyString());
+            verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();

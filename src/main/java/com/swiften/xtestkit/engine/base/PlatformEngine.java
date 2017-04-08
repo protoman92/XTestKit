@@ -210,10 +210,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public void rxStartLocalAppiumInstance(@NotNull final String CLI) {
         final ProcessRunner RUNNER = processRunner();
         final ServerAddress ADDRESS = serverAddress();
+        final NetworkHandler NETWORK_HANDLER = networkHandler();
 
-        networkHandler().rxCheckUntilPortAvailable(ADDRESS.port())
+        NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS.port())
+            .doOnNext(NETWORK_HANDLER::markPortAsUsed)
+            .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
-                ADDRESS.setPort(a);
                 Log.printf("Set port %d for %s", a, this);
 
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);

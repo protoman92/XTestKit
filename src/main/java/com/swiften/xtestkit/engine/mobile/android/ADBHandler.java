@@ -9,10 +9,13 @@ import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
+import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
+import sun.nio.ch.Net;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,13 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
         return new Builder();
     }
 
+    /**
+     * Recommended port range is 5585 - 5586. However, adb will increment the
+     * port number by one, so we need to decrement by 1.
+     */
+    public static final int MIN_PORT = 5554;
+    public static final int MAX_PORT = 5585;
+
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
@@ -38,6 +48,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
         NETWORK_HANDLER = NetworkHandler.builder().build();
     }
 
+    //region Getters
     /**
      * Return {@link #PROCESS_RUNNER}.
      * @return A {@link ProcessRunner} instance.
@@ -55,6 +66,17 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public NetworkHandler networkHandler() {
         return NETWORK_HANDLER;
     }
+
+    /**
+     * Check if a port is acceptable; i.e. lies within {@link #MIN_PORT} and
+     * {@link #MAX_PORT} and is an even number.
+     * @param port An {@link Integer} value.
+     * @return A {@link Boolean} value.
+     */
+    public boolean isAcceptablePort(int port) {
+        return port >= MIN_PORT && port <= MAX_PORT && port % 2 == 0;
+    }
+    //endregion
 
     //region Adb setup
     /**
@@ -99,7 +121,52 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     //region Start Emulator
     /**
-     * Start the emulator with the specified settings.Detect when bootanim is
+     * Same as {@link #isAcceptablePort(int)}, but returns a {@link Flowable}
+     * instance.
+     * @param port An {@link Integer} value.
+     * @return A {@link Flowable} instance.
+     * @see #isAcceptablePort(int)
+     */
+    @NotNull
+    public Flowable<Boolean> rxIsAcceptablePort(int port) {
+        return Flowable.just(isAcceptablePort(port));
+    }
+
+    /**
+     * Recursively find an available port and emit and error if none is found.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Integer> rxFindAvailablePort() {
+        final NetworkHandler NETWORK_HANDLER = networkHandler();
+
+        class CheckPort {
+            @NotNull
+            @SuppressWarnings("WeakerAccess")
+            Flowable<Integer> check(final int PORT) {
+                if (PORT >= MIN_PORT && PORT <= MAX_PORT) {
+                    return Flowable
+                        .concat(
+                            rxIsAcceptablePort(PORT),
+                            NETWORK_HANDLER.rxCheckPortAvailable(PORT)
+                        )
+                        .all(BooleanUtil::isTrue)
+                        .filter(BooleanUtil::isTrue)
+                        .toFlowable()
+                        .map(a -> PORT)
+                        .doOnNext(NETWORK_HANDLER::markPortAsUsed)
+                        .switchIfEmpty(new CheckPort().check(PORT + 1));
+                }
+
+                return Flowable.error(new Exception(NO_PORT_AVAILABLE));
+            }
+        }
+
+        return new CheckPort().check(MIN_PORT);
+    }
+
+    /**
+     * Start the emulator with the specified settings. Detect when bootanim is
      * 'closed' and then emit value.
      * @param PARAM A {@link StartEmulatorParam} instance.
      * @return A {@link Flowable} instance.
@@ -108,6 +175,11 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     @NotNull
     public Flowable<Boolean> rxStartEmulator(@NotNull final StartEmulatorParam PARAM) {
+        if (!isAcceptablePort(PARAM.port())) {
+            String error = unacceptablePort(PARAM.port());
+            return Flowable.error(new Exception(error));
+        }
+
         final ProcessRunner PROCESS_RUNNER = processRunner();
         final int RETRIES = PARAM.maxRetries();
 

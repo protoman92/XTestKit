@@ -36,6 +36,7 @@ public class NetworkHandler implements NetworkHandlerError {
         PROCESS_RUNNER = ProcessRunner.builder().build();
     }
 
+    //region Getters
     /**
      * Return a {@link ProcessRunnerProtocol} instance from
      * {@link #PROCESS_RUNNER}.
@@ -45,6 +46,35 @@ public class NetworkHandler implements NetworkHandlerError {
     public ProcessRunnerProtocol processRunner() {
         return PROCESS_RUNNER;
     }
+
+    /**
+     * Check if a port has yet to be marked as used.
+     * @param port The port to be checked. An {@link Integer} value.
+     * @return A {@link Boolean} value.
+     */
+    public boolean isPortAvailable(int port) {
+        return !USED_PORTS.contains(port);
+    }
+    //endregion
+
+    //region Setters
+    /**
+     * Mark a port as used by adding it to {@link #USED_PORTS}.
+     * @param port The port to be marked as used. An {@link Integer} value.
+     */
+    public synchronized void markPortAsUsed(int port) {
+        USED_PORTS.add(port);
+    }
+
+    /**
+     * Mark a port as available by removing it from {@link #USED_PORTS}.
+     * @param port The port to be marked as available. An {@link Integer}
+     *             value.
+     */
+    public synchronized void markPortAsAvailable(int port) {
+        USED_PORTS.remove(port);
+    }
+    //endregion
 
     /**
      * Check if a port is available.
@@ -81,13 +111,7 @@ public class NetworkHandler implements NetworkHandlerError {
         String regex = String.format("\\*.%d( \\(LISTEN\\))?", port);
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(output);
-
-        if (!matcher.find()) {
-            USED_PORTS.add(port);
-            return true;
-        }
-
-        return false;
+        return !matcher.find();
     }
 
     /**

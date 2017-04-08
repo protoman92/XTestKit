@@ -158,8 +158,11 @@ public final class PlatformEngineTest implements ErrorProtocol {
             verify(ENGINE).rxStartLocalAppiumInstance();
             verify(ENGINE).processRunner();
             verify(ENGINE, atLeastOnce()).cmWhichAppium();
+            verify(ENGINE).appiumStartDelay();
             verify(ENGINE, never()).rxStartLocalAppiumInstance(anyString());
             verify(ENGINE, never()).cmStartLocalAppiumInstance(anyString(), anyInt());
+            verify(NETWORK_HANDLER, never()).markPortAsUsed(anyInt());
+            verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -188,6 +191,12 @@ public final class PlatformEngineTest implements ErrorProtocol {
             verify(ENGINE).rxStartLocalAppiumInstance();
             verify(ENGINE, times(2)).processRunner();
             verify(ENGINE, atLeastOnce()).cmWhichAppium();
+            verify(ENGINE).appiumStartDelay();
+            verify(ENGINE).serverAddress();
+            verify(ENGINE).networkHandler();
+            verify(NETWORK_HANDLER, atLeastOnce()).rxCheckUntilPortAvailable(anyInt());
+            verify(NETWORK_HANDLER).markPortAsUsed(anyInt());
+            verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {
             fail(e.getMessage());
         }
