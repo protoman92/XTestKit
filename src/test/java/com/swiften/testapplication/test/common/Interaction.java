@@ -4,6 +4,7 @@ import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.rx.RxExtension;
+import com.swiften.xtestkit.util.BooleanUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -108,9 +109,7 @@ public final class Interaction implements DelayProtocol {
         return ENGINE.rxAllEditableElements()
             .flatMap(RxExtension::fromCollection)
             .flatMap(a -> ENGINE.rxSendKey(a.OBJECT, INPUTS[a.INDEX]))
-            .toList()
-            .toFlowable()
-            .all(a -> a.stream().allMatch(b -> b))
+            .all(BooleanUtil::isTrue)
             .toFlowable();
     }
 

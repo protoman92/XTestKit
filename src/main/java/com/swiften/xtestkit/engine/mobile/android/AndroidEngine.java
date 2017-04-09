@@ -7,8 +7,12 @@ import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
+import com.swiften.xtestkit.system.NetworkHandler;
+import com.swiften.xtestkit.util.BooleanUtil;
+import com.swiften.xtestkit.util.LogUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -19,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import sun.nio.ch.Net;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,6 +51,22 @@ public class AndroidEngine extends MobileEngine<
         ADB_HANDLER = ADBHandler.builder().build();
         appActivity = "";
     }
+
+    //region Distinctive
+    /**
+     * Since we can control multiple emulators/devices at once, there is no
+     * need to have only one {@link AndroidEngine} active at a time. Therefore,
+     * we override {@link PlatformEngine#getComparisonObject()} to disable
+     * this comparison filter.
+     * @return An {@link Object} instance.
+     * @see PlatformEngine#getComparisonObject()
+     */
+    @NotNull
+    @Override
+    public Object getComparisonObject() {
+        return deviceName();
+    }
+    //endregion
 
     //region TestListener
     @NotNull
@@ -96,7 +117,7 @@ public class AndroidEngine extends MobileEngine<
      * @param PARAM A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
-     * @see ADBHandler#rxDisableEmulatorAnimations()
+     * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDProtocol)
      */
     @NotNull
     @Override
@@ -121,6 +142,7 @@ public class AndroidEngine extends MobileEngine<
 
                         /* Disable animations to avoid erratic behaviors */
                         .flatMap(a -> HANDLER.rxDisableEmulatorAnimations(SE_PARAM)));
+//                    .map(a -> true);
 
                 break;
 
@@ -131,23 +153,50 @@ public class AndroidEngine extends MobileEngine<
 
         return Flowable
             .concat(source, super.rxBeforeClass(PARAM))
-            .toList().toFlowable().map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
-     * @see ADBHandler#rxStopAllEmulators(RetryProtocol)
+     * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
         Flowable<Boolean> source;
+        AndroidInstance androidInstance = androidInstance();
 
         switch (testMode()) {
             case EMULATOR:
-                source = adbHandler().rxStopAllEmulators(param);
+                String deviceUID = androidInstance.deviceUID();
+                LogUtil.printf("Stopping %1$s for %2$s", deviceUID, this);
+
+                StopEmulatorParam seParam = StopEmulatorParam
+                    .builder()
+                    .withRetryProtocol(param)
+                    .withPortProtocol(androidInstance)
+                    .build();
+
+                final NetworkHandler HANDLER = networkHandler();
+                int PORT = androidInstance.port();
+
+                source = Flowable
+                    .concatArray(
+                        Completable
+                            .fromAction(() -> HANDLER.markPortAsAvailable(PORT))
+                            .toFlowable()
+                            .map(a -> true)
+                            .defaultIfEmpty(true),
+
+                        adbHandler().rxStopEmulator(seParam)
+                    )
+                    .all(BooleanUtil::isTrue)
+                    .toFlowable();
+
                 break;
 
             default:
@@ -157,7 +206,8 @@ public class AndroidEngine extends MobileEngine<
 
         return Flowable
             .concat(source, super.rxAfterClass(param))
-            .toList().toFlowable().map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
     //endregion
 
@@ -172,8 +222,14 @@ public class AndroidEngine extends MobileEngine<
     @Override
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
+        AndroidInstance androidInstance = androidInstance();
         capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage());
         capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity());
+//        capabilities.put(AndroidMobileCapabilityType.AVD, deviceName());
+
+        /* androidInstance should have already called setPort(), during
+         * initialization phase */
+//        capabilities.put(AndroidMobileCapabilityType.ADB_PORT, androidInstance.port());
         return capabilities;
     }
 

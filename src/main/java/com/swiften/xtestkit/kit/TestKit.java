@@ -108,11 +108,12 @@ public class TestKit implements
 
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnFreshStart() {
         LogUtil.println("Fresh start for all test");
 
         return Flowable
-            .concat(
+            .concatArray(
                 networkHandler()
                     .rxKillAll("node appium")
 
@@ -121,9 +122,8 @@ public class TestKit implements
 
                 rxDistinctEngines().flatMap(PlatformEngine::rxOnFreshStart)
             )
-            .toList()
+            .all(BooleanUtil::isTrue)
             .toFlowable()
-            .map(a -> true)
             .defaultIfEmpty(true);
     }
 
@@ -155,9 +155,8 @@ public class TestKit implements
 
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchStarted(INDEXES))
-            .toList()
+            .all(BooleanUtil::isTrue)
             .toFlowable()
-            .map(a -> true)
             .defaultIfEmpty(true);
     }
 
@@ -168,7 +167,7 @@ public class TestKit implements
 
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
-            .toList()
+            .all(BooleanUtil::isTrue)
             .toFlowable()
             .map(a -> true)
             .defaultIfEmpty(true);
@@ -176,11 +175,12 @@ public class TestKit implements
 
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnAllTestsFinished() {
         LogUtil.println("All test finished");
 
         return Flowable
-            .concat(
+            .concatArray(
                 networkHandler()
                     .rxKillAll("node appium")
 
@@ -189,9 +189,8 @@ public class TestKit implements
 
                 rxDistinctEngines().flatMap(PlatformEngine::rxOnAllTestsFinished)
             )
-            .toList()
+            .all(BooleanUtil::isTrue)
             .toFlowable()
-            .map(a -> true)
             .defaultIfEmpty(true);
     }
     //endregion

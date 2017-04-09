@@ -8,6 +8,7 @@ import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
+import com.swiften.xtestkit.util.BooleanUtil;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
@@ -137,7 +138,8 @@ public class IOSEngine extends MobileEngine<
 
         return Flowable
             .concat(source, super.rxAfterClass(param))
-            .toList().toFlowable().map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
     //endregion
 

@@ -17,12 +17,14 @@ import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.protocol.TestListener;
+import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -66,15 +68,18 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         serverAddress = ServerAddress.defaultInstance();
     }
 
+    //region Distinctive
     /**
      * This should be used with {@link Flowable#distinct(Function)}.
      * @return An {@link Object} instance.
      * @see Flowable#distinct(Function)
      */
     @NotNull
+    @Override
     public Object getComparisonObject() {
         return getClass();
     }
+    //endregion
 
     //region ProcessRunnerProtocol
     @NotNull
@@ -100,20 +105,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
-        if (serverAddress().isLocalInstance()) {
-            return rxStartLocalAppiumInstance();
-        }
-
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
-        if (serverAddress().isLocalInstance()) {
-            return rxStopLocalAppiumInstance();
-        }
-
         return Flowable.just(true);
     }
 
@@ -136,6 +133,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        if (serverAddress().isLocalInstance()) {
+            return rxStartLocalAppiumInstance();
+        }
+
         return Flowable.just(true);
     }
 
@@ -147,10 +148,33 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * implementations.
      * @param param An {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
+     * @see NetworkHandler#markPortAsAvailable(int)
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-        return Flowable.just(true);
+        NetworkHandler HANDLER = networkHandler();
+        ServerAddress ADDRESS = serverAddress();
+
+        Flowable<Boolean> reusePort = Completable
+            .fromAction(() -> HANDLER.markPortAsAvailable(ADDRESS.port()))
+            .toFlowable()
+            .map(a -> true)
+            .defaultIfEmpty(true);
+
+        Flowable<Boolean> stopServer;
+
+        if (serverAddress().isLocalInstance()) {
+            stopServer = rxStopLocalAppiumInstance();
+        } else {
+            stopServer = Flowable.just(true);
+        }
+
+        return Flowable
+            .concatArray(reusePort, stopServer)
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
+
     }
 
     /**
@@ -458,6 +482,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public DesiredCapabilities desiredCapabilities() {
         Map<String,Object> capabilities = capabilities();
+        LogUtil.printf("Desired capabilities for %1$s: %2$s", this, capabilities);
         return new DesiredCapabilities(capabilities);
     }
     //endregion
@@ -502,9 +527,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<Boolean> rxStopDriver() {
         LogUtil.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
 
-        return Completable
-            .timer(startDriverDelay(), TimeUnit.MILLISECONDS)
-            .andThen(Completable.fromAction(() -> driver().quit()))
+        return Completable.fromAction(() -> driver().quit())
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

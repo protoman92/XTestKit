@@ -5,6 +5,7 @@ import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.protocol.MobileEngineError;
+import com.swiften.xtestkit.util.BooleanUtil;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
@@ -124,7 +125,8 @@ public abstract class MobileEngine<
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return Flowable
             .concat(rxStartDriver(param), super.rxBeforeMethod(param))
-            .toList().toFlowable().map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
@@ -138,7 +140,8 @@ public abstract class MobileEngine<
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
         return Flowable
             .concat(rxStopDriver(), super.rxAfterMethod(param))
-            .toList().toFlowable().map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
     //endregion
 

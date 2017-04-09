@@ -45,7 +45,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public static final int MIN_PORT = 5554;
     public static final int MAX_PORT = 5585;
 
-    @NotNull public static final Collection<Integer> AVAILABLE_PORTS;
+    @NotNull private static final Collection<Integer> AVAILABLE_PORTS;
 
     static {
         AVAILABLE_PORTS = IntStream
@@ -179,7 +179,6 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
                         .toFlowable()
                         .map(a -> PORT)
                         .doOnNext(NETWORK_HANDLER::markPortAsUsed)
-                        .doOnNext(LogUtil::println)
                         .switchIfEmpty(new CheckPort().check(PORT + 1));
                 }
 
@@ -272,6 +271,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Shut down all emulators.
      * @param param A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
+     * @see #cmStopAllEmulators()
      */
     @NotNull
     public Flowable<Boolean> rxStopAllEmulators(@NotNull RetryProtocol param) {
@@ -492,9 +492,8 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
                 rxDisableTransitionAnimationScale(param),
                 rxDisableAnimatorDurationScale(param)
             )
-            .toList()
-            .toFlowable()
-            .map(a -> true);
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
     //endregion
 

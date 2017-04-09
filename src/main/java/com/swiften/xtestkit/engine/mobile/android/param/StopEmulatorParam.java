@@ -53,7 +53,7 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
         /**
          * Set the {@link #PARAM#minRetries} value.
          * @param retries An {@link Integer} value.
-         * @return The current {@link StartEmulatorParam.Builder} instance.
+         * @return The current {@link Builder} instance.
          */
         @NotNull
         public Builder withMinRetries(int retries) {
@@ -64,7 +64,7 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
         /**
          * Set the {@link #PARAM#port} value.
          * @param port An {@link Integer} value.
-         * @return The current {@link StartEmulatorParam.Builder} instance.
+         * @return The current {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {
@@ -75,11 +75,23 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
         /**
          * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
          * @param param A {@link RetryProtocol} instance.
-         * @return A {@link StartEmulatorParam.Builder} instance.
+         * @return The current {@link Builder} instance.
+         * @see #withMinRetries(int)
          */
         @NotNull
         public Builder withRetryProtocol(@NotNull RetryProtocol param) {
             return this.withMinRetries(param.minRetries());
+        }
+
+        /**
+         * Set {@link #PARAM#port}.
+         * @param param A {@link PortProtocol} instance.
+         * @return The current {@link Builder} instance.
+         * @see #withPort(int)
+         */
+        @NotNull
+        public Builder withPortProtocol(@NotNull PortProtocol param) {
+            return this.withPort(param.port());
         }
 
         @NotNull

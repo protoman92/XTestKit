@@ -3,6 +3,7 @@ package com.swiften.xtestkit.test;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
+import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.LogUtil;
 import io.reactivex.Completable;
@@ -191,9 +192,8 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(TestListener::rxOnFreshStart)
-            .toList()
+            .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
-            .map(a -> true)
             .defaultIfEmpty(true);
     }
 
@@ -203,7 +203,7 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(a -> a.rxOnBatchStarted(INDEXES))
-            .toList()
+            .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(a -> true)
             .defaultIfEmpty(true);
@@ -215,7 +215,7 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
-            .toList()
+            .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(a -> true)
             .defaultIfEmpty(true);
@@ -227,7 +227,7 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(TestListener::rxOnAllTestsFinished)
-            .toList()
+            .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(a -> true)
             .defaultIfEmpty(true);

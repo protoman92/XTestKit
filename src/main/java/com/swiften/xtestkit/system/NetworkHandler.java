@@ -193,7 +193,6 @@ public class NetworkHandler implements NetworkHandlerError {
     Flowable<Boolean> rxKillProcessWithPort(@NotNull T param) {
         return processRunner()
             .rxExecute(cmFindPID(param.port()))
-            .doOnNext(LogUtil::println)
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .flatMap(this::rxKillProcessWithPid)
