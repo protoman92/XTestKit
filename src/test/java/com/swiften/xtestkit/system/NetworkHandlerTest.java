@@ -2,9 +2,7 @@ package com.swiften.xtestkit.system;
 
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
-import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;

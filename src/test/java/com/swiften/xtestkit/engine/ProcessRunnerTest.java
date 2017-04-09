@@ -2,7 +2,6 @@ package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

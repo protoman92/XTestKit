@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine.mobile.android.param;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link com.swiften.xtestkit.engine.mobile.android.AndroidEngine#cmPutSettings(DeviceSettingParam)}
+ * {@link com.swiften.xtestkit.engine.mobile.android.ADBHandler#rxChangeSettings(DeviceSettingParam)}
  */
-public class DeviceSettingParam implements RetryProtocol {
+public class DeviceSettingParam implements DeviceUIDProtocol, RetryProtocol {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -20,11 +21,19 @@ public class DeviceSettingParam implements RetryProtocol {
     @NotNull private String nameSpace;
     @NotNull private String key;
     @NotNull private String value;
+    @NotNull private String deviceUID;
 
     DeviceSettingParam() {
         nameSpace = "";
         key = "";
         value = "";
+        deviceUID = "";
+    }
+
+    @NotNull
+    @Override
+    public String deviceUID() {
+        return deviceUID;
     }
 
     @NotNull
@@ -103,6 +112,28 @@ public class DeviceSettingParam implements RetryProtocol {
         public Builder withValue(@NotNull Object value) {
             PARAM.value = String.valueOf(value);
             return this;
+        }
+
+        /**
+         * Set the {@link #PARAM#deviceUID} value.
+         * @param uid A {@link String} value.
+         * @return The current {@link ConnectionParam.Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUID(@NotNull String uid) {
+            PARAM.deviceUID = uid;
+            return this;
+        }
+
+        /**
+         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDProtocol}
+         * instance.
+         * @param param A {@link DeviceUIDProtocol} instance.
+         * @return The current {@link ConnectionParam.Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+            return this.withDeviceUID(param.deviceUID());
         }
 
         @NotNull

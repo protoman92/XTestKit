@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.util;
 
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 
@@ -16,7 +15,7 @@ public class RxUtil {
         final Consumer<? super Throwable> HANDLER = RxJavaPlugins.getErrorHandler();
 
         RxJavaPlugins.setErrorHandler(t -> {
-            Log.println(t);
+            LogUtil.println(t);
             HANDLER.accept(t);
         });
     }

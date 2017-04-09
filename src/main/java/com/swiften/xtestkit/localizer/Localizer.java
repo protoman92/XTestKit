@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.localizer;
 
 import com.swiften.xtestkit.localizer.protocol.LocalizeErrorProtocol;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;

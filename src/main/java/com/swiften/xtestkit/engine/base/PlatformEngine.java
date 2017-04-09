@@ -4,6 +4,7 @@ package com.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
+import com.sun.corba.se.spi.activation.Server;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
@@ -17,12 +18,11 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CollectionUtil;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -216,7 +216,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .doOnNext(NETWORK_HANDLER::markPortAsUsed)
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
-                Log.printf("Set port %d for %s", a, this);
+                LogUtil.printf("Set port %d for %s", a, this);
 
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
 
@@ -225,11 +225,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
                     try {
                         RUNNER.execute(COMMAND);
                     } catch (IOException e) {
-                        Log.println(e);
+                        LogUtil.println(e);
                     }
                 });
 
-                Log.printf("Starting instance with %1$d, thread %2$d", a, thread.getId());
+                LogUtil.printf("Starting instance with %1$d, thread %2$d", a, thread.getId());
                 thread.start();
             })
             .map(a -> true)
@@ -239,13 +239,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(int)
+     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
-        int port = serverAddress().port();
-        Log.printf("Stopping appium instance at port %d for %s", port, this);
-        return networkHandler().rxKillProcessWithPort(port);
+        ServerAddress address = serverAddress();
+        LogUtil.printf("Stopping appium instance at port %d for %s", address.port(), this);
+        return networkHandler().rxKillProcessWithPort(address);
     }
     //endregion
 
@@ -481,7 +481,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
-        Log.printf("Starting driver at %1$s for %2$s", serverAddress.uri(), this);
+        LogUtil.printf("Starting driver at %1$s for %2$s", serverAddress.uri(), this);
 
         return rxHasAllRequiredInformation()
             .delay(startDriverDelay(), TimeUnit.MILLISECONDS)
@@ -500,7 +500,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        Log.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
+        LogUtil.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
 
         return Completable
             .timer(startDriverDelay(), TimeUnit.MILLISECONDS)
@@ -643,7 +643,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%s%s", cls.className(), XPATH))
             .doOnNext(a -> {
-                Log.println(String.format("Searching for \"%s\"", a));
+                LogUtil.println(String.format("Searching for \"%s\"", a));
             })
             .map(path -> {
                 try {

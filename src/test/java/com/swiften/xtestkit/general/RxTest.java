@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.general;
 
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import io.reactivex.Completable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.testng.annotations.Test;
@@ -18,7 +18,7 @@ public class RxTest {
 
         // When
         Completable
-            .fromAction(() -> Log.println("First Step"))
+            .fromAction(() -> LogUtil.println("First Step"))
             .toFlowable()
             .defaultIfEmpty(true)
             .subscribe(subscriber);
@@ -26,6 +26,6 @@ public class RxTest {
         subscriber.awaitTerminalEvent();
 
         // Then
-        Log.println(subscriber.getEvents());
+        LogUtil.println(subscriber.getEvents());
     }
 }

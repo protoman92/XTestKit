@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by haipham on 3/19/17.
  */
-public class Log {
+public class LogUtil {
     public static void println(@Nullable Object object) {
         if (Constants.isLoggingEnabled()) {
             System.out.println(object);

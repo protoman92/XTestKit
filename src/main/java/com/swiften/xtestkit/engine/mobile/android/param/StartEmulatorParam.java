@@ -2,6 +2,8 @@ package com.swiften.xtestkit.engine.mobile.android.param;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.AndroidInstance;
+import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
+import com.swiften.xtestkit.system.protocol.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link com.swiften.xtestkit.engine.mobile.android.ADBHandler#rxStartEmulator(StartEmulatorParam)}
  */
-public class StartEmulatorParam implements RetryProtocol {
+public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, PortProtocol {
     @NotNull public static StartEmulatorParam DEFAULT;
 
     static {
@@ -25,11 +27,25 @@ public class StartEmulatorParam implements RetryProtocol {
     }
 
     @NotNull private String deviceName;
+    @NotNull private String deviceUID;
 
-    private int port, minRetries, maxRetries;
+    private int port;
+    private int minRetries;
+    private int maxRetries;
 
     StartEmulatorParam() {
         deviceName = "";
+        deviceUID = "";
+    }
+
+    /**
+     * Return {@link #deviceUID}.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    @Override
+    public String deviceUID() {
+        return deviceUID;
     }
 
     @Override
@@ -78,6 +94,17 @@ public class StartEmulatorParam implements RetryProtocol {
         }
 
         /**
+         * Set the {@link #PARAM#deviceUID} value.
+         * @param uid A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUID(@NotNull String uid) {
+            PARAM.deviceUID = uid;
+            return this;
+        }
+
+        /**
          * Set the {@link #PARAM#minRetries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
@@ -122,6 +149,17 @@ public class StartEmulatorParam implements RetryProtocol {
         }
 
         /**
+         * Set {@link #PARAM#deviceUID} from a {@link DeviceUIDProtocol}
+         * instance.
+         * @param param A {@link DeviceUIDProtocol} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+            return this.withDeviceUID(param.deviceUID());
+        }
+
+        /**
          * Set properties from an {@link AndroidInstance} instance.
          * @param instance An {@link AndroidInstance} instance.
          * @return A {@link Builder} instance.
@@ -130,6 +168,7 @@ public class StartEmulatorParam implements RetryProtocol {
         public Builder withAndroidInstance(@NotNull AndroidInstance instance) {
             return this
                 .withDeviceName(instance.deviceName())
+                .withDeviceUIDProtocol(instance)
                 .withPort(instance.port());
         }
 

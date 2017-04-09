@@ -8,6 +8,7 @@ import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
+import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -115,10 +116,11 @@ public class AndroidEngine extends MobileEngine<
                         .withRetryProtocol(PARAM)
                         .withAndroidInstance(ANDROID_INSTANCE)
                         .build())
-                    .flatMap(HANDLER::rxStartEmulator)
+                    .flatMap(SE_PARAM -> HANDLER
+                        .rxStartEmulator(SE_PARAM)
 
-                    /* Disable animations to avoid erratic behaviors */
-                    .flatMap(a -> HANDLER.rxDisableEmulatorAnimations());
+                        /* Disable animations to avoid erratic behaviors */
+                        .flatMap(a -> HANDLER.rxDisableEmulatorAnimations(SE_PARAM)));
 
                 break;
 
@@ -136,7 +138,7 @@ public class AndroidEngine extends MobileEngine<
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
-     * @see ADBHandler#rxStopEmulator(RetryProtocol)
+     * @see ADBHandler#rxStopAllEmulators(RetryProtocol)
      */
     @NotNull
     @Override
@@ -145,7 +147,7 @@ public class AndroidEngine extends MobileEngine<
 
         switch (testMode()) {
             case EMULATOR:
-                source = adbHandler().rxStopEmulator(param);
+                source = adbHandler().rxStopAllEmulators(param);
                 break;
 
             default:
@@ -219,16 +221,19 @@ public class AndroidEngine extends MobileEngine<
     //region Dismiss Keyboard
     /**
      * Dismiss the keyboard if it is open. We first need to check whether the
-     * keyboard is present with {@link ADBHandler#rxCheckKeyboardOpen()},
+     * keyboard is present with
+     * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDProtocol)},
      * and then call
      * {@link #rxNavigateBack(NavigateBack)}.
      * @return A {@link Flowable} instance.
      * @see #rxNavigateBack(NavigateBack)
-     * @see ADBHandler#rxCheckKeyboardOpen()
+     * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDProtocol)
      */
     @NotNull
     public Flowable<Boolean> rxDismissKeyboard() {
-        return adbHandler().rxCheckKeyboardOpen()
+        AndroidInstance instance = androidInstance();
+
+        return adbHandler().rxCheckKeyboardOpen(instance)
             .filter(isOpen -> isOpen)
             .flatMap(a -> rxNavigateBack())
             .defaultIfEmpty(true);

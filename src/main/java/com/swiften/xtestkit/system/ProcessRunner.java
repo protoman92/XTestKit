@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.system;
 
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.apache.commons.exec.CommandLine;
@@ -30,7 +30,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-        Log.printf("Executing '%s'", args);
+        LogUtil.printf("Executing '%s'", args);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();
@@ -46,7 +46,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
             return Objects.nonNull(output) ? output : "";
         } catch (IOException e) {
             String error = outputStream.toString();
-            Log.printf("Execution error: %s, output: ", e.getMessage(), error);
+            LogUtil.printf("Execution error: %s, output: ", e.getMessage(), error);
             throw new IOException(error);
         }
     }

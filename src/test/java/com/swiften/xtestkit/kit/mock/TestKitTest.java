@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.kit.mock;
 
-import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.AfterClassParam;
 import com.swiften.xtestkit.engine.base.param.AfterParam;
@@ -12,7 +11,6 @@ import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -25,7 +23,6 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 

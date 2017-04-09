@@ -10,11 +10,8 @@ import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
-import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.commons.validator.Arg;
 import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 
@@ -22,9 +19,6 @@ import org.mockito.ArgumentCaptor;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 
@@ -39,10 +33,12 @@ public final class AndroidEngineTest {
     @NotNull private final RetryProtocol RETRY;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final String DEVICE_NAME;
+    @NotNull private final String DEVICE_UID;
     private final int RETRIES_ON_ERROR;
 
     {
         DEVICE_NAME = "Nexus_4_API_23";
+        DEVICE_UID = "emulator-5556";
 
         ENGINE = spy(AndroidEngine.builder()
             .withDeviceName(DEVICE_NAME)
@@ -75,6 +71,7 @@ public final class AndroidEngineTest {
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
         doReturn(ENGINE).when(NETWORK_HANDLER).processRunner();
         doReturn(DEVICE_NAME).when(ANDROID_INSTANCE).deviceName();
+        doReturn(DEVICE_UID).when(ANDROID_INSTANCE).deviceUID();
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ADB_HANDLER).emulatorBootRetryDelay();
@@ -99,7 +96,7 @@ public final class AndroidEngineTest {
         doReturn(correctPort).when(ANDROID_INSTANCE).port();
         doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rxFindAvailablePort();
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxStartEmulator(any());
-        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxDisableEmulatorAnimations();
+        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxDisableEmulatorAnimations(any());
         ArgumentCaptor<StartEmulatorParam> SE_CAPTOR = ArgumentCaptor.forClass(StartEmulatorParam.class);
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
@@ -118,7 +115,7 @@ public final class AndroidEngineTest {
         verify(ENGINE).rxBeforeClass(any());
         verify(ADB_HANDLER).rxFindAvailablePort();
         verify(ADB_HANDLER).rxStartEmulator(SE_CAPTOR.capture());
-        verify(ADB_HANDLER).rxDisableEmulatorAnimations();
+        verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
         verify(ANDROID_INSTANCE).setPort(anyInt());
         verifyNoMoreInteractions(ENGINE);
         assertEquals(ANDROID_INSTANCE.port(), SE_CAPTOR.getValue().port());
@@ -130,7 +127,7 @@ public final class AndroidEngineTest {
     @SuppressWarnings("unchecked")
     public void mock_dismissHiddenKeyboard_shouldDoNothing() {
         // Setup
-        doReturn(Flowable.just(false)).when(ADB_HANDLER).rxCheckKeyboardOpen();
+        doReturn(Flowable.just(false)).when(ADB_HANDLER).rxCheckKeyboardOpen(any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -141,9 +138,10 @@ public final class AndroidEngineTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ADB_HANDLER).rxCheckKeyboardOpen();
-        verify(ENGINE).rxDismissKeyboard();
+        verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
         verify(ENGINE).adbHandler();
+        verify(ENGINE).androidInstance();
+        verify(ENGINE).rxDismissKeyboard();
         verify(ENGINE, never()).rxNavigateBack(any(NavigateBack.class));
         verifyNoMoreInteractions(ENGINE);
     }
@@ -153,7 +151,7 @@ public final class AndroidEngineTest {
     public void mock_dismissKeyboard_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true))
-            .when(ADB_HANDLER).rxCheckKeyboardOpen();
+            .when(ADB_HANDLER).rxCheckKeyboardOpen(any());
 
         doReturn(Flowable.just(true))
             .when(ENGINE).rxNavigateBack(any(NavigateBack.class));
@@ -168,8 +166,9 @@ public final class AndroidEngineTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ADB_HANDLER).rxCheckKeyboardOpen();
+        verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
         verify(ENGINE).adbHandler();
+        verify(ENGINE).androidInstance();
         verify(ENGINE).rxNavigateBack(any(NavigateBack.class));
         verify(ENGINE).rxNavigateBack();
         verify(ENGINE).rxDismissKeyboard();

@@ -3,7 +3,7 @@ package com.swiften.xtestkit.engine;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 
 import com.swiften.xtestkit.engine.base.Platform;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -34,6 +34,6 @@ public final class XPathTest {
 
         // Then
         assertEquals(groupCount, groups.size());
-        Log.println(attribute);
+        LogUtil.println(attribute);
     }
 }

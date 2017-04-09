@@ -3,20 +3,21 @@ package com.swiften.xtestkit.engine.android.mock;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
-import com.swiften.xtestkit.rx.RxExtension;
+import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 
@@ -34,8 +35,10 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final StartEmulatorParam SE_PARAM;
+    @NotNull private final DeviceUIDProtocol DUID_PARAM;
     @NotNull private final RetryProtocol RETRY;
     @NotNull private final String DEVICE_NAME;
+    @NotNull private final String DEVICE_UID;
     private final int RETRIES_ON_ERROR;
     private final int ANIM_DISABLE_CMD_COUNT;
 
@@ -52,9 +55,13 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);
         RETRY = mock(RetryProtocol.class);
+        DUID_PARAM = mock(DeviceUIDProtocol.class);
 
         /* Return this deviceName when calling SE_PARAM#deviceName() */
         DEVICE_NAME = "Nexus_4_API_23";
+
+        /* Return this deviceUID when calling DUID_PARAM#deviceUID() */
+        DEVICE_UID = "emulator-5556";
 
         /* Return this retry count when calling SE_PARAM#minRetries and
          * SE_PARAM#maxRetries() */
@@ -80,6 +87,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         when(SE_PARAM.deviceName()).thenReturn(DEVICE_NAME);
         when(RETRY.minRetries()).thenReturn(RETRIES_ON_ERROR);
         when(RETRY.maxRetries()).thenReturn(RETRIES_ON_ERROR);
+        when(DUID_PARAM.deviceUID()).thenReturn(DEVICE_UID);
     }
 
     @AfterMethod
@@ -243,10 +251,10 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             subscriber.assertNotComplete();
             verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
             verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell();
-            verify(ADB_HANDLER).cmBootAnim();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmBootAnim(any());
             verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(anyString());
+            verify(ADB_HANDLER).cmStartEmulator(any());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).emulatorBootRetryDelay();
@@ -280,10 +288,10 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
             verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell();
-            verify(ADB_HANDLER).cmBootAnim();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmBootAnim(any());
             verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(anyString());
+            verify(ADB_HANDLER).cmStartEmulator(any());
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
@@ -315,10 +323,10 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
             verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell();
-            verify(ADB_HANDLER).cmBootAnim();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmBootAnim(any());
             verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(anyString());
+            verify(ADB_HANDLER).cmStartEmulator(any());
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
@@ -334,22 +342,55 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     //region Stop Emulator
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_stopEmulatorWithError_shouldThrow() {
+    public void mock_stopEmulatorsWithError_shouldThrow() {
         try {
             // Setup
-            int retries = new RetryProtocol() {}.minRetries();
-            String command = ADB_HANDLER.cmStopEmulator();
-            doThrow(new IOException()).when(PROCESS_RUNNER).execute(eq(command));
+            doThrow(new IOException()).when(PROCESS_RUNNER).execute(contains("reboot"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStopEmulator(SE_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rxStopAllEmulators(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoValues();
             subscriber.assertNotComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
+            verify(ADB_HANDLER, atLeastOnce()).cmAdb();
+            verify(ADB_HANDLER, atLeastOnce()).cmAdbShell();
+            verify(ADB_HANDLER, atLeastOnce()).cmStopAllEmulators();
+            verify(ADB_HANDLER).rxStopAllEmulators(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_stopEmulators_shouldSucceed() {
+        try {
+            // Setup
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            ADB_HANDLER.rxStopAllEmulators(RETRY).subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell();
+            verify(ADB_HANDLER).cmStopAllEmulators();
+            verify(ADB_HANDLER).rxStopAllEmulators(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -358,22 +399,22 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     @Test
     @SuppressWarnings("unchecked")
     public void mock_stopEmulator_shouldSucceed() {
-        try {
-            // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
+        // Setup
+        doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxKillProcessWithPort(any());
+        TestSubscriber subscriber = CustomTestSubscriber.create();
 
-            // When
-            ADB_HANDLER.rxStopEmulator(RETRY).subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
+        // When
+        ADB_HANDLER.rxStopEmulator(StopEmulatorParam.DEFAULT).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
 
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ADB_HANDLER).rxStopEmulator(any());
+        verify(ADB_HANDLER).networkHandler();
+        verify(NETWORK_HANDLER).rxKillProcessWithPort(any());
+        verifyNoMoreInteractions(ADB_HANDLER);
     }
     //endregion
 
@@ -388,8 +429,8 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxEnableInternetConnection()
-                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection())
+            ADB_HANDLER.rxEnableInternetConnection(DUID_PARAM)
+                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection(DUID_PARAM))
                 .subscribe(subscriber);
 
             subscriber.awaitTerminalEvent();
@@ -398,6 +439,14 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             subscriber.assertSubscribed();
             subscriber.assertErrorMessage(NO_OUTPUT_EXPECTED);
             subscriber.assertNotComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmToggleConnection(any());
+            verify(ADB_HANDLER).rxToggleInternetConnection(any());
+            verify(ADB_HANDLER).rxEnableInternetConnection(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -413,8 +462,8 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxEnableInternetConnection()
-                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection())
+            ADB_HANDLER.rxEnableInternetConnection(DUID_PARAM)
+                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection(DUID_PARAM))
                 .subscribe(subscriber);
 
             subscriber.awaitTerminalEvent();
@@ -423,6 +472,15 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
+            verify(ADB_HANDLER, times(2)).processRunner();
+            verify(ADB_HANDLER, times(2)).cmAndroidHome();
+            verify(ADB_HANDLER, times(2)).cmAdb();
+            verify(ADB_HANDLER, times(2)).cmAdbShell(any());
+            verify(ADB_HANDLER, times(2)).cmToggleConnection(any());
+            verify(ADB_HANDLER, times(2)).rxToggleInternetConnection(any());
+            verify(ADB_HANDLER).rxEnableInternetConnection(any());
+            verify(ADB_HANDLER).rxDisableInternetConnection(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -435,18 +493,24 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     public void mock_checkKeyboardWithNoOutput_shouldEmitFalse() {
         try {
             // Setup
-            String command = ADB_HANDLER.cmCheckKeyboardOpen();
-            doReturn("").when(PROCESS_RUNNER).execute(eq(command));
+            doReturn("").when(PROCESS_RUNNER).execute(contains("InputMethod"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckKeyboardOpen().subscribe(subscriber);
+            ADB_HANDLER.rxCheckKeyboardOpen(DUID_PARAM).subscribe(subscriber);
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             assertFalse(TestUtil.getFirstNextEvent(subscriber));
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmCheckKeyboardOpen(any());
+            verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -457,19 +521,17 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     public void mock_checkKeyboardOpen_shouldSucceed() {
         try {
             // Setup
-            String command = ADB_HANDLER.cmCheckKeyboardOpen();
-
             /* The output below represents a typical valid response */
             String valid =
                 "mHasSurface=true " +
                     "mShownFrame=[0.0,48.0][768.0,1280.0] " +
                     "isReadyForDisplay()=true";
 
-            doReturn(valid).when(PROCESS_RUNNER).execute(eq(command));
+            doReturn(valid).when(PROCESS_RUNNER).execute(contains("InputMethod"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckKeyboardOpen().subscribe(subscriber);
+            ADB_HANDLER.rxCheckKeyboardOpen(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -477,6 +539,13 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             assertTrue(TestUtil.getFirstNextEvent(subscriber));
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmCheckKeyboardOpen(any());
+            verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -494,7 +563,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations().subscribe(subscriber);
+            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -516,26 +585,23 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations().subscribe(subscriber);
+            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertError(Exception.class);
             subscriber.assertNotComplete();
-            verify(ADB_HANDLER).disableWindowAnimationScaleParam();
-            verify(ADB_HANDLER).disableTransitionAnimationScaleParam();
-            verify(ADB_HANDLER).disableAnimatorDurationScaleParam();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAndroidHome();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAdb();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAdbShell();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAdbShell(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).changeSettingsFailed(anyString());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
-            verify(ADB_HANDLER).rxDisableWindowAnimationScale();
-            verify(ADB_HANDLER).rxDisableTransitionAnimationScale();
-            verify(ADB_HANDLER).rxDisableAnimatorDurationScale();
-            verify(ADB_HANDLER).rxDisableEmulatorAnimations();
+            verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
+            verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
+            verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());
+            verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxChangeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
@@ -553,27 +619,24 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations().subscribe(subscriber);
+            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ADB_HANDLER).disableWindowAnimationScaleParam();
-            verify(ADB_HANDLER).disableTransitionAnimationScaleParam();
-            verify(ADB_HANDLER).disableAnimatorDurationScaleParam();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAndroidHome();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAdb();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAdbShell();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAdbShell(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).changeSettingsFailed(anyString());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmGetSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
-            verify(ADB_HANDLER).rxDisableWindowAnimationScale();
-            verify(ADB_HANDLER).rxDisableTransitionAnimationScale();
-            verify(ADB_HANDLER).rxDisableAnimatorDurationScale();
-            verify(ADB_HANDLER).rxDisableEmulatorAnimations();
+            verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
+            verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
+            verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());
+            verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxChangeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {

@@ -1,12 +1,10 @@
 package com.swiften.xtestkit.test;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
 import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.Log;
-import com.swiften.xtestkit.util.RxUtil;
+import com.swiften.xtestkit.util.LogUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -98,8 +96,8 @@ public class RepeatRunner implements
 
     @Override
     public void onTestFailure(@NotNull ITestResult result) {
-        Log.println(result.getName());
-        Log.println(result.getThrowable());
+        LogUtil.println(result.getName());
+        LogUtil.println(result.getThrowable());
     }
 
     @Override
@@ -256,7 +254,7 @@ public class RepeatRunner implements
                     final int[] INDEXES = PG.indexParameters();
                     final int CONSUMED = INDEXES.length;
 
-                    Log.printf(Arrays.toString(INDEXES));
+                    LogUtil.printf(Arrays.toString(INDEXES));
 
                     return rxOnBatchStarted(INDEXES)
                         .flatMapCompletable(a -> Completable.fromAction(RUNNER::run))

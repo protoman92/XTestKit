@@ -5,12 +5,10 @@ import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.protocol.MobileEngineError;
-import com.swiften.xtestkit.util.Log;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 
 import java.util.*;

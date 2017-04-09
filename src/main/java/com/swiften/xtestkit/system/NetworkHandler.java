@@ -1,17 +1,17 @@
 package com.swiften.xtestkit.system;
 
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.system.protocol.PortProtocol;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
 import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,7 +138,7 @@ public class NetworkHandler implements NetworkHandlerError {
              * but it works correctly */
             .flatMap(a -> {
                 if (BooleanUtil.isTrue(a)) {
-                    Log.printf("Port %d is currently available", PORT);
+                    LogUtil.printf("Port %d is currently available", PORT);
                     return Flowable.just(PORT);
                 }
 
@@ -184,19 +184,21 @@ public class NetworkHandler implements NetworkHandlerError {
 
     /**
      * Kill a process that is listening to a port.
-     * @param port An {@link Integer} value.
+     * @param param A {@link T} instance.
+     * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #cmFindPID(int)
-     * @see #rxKillProcessWithPid(String)
      */
     @NotNull
-    public Flowable<Boolean> rxKillProcessWithPort(int port) {
+    public <T extends RetryProtocol & PortProtocol>
+    Flowable<Boolean> rxKillProcessWithPort(@NotNull T param) {
         return processRunner()
-            .rxExecute(cmFindPID(port))
+            .rxExecute(cmFindPID(param.port()))
+            .doOnNext(LogUtil::println)
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .flatMap(this::rxKillProcessWithPid)
-            .defaultIfEmpty(true);
+            .defaultIfEmpty(true)
+            .retry(param.minRetries());
     }
 
     /**

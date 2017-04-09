@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.engine.base;
 
-import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 /**

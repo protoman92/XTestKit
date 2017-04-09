@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.engine.base.AppiumCommand;
-import com.swiften.xtestkit.util.Log;
+import com.swiften.xtestkit.util.LogUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.testng.annotations.BeforeMethod;
@@ -31,7 +31,7 @@ public class AppiumCommandTest {
             .build();
 
         // Then
-        Log.println(command.command());
+        LogUtil.println(command.command());
     }
 
     @NotNull

@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.engine.base.ServerAddress;
-import com.swiften.xtestkit.util.Log;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 

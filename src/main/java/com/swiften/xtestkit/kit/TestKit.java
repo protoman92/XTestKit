@@ -18,14 +18,11 @@ import com.swiften.xtestkit.test.protocol.TestListener;
 import com.swiften.xtestkit.util.*;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.nio.ch.Net;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Created by haipham on 3/24/17.
@@ -112,7 +109,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
-        Log.println("Fresh start for all test");
+        LogUtil.println("Fresh start for all test");
 
         return Flowable
             .concat(
@@ -154,7 +151,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
-        Log.printf("Starting batch with indexes %s", Arrays.toString(INDEXES));
+        LogUtil.printf("Starting batch with indexes %s", Arrays.toString(INDEXES));
 
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchStarted(INDEXES))
@@ -167,7 +164,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
-        Log.printf("Finishing batch with indexes %s", Arrays.toString(INDEXES));
+        LogUtil.printf("Finishing batch with indexes %s", Arrays.toString(INDEXES));
 
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
@@ -180,7 +177,7 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnAllTestsFinished() {
-        Log.println("All test finished");
+        LogUtil.println("All test finished");
 
         return Flowable
             .concat(
