@@ -7,7 +7,6 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -56,7 +55,7 @@ public class XCRunHandlerTest {
 
         /* Shorten the delay for testing */
         doReturn(100L).when(XC_HANDLER).simulatorBootRetryDelay();
-        doReturn(3).when(RETRY).minRetries();
+        doReturn(3).when(RETRY).retries();
     }
 
     @AfterMethod

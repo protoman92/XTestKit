@@ -10,9 +10,9 @@ import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
+import com.swiften.xtestkit.system.protocol.PortProtocol;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.NumberUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
@@ -154,10 +154,14 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     /**
      * Recursively find an available port and emit and error if none is found.
+     * @param PARAM A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
+     * * @see #rxIsAcceptablePort(int)
+     * @see NetworkHandler#checkPortsMarkedAsUsed(Collection)
+     * @see NetworkHandler#rxCheckPortAvailable(PortProtocol)
      */
     @NotNull
-    public Flowable<Integer> rxFindAvailablePort() {
+    public Flowable<Integer> rxFindAvailablePort(@NotNull final RetryProtocol PARAM) {
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
         if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts())) {
@@ -169,10 +173,22 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
             @SuppressWarnings("WeakerAccess")
             Flowable<Integer> check(final int PORT) {
                 if (PORT >= MIN_PORT && PORT <= MAX_PORT) {
+                    class Param implements PortProtocol, RetryProtocol {
+                        @Override
+                        public int port() {
+                            return PORT;
+                        }
+
+                        @Override
+                        public int retries() {
+                            return PARAM.retries();
+                        }
+                    }
+
                     return Flowable
                         .concat(
                             rxIsAcceptablePort(PORT),
-                            NETWORK_HANDLER.rxCheckPortAvailable(PORT)
+                            NETWORK_HANDLER.rxCheckPortAvailable(new Param())
                         )
                         .all(BooleanUtil::isTrue)
                         .filter(BooleanUtil::isTrue)
@@ -205,7 +221,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
         }
 
         final ProcessRunner PROCESS_RUNNER = processRunner();
-        final int RETRIES = PARAM.maxRetries();
+        final int RETRIES = PARAM.retries();
 
         @SuppressWarnings("WeakerAccess")
         final long DELAY = emulatorBootRetryDelay();
@@ -280,7 +296,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
         return processRunner()
             .rxExecute(command)
             .map(a -> true)
-            .retry(param.minRetries());
+            .retry(param.retries());
     }
 
     /**
@@ -401,13 +417,14 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
             .filter(a -> a.contains(PARAM.value()))
             .map(a -> true)
             .onErrorResumeNext(Flowable.empty())
+
             /* Throw error if the returned value does not match the new
              * setting value */
             .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))))
 
             /* Sometimes an adb error may be thrown if the currently active
              * adb instance does not acknowledge the request */
-            .retry(PARAM.minRetries());
+            .retry(PARAM.retries());
     }
     //endregion
 
@@ -487,7 +504,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public Flowable<Boolean>
     rxDisableEmulatorAnimations(@NotNull DeviceUIDProtocol param) {
         return Flowable
-            .mergeArray(
+            .mergeArrayDelayError(
                 rxDisableWindowAnimationScale(param),
                 rxDisableTransitionAnimationScale(param),
                 rxDisableAnimatorDurationScale(param)

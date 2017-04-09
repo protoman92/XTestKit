@@ -4,7 +4,6 @@ package com.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import com.sun.corba.se.spi.activation.Server;
 import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
@@ -24,7 +23,6 @@ import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
@@ -36,6 +34,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,6 +47,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     ErrorProtocol,
     ProcessRunnerProtocol,
     TestListener {
+    @NotNull private static final Queue<String> SERVER_QUEUE;
+
+    static {
+        SERVER_QUEUE = new ConcurrentLinkedQueue<>();
+    }
+
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
@@ -134,7 +139,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         if (serverAddress().isLocalInstance()) {
-            return rxStartLocalAppiumInstance();
+            return rxStartLocalAppiumInstance(param);
         }
 
         return Flowable.just(true);
@@ -164,7 +169,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         Flowable<Boolean> stopServer;
 
-        if (serverAddress().isLocalInstance()) {
+        if (ADDRESS.isLocalInstance()) {
             stopServer = rxStopLocalAppiumInstance();
         } else {
             stopServer = Flowable.just(true);
@@ -174,7 +179,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .concatArray(reusePort, stopServer)
             .all(BooleanUtil::isTrue)
             .toFlowable();
-
     }
 
     /**
@@ -206,12 +210,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     /**
      * Start appium with a specified {@link #serverUri()}.
+     * @param PARAM A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
      * @see #cmWhichAppium()
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean> rxStartLocalAppiumInstance() {
+    public Flowable<Boolean>
+    rxStartLocalAppiumInstance(@NotNull final RetryProtocol PARAM) {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
 
@@ -219,9 +225,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
-            .doOnNext(this::rxStartLocalAppiumInstance)
+            .onErrorReturnItem(cmFallBackAppium())
+            .doOnNext(this::startAppiumOnNewThread)
             .map(a -> true)
-            .delay(appiumStartDelay(), TimeUnit.MILLISECONDS);
+            .delay(appiumStartDelay(), TimeUnit.MILLISECONDS)
+            .retry(PARAM.retries());
     }
 
     /**
@@ -231,30 +239,43 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #cmStartLocalAppiumInstance(String, int)
      */
     @SuppressWarnings("unchecked")
-    public void rxStartLocalAppiumInstance(@NotNull final String CLI) {
+    public void startAppiumOnNewThread(@NotNull final String CLI) {
         final ProcessRunner RUNNER = processRunner();
         final ServerAddress ADDRESS = serverAddress();
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
-        NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS.port())
+        NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
             .doOnNext(NETWORK_HANDLER::markPortAsUsed)
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
                 LogUtil.printf("Set port %d for %s", a, this);
 
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
+                final Queue<String> SERVER_QUEUE = serverQueue();
+                SERVER_QUEUE.offer(COMMAND);
 
                 /* Need to start on a new Thread, or else it will block */
-                Thread thread = new Thread(() -> {
-                    try {
-                        RUNNER.execute(COMMAND);
-                    } catch (IOException e) {
-                        LogUtil.println(e);
-                    }
-                });
+                new Thread(() -> {
+                    for (;;) {
+                        String top = SERVER_QUEUE.peek();
 
-                LogUtil.printf("Starting instance with %1$d, thread %2$d", a, thread.getId());
-                thread.start();
+                        if (Objects.isNull(top) || top.equals(COMMAND)) {
+                            new Thread(() -> {
+                                try {
+                                    RUNNER.execute(COMMAND);
+                                } catch (Exception e) {
+                                    LogUtil.println(e);
+                                }
+                            }).start();
+
+                            synchronized (SERVER_QUEUE) {
+                                SERVER_QUEUE.poll();
+                            }
+
+                            break;
+                        }
+                    }
+                }).start();
             })
             .map(a -> true)
             .subscribe();
@@ -268,7 +289,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
         ServerAddress address = serverAddress();
-        LogUtil.printf("Stopping appium instance at port %d for %s", address.port(), this);
+
+        LogUtil.printf(
+            "Stopping appium instance at port %d for %s",
+            address.port(), this);
+
         return networkHandler().rxKillProcessWithPort(address);
     }
     //endregion
@@ -281,6 +306,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public String cmWhichAppium() {
         return "which appium";
+    }
+
+    /**
+     * Fall back Appium path if {@link #cmWhichAppium()} fails.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmFallBackAppium() {
+        return "/usr/local/bin/appium";
     }
 
     /**
@@ -301,6 +335,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     //region Getters
+    /**
+     * Return {@link #SERVER_QUEUE}.
+     * @return A {@link Queue} instance.
+     */
+    @NotNull
+    public Queue<String> serverQueue() {
+        return SERVER_QUEUE;
+    }
+
     /**
      * Return {@link #serverAddress}.
      * @return A {@link String} value.
@@ -515,7 +558,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             }))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true)
-            .retry(PARAM.minRetries());
+            .retry(PARAM.retries());
     }
 
     /**

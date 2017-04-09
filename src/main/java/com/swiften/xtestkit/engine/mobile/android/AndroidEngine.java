@@ -130,19 +130,22 @@ public class AndroidEngine extends MobileEngine<
                 final ADBHandler HANDLER = adbHandler();
                 final AndroidInstance ANDROID_INSTANCE = androidInstance();
 
-                source = HANDLER.rxFindAvailablePort()
+                source = HANDLER.rxFindAvailablePort(PARAM)
                     .doOnNext(ANDROID_INSTANCE::setPort)
                     .map(a -> StartEmulatorParam.builder()
                         .withDeviceName(deviceName())
-                        .withRetryProtocol(PARAM)
                         .withAndroidInstance(ANDROID_INSTANCE)
+                        .withRetries(100)
                         .build())
                     .flatMap(SE_PARAM -> HANDLER
                         .rxStartEmulator(SE_PARAM)
 
                         /* Disable animations to avoid erratic behaviors */
-                        .flatMap(a -> HANDLER.rxDisableEmulatorAnimations(SE_PARAM)));
-//                    .map(a -> true);
+                        .flatMap(a -> HANDLER
+                            .rxDisableEmulatorAnimations(SE_PARAM)
+                            /* This is not absolutely crucial, so even if
+                             * there is an error, we proceed anyway */
+                            .onErrorResumeNext(Flowable.just(true))));
 
                 break;
 
@@ -152,7 +155,7 @@ public class AndroidEngine extends MobileEngine<
         }
 
         return Flowable
-            .concat(source, super.rxBeforeClass(PARAM))
+            .concat(super.rxBeforeClass(PARAM), source)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }
@@ -205,7 +208,7 @@ public class AndroidEngine extends MobileEngine<
         }
 
         return Flowable
-            .concat(source, super.rxAfterClass(param))
+            .concat(super.rxAfterClass(param), source)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

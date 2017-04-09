@@ -137,7 +137,7 @@ public class IOSEngine extends MobileEngine<
         }
 
         return Flowable
-            .concat(source, super.rxAfterClass(param))
+            .concat(super.rxAfterClass(param), source)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.rx.RxExtension;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
@@ -15,12 +16,11 @@ import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.bcel.generic.RET;
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.*;
 
+import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -30,6 +30,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,8 +109,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
         doReturn(LOCALIZER).when(ENGINE).localizer();
-        doReturn(TRIES).when(RETRY).minRetries();
-        doReturn(TRIES).when(RETRY).maxRetries();
+        doReturn(TRIES).when(RETRY).retries();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
         when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
         when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
@@ -140,29 +140,30 @@ public final class PlatformEngineTest implements ErrorProtocol {
     //region Appium Server
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_startAppiumServerWithoutCLI_shouldThrow() {
+    public void mock_startAppiumServerWithoutCLI_shouldEmitFallback() {
         try {
             // Setup
-            String whichAppium = ENGINE.cmWhichAppium();
-            doReturn("").when(PROCESS_RUNNER).execute(eq(whichAppium));
+            doReturn("").when(PROCESS_RUNNER).execute(contains("which appium"));
+            doNothing().when(ENGINE).startAppiumOnNewThread(anyString());
+            ArgumentCaptor<String> appiumCaptor = ArgumentCaptor.forClass(String.class);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
+            ENGINE.rxStartLocalAppiumInstance(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
-            subscriber.assertErrorMessage(APPIUM_NOT_INSTALLED);
-            subscriber.assertNotComplete();
-            verify(ENGINE).rxStartLocalAppiumInstance();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
             verify(ENGINE).processRunner();
-            verify(ENGINE, atLeastOnce()).cmWhichAppium();
+            verify(ENGINE).cmWhichAppium();
+            verify(ENGINE).cmFallBackAppium();
             verify(ENGINE).appiumStartDelay();
-            verify(ENGINE, never()).rxStartLocalAppiumInstance(anyString());
-            verify(ENGINE, never()).cmStartLocalAppiumInstance(anyString(), anyInt());
-            verify(NETWORK_HANDLER, never()).markPortAsUsed(anyInt());
+            verify(ENGINE).rxStartLocalAppiumInstance(any());
+            verify(ENGINE).startAppiumOnNewThread(appiumCaptor.capture());
             verifyNoMoreInteractions(ENGINE);
+            assertTrue(appiumCaptor.getValue().contains("appium"));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -174,32 +175,58 @@ public final class PlatformEngineTest implements ErrorProtocol {
         try {
             // Setup
             doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxCheckPortAvailable(anyInt());
+
+            doReturn(Flowable.just(true))
+                .when(NETWORK_HANDLER).rxCheckPortAvailable(any());
+
             doReturn(100L).when(ENGINE).appiumStartDelay();
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppiumInstance().subscribe(subscriber);
+            ENGINE.rxStartLocalAppiumInstance(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ENGINE).rxStartLocalAppiumInstance(anyString());
-            verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
-            verify(ENGINE).rxStartLocalAppiumInstance();
-            verify(ENGINE, times(2)).processRunner();
-            verify(ENGINE, atLeastOnce()).cmWhichAppium();
-            verify(ENGINE).appiumStartDelay();
             verify(ENGINE).serverAddress();
             verify(ENGINE).networkHandler();
-            verify(NETWORK_HANDLER, atLeastOnce()).rxCheckUntilPortAvailable(anyInt());
+            verify(ENGINE).serverQueue();
+            verify(ENGINE).cmWhichAppium();
+            verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
+            verify(ENGINE).cmFallBackAppium();
+            verify(ENGINE).startAppiumOnNewThread(anyString());
+            verify(ENGINE).rxStartLocalAppiumInstance(any());
+            verify(ENGINE, times(2)).processRunner();
+            verify(ENGINE).appiumStartDelay();
+            verify(NETWORK_HANDLER, atLeastOnce()).rxCheckUntilPortAvailable(any());
             verify(NETWORK_HANDLER).markPortAsUsed(anyInt());
             verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_startAppiumServers_shouldExecuteSequentially() {
+        // Setup
+        int tries = 10;
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        Flowable.range(1, tries)
+            .flatMap(a -> ENGINE.rxStartLocalAppiumInstance(RETRY))
+            .compose(RxExtension.withCommonSchedulers())
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
     }
 
     @Test

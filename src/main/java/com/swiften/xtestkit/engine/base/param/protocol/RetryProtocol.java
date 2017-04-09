@@ -13,17 +13,7 @@ public interface RetryProtocol {
      * to throw an {@link Exception}.
      * @return An {@link Integer} value.
      */
-    default int minRetries() {
-        return 3;
-    }
-
-    /**
-     * Use this retry count for operations that are expected to throw many
-     * {@link Exception} instances before succeeding. For e.g., polling for
-     * an emulator to be fully booted.
-     * @return An {@link Integer} value.
-     */
-    default int maxRetries() {
-        return 100;
+    default int retries() {
+        return 10;
     }
 }

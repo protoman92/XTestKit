@@ -25,13 +25,13 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
             .addListener(Config.TEST_KIT)
             .withParameterConsumer(Config.TEST_KIT)
             .withRetryCount(Config.runCount())
-            .withPartitionSize(1)
+            .withPartitionSize(2)
             .withVerboseLevel(0)
             .build();
     }
 
     @NotNull
-    @DataProvider(parallel = true)
+    @DataProvider(parallel = false)
     public static Iterator<Object[]> dataProvider() {
         return RUNNER.dataParameters();
     }

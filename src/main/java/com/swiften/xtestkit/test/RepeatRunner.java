@@ -393,7 +393,7 @@ public class RepeatRunner implements
          * @return An {@link Integer} value.
          */
         @Override
-        public int minRetries() {
+        public int retries() {
             return retries;
         }
         //endregion
@@ -425,7 +425,7 @@ public class RepeatRunner implements
             IndexConsumer indexConsumer = indexConsumer();
             final int CONSUMED = consumed;
             int size = partitionSize();
-            double tries = minRetries();
+            double tries = retries();
             int end = (int)Math.min(tries - CONSUMED, size);
 
             int[] newIndexes = IntStream
@@ -463,7 +463,7 @@ public class RepeatRunner implements
          * @return A {@link Boolean} value.
          */
         public boolean isAvailable() {
-            return consumed < minRetries();
+            return consumed < retries();
         }
     }
     //endregion

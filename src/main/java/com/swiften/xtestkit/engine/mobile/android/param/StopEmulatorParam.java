@@ -1,7 +1,6 @@
 package com.swiften.xtestkit.engine.mobile.android.param;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.engine.mobile.android.AndroidInstance;
 import com.swiften.xtestkit.system.protocol.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,18 +29,23 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
 
     StopEmulatorParam() {}
 
+    //region RetryProtocol
     @Override
-    public int minRetries() {
+    public int retries() {
         return minRetries;
     }
+    //endregion
 
+    //region PortProtocol
     /**
      * Return {@link #port}.
      * @return An {@link Integer} value.
      */
+    @Override
     public int port() {
         return port;
     }
+    //endregion
 
     public static final class Builder {
         @NotNull final StopEmulatorParam PARAM;
@@ -80,7 +84,7 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
          */
         @NotNull
         public Builder withRetryProtocol(@NotNull RetryProtocol param) {
-            return this.withMinRetries(param.minRetries());
+            return this.withMinRetries(param.retries());
         }
 
         /**

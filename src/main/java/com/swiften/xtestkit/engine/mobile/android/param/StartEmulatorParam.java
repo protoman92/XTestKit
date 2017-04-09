@@ -14,7 +14,10 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link com.swiften.xtestkit.engine.mobile.android.ADBHandler#rxStartEmulator(StartEmulatorParam)}
  */
-public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, PortProtocol {
+public class StartEmulatorParam implements
+    DeviceUIDProtocol,
+    RetryProtocol,
+    PortProtocol {
     @NotNull public static StartEmulatorParam DEFAULT;
 
     static {
@@ -30,8 +33,7 @@ public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, Por
     @NotNull private String deviceUID;
 
     private int port;
-    private int minRetries;
-    private int maxRetries;
+    private int retries;
 
     StartEmulatorParam() {
         deviceName = "";
@@ -49,13 +51,8 @@ public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, Por
     }
 
     @Override
-    public int minRetries() {
-        return minRetries;
-    }
-
-    @Override
-    public int maxRetries() {
-        return maxRetries;
+    public int retries() {
+        return retries;
     }
 
     /**
@@ -105,23 +102,13 @@ public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, Por
         }
 
         /**
-         * Set the {@link #PARAM#minRetries} value.
+         * Set the {@link #PARAM#retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withMinRetries(int retries) {
-            PARAM.minRetries = retries;
-            return this;
-        }
-
-        /**
-         * Set the {@link #PARAM#maxRetries} value.
-         * @param retries An {@link Integer} value.
-         * @return The current {@link Builder} instance.
-         */
-        public Builder withMaxRetries(int retries) {
-            PARAM.maxRetries = retries;
+        public Builder withRetries(int retries) {
+            PARAM.retries = retries;
             return this;
         }
 
@@ -137,15 +124,13 @@ public class StartEmulatorParam implements DeviceUIDProtocol, RetryProtocol, Por
         }
 
         /**
-         * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
+         * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
          * @param param A {@link RetryProtocol} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryProtocol(@NotNull RetryProtocol param) {
-            return this
-                .withMinRetries(param.minRetries())
-                .withMaxRetries(param.maxRetries());
+            return this.withRetries(param.retries());
         }
 
         /**

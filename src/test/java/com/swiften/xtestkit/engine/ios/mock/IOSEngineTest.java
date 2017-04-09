@@ -6,9 +6,7 @@ import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterMethod;
@@ -41,7 +39,7 @@ public class IOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @BeforeMethod
     public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
-        doReturn(3).when(RETRY).minRetries();
+        doReturn(3).when(RETRY).retries();
     }
 
     @AfterMethod

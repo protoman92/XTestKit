@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.engine.android.actual;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
@@ -9,7 +8,6 @@ import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.bcel.generic.NEW;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.*;
@@ -51,8 +49,8 @@ public class ADBHandlerDeviceTest {
         doReturn(DEVICE_UID).when(SE_PARAM).deviceUID();
         doReturn(PORT).when(SE_PARAM).port();
         doReturn(PORT).when(ST_PARAM).port();
-        doReturn(100).when(SE_PARAM).maxRetries();
-        doReturn(3).when(ST_PARAM).minRetries();
+        doReturn(100).when(SE_PARAM).retries();
+        doReturn(3).when(ST_PARAM).retries();
         doReturn(DEVICE_UID).when(DUID_PARAM).deviceUID();
         TestSubscriber subscriber = CustomTestSubscriber.create();
         ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
@@ -139,7 +137,7 @@ public class ADBHandlerDeviceTest {
             .withDeviceName("Nexus_4_API_22")
             .withPort(NEW_PORT)
             .withDeviceUID(uid)
-            .withMaxRetries(100)
+            .withRetries(100)
             .build();
 
         final StopEmulatorParam STP = StopEmulatorParam.builder()

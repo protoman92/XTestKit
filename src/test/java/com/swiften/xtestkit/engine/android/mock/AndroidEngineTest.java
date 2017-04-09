@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import sun.security.x509.EDIPartyName;
 
 import static org.mockito.Mockito.*;
 
@@ -70,7 +71,6 @@ public final class AndroidEngineTest {
         doReturn(ADB_HANDLER).when(ENGINE).adbHandler();
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
-        doReturn(ENGINE).when(NETWORK_HANDLER).processRunner();
         doReturn(DEVICE_NAME).when(ANDROID_INSTANCE).deviceName();
         doReturn(DEVICE_UID).when(ANDROID_INSTANCE).deviceUID();
 
@@ -79,8 +79,7 @@ public final class AndroidEngineTest {
 
         /* We specifically mock this because starting emulator requires rather
          * complicated behaviors */
-        when(RETRY.minRetries()).thenReturn(RETRIES_ON_ERROR);
-        when(RETRY.maxRetries()).thenReturn(RETRIES_ON_ERROR);
+        when(RETRY.retries()).thenReturn(RETRIES_ON_ERROR);
     }
 
     @AfterMethod
@@ -95,7 +94,7 @@ public final class AndroidEngineTest {
         // Setup
         int correctPort = 10;
         doReturn(correctPort).when(ANDROID_INSTANCE).port();
-        doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rxFindAvailablePort();
+        doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rxFindAvailablePort(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxStartEmulator(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxDisableEmulatorAnimations(any());
         ArgumentCaptor<StartEmulatorParam> SE_CAPTOR = ArgumentCaptor.forClass(StartEmulatorParam.class);
@@ -113,8 +112,18 @@ public final class AndroidEngineTest {
         verify(ENGINE).androidInstance();
         verify(ENGINE).testMode();
         verify(ENGINE).deviceName();
+        verify(ENGINE, atLeastOnce()).serverAddress();
+        verify(ENGINE, atLeastOnce()).processRunner();
+        verify(ENGINE).appiumStartDelay();
+        verify(ENGINE).networkHandler();
+        verify(ENGINE).serverQueue();
+        verify(ENGINE).cmWhichAppium();
+        verify(ENGINE).cmFallBackAppium();
+        verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
+        verify(ENGINE).rxStartLocalAppiumInstance(any());
+        verify(ENGINE).startAppiumOnNewThread(anyString());
         verify(ENGINE).rxBeforeClass(any());
-        verify(ADB_HANDLER).rxFindAvailablePort();
+        verify(ADB_HANDLER).rxFindAvailablePort(any());
         verify(ADB_HANDLER).rxStartEmulator(SE_CAPTOR.capture());
         verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
         verify(ANDROID_INSTANCE).setPort(anyInt());
@@ -139,12 +148,13 @@ public final class AndroidEngineTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE, times(2)).networkHandler();
+        verify(ENGINE, times(3)).networkHandler();
         verify(ENGINE).androidInstance();
         verify(ENGINE).adbHandler();
-        verify(ENGINE).serverAddress();
+        verify(ENGINE, atLeastOnce()).serverAddress();
         verify(ENGINE).testMode();
         verify(ENGINE).rxAfterClass(any());
+        verify(ENGINE).rxStopLocalAppiumInstance();
         verify(ADB_HANDLER).rxStopEmulator(any());
         verify(NETWORK_HANDLER, times(2)).markPortAsAvailable(anyInt());
         verifyNoMoreInteractions(ENGINE);

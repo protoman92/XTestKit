@@ -1,9 +1,12 @@
 package com.swiften.xtestkit.system;
 
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
+import com.swiften.xtestkit.system.protocol.PortProtocol;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -50,10 +53,11 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             int tries = 10;
             doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
             doReturn(true).when(HANDLER).isPortAvailable(anyString(), eq(tries));
+            CheckPortParam param = new CheckPortParam(1);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            HANDLER.rxCheckUntilPortAvailable(1).subscribe(subscriber);
+            HANDLER.rxCheckUntilPortAvailable(param).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -64,8 +68,8 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
-            verify(HANDLER, times(tries)).rxCheckPortAvailable(anyInt());
-            verify(HANDLER, times(tries)).rxCheckUntilPortAvailable(anyInt());
+            verify(HANDLER, times(tries)).rxCheckPortAvailable(any());
+            verify(HANDLER, times(tries)).rxCheckUntilPortAvailable(any());
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -78,10 +82,11 @@ public class NetworkHandlerTest implements NetworkHandlerError {
         try {
             // Setup
             doReturn("").when(PROCESS_RUNNER).execute(anyString());
+            CheckPortParam param = new CheckPortParam(0);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            HANDLER.rxCheckUntilPortAvailable(0).subscribe(subscriber);
+            HANDLER.rxCheckUntilPortAvailable(param).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -91,8 +96,8 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             assertEquals(TestUtil.getFirstNextEvent(subscriber), Integer.valueOf(0));
             verify(HANDLER).processRunner();
             verify(HANDLER).cmListAllPorts();
-            verify(HANDLER).rxCheckPortAvailable(anyInt());
-            verify(HANDLER).rxCheckUntilPortAvailable(anyInt());
+            verify(HANDLER).rxCheckPortAvailable(any());
+            verify(HANDLER).rxCheckUntilPortAvailable(any());
             verify(HANDLER).isPortAvailable(anyString(), anyInt());
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
@@ -100,51 +105,20 @@ public class NetworkHandlerTest implements NetworkHandlerError {
         }
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mock_checkPortWithNoAvailable_shouldThrow() {
-        try {
-            // Setup
-            int tries = 10;
-            doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
+    private static final class CheckPortParam implements
+        PortProtocol,
+        RetryProtocol {
+        private final int PORT;
 
-            // When
-            HANDLER.rxCheckUntilPortAvailable(1, tries).subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
-            subscriber.assertNotComplete();
-            verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
-            verify(HANDLER, times(tries)).processRunner();
-            verify(HANDLER, times(tries)).cmListAllPorts();
-            verify(HANDLER, times(tries)).rxCheckPortAvailable(anyInt());
-
-            /* tries + 1 because the last iteration returns an error Flowable,
-             * so the other methods are only run 1 * tries times */
-            verify(HANDLER, times(tries + 1)).rxCheckUntilPortAvailable(anyInt(), anyInt());
-            
-            verifyNoMoreInteractions(HANDLER);
-        } catch (Exception e) {
-            fail(e.getMessage());
+        CheckPortParam(int port) {
+            PORT = port;
         }
-    }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void actual_checkPortAvailable_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        HANDLER.rxCheckUntilPortAvailable(4723, 4725).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
+        //region PortProtocol
+        @Override
+        public int port() {
+            return PORT;
+        }
+        //endregion
     }
 }

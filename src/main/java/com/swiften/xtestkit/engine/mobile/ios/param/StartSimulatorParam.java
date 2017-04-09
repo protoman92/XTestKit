@@ -25,20 +25,15 @@ public class StartSimulatorParam implements RetryProtocol {
 
     @NotNull private String deviceUID;
 
-    private int minRetries, maxRetries;
+    private int retries;
 
     StartSimulatorParam() {
         deviceUID = "";
     }
 
     @Override
-    public int minRetries() {
-        return minRetries;
-    }
-
-    @Override
-    public int maxRetries() {
-        return maxRetries;
+    public int retries() {
+        return retries;
     }
 
     @NotNull
@@ -65,36 +60,24 @@ public class StartSimulatorParam implements RetryProtocol {
         }
 
         /**
-         * Set the {@link #PARAM#minRetries} value.
+         * Set the {@link #PARAM#retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withMinRetries(int retries) {
-            PARAM.minRetries = retries;
+        public Builder retries(int retries) {
+            PARAM.retries = retries;
             return this;
         }
 
         /**
-         * Set the {@link #PARAM#maxRetries} value.
-         * @param retries An {@link Integer} value.
-         * @return The current {@link Builder} instance.
-         */
-        public Builder withMaxRetries(int retries) {
-            PARAM.maxRetries = retries;
-            return this;
-        }
-
-        /**
-         * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
+         * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
          * @param param A {@link RetryProtocol} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryProtocol(@NotNull RetryProtocol param) {
-            return this
-                .withMinRetries(param.minRetries())
-                .withMaxRetries(param.maxRetries());
+            return this.retries(param.retries());
         }
 
         @NotNull

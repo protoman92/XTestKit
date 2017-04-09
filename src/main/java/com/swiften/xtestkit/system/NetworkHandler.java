@@ -8,6 +8,7 @@ import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -87,20 +88,22 @@ public class NetworkHandler implements NetworkHandlerError {
 
     /**
      * Check if a port is available.
-     * @param PORT An {@link Integer} value representing the port to be
-     *             checked.
+     * @param PARAM A {@link T} instance.
+     * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #cmListAllPorts()
      * @see #isPortAvailable(String, int)
      */
     @NotNull
-    public Flowable<Boolean> rxCheckPortAvailable(final int PORT) {
+    public <T extends PortProtocol & RetryProtocol>
+    Flowable<Boolean> rxCheckPortAvailable(@NonNull final T PARAM) {
         ProcessRunnerProtocol processRunner = processRunner();
         String command = cmListAllPorts();
 
         return processRunner
             .rxExecute(command)
-            .map(a -> isPortAvailable(a, PORT));
+            .map(a -> isPortAvailable(a, PARAM.port()))
+            .retry(PARAM.retries());
     }
 
     /**
@@ -126,47 +129,41 @@ public class NetworkHandler implements NetworkHandlerError {
     /**
      * Recursively check ports until one is available. Everytime a port is
      * not available, we increment it by one and call this method again.
-     * @param PORT The port to be checked. An {@link Integer} value.
+     * @param PARAM A {@link T} instance. This {@link T} shall contain the
+     *              initial port to be checked.
+     * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxCheckPortAvailable(int)
+     * @see #rxCheckPortAvailable(PortProtocol)
      */
     @NotNull
-    public Flowable<Integer> rxCheckUntilPortAvailable(final int PORT) {
-        return rxCheckPortAvailable(PORT)
+    public <T extends PortProtocol & RetryProtocol>
+    Flowable<Integer> rxCheckUntilPortAvailable(@NonNull final T PARAM) {
+        return rxCheckPortAvailable(PARAM)
             /* If we use filter() and switchIfEmpty() here, a StackOverflow
              * error will be thrown. The solution below may not look as nice
              * but it works correctly */
             .flatMap(a -> {
                 if (BooleanUtil.isTrue(a)) {
-                    LogUtil.printf("Port %d is currently available", PORT);
-                    return Flowable.just(PORT);
+                    LogUtil.printf("Port %d is currently available", PARAM.port());
+                    return Flowable.just(PARAM.port());
+                }
+
+                /* Create a temporary parameter class to check a new port */
+                class Param implements PortProtocol, RetryProtocol {
+                    @Override
+                    public int port() {
+                        return PARAM.port() + 1;
+                    }
+
+                    @Override
+                    public int retries() {
+                        return PARAM.retries();
+                    }
                 }
 
                 /* Keep checking ports until one is available */
-                return rxCheckUntilPortAvailable(PORT + 1);
+                return rxCheckUntilPortAvailable(new Param());
             });
-    }
-
-    /**
-     * Check if there is any available port between two port numbers.
-     * @param PORT The current port being checked. An {@link Integer} value.
-     * @param LIMIT The limit value. An {@link Integer} value.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Integer> rxCheckUntilPortAvailable(final int PORT, final int LIMIT) {
-        if (PORT <= LIMIT) {
-            return rxCheckPortAvailable(PORT)
-                .flatMap(a -> {
-                    if (BooleanUtil.isTrue(a)) {
-                        return Flowable.just(PORT);
-                    }
-
-                    return rxCheckUntilPortAvailable(PORT + 1, LIMIT);
-                });
-        }
-
-        return Flowable.error(new Exception(NO_PORT_AVAILABLE));
     }
 
     /**
@@ -179,7 +176,19 @@ public class NetworkHandler implements NetworkHandlerError {
     public Flowable<Boolean> rxKillProcessWithPid(@NotNull String pid) {
         ProcessRunnerProtocol runner = processRunner();
         String command = cmKillPID(pid);
-        return runner.rxExecute(command).map(a -> true);
+
+        return runner
+            .rxExecute(command)
+            .onErrorResumeNext(t -> {
+                /* If 'No such process' is thrown, we skip the error */
+                if (t.getMessage().contains(NO_PORT_AVAILABLE)) {
+                    return Flowable.empty();
+                }
+
+                return Flowable.error(t);
+            })
+            .map(a -> true)
+            .defaultIfEmpty(true);
     }
 
     /**
@@ -197,7 +206,8 @@ public class NetworkHandler implements NetworkHandlerError {
             .map(a -> a.replace("\n", ""))
             .flatMap(this::rxKillProcessWithPid)
             .defaultIfEmpty(true)
-            .retry(param.minRetries());
+            .retry(param.retries())
+            .onErrorResumeNext(Flowable.just(true));
     }
 
     /**
@@ -213,7 +223,8 @@ public class NetworkHandler implements NetworkHandlerError {
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .flatMap(this::rxKillProcessWithPid)
-            .defaultIfEmpty(true);
+            .defaultIfEmpty(true)
+            .onErrorResumeNext(Flowable.just(true));
     }
 
     /**

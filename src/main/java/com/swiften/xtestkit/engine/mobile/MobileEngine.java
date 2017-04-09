@@ -124,7 +124,7 @@ public abstract class MobileEngine<
     @Override
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return Flowable
-            .concat(rxStartDriver(param), super.rxBeforeMethod(param))
+            .concat(super.rxBeforeMethod(param), rxStartDriver(param))
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }
@@ -139,7 +139,7 @@ public abstract class MobileEngine<
     @Override
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
         return Flowable
-            .concat(rxStopDriver(), super.rxAfterMethod(param))
+            .concat(super.rxAfterMethod(param), rxStopDriver())
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

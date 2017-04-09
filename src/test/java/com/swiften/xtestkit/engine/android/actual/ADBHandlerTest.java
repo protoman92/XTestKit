@@ -8,10 +8,10 @@ import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.bcel.generic.RET;
+import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
@@ -22,9 +22,21 @@ import static org.testng.Assert.assertTrue;
  */
 public class ADBHandlerTest {
     @NotNull private final ADBHandler ADB_HANDLER;
+    @NotNull private final RetryProtocol RETRY;
 
     {
         ADB_HANDLER = spy(ADBHandler.builder().build());
+        RETRY = mock(RetryProtocol.class);
+    }
+
+    @BeforeMethod
+    public void beforeMethod() {
+        doReturn(3).when(RETRY).retries();
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+        reset(ADB_HANDLER, RETRY);
     }
 
     @Test
@@ -38,7 +50,7 @@ public class ADBHandlerTest {
         // When
         Flowable.range(1, tries)
             .flatMap(a -> ADB_HANDLER
-                .rxFindAvailablePort()
+                .rxFindAvailablePort(RETRY)
                 .onErrorResumeNext(Flowable.empty()))
             .distinct()
             .count()
