@@ -424,7 +424,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
             /* Sometimes an adb error may be thrown if the currently active
              * adb instance does not acknowledge the request */
-            .retry(PARAM.retries());
+            .retry(PARAM.retries())
+
+            /* If it takes too long to change the device/emulator settings,
+             * proceed anyway */
+            .timeout(emulatorSettingTimeout(), TimeUnit.MILLISECONDS)
+            .onErrorResumeNext(Flowable.just(true));
     }
     //endregion
 
