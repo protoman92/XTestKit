@@ -1,7 +1,10 @@
 package com.swiften.xtestkit.engine.android.mock;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.swiften.xtestkit.engine.base.AppiumCommand;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
+import com.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
@@ -35,8 +38,10 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final StartEmulatorParam SE_PARAM;
+    @NotNull private final ClearCacheParam CC_PARAM;
     @NotNull private final DeviceUIDProtocol DUID_PARAM;
     @NotNull private final RetryProtocol RETRY;
+    @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
     private final int RETRIES_ON_ERROR;
@@ -55,7 +60,11 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);
         RETRY = mock(RetryProtocol.class);
+        CC_PARAM = mock(ClearCacheParam.class);
         DUID_PARAM = mock(DeviceUIDProtocol.class);
+
+        /* Return this appPackage when calling CC_PARAM#appPackage */
+        APP_PACKAGE = "TestAppPackage";
 
         /* Return this deviceName when calling SE_PARAM#deviceName() */
         DEVICE_NAME = "Nexus_4_API_23";
@@ -82,10 +91,13 @@ public class ADBHandlerTest implements ADBErrorProtocol {
 
         /* We specifically mock this because starting emulator requires rather
          * complicated behaviors */
-        when(SE_PARAM.retries()).thenReturn(RETRIES_ON_ERROR);
-        when(SE_PARAM.deviceName()).thenReturn(DEVICE_NAME);
-        when(RETRY.retries()).thenReturn(RETRIES_ON_ERROR);
-        when(DUID_PARAM.deviceUID()).thenReturn(DEVICE_UID);
+        doReturn(RETRIES_ON_ERROR).when(SE_PARAM).retries();
+        doReturn(DEVICE_NAME).when(SE_PARAM).deviceName();
+        doReturn(RETRIES_ON_ERROR).when(RETRY).retries();
+        doReturn(DEVICE_UID).when(DUID_PARAM).deviceUID();
+        doReturn(APP_PACKAGE).when(CC_PARAM).appPackage();
+        doReturn(DEVICE_UID).when(CC_PARAM).deviceUID();
+        doReturn(RETRIES_ON_ERROR).when(CC_PARAM).retries();
     }
 
     @AfterMethod
@@ -413,6 +425,127 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         verify(ADB_HANDLER).networkHandler();
         verify(NETWORK_HANDLER).rxKillProcessWithPort(any());
         verifyNoMoreInteractions(ADB_HANDLER);
+    }
+    //endregion
+
+    //region Check App Installation
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_checkAppNotInstalled_shouldThrow() {
+        try {
+            // Setup
+            doReturn("").when(PROCESS_RUNNER).execute(contains("list"));
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            ADB_HANDLER.rxCheckAppInstalled(CC_PARAM).subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertErrorMessage(appNotInstalled(APP_PACKAGE));
+            subscriber.assertNotComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).appNotInstalled(anyString());
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmListPackages(any());
+            verify(ADB_HANDLER).rxCheckAppInstalled(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_checkAppInstalled_shouldSucceed() {
+        try {
+            // Setup
+            doReturn(APP_PACKAGE).when(PROCESS_RUNNER).execute(contains("list"));
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            ADB_HANDLER.rxCheckAppInstalled(CC_PARAM).subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).appNotInstalled(anyString());
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmListPackages(any());
+            verify(ADB_HANDLER).rxCheckAppInstalled(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+    //endregion
+
+    //region Clear Cache
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_clearCacheWithError_shouldThrow() {
+        try {
+            // Setup
+            doThrow(new RuntimeException())
+                .when(PROCESS_RUNNER).execute(contains("pm clear"));
+
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            ADB_HANDLER.rxClearCachedData(CC_PARAM).subscribe(subscriber);
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertError(RuntimeException.class);
+            subscriber.assertNotComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmClearCachedData(any());
+            verify(ADB_HANDLER).unableToClearCache(anyString());
+            verify(ADB_HANDLER).rxClearCachedData(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_clearCache_shouldSucceed() {
+        try {
+            // Setup
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(contains("pm clear"));
+            TestSubscriber subscriber = CustomTestSubscriber.create();
+
+            // When
+            ADB_HANDLER.rxClearCachedData(CC_PARAM).subscribe(subscriber);
+            subscriber.awaitTerminalEvent();
+
+            // Then
+            subscriber.assertSubscribed();
+            subscriber.assertNoErrors();
+            subscriber.assertComplete();
+            verify(ADB_HANDLER).processRunner();
+            verify(ADB_HANDLER).cmAndroidHome();
+            verify(ADB_HANDLER).cmAdb();
+            verify(ADB_HANDLER).cmAdbShell(any());
+            verify(ADB_HANDLER).cmClearCachedData(any());
+            verify(ADB_HANDLER).unableToClearCache(anyString());
+            verify(ADB_HANDLER).rxClearCachedData(any());
+            verifyNoMoreInteractions(ADB_HANDLER);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
     //endregion
 

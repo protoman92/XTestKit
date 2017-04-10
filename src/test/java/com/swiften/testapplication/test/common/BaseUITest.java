@@ -1,10 +1,10 @@
 package com.swiften.testapplication.test.common;
 
 import com.swiften.testapplication.test.Config;
-import com.swiften.xtestkit.engine.base.param.AfterClassParam;
-import com.swiften.xtestkit.engine.base.param.AfterParam;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
-import com.swiften.xtestkit.engine.base.param.BeforeParam;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.param.BeforeParam;
 import com.swiften.xtestkit.kit.TestKit;
 import com.swiften.xtestkit.util.LogUtil;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +43,18 @@ public class BaseUITest {
 
     protected long currentThread() {
         return Thread.currentThread().getId();
+    }
+
+    @BeforeSuite
+    public void beforeSuite() {
+        LogUtil.println(">>>>> BeforeSuite <<<<<");
+        TEST_KIT.beforeSuite();
+    }
+
+    @AfterSuite
+    public void afterSuite() {
+        LogUtil.println(">>>>> AfterSuite <<<<<");
+        TEST_KIT.afterSuite();
     }
 
     @BeforeClass

@@ -1,7 +1,8 @@
 package com.swiften.xtestkit.engine.android.mock;
 
-import com.swiften.xtestkit.engine.base.param.AfterClassParam;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.NavigateBack;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
@@ -156,6 +157,33 @@ public final class AndroidEngineTest {
         verify(ENGINE).rxStopLocalAppiumInstance();
         verify(ADB_HANDLER).rxStopEmulator(any());
         verify(NETWORK_HANDLER, times(2)).markPortAsAvailable(anyInt());
+        verifyNoMoreInteractions(ENGINE);
+    }
+    //endregion
+
+    //region AfterMethod
+    @Test
+    @SuppressWarnings("unchecked")
+    public void mock_afterMethod_shouldSucceed() {
+        // Setup
+        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxClearCachedData(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ENGINE.rxAfterMethod(AfterParam.DEFAULT).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        verify(ENGINE).androidInstance();
+        verify(ENGINE).adbHandler();
+        verify(ENGINE).appPackage();
+        verify(ENGINE).rxStopDriver();
+        verify(ENGINE).rxAfterMethod(any());
+        verify(ADB_HANDLER).rxClearCachedData(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

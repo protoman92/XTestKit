@@ -3,6 +3,8 @@ package com.swiften.xtestkit.util;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import java.util.Objects;
+
 /**
  * Created by haipham on 3/31/17.
  */
@@ -16,7 +18,10 @@ public class RxUtil {
 
         RxJavaPlugins.setErrorHandler(t -> {
             LogUtil.println(t);
-            HANDLER.accept(t);
+
+            if (Objects.nonNull(HANDLER)) {
+                HANDLER.accept(t);
+            }
         });
     }
 }

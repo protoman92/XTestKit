@@ -1,10 +1,10 @@
 package com.swiften.xtestkit.kit.mock;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.AfterClassParam;
-import com.swiften.xtestkit.engine.base.param.AfterParam;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
-import com.swiften.xtestkit.engine.base.param.BeforeParam;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.param.BeforeParam;
 import com.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import com.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import com.swiften.xtestkit.kit.TestKit;

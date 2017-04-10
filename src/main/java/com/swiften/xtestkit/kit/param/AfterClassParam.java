@@ -1,4 +1,4 @@
-package com.swiften.xtestkit.engine.base.param;
+package com.swiften.xtestkit.kit.param;
 
 /**
  * Created by haipham on 4/1/17.

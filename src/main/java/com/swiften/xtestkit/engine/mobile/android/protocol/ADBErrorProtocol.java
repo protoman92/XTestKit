@@ -12,8 +12,18 @@ public interface ADBErrorProtocol {
     String NO_PORT_AVAILABLE = "No port available";
 
     @NotNull
+    default String appNotInstalled(@NotNull String app) {
+        return String.format("%s not installed", app);
+    }
+
+    @NotNull
     default String changeSettingsFailed(@NotNull String setting) {
         return String.format("Unable to change settings %s", setting);
+    }
+
+    @NotNull
+    default String unableToClearCache(@NotNull String app) {
+        return String.format("Unable to clear cache for %s", app);
     }
 
     @NotNull

@@ -5,13 +5,16 @@ package com.swiften.xtestkit.engine.base;
  */
 
 import com.swiften.xtestkit.engine.base.param.*;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.*;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
+import com.swiften.xtestkit.kit.param.BeforeParam;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
@@ -20,6 +23,7 @@ import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.CollectionUtil;
 import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.StringUtil;
+import io.appium.java_client.android.AndroidDriver;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -45,7 +49,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     DelayProtocol,
     Distinctive,
     ErrorProtocol,
-    ProcessRunnerProtocol,
     TestListener {
     @NotNull private static final Queue<String> SERVER_QUEUE;
 
@@ -83,20 +86,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @Override
     public Object getComparisonObject() {
         return getClass();
-    }
-    //endregion
-
-    //region ProcessRunnerProtocol
-    @NotNull
-    @Override
-    public String execute(@NotNull String args) throws IOException {
-        return processRunner().execute(args);
-    }
-
-    @NotNull
-    @Override
-    public Flowable<String> rxExecute(@NotNull String args) {
-        return processRunner().rxExecute(args);
     }
     //endregion
 
@@ -549,7 +538,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
-        LogUtil.printf("Starting driver at %1$s for %2$s", serverAddress.uri(), this);
+        LogUtil.printf(
+            "Starting driver at %1$s for %2$s",
+            serverAddress.uri(), this);
 
         return rxHasAllRequiredInformation()
             .delay(startDriverDelay(), TimeUnit.MILLISECONDS)
@@ -568,7 +559,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        LogUtil.printf("Stopping driver at %1$s for %2$s", serverAddress().uri(), this);
+        LogUtil.printf(
+            "Stopping driver at %1$s for %2$s",
+            serverAddress.uri(), this);
 
         return Completable.fromAction(() -> driver().quit())
             .<Boolean>toFlowable()

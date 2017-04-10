@@ -1,16 +1,22 @@
 package com.swiften.xtestkit.engine.mobile;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.protocol.MobileEngineError;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.param.BeforeParam;
 import com.swiften.xtestkit.util.BooleanUtil;
+import com.swiften.xtestkit.util.LogUtil;
 import io.appium.java_client.MobileDriver;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
@@ -30,6 +36,17 @@ public abstract class MobileEngine<
     @NotNull String platformVersion;
     @NotNull TestMode testMode;
 
+    /**
+     * If this is true, call {@link #rxStartDriver(RetryProtocol)} in
+     * {@link #rxBeforeClass(BeforeClassParam)}. Correspondingly,
+     * {@link #rxStopDriver()} will be called in
+     * {@link #rxBeforeMethod(BeforeParam)}.
+     * Otherwise, {@link #rxStartDriver(RetryProtocol)} is called in
+     * {@link #rxBeforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
+     * is called in {@link #rxAfterMethod(AfterParam)}.
+     */
+    protected boolean startDriverOnlyOnce;
+
     public MobileEngine() {
         app = "";
         appPackage = "";
@@ -38,6 +55,7 @@ public abstract class MobileEngine<
         deviceName = "";
         platformVersion = "";
         testMode = TestMode.EMULATOR;
+        startDriverOnlyOnce = true;
     }
 
     @NotNull
@@ -47,6 +65,10 @@ public abstract class MobileEngine<
     }
 
     //region Getters
+    public boolean startDriverOnlyOnce() {
+        return startDriverOnlyOnce;
+    }
+
     /**
      * Return {@link #app}.
      * @return A {@link String} value.
@@ -118,13 +140,23 @@ public abstract class MobileEngine<
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeMethod(BeforeParam)
+     * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryProtocol)
+     * @see #rxLaunchApp()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
+        Flowable<Boolean> source;
+
+        if (startDriverOnlyOnce()) {
+            source = rxLaunchApp();
+        } else {
+            source = rxStartDriver(param);
+        }
+
         return Flowable
-            .concat(super.rxBeforeMethod(param), rxStartDriver(param))
+            .concat(super.rxBeforeMethod(param), source)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }
@@ -133,13 +165,23 @@ public abstract class MobileEngine<
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterMethod(AfterParam)
+     * @see #startDriverOnlyOnce()
+     * @see #rxResetApp()
      * @see #rxStopDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+        Flowable<Boolean> quitApp;
+
+        if (startDriverOnlyOnce()) {
+            quitApp = rxResetApp();
+        } else {
+            quitApp = rxStopDriver();
+        }
+
         return Flowable
-            .concat(super.rxAfterMethod(param), rxStopDriver())
+            .concat(super.rxAfterMethod(param), quitApp)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }
@@ -185,6 +227,42 @@ public abstract class MobileEngine<
         capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName());
         capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
         return capabilities;
+    }
+    //endregion
+
+    //region Driver Methods
+    /**
+     * Launch an app as specified in {@link #desiredCapabilities()}.
+     * @return A {@link Flowable} instance.
+     * @see T#launchApp()
+     */
+    @NotNull
+    public Flowable<Boolean> rxLaunchApp() {
+        LogUtil.printf("Launching %1$s for %2$s", appPackage, this);
+
+        final T DRIVER = driver();
+
+        return Completable
+            .fromAction(DRIVER::launchApp)
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * Reset an installed app as specified in {@link #desiredCapabilities()}.
+     * @return A {@link Flowable} instance.
+     * @see T#resetApp()
+     */
+    @NotNull
+    public Flowable<Boolean> rxResetApp() {
+        LogUtil.printf("Resetting %1$s for %2$s", appPackage, this);
+
+        final T DRIVER = driver();
+
+        return Completable
+            .fromAction(DRIVER::closeApp)
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
     //endregion
 
@@ -291,6 +369,17 @@ public abstract class MobileEngine<
         @NotNull
         public Builder<T> withTestMode(@NotNull TestMode mode) {
             ENGINE.testMode = mode;
+            return this;
+        }
+
+        /**
+         * Set the {@link #ENGINE#startDriverOnlyOnce} value.
+         * @param once A {@link Boolean} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder<T> shouldStartDriverOnlyOnce(boolean once) {
+            ENGINE.startDriverOnlyOnce = once;
             return this;
         }
     }

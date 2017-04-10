@@ -1,14 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="TestApplication"
        parallel="instances"
-       thread-count="100"
-       data-provider-thread-count="100">
+       data-provider-thread-count="5">
 
     <test name="Login Test">
-
         <classes>
             <class name="com.swiften.testapplication.test.login.ui.LoginUITest"/>
         </classes>
-
     </test>
 </suite>

@@ -2,6 +2,7 @@ package com.swiften.xtestkit.engine.mobile.android;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.base.protocol.AppPackageProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
@@ -11,6 +12,9 @@ import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterParam;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.util.BooleanUtil;
 import com.swiften.xtestkit.util.LogUtil;
@@ -68,15 +72,15 @@ public class AndroidEngine extends MobileEngine<
     }
     //endregion
 
-    //region TestListener
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxOnFreshStart() {
-        /* We restart adb server at the start of all test to avoid problems
-         * with inactive adb instances */
-        return super.rxOnFreshStart().flatMap(a -> ADB_HANDLER.rxRestartAdb());
-    }
-    //endregion
+//    //region TestListener
+//    @NotNull
+//    @Override
+//    public Flowable<Boolean> rxOnFreshStart() {
+//        /* We restart adb server at the start of all test to avoid problems
+//         * with inactive adb instances */
+//        return super.rxOnFreshStart().flatMap(a -> ADB_HANDLER.rxRestartAdb());
+//    }
+//    //endregion
 
     //region Getters
     /**
@@ -118,11 +122,14 @@ public class AndroidEngine extends MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDProtocol)
+     * @see #startDriverOnlyOnce()
+     * @see #rxStartDriver(RetryProtocol)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxBeforeClass(@NotNull final BeforeClassParam PARAM) {
+        final Flowable<Boolean> START_APP;
         Flowable<Boolean> source;
 
         switch (testMode()) {
@@ -143,6 +150,7 @@ public class AndroidEngine extends MobileEngine<
                         /* Disable animations to avoid erratic behaviors */
                         .flatMap(a -> HANDLER
                             .rxDisableEmulatorAnimations(SE_PARAM)
+
                             /* This is not absolutely crucial, so even if
                              * there is an error, we proceed anyway */
                             .onErrorResumeNext(Flowable.just(true))));
@@ -154,10 +162,17 @@ public class AndroidEngine extends MobileEngine<
                 break;
         }
 
+        if (startDriverOnlyOnce()) {
+            START_APP = rxStartDriver(PARAM);
+        } else {
+            START_APP = Flowable.just(true);
+        }
+
         return Flowable
             .concat(super.rxBeforeClass(PARAM), source)
             .all(BooleanUtil::isTrue)
-            .toFlowable();
+            .toFlowable()
+            .flatMap(a -> START_APP);
     }
 
     /**
@@ -165,12 +180,16 @@ public class AndroidEngine extends MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
      * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
+     * @see #startDriverOnlyOnce()
+     * @see #rxResetApp()
+     * @see #rxStopDriver()
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-        Flowable<Boolean> source;
+        final Flowable<Boolean> SOURCE;
+        Flowable<Boolean> quitApp;
         AndroidInstance androidInstance = androidInstance();
 
         switch (testMode()) {
@@ -187,7 +206,7 @@ public class AndroidEngine extends MobileEngine<
                 final NetworkHandler HANDLER = networkHandler();
                 int PORT = androidInstance.port();
 
-                source = Flowable
+                SOURCE = Flowable
                     .concatArray(
                         Completable
                             .fromAction(() -> HANDLER.markPortAsAvailable(PORT))
@@ -203,14 +222,21 @@ public class AndroidEngine extends MobileEngine<
                 break;
 
             default:
-                source = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                SOURCE = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
                 break;
         }
 
+        if (startDriverOnlyOnce()) {
+            quitApp = rxResetApp();
+        } else {
+            quitApp = rxStopDriver();
+        }
+
         return Flowable
-            .concat(super.rxAfterClass(param), source)
+            .concat(super.rxAfterClass(param), quitApp)
             .all(BooleanUtil::isTrue)
-            .toFlowable();
+            .toFlowable()
+            .flatMap(a -> SOURCE);
     }
 
     /**
@@ -222,17 +248,20 @@ public class AndroidEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        ADBHandler adbHandler = adbHandler();
+        final ADBHandler ADB_HANDLER = adbHandler();
 
-        ClearCacheParam ccParam = ClearCacheParam
+        ClearCacheParam CC_PARAM = ClearCacheParam
             .builder()
             .withAppPackage(appPackage())
             .withDeviceUIDProtocol(androidInstance())
             .withRetryProtocol(param)
             .build();
 
-        /* Clear cached data such as SharedPreferences */
-        Flowable<Boolean> clearCache = adbHandler.rxClearCachedData(ccParam);
+        /* Clear cached data such as SharedPreferences. If the app is not
+         * found in the active device/emulator, throw an error */
+        Flowable<Boolean> clearCache = ADB_HANDLER
+            .rxCheckAppInstalled(CC_PARAM)
+            .flatMap(a -> ADB_HANDLER.rxClearCachedData(CC_PARAM));
 
         return Flowable
             .concat(super.rxAfterMethod(param), clearCache)

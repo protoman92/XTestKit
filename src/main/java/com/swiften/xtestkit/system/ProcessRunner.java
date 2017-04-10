@@ -30,7 +30,7 @@ public class ProcessRunner implements ProcessRunnerProtocol {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-//        LogUtil.printf("---------- Executing '%s' ----------", args);
+        LogUtil.printf("---------- Executing '%s' ----------", args);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();

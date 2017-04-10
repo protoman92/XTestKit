@@ -1,4 +1,4 @@
-package com.swiften.xtestkit.engine.base.param;
+package com.swiften.xtestkit.kit.param;
 
 import com.swiften.xtestkit.engine.base.param.protocol.IndexProtocol;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;

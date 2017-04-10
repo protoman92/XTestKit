@@ -25,6 +25,12 @@ public class RepeatRunnerTest {
         return Thread.currentThread().getId();
     }
 
+    @BeforeTest
+    @BeforeSuite
+    public void beforeSuite() {
+        LogUtil.println("BeforeSuite");
+    }
+
     @BeforeClass
     public void beforeClass() {
         LogUtil.printf(

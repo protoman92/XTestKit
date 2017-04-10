@@ -1,6 +1,7 @@
 package com.swiften.xtestkit.engine.android.actual;
 
 import com.swiften.xtestkit.engine.mobile.android.ADBHandler;
+import com.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
@@ -8,6 +9,7 @@ import com.swiften.xtestkit.util.CustomTestSubscriber;
 import com.swiften.xtestkit.util.TestUtil;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.apache.bcel.generic.RET;
 import org.jetbrains.annotations.NotNull;
 
 import static org.mockito.Mockito.*;
@@ -23,21 +25,26 @@ import java.util.concurrent.TimeUnit;
  */
 public class ADBHandlerDeviceTest {
     @NotNull private final ADBHandler ADB_HANDLER;
+    @NotNull private final ClearCacheParam CC_PARAM;
     @NotNull private final StartEmulatorParam SE_PARAM;
     @NotNull private final StopEmulatorParam ST_PARAM;
     @NotNull private final DeviceUIDProtocol DUID_PARAM;
+    @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
 
     private final int PORT = 5558;
+    private final int RETRIES_ON_ERROR = 3;
 
     {
         ADB_HANDLER = spy(ADBHandler.builder().build());
+        CC_PARAM = mock(ClearCacheParam.class);
         SE_PARAM = mock(StartEmulatorParam.class);
         ST_PARAM = mock(StopEmulatorParam.class);
         DUID_PARAM = mock(DeviceUIDProtocol.class);
 
         /* Return this when calling SE_PARAM#deviceName() */
+        APP_PACKAGE = "com.android.development";
         DEVICE_NAME = "Nexus_4_API_23";
         DEVICE_UID = String.format("emulator-%d", PORT);
     }
@@ -50,8 +57,11 @@ public class ADBHandlerDeviceTest {
         doReturn(PORT).when(SE_PARAM).port();
         doReturn(PORT).when(ST_PARAM).port();
         doReturn(100).when(SE_PARAM).retries();
-        doReturn(3).when(ST_PARAM).retries();
+        doReturn(RETRIES_ON_ERROR).when(ST_PARAM).retries();
+        doReturn(APP_PACKAGE).when(CC_PARAM).appPackage();
+        doReturn(RETRIES_ON_ERROR).when(CC_PARAM).retries();
         doReturn(DEVICE_UID).when(DUID_PARAM).deviceUID();
+        doReturn(DEVICE_UID).when(CC_PARAM).deviceUID();
         TestSubscriber subscriber = CustomTestSubscriber.create();
         ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -117,6 +127,40 @@ public class ADBHandlerDeviceTest {
             .switchIfEmpty(Flowable.error(new Exception()))
             .subscribe(subscriber);
 
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
+    }
+
+    @Test(enabled = true)
+    @SuppressWarnings("unchecked")
+    public void actual_checkAppInstalled_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxCheckAppInstalled(CC_PARAM).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(TestUtil.getFirstNextEvent(subscriber));
+    }
+
+    @Test(enabled = true)
+    @SuppressWarnings("unchecked")
+    public void actual_clearCachedData_shouldSucceed() {
+        // Setup
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ADB_HANDLER.rxClearCachedData(CC_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then

@@ -2,10 +2,7 @@ package com.swiften.xtestkit.kit;
 
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.AfterClassParam;
-import com.swiften.xtestkit.engine.base.param.AfterParam;
-import com.swiften.xtestkit.engine.base.param.BeforeClassParam;
-import com.swiften.xtestkit.engine.base.param.BeforeParam;
+import com.swiften.xtestkit.kit.param.*;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.kit.protocol.TestKitError;
 import com.swiften.xtestkit.localizer.Localizer;
@@ -92,7 +89,6 @@ public class TestKit implements
     //endregion
 
     //region TestListener
-
     /**
      * Return a distinct stream of {@link PlatformEngine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
@@ -177,21 +173,30 @@ public class TestKit implements
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnAllTestsFinished() {
-        LogUtil.println("All test finished");
-
         return Flowable
             .concatArray(
-                networkHandler()
-                    .rxKillAll("node appium")
-
-                    /* If no instance is found, an error will be thrown */
-                    .onErrorResumeNext(Flowable.just(true)),
-
+                rxKillAllAppiumInstances(),
                 rxDistinctEngines().flatMap(PlatformEngine::rxOnAllTestsFinished)
             )
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
+    }
+    //endregion
+
+    //region Appium Setup
+    /**
+     * Kill all active Appium instances.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxKillAllAppiumInstances() {
+        NetworkHandler networkHandler = networkHandler();
+        String command = cmKillAllAppiumInstances();
+
+        return networkHandler
+            .rxKillAll(command)
+            .onErrorResumeNext(Flowable.just(true));
     }
     //endregion
 
@@ -274,6 +279,27 @@ public class TestKit implements
     //endregion
 
     //region Test Setup
+
+    /**
+     * Convenience method for {@link org.testng.annotations.BeforeSuite}.
+     * @return A {@link Flowable} instance.
+     * @see #rxOnFreshStart()
+     */
+    @NotNull
+    public Flowable<Boolean> rxBeforeSuite() {
+        return rxOnFreshStart();
+    }
+
+    /**
+     * Convenience method for {@link org.testng.annotations.AfterSuite}.
+     * @return A {@link Flowable} instance.
+     * @see #rxOnAllTestsFinished()
+     */
+    @NotNull
+    public Flowable<Boolean> rxAfterSuite() {
+        return rxOnAllTestsFinished();
+    }
+
     /**
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * @param param A {@link BeforeClassParam} instance.
@@ -327,6 +353,28 @@ public class TestKit implements
     }
 
     /**
+     * @see #rxBeforeSuite()
+     */
+    public void beforeSuite() {
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
+        rxBeforeSuite().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+    }
+
+    /**
+     * @see #rxAfterSuite()
+     */
+    public void afterSuite() {
+        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
+        rxAfterSuite().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+    }
+
+    /**
      * @param param A {@link BeforeClassParam} instance.
      * @see #rxBeforeClass(BeforeClassParam)
      */
@@ -372,6 +420,17 @@ public class TestKit implements
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
+    }
+    //endregion
+
+    //region CLI
+    /**
+     * Command to kill all existing Appium instances.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmKillAllAppiumInstances() {
+        return "node appium";
     }
     //endregion
 

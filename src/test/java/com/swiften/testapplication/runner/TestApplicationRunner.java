@@ -25,7 +25,7 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
             .addListener(Config.TEST_KIT)
             .withParameterConsumer(Config.TEST_KIT)
             .withRetryCount(Config.runCount())
-            .withPartitionSize(4)
+            .withPartitionSize(2)
             .withVerboseLevel(0)
             .build();
     }

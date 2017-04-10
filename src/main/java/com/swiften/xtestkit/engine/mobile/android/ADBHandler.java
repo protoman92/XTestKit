@@ -14,6 +14,7 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.system.protocol.PortProtocol;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.util.BooleanUtil;
+import com.swiften.xtestkit.util.LogUtil;
 import com.swiften.xtestkit.util.NumberUtil;
 import com.swiften.xtestkit.util.StringUtil;
 import io.reactivex.Flowable;
@@ -324,12 +325,44 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public <T extends AppPackageProtocol & DeviceUIDProtocol & RetryProtocol>
     Flowable<Boolean> rxClearCachedData(@NotNull T param) {
         ProcessRunner runner = processRunner();
+        final String APP = param.appPackage();
         String command = cmClearCachedData(param);
 
         return runner
             .rxExecute(command)
+
+            /* Output from the above command may either be 'Success' or
+             * 'Failed'. Failures may be due to the app's package name not
+             * present in the device/emulator. */
+            .filter(a -> a.contains("Success"))
+            .switchIfEmpty(Flowable.error(new Exception(unableToClearCache(APP))))
             .retry(param.retries())
             .map(a -> true);
+    }
+    //endregion
+
+    //region Check App Installation
+    /**
+     * Check whether an app is installed on the currently active
+     * device/emulator.
+     * @param PARAM An {@link AppPackageProtocol} instance.
+     * @param <T> Generics parameter.
+     * @return A {@link Flowable} instance.
+     * @see #cmListPackages(DeviceUIDProtocol)
+     */
+    @NotNull
+    public <T extends AppPackageProtocol & DeviceUIDProtocol & RetryProtocol>
+    Flowable<Boolean> rxCheckAppInstalled(@NotNull final T PARAM) {
+        ProcessRunner processRunner = processRunner();
+        String listCommand = cmListPackages(PARAM);
+        final String PKG = PARAM.appPackage();
+
+        return processRunner
+            .rxExecute(listCommand)
+            .filter(a -> a.contains(PKG))
+            .retry(PARAM.retries())
+            .map(a -> true)
+            .switchIfEmpty(Flowable.error(new Exception(appNotInstalled(PKG))));
     }
     //endregion
 
@@ -654,6 +687,16 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     @NotNull
     public String cmStopAllEmulators() {
         return String.format("%s reboot -p", cmAdbShell());
+    }
+
+    /**
+     * Command to list all installed packages on an active device/emulator.
+     * @param param A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmListPackages(@NotNull DeviceUIDProtocol param) {
+        return String.format("%1$s pm list packages", cmAdbShell(param));
     }
 
     /**

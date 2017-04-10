@@ -1,4 +1,4 @@
-package com.swiften.xtestkit.engine.base.param;
+package com.swiften.xtestkit.kit.param;
 
 /**
  * Created by haipham on 4/1/17.
@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link com.swiften.xtestkit.engine.base.PlatformEngine#rxBeforeMethod(BeforeParam)}
+ * {@link com.swiften.xtestkit.engine.base.PlatformEngine#rxBeforeClass(BeforeClassParam)}
  */
-public class BeforeParam implements IndexProtocol, RetryProtocol {
-    @NotNull public static BeforeParam DEFAULT;
+public class BeforeClassParam implements IndexProtocol, RetryProtocol {
+    public static BeforeClassParam DEFAULT;
 
     static {
-        DEFAULT = new BeforeParam();
+        DEFAULT = new BeforeClassParam();
     }
 
     @NotNull
@@ -26,17 +26,19 @@ public class BeforeParam implements IndexProtocol, RetryProtocol {
 
     private int index;
 
-    BeforeParam() {}
+    BeforeClassParam() {
+        index = 0;
+    }
 
     public int index() {
         return index;
     }
 
     public static final class Builder {
-        @NotNull private final BeforeParam PARAM;
+        @NotNull private final BeforeClassParam PARAM;
 
         Builder() {
-            PARAM = new BeforeParam();
+            PARAM = new BeforeClassParam();
         }
 
         /**
@@ -51,7 +53,7 @@ public class BeforeParam implements IndexProtocol, RetryProtocol {
         }
 
         @NotNull
-        public BeforeParam build() {
+        public BeforeClassParam build() {
             return PARAM;
         }
     }

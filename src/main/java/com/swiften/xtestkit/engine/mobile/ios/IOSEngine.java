@@ -1,13 +1,14 @@
 package com.swiften.xtestkit.engine.mobile.ios;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.AfterClassParam;
+import com.swiften.xtestkit.kit.param.AfterClassParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.Automation;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
+import com.swiften.xtestkit.kit.param.BeforeClassParam;
 import com.swiften.xtestkit.util.BooleanUtil;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
@@ -15,8 +16,10 @@ import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.apache.commons.io.FilenameUtils;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.annotations.BeforeMethod;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -115,6 +118,29 @@ public class IOSEngine extends MobileEngine<
 
     //region Test Setup
     /**
+     * @param param A {@link BeforeClassParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see #rxStartDriver(RetryProtocol)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+        Flowable<Boolean> startApp;
+
+        if (startDriverOnlyOnce) {
+            startApp = rxStartDriver(param);
+        } else {
+            startApp = Flowable.just(true);
+        }
+
+        return Flowable
+            .concat(super.rxBeforeClass(param), startApp)
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
+    }
+
+    /**
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
@@ -123,6 +149,7 @@ public class IOSEngine extends MobileEngine<
     @NotNull
     @Override
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        final Flowable<Boolean> QUIT_APP;
         Flowable<Boolean> source;
 
         switch (testMode()) {
@@ -136,10 +163,17 @@ public class IOSEngine extends MobileEngine<
                 break;
         }
 
+        if (startDriverOnlyOnce) {
+            QUIT_APP = rxStopDriver();
+        } else {
+            QUIT_APP = Flowable.just(true);
+        }
+
         return Flowable
             .concat(super.rxAfterClass(param), source)
             .all(BooleanUtil::isTrue)
-            .toFlowable();
+            .toFlowable()
+            .flatMap(a -> QUIT_APP);
     }
     //endregion
 
