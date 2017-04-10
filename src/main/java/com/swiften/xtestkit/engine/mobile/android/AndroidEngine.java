@@ -2,9 +2,11 @@ package com.swiften.xtestkit.engine.mobile.android;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.*;
+import com.swiften.xtestkit.engine.base.protocol.AppPackageProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
+import com.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
@@ -207,6 +209,33 @@ public class AndroidEngine extends MobileEngine<
 
         return Flowable
             .concat(super.rxAfterClass(param), source)
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
+    }
+
+    /**
+     * @param param A {@link AfterParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxAfterMethod(AfterParam)
+     * @see ADBHandler#rxClearCachedData(AppPackageProtocol)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+        ADBHandler adbHandler = adbHandler();
+
+        ClearCacheParam ccParam = ClearCacheParam
+            .builder()
+            .withAppPackage(appPackage())
+            .withDeviceUIDProtocol(androidInstance())
+            .withRetryProtocol(param)
+            .build();
+
+        /* Clear cached data such as SharedPreferences */
+        Flowable<Boolean> clearCache = adbHandler.rxClearCachedData(ccParam);
+
+        return Flowable
+            .concat(super.rxAfterMethod(param), clearCache)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

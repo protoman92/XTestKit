@@ -96,8 +96,8 @@ As an example, we can have an **AndroidEngine** as such:
 ### IOSEngine:
 
 This class provides **iOS**-specific methods. Most methods are delegated to
-**Appium**'s iOS handling. Setting up an IOSEngine instance is similar to how
-it's done for AndroidEngine.
+**Appium**'s iOS handling. Setting up an **IOSEngine** instance is similar to
+how it's done for **AndroidEngine**.
 
 ### XPath: 
 

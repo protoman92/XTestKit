@@ -1,5 +1,6 @@
 package com.swiften.xtestkit.engine.mobile.android;
 
+import com.swiften.xtestkit.engine.base.protocol.AppPackageProtocol;
 import com.swiften.xtestkit.engine.mobile.android.param.ConnectionParam;
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
@@ -119,7 +120,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     }
     //endregion
 
-    //region Adb setup
+    //region ADB setup
     /**
      * Restart adb server in order to avoid problem with adb not acknowledging
      * the first command at the start of a test batch.
@@ -308,6 +309,27 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEmulatorParam param) {
         return networkHandler().rxKillProcessWithPort(param);
+    }
+    //endregion
+
+    //region Clear Cached Data
+    /**
+     * Clear cached data from a device/emulator.
+     * @param param A {@link T} instance.
+     * @param <T> Generics parameter.
+     * @return A {@link Flowable} instance.
+     * @see #cmClearCachedData(AppPackageProtocol)
+     */
+    @NotNull
+    public <T extends AppPackageProtocol & DeviceUIDProtocol & RetryProtocol>
+    Flowable<Boolean> rxClearCachedData(@NotNull T param) {
+        ProcessRunner runner = processRunner();
+        String command = cmClearCachedData(param);
+
+        return runner
+            .rxExecute(command)
+            .retry(param.retries())
+            .map(a -> true);
     }
     //endregion
 
@@ -664,7 +686,23 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     @NotNull
     public String cmPutSettings(@NotNull DeviceSettingParam param) {
-        return String.format("%1$s settings %2$s", cmAdbShell(param), param.putCommand());
+        return String.format(
+            "%1$s settings %2$s",
+            cmAdbShell(param), param.putCommand());
+    }
+
+    /**
+     * Command to clear cached data from a device/emulator.
+     * @param param A {@link T} instance.
+     * @param <T> Generics parameter.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public <T extends AppPackageProtocol & DeviceUIDProtocol>
+    String cmClearCachedData(@NotNull T param) {
+        String shell = cmAdbShell(param);
+        String appPackage = param.appPackage();
+        return String.format("%1$s pm clear %2$s", shell, appPackage);
     }
 
     /**
@@ -675,7 +713,9 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     @NotNull
     public String cmGetSettings(@NotNull DeviceSettingParam param) {
-        return String.format("%1$s settings %2$s", cmAdbShell(param), param.getCommand());
+        return String.format(
+            "%1$s settings %2$s",
+            cmAdbShell(param), param.getCommand());
     }
     //endregion
 
