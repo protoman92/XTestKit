@@ -406,7 +406,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
         long delay = 100;
         doReturn(delay).when(ENGINE).backNavigationDelay();
 
-        int times = TestUtil.randomBetween(1, 100);
+        int times = TestUtil.randomBetween(1, 5);
         NavigateBack param = NavigateBack.builder().withTimes(times).build();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
@@ -419,7 +419,11 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(TestUtil.getFirstNextEvent(subscriber));
+        verify(ENGINE).rxNavigateBack(any());
+        verify(ENGINE).driver();
+        verify(ENGINE).backNavigationDelay();
         verify(NAVIGATION, times(times)).back();
+        verifyNoMoreInteractions(ENGINE);
     }
     //endregion
 

@@ -2,7 +2,6 @@ package com.swiften.xtestkit.engine.mobile.android;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.engine.base.param.*;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import sun.nio.ch.Net;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -294,7 +292,7 @@ public class AndroidEngine extends MobileEngine<
 
         return adbHandler().rxCheckKeyboardOpen(instance)
             .filter(isOpen -> isOpen)
-            .flatMap(a -> rxNavigateBack())
+            .flatMap(a -> rxNavigateBackOnce())
             .defaultIfEmpty(true);
     }
     //endregion

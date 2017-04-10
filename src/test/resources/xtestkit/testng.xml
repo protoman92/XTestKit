@@ -1,0 +1,55 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="XTestKit"
+       parallel="classes"
+       thread-count="100"
+       data-provider-thread-count="100">
+
+    <test name="Test Kit Test">
+        <classes>
+            <class name="com.swiften.xtestkit.kit.mock.TestKitTest"/>
+        </classes>
+    </test>
+
+    <test name="Base Platform Test">
+        <classes>
+            <class name="com.swiften.xtestkit.engine.PlatformEngineTest"/>
+        </classes>
+    </test>
+
+    <test name="Android Test">
+        <classes>
+            <class name="com.swiften.xtestkit.engine.android.mock.AndroidEngineTest"/>
+        </classes>
+    </test>
+
+    <test name="iOS Test">
+        <classes>
+            <class name="com.swiften.xtestkit.engine.ios.mock.IOSEngineTest"/>
+        </classes>
+    </test>
+
+    <test name="Network Handler Test">
+        <classes>
+            <class name="com.swiften.xtestkit.system.NetworkHandlerTest"/>
+        </classes>
+    </test>
+
+    <test name="Localizer Test (Actual)">
+        <classes>
+            <class name="com.swiften.xtestkit.localizer.actual.LocalizerTest"/>
+        </classes>
+    </test>
+
+    <test name="Localizer Test (Mock)">
+        <classes>
+            <class name="com.swiften.xtestkit.localizer.mock.LocalizerTest"/>
+        </classes>
+    </test>
+
+    <test name="Repeat Runner Test">
+        <classes>
+            <class name="com.swiften.xtestkit.test.RepeatRunnerTest"/>
+        </classes>
+    </test>
+
+</suite>

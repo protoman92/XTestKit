@@ -627,11 +627,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #rxNavigateBack(NavigateBack)
      */
     @NotNull
-    public Flowable<Boolean> rxNavigateBack() {
-        NavigateBack param = NavigateBack.builder()
-            .withTimes(1)
-            .build();
-
+    public Flowable<Boolean> rxNavigateBackOnce() {
+        NavigateBack param = NavigateBack.builder().withTimes(1).build();
         return rxNavigateBack(param);
     }
 
