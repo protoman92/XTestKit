@@ -36,6 +36,7 @@ public class BaseUITest {
     protected final int INDEX;
 
     public BaseUITest(int index) {
+        LogUtil.printf("Running test instance %d", index);
         INDEX = index;
         TEST_KIT = Config.TEST_KIT;
         INTERACTION = new Interaction(TEST_KIT, index);
@@ -47,19 +48,19 @@ public class BaseUITest {
 
     @BeforeSuite
     public void beforeSuite() {
-        LogUtil.println(">>>>> BeforeSuite <<<<<");
+        LogUtil.println(">>>>>>>>>> BeforeSuite <<<<<<<<<<");
         TEST_KIT.beforeSuite();
     }
 
     @AfterSuite
     public void afterSuite() {
-        LogUtil.println(">>>>> AfterSuite <<<<<");
+        LogUtil.println(">>>>>>>>>> AfterSuite <<<<<<<<<<");
         TEST_KIT.afterSuite();
     }
 
     @BeforeClass
     public void beforeClass() {
-        LogUtil.printf(">>>>> BeforeClass for %s, thread %d <<<<<",
+        LogUtil.printf(">>>>>>>>>> BeforeClass for %s, thread %d <<<<<<<<<<",
             TEST_KIT.engine(INDEX),
             currentThread());
 
@@ -70,7 +71,7 @@ public class BaseUITest {
 
     @AfterClass
     public void afterClass() {
-        LogUtil.printf(">>>>> AfterClass for %s, thread %d <<<<<",
+        LogUtil.printf(">>>>>>>>>> AfterClass for %s, thread %d <<<<<<<<<<",
             TEST_KIT.engine(INDEX),
             currentThread());
 

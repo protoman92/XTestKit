@@ -14,6 +14,7 @@ import com.swiften.xtestkit.system.ProcessRunner;
 import com.swiften.xtestkit.util.CustomTestSubscriber;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 
@@ -93,6 +94,7 @@ public final class AndroidEngineTest {
     public void mock_beforeClass_shouldSucceed() {
         // Setup
         int correctPort = 10;
+        doReturn(Flowable.just(true)).when(ENGINE).rxStartDriver(any());
         doReturn(correctPort).when(ANDROID_INSTANCE).port();
         doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rxFindAvailablePort(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxStartEmulator(any());
@@ -117,11 +119,13 @@ public final class AndroidEngineTest {
         verify(ENGINE).appiumStartDelay();
         verify(ENGINE).networkHandler();
         verify(ENGINE).serverQueue();
+        verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).cmWhichAppium();
         verify(ENGINE).cmFallBackAppium();
         verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
-        verify(ENGINE).rxStartLocalAppiumInstance(any());
         verify(ENGINE).startAppiumOnNewThread(anyString());
+        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).rxStartLocalAppiumInstance(any());
         verify(ENGINE).rxBeforeClass(any());
         verify(ADB_HANDLER).rxFindAvailablePort(any());
         verify(ADB_HANDLER).rxStartEmulator(SE_CAPTOR.capture());
@@ -138,6 +142,7 @@ public final class AndroidEngineTest {
     public void mock_afterClass_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxStopEmulator(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -153,6 +158,8 @@ public final class AndroidEngineTest {
         verify(ENGINE).adbHandler();
         verify(ENGINE, atLeastOnce()).serverAddress();
         verify(ENGINE).testMode();
+        verify(ENGINE).startDriverOnlyOnce();
+        verify(ENGINE).rxStopDriver();
         verify(ENGINE).rxAfterClass(any());
         verify(ENGINE).rxStopLocalAppiumInstance();
         verify(ADB_HANDLER).rxStopEmulator(any());
@@ -167,7 +174,9 @@ public final class AndroidEngineTest {
     public void mock_afterMethod_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxClearCachedData(any());
+        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxCheckAppInstalled(any());
         doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
+        doReturn(Flowable.just(true)).when(ENGINE).rxResetApp();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -181,7 +190,8 @@ public final class AndroidEngineTest {
         verify(ENGINE).androidInstance();
         verify(ENGINE).adbHandler();
         verify(ENGINE).appPackage();
-        verify(ENGINE).rxStopDriver();
+        verify(ENGINE).startDriverOnlyOnce();
+        verify(ENGINE).rxResetApp();
         verify(ENGINE).rxAfterMethod(any());
         verify(ADB_HANDLER).rxClearCachedData(any());
         verifyNoMoreInteractions(ENGINE);

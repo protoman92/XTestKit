@@ -227,9 +227,9 @@ public class AndroidEngine extends MobileEngine<
         }
 
         if (startDriverOnlyOnce()) {
-            quitApp = rxResetApp();
-        } else {
             quitApp = rxStopDriver();
+        } else {
+            quitApp = Flowable.just(true);
         }
 
         return Flowable

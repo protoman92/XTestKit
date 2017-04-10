@@ -40,6 +40,7 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  * A base class for platform-specific implementations. Each Different platform
@@ -237,8 +238,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .doOnNext(NETWORK_HANDLER::markPortAsUsed)
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
-                LogUtil.printf("Set port %d for %s", a, this);
-
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
                 final Queue<String> SERVER_QUEUE = serverQueue();
                 SERVER_QUEUE.offer(COMMAND);
@@ -273,17 +272,30 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol)
+     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
+        NetworkHandler handler = networkHandler();
         ServerAddress address = serverAddress();
 
         LogUtil.printf(
             "Stopping appium instance at port %d for %s",
             address.port(), this);
 
-        return networkHandler().rxKillProcessWithPort(address);
+        return handler.rxKillProcessWithPort(address, this::isAppiumProcess);
+    }
+
+    /**
+     * Check if a process is potentially an Appium instance. This is used to
+     * detect whether it should be killed by
+     * {@link #rxStopLocalAppiumInstance()}
+     * @param name The process' name. A {@link String} value.
+     * @return A {@link Boolean} instance.
+     * @see #rxStopLocalAppiumInstance()
+     */
+    public boolean isAppiumProcess(@NotNull String name) {
+        return name.contains("node");
     }
     //endregion
 
@@ -538,18 +550,16 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
-        LogUtil.printf(
-            "Starting driver at %1$s for %2$s",
-            serverAddress.uri(), this);
-
         return rxHasAllRequiredInformation()
-            .delay(startDriverDelay(), TimeUnit.MILLISECONDS)
             .flatMapCompletable(a -> Completable.fromAction(() -> {
                 driver = createDriverInstance();
             }))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true)
-            .retry(PARAM.retries());
+            .retry(PARAM.retries())
+            .doOnNext(a -> LogUtil.printf(
+                "Starting driver at %1$s for %2$s",
+                serverAddress.uri(), this));
     }
 
     /**

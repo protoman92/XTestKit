@@ -107,7 +107,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
-        doReturn(ENGINE).when(NETWORK_HANDLER).processRunner();
         doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
@@ -251,8 +250,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
             verify(ENGINE).serverAddress();
             verify(ENGINE).rxStopLocalAppiumInstance();
             verify(ENGINE).networkHandler();
-            verify(ENGINE, times(2)).rxExecute(anyString());
-            verify(ENGINE, times(2)).processRunner();
             verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {
             fail(e.getMessage());

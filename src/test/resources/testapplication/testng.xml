@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="TestApplication"
        parallel="instances"
-       data-provider-thread-count="5">
+       data-provider-thread-count="10">
 
     <test name="Login Test">
         <classes>

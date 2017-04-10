@@ -410,7 +410,9 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     @SuppressWarnings("unchecked")
     public void mock_stopEmulator_shouldSucceed() {
         // Setup
-        doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxKillProcessWithPort(any());
+        doReturn(Flowable.just(true))
+            .when(NETWORK_HANDLER).rxKillProcessWithPort(any(), any());
+
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -423,7 +425,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
         subscriber.assertComplete();
         verify(ADB_HANDLER).rxStopEmulator(any());
         verify(ADB_HANDLER).networkHandler();
-        verify(NETWORK_HANDLER).rxKillProcessWithPort(any());
+        verify(NETWORK_HANDLER).rxKillProcessWithPort(any(), any());
         verifyNoMoreInteractions(ADB_HANDLER);
     }
     //endregion
@@ -524,7 +526,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
     public void mock_clearCache_shouldSucceed() {
         try {
             // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(contains("pm clear"));
+            doReturn("Success").when(PROCESS_RUNNER).execute(contains("pm clear"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -729,6 +731,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).changeSettingsFailed(anyString());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).emulatorSettingTimeout();
             verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
             verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
             verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());
@@ -764,6 +767,7 @@ public class ADBHandlerTest implements ADBErrorProtocol {
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmGetSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).emulatorSettingTimeout();
             verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
             verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
             verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());

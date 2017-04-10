@@ -226,6 +226,10 @@ public abstract class MobileEngine<
         capabilities.put(MobileCapabilityType.DEVICE_NAME, deviceName());
         capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName());
         capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
+
+        /* If startDriverOnlyOnce is false, we should manually start and reset
+         * the app */
+        capabilities.put("autoLaunch", !startDriverOnlyOnce());
         return capabilities;
     }
     //endregion

@@ -186,6 +186,8 @@ public class TestKitTest {
             verify(TEST_KIT).networkHandler();
             verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
+            verify(TEST_KIT).cmKillAllAppiumInstances();
+            verify(TEST_KIT).rxKillAllAppiumInstances();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
             verify(NETWORK_HANDLER).rxKillAll(anyString());
@@ -216,8 +218,10 @@ public class TestKitTest {
             verify(TEST_KIT).networkHandler();
             verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
+            verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
+            verify(TEST_KIT).rxKillAllAppiumInstances();
             verify(NETWORK_HANDLER).rxKillAll(anyString());
             verifyNoMoreInteractions(TEST_KIT);
         } catch (Exception e) {

@@ -121,6 +121,7 @@ public class IOSEngine extends MobileEngine<
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryProtocol)
      */
     @NotNull
@@ -128,7 +129,7 @@ public class IOSEngine extends MobileEngine<
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         Flowable<Boolean> startApp;
 
-        if (startDriverOnlyOnce) {
+        if (startDriverOnlyOnce()) {
             startApp = rxStartDriver(param);
         } else {
             startApp = Flowable.just(true);
@@ -145,6 +146,8 @@ public class IOSEngine extends MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryProtocol)
+     * @see #startDriverOnlyOnce()
+     * @see #rxStopDriver()
      */
     @NotNull
     @Override
@@ -163,7 +166,7 @@ public class IOSEngine extends MobileEngine<
                 break;
         }
 
-        if (startDriverOnlyOnce) {
+        if (startDriverOnlyOnce()) {
             QUIT_APP = rxStopDriver();
         } else {
             QUIT_APP = Flowable.just(true);

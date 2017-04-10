@@ -47,9 +47,9 @@ public class ProcessRunner implements ProcessRunnerProtocol {
         } catch (IOException e) {
             String error = outputStream.toString();
 
-//            LogUtil.printf(
-//                "Execution error while running '%1$s': '%2$s', output: %3$s",
-//                args, e.getMessage(), error);
+            LogUtil.printf(
+                "Execution error while running '%1$s': '%2$s', output: %3$s",
+                args, e.getMessage(), error);
 
             throw new IOException(error);
         }

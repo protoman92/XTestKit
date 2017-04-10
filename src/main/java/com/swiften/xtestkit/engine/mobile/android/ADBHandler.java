@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -305,11 +306,11 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Kill a specific emulator instance, based on its port number.
      * @param param A {@link StopEmulatorParam} instance.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol)
+     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEmulatorParam param) {
-        return networkHandler().rxKillProcessWithPort(param);
+        return networkHandler().rxKillProcessWithPort(param, a -> true);
     }
     //endregion
 
@@ -483,8 +484,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
             /* If it takes too long to change the device/emulator settings,
              * proceed anyway */
-            .timeout(emulatorSettingTimeout(), TimeUnit.MILLISECONDS)
-            .onErrorResumeNext(Flowable.just(true));
+            .timeout(emulatorSettingTimeout(), TimeUnit.MILLISECONDS);
     }
     //endregion
 
@@ -564,7 +564,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     public Flowable<Boolean>
     rxDisableEmulatorAnimations(@NotNull DeviceUIDProtocol param) {
         return Flowable
-            .mergeArrayDelayError(
+            .mergeArray(
                 rxDisableWindowAnimationScale(param),
                 rxDisableTransitionAnimationScale(param),
                 rxDisableAnimatorDurationScale(param)

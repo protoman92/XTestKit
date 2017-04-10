@@ -1,6 +1,8 @@
 package com.swiften.xtestkit.system;
 
 import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.system.param.GetProcessNameParam;
+import com.swiften.xtestkit.system.protocol.PIDProtocol;
 import com.swiften.xtestkit.system.protocol.PortProtocol;
 import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
 import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +47,7 @@ public class NetworkHandler implements NetworkHandlerError {
      * @return A {@link ProcessRunnerProtocol} instance.
      */
     @NotNull
-    public ProcessRunnerProtocol processRunner() {
+    public ProcessRunner processRunner() {
         return PROCESS_RUNNER;
     }
 
@@ -127,6 +130,20 @@ public class NetworkHandler implements NetworkHandlerError {
     }
 
     /**
+     * Get a process' name using its PID value.
+     * @param param A {@link T} instance.
+     * @param <T> Generics parameter.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public <T extends PIDProtocol & RetryProtocol>
+    Flowable<String> rxGetProcessName(@NotNull T param) {
+        ProcessRunner runner = processRunner();
+        String command = cmFindProcessName(param.pid());
+        return runner.rxExecute(command).retry(param.retries());
+    }
+
+    /**
      * Recursively check ports until one is available. Everytime a port is
      * not available, we increment it by one and call this method again.
      * @param PARAM A {@link T} instance. This {@link T} shall contain the
@@ -181,7 +198,7 @@ public class NetworkHandler implements NetworkHandlerError {
             .rxExecute(command)
             .onErrorResumeNext(t -> {
                 /* If 'No such process' is thrown, we skip the error */
-                if (t.getMessage().contains(NO_PORT_AVAILABLE)) {
+                if (t.getMessage().contains(NO_SUCH_PROCESS)) {
                     return Flowable.empty();
                 }
 
@@ -193,21 +210,39 @@ public class NetworkHandler implements NetworkHandlerError {
 
     /**
      * Kill a process that is listening to a port.
-     * @param param A {@link T} instance.
+     * @param PARAM A {@link T} instance.
+     * @param NP A {@link Predicate} instance that checks whether a process
+     *           should be terminated. It accepts a {@link String} that
+     *           represents the process' name.
      * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public <T extends RetryProtocol & PortProtocol>
-    Flowable<Boolean> rxKillProcessWithPort(@NotNull T param) {
+    Flowable<Boolean> rxKillProcessWithPort(@NotNull final T PARAM,
+                                            @NotNull final Predicate<String> NP) {
         return processRunner()
-            .rxExecute(cmFindPID(param.port()))
+            .rxExecute(cmFindPID(PARAM.port()))
             .filter(StringUtil::isNotNullOrEmpty)
-            .map(a -> a.replace("\n", ""))
-            .flatMap(this::rxKillProcessWithPid)
+            .map(a -> a.split("\n"))
+            .flatMap(Flowable::fromArray)
+            .map(a -> GetProcessNameParam.builder()
+                .withPID(a)
+                .withRetryProtocol(PARAM)
+                .build())
+
+            /* Here we have the opportunity to check whether a process can
+             * be killed. This can be useful when lsof returns multiple PIDs,
+             * one or more of which we do not want to kill */
+            .flatMap(gp -> this
+                .rxGetProcessName(gp)
+                .filter(NP::test)
+                .flatMap(a -> this.rxKillProcessWithPid(gp.pid())))
             .defaultIfEmpty(true)
-            .retry(param.retries())
-            .onErrorResumeNext(Flowable.just(true));
+            .retry(PARAM.retries())
+            .onErrorResumeNext(Flowable.just(true))
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
@@ -221,10 +256,13 @@ public class NetworkHandler implements NetworkHandlerError {
         return processRunner()
             .rxExecute(cmFindPID(name))
             .filter(StringUtil::isNotNullOrEmpty)
-            .map(a -> a.replace("\n", ""))
+            .map(a -> a.split("\n"))
+            .flatMap(Flowable::fromArray)
             .flatMap(this::rxKillProcessWithPid)
             .defaultIfEmpty(true)
-            .onErrorResumeNext(Flowable.just(true));
+            .onErrorResumeNext(Flowable.just(true))
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
@@ -286,6 +324,16 @@ public class NetworkHandler implements NetworkHandlerError {
     @NotNull
     public String cmFindPID(@NotNull String name) {
         return String.format("pgrep %s", name);
+    }
+
+    /**
+     * Find process name using its PID.
+     * @param pid A {@link String} value.
+     * @return A {@link String} value.
+     */
+    @NotNull
+    public String cmFindProcessName(@NotNull String pid) {
+        return String.format("ps -p %s -o comm=", pid);
     }
     //endregion
 

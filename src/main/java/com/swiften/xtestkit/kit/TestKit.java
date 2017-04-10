@@ -110,12 +110,7 @@ public class TestKit implements
 
         return Flowable
             .concatArray(
-                networkHandler()
-                    .rxKillAll("node appium")
-
-                    /* If no instance is found, an error will be thrown */
-                    .onErrorResumeNext(Flowable.just(true)),
-
+                rxKillAllAppiumInstances(),
                 rxDistinctEngines().flatMap(PlatformEngine::rxOnFreshStart)
             )
             .all(BooleanUtil::isTrue)
