@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/31/17.
  */
-public class MockIOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
+public final class MockIOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final RetryProtocol RETRY;
@@ -67,7 +67,6 @@ public class MockIOSEngineTest implements ErrorProtocol, IOSErrorProtocol {
         subscriber.assertNotComplete();
         verify(ENGINE).hasAllRequiredInformation();
         verify(ENGINE).hasCorrectFileExtension();
-        verify(ENGINE).startDriverDelay();
         verify(ENGINE).rxHasCorrectFileExtension();
         verify(ENGINE).rxHasAllRequiredInformation();
         verify(ENGINE).rxStartDriver(any());

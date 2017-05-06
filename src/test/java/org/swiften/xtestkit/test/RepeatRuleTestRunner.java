@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * Created by haipham on 4/5/17.
  */
-public class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
+public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
     @NotNull private static final RepeatRunner RUNNER;
     @NotNull private static final RepeatRunner.IndexConsumer PC;
     @NotNull private static final TestListener LISTENER;

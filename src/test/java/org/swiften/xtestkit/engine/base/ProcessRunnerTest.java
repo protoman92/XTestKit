@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 4/6/17.
  */
-public class ProcessRunnerTest {
+public final class ProcessRunnerTest {
     @NotNull private final ProcessRunner RUNNER;
 
     {

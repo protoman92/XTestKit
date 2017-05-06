@@ -6,7 +6,7 @@ import org.testng.annotations.*;
 /**
  * Created by haipham on 3/25/17.
  */
-public class RepeatRunnerTest {
+public final class RepeatRunnerTest {
     private final int INDEX;
 
     @Factory(

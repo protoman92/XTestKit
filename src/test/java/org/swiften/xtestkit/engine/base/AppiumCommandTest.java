@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Created by haipham on 4/6/17.
  */
-public class AppiumCommandTest {
+public final class AppiumCommandTest {
     @Nullable private AppiumCommand.Builder builder;
 
     @BeforeMethod

@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * Created by haipham on 3/24/17.
  */
-public class MockTestKitTest {
+public final class MockTestKitTest {
     @NotNull private final TestKit TEST_KIT;
     @NotNull private final PlatformEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
@@ -63,7 +63,7 @@ public class MockTestKitTest {
         doReturn(ENGINE).when(TEST_KIT).engine(anyInt());
         doReturn(PROCESS_RUNNER).when(TEST_KIT).processRunner();
         doReturn(NETWORK_HANDLER).when(TEST_KIT).networkHandler();
-        doReturn(TEST_KIT).when(NETWORK_HANDLER).processRunner();
+        doReturn(PROCESS_RUNNER).when(NETWORK_HANDLER).processRunner();
     }
 
     @AfterMethod
@@ -119,10 +119,10 @@ public class MockTestKitTest {
             subscriber.assertComplete();
             verify(ENGINE).rxOnFreshStart();
             verify(TEST_KIT).rxOnFreshStart();
+            verify(TEST_KIT).rxKillAllAppiumInstances();
+            verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).networkHandler();
-            verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
-            verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
             verify(NETWORK_HANDLER).rxKillAll(anyString());
             verifyNoMoreInteractions(TEST_KIT);;
@@ -149,10 +149,10 @@ public class MockTestKitTest {
             subscriber.assertComplete();
             verify(ENGINE).rxOnFreshStart();
             verify(TEST_KIT).rxOnFreshStart();
+            verify(TEST_KIT).rxKillAllAppiumInstances();
+            verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).networkHandler();
-            verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
-            verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
             verify(NETWORK_HANDLER).rxKillAll(anyString());
             verifyNoMoreInteractions(TEST_KIT);
@@ -180,11 +180,9 @@ public class MockTestKitTest {
             verify(ENGINE).rxOnAllTestsFinished();
             verify(TEST_KIT).rxOnAllTestsFinished();
             verify(TEST_KIT).networkHandler();
-            verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
             verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).rxKillAllAppiumInstances();
-            verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
             verify(NETWORK_HANDLER).rxKillAll(anyString());
             verifyNoMoreInteractions(TEST_KIT);
@@ -212,10 +210,8 @@ public class MockTestKitTest {
             verify(ENGINE).rxOnAllTestsFinished();
             verify(TEST_KIT).rxOnAllTestsFinished();
             verify(TEST_KIT).networkHandler();
-            verify(TEST_KIT).processRunner();
             verify(TEST_KIT).engines();
             verify(TEST_KIT).cmKillAllAppiumInstances();
-            verify(TEST_KIT).rxExecute(anyString());
             verify(TEST_KIT).rxDistinctEngines();
             verify(TEST_KIT).rxKillAllAppiumInstances();
             verify(NETWORK_HANDLER).rxKillAll(anyString());

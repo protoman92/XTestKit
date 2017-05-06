@@ -29,7 +29,7 @@ import static org.testng.Assert.*;
 /**
  * Created by haipham on 4/8/17.
  */
-public class MockADBHandlerTest implements ADBErrorProtocol {
+public final class MockADBHandlerTest implements ADBErrorProtocol {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by haipham on 3/23/17.
  */
-public class ADBHandlerDeviceTest {
+public final class ADBHandlerDeviceTest {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final ClearCacheParam CC_PARAM;
     @NotNull private final StartEmulatorParam SE_PARAM;

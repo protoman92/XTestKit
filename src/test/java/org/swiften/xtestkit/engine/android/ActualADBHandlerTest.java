@@ -17,7 +17,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 4/9/17.
  */
-public class ActualADBHandlerTest {
+public final class ActualADBHandlerTest {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final RetryProtocol RETRY;
 

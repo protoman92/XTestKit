@@ -24,7 +24,7 @@ import static org.testng.Assert.fail;
 /**
  * Created by haipham on 4/8/17.
  */
-public class XCRunHandlerTest {
+public final class XCRunHandlerTest {
     @NotNull private final XCRunHandler XC_HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final StartSimulatorParam SS_PARAM;

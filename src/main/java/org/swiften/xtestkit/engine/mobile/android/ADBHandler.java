@@ -158,8 +158,9 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     @NotNull
     public Flowable<Integer> rxFindAvailablePort(@NotNull final RetryProtocol PARAM) {
         final NetworkHandler NETWORK_HANDLER = networkHandler();
+        Collection<Integer> availablePorts = availablePorts();
 
-        if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts())) {
+        if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts)) {
             return Flowable.error(new Exception(NO_PORT_AVAILABLE));
         }
 

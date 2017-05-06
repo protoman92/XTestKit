@@ -25,7 +25,7 @@ import static org.testng.Assert.fail;
 /**
  * Created by haipham on 4/7/17.
  */
-public class NetworkHandlerTest implements NetworkHandlerError {
+public final class NetworkHandlerTest implements NetworkHandlerError {
     @NotNull private final NetworkHandler HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
