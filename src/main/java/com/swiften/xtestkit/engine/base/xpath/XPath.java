@@ -1,6 +1,6 @@
 package com.swiften.xtestkit.engine.base.xpath;
 
-import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
+import com.swiften.xtestkit.engine.base.PlatformProtocol;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

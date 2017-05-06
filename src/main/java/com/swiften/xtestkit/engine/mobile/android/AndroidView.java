@@ -1,7 +1,7 @@
 package com.swiften.xtestkit.engine.mobile.android;
 
-import com.swiften.xtestkit.engine.base.protocol.PlatformView;
-import com.swiften.xtestkit.engine.base.protocol.View;
+import com.swiften.xtestkit.engine.base.PlatformView;
+import com.swiften.xtestkit.engine.base.View;
 import org.jetbrains.annotations.NotNull;
 
 /**

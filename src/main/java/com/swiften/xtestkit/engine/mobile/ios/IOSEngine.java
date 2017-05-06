@@ -1,25 +1,23 @@
 package com.swiften.xtestkit.engine.mobile.ios;
 
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.kit.param.AfterClassParam;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.kit.AfterClassParam;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.Automation;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSDelayProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.IOSErrorProtocol;
-import com.swiften.xtestkit.kit.param.BeforeClassParam;
-import com.swiften.xtestkit.util.BooleanUtil;
+import com.swiften.xtestkit.kit.BeforeClassParam;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.apache.commons.io.FilenameUtils;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.BeforeMethod;
+import org.swiften.javautilities.bool.BooleanUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;

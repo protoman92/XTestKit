@@ -6,25 +6,25 @@
 
     <test name="Test Kit Test">
         <classes>
-            <class name="com.swiften.xtestkit.kit.mock.TestKitTest"/>
+            <class name="com.swiften.xtestkit.kit.MockTestKitTest"/>
         </classes>
     </test>
 
     <test name="Base Platform Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.PlatformEngineTest"/>
+            <class name="com.swiften.xtestkit.engine.base.PlatformEngineTest"/>
         </classes>
     </test>
 
     <test name="Android Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.android.mock.AndroidEngineTest"/>
+            <class name="com.swiften.xtestkit.engine.android.MockAndroidEngineTest"/>
         </classes>
     </test>
 
     <test name="iOS Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.ios.mock.IOSEngineTest"/>
+            <class name="com.swiften.xtestkit.engine.ios.MockIOSEngineTest"/>
         </classes>
     </test>
 

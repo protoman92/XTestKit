@@ -1,23 +1,17 @@
 package com.swiften.xtestkit.engine.mobile.android;
 
-import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.engine.base.param.*;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.engine.base.protocol.AppPackageProtocol;
+import com.swiften.xtestkit.engine.base.*;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
-import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
 import com.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.protocol.AndroidErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
-import com.swiften.xtestkit.kit.param.AfterClassParam;
-import com.swiften.xtestkit.kit.param.AfterParam;
-import com.swiften.xtestkit.kit.param.BeforeClassParam;
+import com.swiften.xtestkit.kit.AfterClassParam;
+import com.swiften.xtestkit.kit.AfterParam;
+import com.swiften.xtestkit.kit.BeforeClassParam;
 import com.swiften.xtestkit.system.NetworkHandler;
-import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.LogUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -28,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;

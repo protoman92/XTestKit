@@ -1,9 +1,9 @@
 package com.swiften.xtestkit.engine.mobile.android.param;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.AndroidInstance;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
+import com.swiften.xtestkit.system.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**

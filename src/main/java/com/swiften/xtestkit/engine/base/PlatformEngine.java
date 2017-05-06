@@ -4,26 +4,16 @@ package com.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import com.swiften.xtestkit.engine.base.param.*;
-import com.swiften.xtestkit.kit.param.AfterClassParam;
-import com.swiften.xtestkit.kit.param.AfterParam;
-import com.swiften.xtestkit.kit.param.BeforeClassParam;
-import com.swiften.xtestkit.engine.base.param.protocol.Distinctive;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.engine.base.protocol.*;
+import com.swiften.xtestkit.kit.AfterClassParam;
+import com.swiften.xtestkit.kit.AfterParam;
+import com.swiften.xtestkit.kit.BeforeClassParam;
 import com.swiften.xtestkit.engine.base.xpath.XPath;
 import com.swiften.xtestkit.engine.mobile.MobileEngine;
 import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.xtestkit.kit.param.BeforeParam;
+import com.swiften.xtestkit.kit.BeforeParam;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
-import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
-import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.CollectionUtil;
-import com.swiften.xtestkit.util.LogUtil;
-import com.swiften.xtestkit.util.StringUtil;
-import io.appium.java_client.android.AndroidDriver;
+import com.swiften.xtestkit.test.TestListener;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -34,8 +24,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.string.StringUtil;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -129,7 +122,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         if (serverAddress().isLocalInstance()) {
-            return rxStartLocalAppiumInstance(param);
+            return rxStartLocalAppium(param);
         }
 
         return Flowable.just(true);
@@ -206,8 +199,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean>
-    rxStartLocalAppiumInstance(@NotNull final RetryProtocol PARAM) {
+    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryProtocol PARAM) {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
 

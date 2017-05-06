@@ -4,10 +4,9 @@ package com.swiften.xtestkit.engine.mobile.android;
  * Created by haipham on 4/8/17.
  */
 
-import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.mobile.TestMode;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
+import com.swiften.xtestkit.system.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,16 +1,14 @@
 package com.swiften.xtestkit.test;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.test.protocol.RepeatRunnerError;
-import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.LogUtil;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.testng.*;
 import org.testng.annotations.*;
 import org.testng.xml.XmlSuite;

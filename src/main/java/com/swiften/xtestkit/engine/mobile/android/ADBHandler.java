@@ -1,8 +1,8 @@
 package com.swiften.xtestkit.engine.mobile.android;
 
-import com.swiften.xtestkit.engine.base.protocol.AppPackageProtocol;
+import com.swiften.xtestkit.engine.base.AppPackageProtocol;
 import com.swiften.xtestkit.engine.mobile.android.param.ConnectionParam;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import com.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
@@ -11,15 +11,14 @@ import com.swiften.xtestkit.engine.mobile.android.protocol.ADBErrorProtocol;
 import com.swiften.xtestkit.engine.mobile.android.protocol.DeviceUIDProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
-import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
-import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.LogUtil;
-import com.swiften.xtestkit.util.NumberUtil;
-import com.swiften.xtestkit.util.StringUtil;
+import com.swiften.xtestkit.system.PortProtocol;
+import com.swiften.xtestkit.system.ProcessRunnerProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.string.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;

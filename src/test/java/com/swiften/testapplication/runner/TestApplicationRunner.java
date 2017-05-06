@@ -1,7 +1,7 @@
 package com.swiften.testapplication.runner;
 
 import com.swiften.testapplication.test.Config;
-import com.swiften.testapplication.test.login.ui.LoginUITest;
+import com.swiften.testapplication.test.login.UILoginTest;
 import com.swiften.xtestkit.test.RepeatRunner;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.DataProvider;
@@ -21,7 +21,7 @@ public final class TestApplicationRunner implements RepeatRunner.TestRunner {
 
     static {
         RUNNER = RepeatRunner.builder()
-            .addTestClass(LoginUITest.class)
+            .addTestClass(UILoginTest.class)
             .addListener(Config.TEST_KIT)
             .withParameterConsumer(Config.TEST_KIT)
             .withRetryCount(Config.runCount())

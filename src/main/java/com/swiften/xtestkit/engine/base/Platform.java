@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.engine.base;
 
-import com.swiften.xtestkit.engine.base.protocol.PlatformProtocol;
 import com.swiften.xtestkit.engine.base.xpath.Attribute;
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;

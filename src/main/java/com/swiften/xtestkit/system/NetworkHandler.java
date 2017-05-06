@@ -1,17 +1,12 @@
 package com.swiften.xtestkit.system;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.system.param.GetProcessNameParam;
-import com.swiften.xtestkit.system.protocol.PIDProtocol;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
-import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
-import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
-import com.swiften.xtestkit.util.BooleanUtil;
-import com.swiften.xtestkit.util.LogUtil;
-import com.swiften.xtestkit.util.StringUtil;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.string.StringUtil;
 
 import java.util.Collection;
 import java.util.HashSet;

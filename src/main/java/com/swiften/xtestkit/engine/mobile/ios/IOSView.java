@@ -4,8 +4,8 @@ package com.swiften.xtestkit.engine.mobile.ios;
  * Created by haipham on 4/3/17.
  */
 
-import com.swiften.xtestkit.engine.base.protocol.PlatformView;
-import com.swiften.xtestkit.engine.base.protocol.View;
+import com.swiften.xtestkit.engine.base.PlatformView;
+import com.swiften.xtestkit.engine.base.View;
 import org.jetbrains.annotations.NotNull;
 
 /**

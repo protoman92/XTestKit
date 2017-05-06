@@ -1,46 +1,47 @@
-group 'com.swiften'
-version '1.0'
-
-apply plugin: 'java'
-apply plugin: 'idea'
-
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
     }
-
-    ext {
-        annotations = '15.0'
-        appium = '5.0.0-BETA6'
-        commons_exec = '1.0.1'
-        commons_io = '2.5'
-        junit = '4.12'
-        testng = '6.10'
-        mockito = '2.2.0'
-        rx = '2.0.7'
-    }
 }
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+group 'com.swiften'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
     jcenter()
+
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
 
 sourceCompatibility = 1.8
 
 dependencies {
-    compile "org.apache.commons:commons-exec:$commons_exec"
-//    compile "org.apache.commons:commons-io:$commons_io"
-    compile "org.jetbrains:annotations-java5:$annotations"
-    compile "io.reactivex.rxjava2:rxjava:$rx"
-    compile "io.appium:java-client:$appium"
-//    compile "junit:junit:$junit"
-    compile "org.testng:testng:$testng"
-    compile "org.mockito:mockito-core:$mockito"
+    compile "org.apache.commons:commons-exec:+"
+    compile "commons-io:commons-io:+"
+    compile "org.jetbrains:annotations-java5:+"
+    compile "io.reactivex.rxjava2:rxjava:+"
+    compile "io.appium:java-client:+"
+    compile "org.testng:testng:+"
+    compile "org.mockito:mockito-core:+"
+    compile "org.swiften:JavaUtilities:+"
 }
 
 /* Get Gradle home directory to set up Gradle project */
-task getHomeDir << {
-    println gradle.gradleHomeDir
+task getHomeDir {
+    doLast {
+        println gradle.gradleHomeDir
+    }
 }

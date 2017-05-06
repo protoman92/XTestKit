@@ -1,6 +1,5 @@
 package com.swiften.xtestkit.test;
 
-import com.swiften.xtestkit.test.protocol.TestListener;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;

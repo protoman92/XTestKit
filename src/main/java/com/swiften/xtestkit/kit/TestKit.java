@@ -2,21 +2,23 @@ package com.swiften.xtestkit.kit;
 
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
-import com.swiften.xtestkit.kit.param.*;
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.kit.protocol.TestKitError;
-import com.swiften.xtestkit.localizer.Localizer;
-import com.swiften.xtestkit.rx.RxExtension;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import com.swiften.xtestkit.system.NetworkHandler;
 import com.swiften.xtestkit.system.ProcessRunner;
-import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
+import com.swiften.xtestkit.system.ProcessRunnerProtocol;
 import com.swiften.xtestkit.test.RepeatRunner;
-import com.swiften.xtestkit.test.protocol.TestListener;
-import com.swiften.xtestkit.util.*;
+import com.swiften.xtestkit.test.TestListener;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.box.BoxUtil;
+import org.swiften.javautilities.localizer.Localizer;
+import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -44,7 +46,6 @@ public class TestKit implements
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
         ENGINES = new LinkedList<>();
-        RxUtil.overrideErrorHandler();
     }
 
     //region ProcessRunnerProtocol
@@ -84,7 +85,7 @@ public class TestKit implements
             .toFlowable()
             .subscribe(subscriber);
 
-        return TestUtil.<Long>getFirstNextEvent(subscriber).intValue();
+        return RxTestUtil.<Long>getFirstNextEvent(subscriber).intValue();
     }
     //endregion
 
@@ -305,7 +306,7 @@ public class TestKit implements
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         return engine(param.index())
             .rxBeforeClass(param)
-            .compose(RxExtension.withCommonSchedulers());
+            .compose(RxUtil.withCommonSchedulers());
     }
 
     /**
@@ -318,7 +319,7 @@ public class TestKit implements
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
         return engine(param.index())
             .rxAfterClass(param)
-            .compose(RxExtension.withCommonSchedulers());
+            .compose(RxUtil.withCommonSchedulers());
     }
 
     /**
@@ -331,7 +332,7 @@ public class TestKit implements
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return engine(param.index())
             .rxBeforeMethod(param)
-            .compose(RxExtension.withCommonSchedulers());
+            .compose(RxUtil.withCommonSchedulers());
     }
 
     /**
@@ -344,7 +345,7 @@ public class TestKit implements
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
         return engine(param.index())
             .rxAfterMethod(param)
-            .compose(RxExtension.withCommonSchedulers());
+            .compose(RxUtil.withCommonSchedulers());
     }
 
     /**
@@ -466,11 +467,10 @@ public class TestKit implements
          * @param name The name of the {@link ResourceBundle}.
          * @param locale The {@link Locale} of the {@link ResourceBundle}.
          * @return The current {@link Builder} instance.
-         * @see Localizer.Builder#addBundleName(String, Locale)
+         * @see Localizer.Builder#addBundle(String, Locale)
          */
-        public Builder addResourceBundle(@NotNull String name,
-                                         @NotNull Locale locale) {
-            LOCALIZER_BUILDER.addBundleName(name, locale);
+        public Builder addResourceBundle(@NotNull String name, @NotNull Locale locale) {
+            LOCALIZER_BUILDER.addBundle(name, locale);
             return this;
         }
 

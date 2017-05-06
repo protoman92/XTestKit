@@ -1,13 +1,12 @@
 package com.swiften.xtestkit.system;
 
-import com.swiften.xtestkit.system.protocol.ProcessRunnerProtocol;
-import com.swiften.xtestkit.util.LogUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 
 import java.io.*;
 import java.util.Objects;

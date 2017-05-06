@@ -3,12 +3,12 @@ package com.swiften.testapplication.test.common;
 import com.swiften.xtestkit.engine.base.Platform;
 import com.swiften.xtestkit.engine.base.PlatformEngine;
 import com.swiften.xtestkit.kit.TestKit;
-import com.swiften.xtestkit.rx.RxExtension;
-import com.swiften.xtestkit.util.BooleanUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import com.swiften.testapplication.test.protocol.DelayProtocol;
+import com.swiften.testapplication.test.DelayProtocol;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.rx.RxUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -107,7 +107,7 @@ public final class Interaction implements DelayProtocol {
         };
 
         return ENGINE.rxAllEditableElements()
-            .flatMap(RxExtension::fromCollection)
+            .flatMap(RxUtil::from)
             .flatMap(a -> ENGINE.rxSendKey(a.OBJECT, INPUTS[a.INDEX]))
             .all(BooleanUtil::isTrue)
             .toFlowable();

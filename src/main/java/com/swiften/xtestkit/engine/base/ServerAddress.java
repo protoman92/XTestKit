@@ -1,8 +1,6 @@
 package com.swiften.xtestkit.engine.base;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.engine.base.protocol.ServerAddressError;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
+import com.swiften.xtestkit.system.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,6 +1,6 @@
 package com.swiften.xtestkit.engine.mobile.ios;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import com.swiften.xtestkit.engine.mobile.ios.param.StartSimulatorParam;
 import com.swiften.xtestkit.engine.mobile.ios.protocol.XCRunDelayProtocol;
 import com.swiften.xtestkit.system.ProcessRunner;

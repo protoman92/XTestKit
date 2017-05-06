@@ -4,7 +4,7 @@ package com.swiften.xtestkit.engine.mobile.ios.param;
  * Created by haipham on 4/8/17.
  */
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import org.jetbrains.annotations.NotNull;
 
 /**

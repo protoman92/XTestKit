@@ -5,7 +5,7 @@
 
     <test name="Login Test">
         <classes>
-            <class name="com.swiften.testapplication.test.login.ui.LoginUITest"/>
+            <class name="com.swiften.testapplication.test.login.UILoginTest"/>
         </classes>
     </test>
 </suite>

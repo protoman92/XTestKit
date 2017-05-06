@@ -1,13 +1,10 @@
 package com.swiften.xtestkit.system;
 
-import com.swiften.xtestkit.engine.base.param.protocol.RetryProtocol;
-import com.swiften.xtestkit.system.protocol.NetworkHandlerError;
-import com.swiften.xtestkit.system.protocol.PortProtocol;
-import com.swiften.xtestkit.util.CustomTestSubscriber;
-import com.swiften.xtestkit.util.TestUtil;
+import com.swiften.xtestkit.engine.base.RetryProtocol;
 import io.reactivex.subscribers.TestSubscriber;
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.javautilities.rx.RxTestUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,7 +44,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_checkPortWithError_shouldRerunUntilCorrect() {
+    public void test_checkPortWithError_shouldRerunUntilCorrect() {
         try {
             // Setup
             int tries = 10;
@@ -64,7 +61,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertEquals(TestUtil.getFirstNextEvent(subscriber), Integer.valueOf(tries));
+            assertEquals(RxTestUtil.getFirstNextEvent(subscriber), Integer.valueOf(tries));
             verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
@@ -78,7 +75,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void mock_checkPortAvailable_shouldSucceed() {
+    public void test_checkPortAvailable_shouldSucceed() {
         try {
             // Setup
             doReturn("").when(PROCESS_RUNNER).execute(anyString());
@@ -93,7 +90,7 @@ public class NetworkHandlerTest implements NetworkHandlerError {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertEquals(TestUtil.getFirstNextEvent(subscriber), Integer.valueOf(0));
+            assertEquals(RxTestUtil.getFirstNextEvent(subscriber), Integer.valueOf(0));
             verify(HANDLER).processRunner();
             verify(HANDLER).cmListAllPorts();
             verify(HANDLER).rxCheckPortAvailable(any());
@@ -107,7 +104,8 @@ public class NetworkHandlerTest implements NetworkHandlerError {
 
     private static final class CheckPortParam implements
         PortProtocol,
-        RetryProtocol {
+        RetryProtocol
+    {
         private final int PORT;
 
         CheckPortParam(int port) {
