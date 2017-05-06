@@ -6,31 +6,31 @@
 
     <test name="Test Kit Test">
         <classes>
-            <class name="com.swiften.xtestkit.kit.MockTestKitTest"/>
+            <class name="org.swiften.xtestkit.kit.MockTestKitTest"/>
         </classes>
     </test>
 
     <test name="Base Platform Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.base.PlatformEngineTest"/>
+            <class name="org.swiften.xtestkit.engine.base.PlatformEngineTest"/>
         </classes>
     </test>
 
     <test name="Android Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.android.MockAndroidEngineTest"/>
+            <class name="org.swiften.xtestkit.engine.android.MockAndroidEngineTest"/>
         </classes>
     </test>
 
     <test name="iOS Test">
         <classes>
-            <class name="com.swiften.xtestkit.engine.ios.MockIOSEngineTest"/>
+            <class name="org.swiften.xtestkit.engine.ios.MockIOSEngineTest"/>
         </classes>
     </test>
 
     <test name="Network Handler Test">
         <classes>
-            <class name="com.swiften.xtestkit.system.NetworkHandlerTest"/>
+            <class name="org.swiften.xtestkit.system.NetworkHandlerTest"/>
         </classes>
     </test>
 
@@ -48,7 +48,7 @@
 
     <test name="Repeat Runner Test">
         <classes>
-            <class name="com.swiften.xtestkit.test.RepeatRunnerTest"/>
+            <class name="org.swiften.xtestkit.test.RepeatRunnerTest"/>
         </classes>
     </test>
 
