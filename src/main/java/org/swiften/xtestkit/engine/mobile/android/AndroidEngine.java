@@ -37,7 +37,7 @@ import java.util.Objects;
 public class AndroidEngine extends MobileEngine<
     AndroidElement,
     AndroidDriver<AndroidElement>> implements
-    AndroidErrorProtocol
+    AndroidErrorType
 {
     @NotNull
     public static Builder builder() {
@@ -70,7 +70,7 @@ public class AndroidEngine extends MobileEngine<
     }
     //endregion
 
-//    //region TestListener
+//    //region TestListenerType
 //    @NotNull
 //    @Override
 //    public Flowable<Boolean> rxOnFreshStart() {
@@ -119,9 +119,9 @@ public class AndroidEngine extends MobileEngine<
      * @param PARAM A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
-     * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDProtocol)
+     * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryProtocol)
+     * @see #rxStartDriver(RetriableType)
      */
     @NotNull
     @Override
@@ -244,7 +244,7 @@ public class AndroidEngine extends MobileEngine<
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterMethod(AfterParam)
-     * @see ADBHandler#rxClearCachedData(AppPackageProtocol)
+     * @see ADBHandler#rxClearCachedData(AppPackageType)
      */
     @NotNull
     @Override
@@ -334,12 +334,12 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Dismiss the keyboard if it is open. We first need to check whether the
      * keyboard is present with
-     * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDProtocol)},
+     * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
      * and then call
      * {@link #rxNavigateBack(NavigateBack)}.
      * @return A {@link Flowable} instance.
      * @see #rxNavigateBack(NavigateBack)
-     * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDProtocol)
+     * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull
     public Flowable<Boolean> rxDismissKeyboard() {

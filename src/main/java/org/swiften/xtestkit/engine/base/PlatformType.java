@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/21/17.
  */
-public interface PlatformProtocol {
+public interface PlatformType {
     @NotNull String value();
 
     /**

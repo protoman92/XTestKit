@@ -1,8 +1,7 @@
 package org.swiften.xtestkit.engine.mobile;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
-import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import org.swiften.xtestkit.kit.param.AfterParam;
@@ -15,7 +14,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 
 import java.util.*;
 
@@ -26,7 +24,7 @@ public abstract class MobileEngine<
     E extends WebElement,
     T extends MobileDriver<E>>
     extends PlatformEngine<T>
-    implements MobileEngineError
+    implements MobileErrorType
 {
     @NotNull String app;
     @NotNull String appPackage;
@@ -36,11 +34,11 @@ public abstract class MobileEngine<
     @NotNull String platformVersion;
 
     /**
-     * If this is true, call {@link #rxStartDriver(RetryProtocol)} in
+     * If this is true, call {@link #rxStartDriver(RetriableType)} in
      * {@link #rxBeforeClass(BeforeClassParam)}. Correspondingly,
      * {@link #rxStopDriver()} will be called in
      * {@link #rxBeforeMethod(BeforeParam)}.
-     * Otherwise, {@link #rxStartDriver(RetryProtocol)} is called in
+     * Otherwise, {@link #rxStartDriver(RetriableType)} is called in
      * {@link #rxBeforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
      * is called in {@link #rxAfterMethod(AfterParam)}.
      */
@@ -129,7 +127,7 @@ public abstract class MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryProtocol)
+     * @see #rxStartDriver(RetriableType)
      * @see #rxLaunchApp()
      */
     @NotNull

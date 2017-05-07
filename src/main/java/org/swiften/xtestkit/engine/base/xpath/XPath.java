@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.base.xpath;
 
-import org.swiften.xtestkit.engine.base.PlatformProtocol;
+import org.swiften.xtestkit.engine.base.PlatformType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class XPath {
     public static XPath EMPTY = new XPath();
 
     @NotNull
-    public static Builder builder(@NotNull PlatformProtocol platform) {
+    public static Builder builder(@NotNull PlatformType platform) {
         return new Builder(platform);
     }
 
@@ -42,10 +42,10 @@ public class XPath {
 
     public static class Builder {
         @NotNull private final XPath XPATH;
-        @NotNull private final PlatformProtocol PLATFORM;
+        @NotNull private final PlatformType PLATFORM;
         @NotNull private final String NO_ATTR_NAME_ERROR;
 
-        Builder(@NotNull PlatformProtocol platform) {
+        Builder(@NotNull PlatformType platform) {
             PLATFORM = platform;
             XPATH = new XPath();
             NO_ATTR_NAME_ERROR = "Must specify attribute name";

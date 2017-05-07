@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 4/6/17.
  */
-public interface TestListener {
+public interface TestListenerType {
     /**
      * Cal this method when test are first started.
      * @return A {@link Flowable} instance.

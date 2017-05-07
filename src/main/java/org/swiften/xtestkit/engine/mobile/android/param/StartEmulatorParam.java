@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.AndroidInstance;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
-import org.swiften.xtestkit.system.PortProtocol;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
+import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
  * {@link ADBHandler#rxStartEmulator(StartEmulatorParam)}
  */
 public class StartEmulatorParam implements
-    DeviceUIDProtocol,
-    RetryProtocol,
-    PortProtocol {
+    DeviceUIDType,
+    RetriableType,
+    PortType {
     @NotNull public static StartEmulatorParam DEFAULT;
 
     static {
@@ -126,22 +126,22 @@ public class StartEmulatorParam implements
 
         /**
          * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
-         * @param param A {@link RetryProtocol} instance.
+         * @param param A {@link RetriableType} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryProtocol param) {
+        public Builder withRetryProtocol(@NotNull RetriableType param) {
             return this.withRetries(param.retries());
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} from a {@link DeviceUIDProtocol}
+         * Set {@link #PARAM#deviceUID} from a {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDProtocol} instance.
+         * @param param A {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 

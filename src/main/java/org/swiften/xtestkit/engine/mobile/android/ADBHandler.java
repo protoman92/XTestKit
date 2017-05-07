@@ -1,15 +1,15 @@
 package org.swiften.xtestkit.engine.mobile.android;
 
-import org.swiften.xtestkit.engine.base.AppPackageProtocol;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.AppPackageType;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.param.ConnectionParam;
 import org.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.system.NetworkHandler;
+import org.swiften.xtestkit.system.PortType;
+import org.swiften.xtestkit.system.ProcessRunnableType;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.system.PortProtocol;
-import org.swiften.xtestkit.system.ProcessRunnerProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 /**
  * Created by haipham on 4/8/17.
  */
-public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
+public class ADBHandler implements ADBErrorType, ADBDelayType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -126,7 +126,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     @NotNull
     public Flowable<Boolean> rxRestartAdb() {
-        final ProcessRunnerProtocol RUNNER = processRunner();
+        final ProcessRunnableType RUNNER = processRunner();
         NetworkHandler handler = networkHandler();
 
         return handler
@@ -153,14 +153,14 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     /**
      * Recursively find an available port and emit and error if none is found.
-     * @param PARAM A {@link RetryProtocol} instance.
+     * @param PARAM A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * * @see #rxIsAcceptablePort(int)
      * @see NetworkHandler#checkPortsMarkedAsUsed(Collection)
-     * @see NetworkHandler#rxCheckPortAvailable(PortProtocol)
+     * @see NetworkHandler#rxCheckPortAvailable(PortType)
      */
     @NotNull
-    public Flowable<Integer> rxFindAvailablePort(@NotNull final RetryProtocol PARAM) {
+    public Flowable<Integer> rxFindAvailablePort(@NotNull final RetriableType PARAM) {
         final NetworkHandler NETWORK_HANDLER = networkHandler();
         Collection<Integer> availablePorts = availablePorts();
 
@@ -173,7 +173,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
             @SuppressWarnings("WeakerAccess")
             Flowable<Integer> check(final int PORT) {
                 if (PORT >= MIN_PORT && PORT <= MAX_PORT) {
-                    class Param implements PortProtocol, RetryProtocol {
+                    class Param implements PortType, RetriableType {
                         @Override
                         public int port() {
                             return PORT;
@@ -211,7 +211,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * @param PARAM A {@link StartEmulatorParam} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStartEmulator(StartEmulatorParam)
-     * @see #cmBootAnim(DeviceUIDProtocol)
+     * @see #cmBootAnim(DeviceUIDType)
      */
     @NotNull
     public Flowable<Boolean> rxStartEmulator(@NotNull final StartEmulatorParam PARAM) {
@@ -285,12 +285,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     //region Stop Emulator
     /**
      * Shut down all emulators.
-     * @param param A {@link RetryProtocol} instance.
+     * @param param A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopAllEmulators()
      */
     @NotNull
-    public Flowable<Boolean> rxStopAllEmulators(@NotNull RetryProtocol param) {
+    public Flowable<Boolean> rxStopAllEmulators(@NotNull RetriableType param) {
         String command = cmStopAllEmulators();
 
         return processRunner()
@@ -303,7 +303,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Kill a specific emulator instance, based on its port number.
      * @param param A {@link StopEmulatorParam} instance.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol, Predicate)
+     * @see NetworkHandler#rxKillProcessWithPort(RetriableType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEmulatorParam param) {
@@ -317,10 +317,10 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * @param param A {@link T} instance.
      * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #cmClearCachedData(AppPackageProtocol)
+     * @see #cmClearCachedData(AppPackageType)
      */
     @NotNull
-    public <T extends AppPackageProtocol & DeviceUIDProtocol & RetryProtocol>
+    public <T extends AppPackageType & DeviceUIDType & RetriableType>
     Flowable<Boolean> rxClearCachedData(@NotNull T param) {
         ProcessRunner runner = processRunner();
         final String APP = param.appPackage();
@@ -343,13 +343,13 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     /**
      * Check whether an app is installed on the currently active
      * device/emulator.
-     * @param PARAM An {@link AppPackageProtocol} instance.
+     * @param PARAM An {@link AppPackageType} instance.
      * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #cmListPackages(DeviceUIDProtocol)
+     * @see #cmListPackages(DeviceUIDType)
      */
     @NotNull
-    public <T extends AppPackageProtocol & DeviceUIDProtocol & RetryProtocol>
+    public <T extends AppPackageType & DeviceUIDType & RetriableType>
     Flowable<Boolean> rxCheckAppInstalled(@NotNull final T PARAM) {
         ProcessRunner processRunner = processRunner();
         String listCommand = cmListPackages(PARAM);
@@ -385,13 +385,13 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     /**
      * Same as above, but uses a default {@link ConnectionParam}.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
      * @see #rxToggleInternetConnection(ConnectionParam)
      */
     @NotNull
     public Flowable<Boolean>
-    rxEnableInternetConnection(@NotNull DeviceUIDProtocol param) {
+    rxEnableInternetConnection(@NotNull DeviceUIDType param) {
         ConnectionParam conn = ConnectionParam
             .builder()
             .shouldEnable(true)
@@ -403,13 +403,13 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     /**
      * Same as above, but uses a default {@link ConnectionParam}.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
      * @see #rxToggleInternetConnection(ConnectionParam)
      */
     @NotNull
     public Flowable<Boolean>
-    rxDisableInternetConnection(@NotNull DeviceUIDProtocol param) {
+    rxDisableInternetConnection(@NotNull DeviceUIDType param) {
         ConnectionParam conn = ConnectionParam
             .builder()
             .shouldEnable(false)
@@ -423,12 +423,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     //region Check Keyboard
     /**
      * Check whether the keyboard is open.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
-     * @see #cmCheckKeyboardOpen(DeviceUIDProtocol)
+     * @see #cmCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull
-    public Flowable<Boolean> rxCheckKeyboardOpen(@NotNull DeviceUIDProtocol param) {
+    public Flowable<Boolean> rxCheckKeyboardOpen(@NotNull DeviceUIDType param) {
         String command = cmCheckKeyboardOpen(param);
 
         return processRunner().rxExecute(command)
@@ -488,12 +488,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     //region Disable Window Animation Scale
     /**
      * Disable window animation scale.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
-    rxDisableWindowAnimationScale(@NotNull DeviceUIDProtocol param) {
+    rxDisableWindowAnimationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("window_animation_scale")
@@ -508,12 +508,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     //region Disable Transition Animation Scale
     /**
      * Disable transition animation scale.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
-    rxDisableTransitionAnimationScale(@NotNull DeviceUIDProtocol param) {
+    rxDisableTransitionAnimationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("transition_animation_scale")
@@ -528,12 +528,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     //region Disable Animator Duration Scale
     /**
      * Disable animator duration scale.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
-    rxDisableAnimatorDurationScale(@NotNull DeviceUIDProtocol param) {
+    rxDisableAnimatorDurationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("animator_duration_scale")
@@ -550,16 +550,16 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Disable emulator animations for UI test to prevent unexpected wait
      * times. Note that this is only applicable for rooted devices, and
      * emulators are rooted by default.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxDisableWindowAnimationScale(DeviceUIDProtocol)
-     * @see #rxDisableTransitionAnimationScale(DeviceUIDProtocol)
-     * @see #rxDisableAnimatorDurationScale(DeviceUIDProtocol)
+     * @see #rxDisableWindowAnimationScale(DeviceUIDType)
+     * @see #rxDisableTransitionAnimationScale(DeviceUIDType)
+     * @see #rxDisableAnimatorDurationScale(DeviceUIDType)
      */
     @NotNull
     @SuppressWarnings("unchecked")
     public Flowable<Boolean>
-    rxDisableEmulatorAnimations(@NotNull DeviceUIDProtocol param) {
+    rxDisableEmulatorAnimations(@NotNull DeviceUIDType param) {
         return Flowable
             .mergeArray(
                 rxDisableWindowAnimationScale(param),
@@ -618,12 +618,12 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
 
     /**
      * Get path to adb shell CLI, with device UID.
-     * @param param A {@link DeviceUIDProtocol} instance.
+     * @param param A {@link DeviceUIDType} instance.
      * @return A {@link String} value.
      * @see #cmAdb()
      */
     @NotNull
-    public String cmAdbShell(@NotNull DeviceUIDProtocol param) {
+    public String cmAdbShell(@NotNull DeviceUIDType param) {
         String deviceUID = param.deviceUID();
         return String.format("%1$s -s %2$s shell", cmAdb(), deviceUID);
     }
@@ -668,10 +668,10 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * completely.
      * @param param A {@link String} value.
      * @return A {@link String} value.
-     * @see #cmAdbShell(DeviceUIDProtocol)
+     * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
-    public String cmBootAnim(@NotNull DeviceUIDProtocol param) {
+    public String cmBootAnim(@NotNull DeviceUIDType param) {
         return String.format("%s getprop init.svc.bootanim", cmAdbShell(param));
     }
 
@@ -692,7 +692,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * @return A {@link String} value.
      */
     @NotNull
-    public String cmListPackages(@NotNull DeviceUIDProtocol param) {
+    public String cmListPackages(@NotNull DeviceUIDType param) {
         return String.format("%1$s pm list packages", cmAdbShell(param));
     }
 
@@ -700,7 +700,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * The command to enable/disable internet connection.
      * @param param A {@link ConnectionParam} instance.
      * @return A {@link String} value.
-     * @see #cmAdbShell(DeviceUIDProtocol)
+     * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
     public String cmToggleConnection(@NotNull ConnectionParam param) {
@@ -711,10 +711,10 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
     /**
      * Command to check whether keyboard is open.
      * @return A {@link String} value.
-     * @see #cmAdbShell(DeviceUIDProtocol)
+     * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
-    public String cmCheckKeyboardOpen(@NotNull DeviceUIDProtocol param) {
+    public String cmCheckKeyboardOpen(@NotNull DeviceUIDType param) {
         return String.format("%s dumpsys window InputMethod", cmAdbShell(param));
     }
 
@@ -722,7 +722,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Command to change device settings.
      * @param param a {@link DeviceSettingParam} instance.
      * @return A {@link String} value.
-     * @see #cmAdbShell(DeviceUIDProtocol)
+     * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
     public String cmPutSettings(@NotNull DeviceSettingParam param) {
@@ -738,7 +738,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * @return A {@link String} value.
      */
     @NotNull
-    public <T extends AppPackageProtocol & DeviceUIDProtocol>
+    public <T extends AppPackageType & DeviceUIDType>
     String cmClearCachedData(@NotNull T param) {
         String shell = cmAdbShell(param);
         String appPackage = param.appPackage();
@@ -749,7 +749,7 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      * Command to get device settings.
      * @param param a {@link DeviceSettingParam} instance.
      * @return A {@link String} value.
-     * @see #cmAdbShell(DeviceUIDProtocol)
+     * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
     public String cmGetSettings(@NotNull DeviceSettingParam param) {

@@ -5,7 +5,7 @@ import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 /**
  * Created by haipham on 4/8/17.
  */
-public interface ADBDelayProtocol {
+public interface ADBDelayType {
     /**
      * Use this timeout for
      * {@link ADBHandler#rxStartEmulator(StartEmulatorParam)}.
@@ -27,7 +27,7 @@ public interface ADBDelayProtocol {
     /**
      * Use this timeout for operations that change device/emulator settings,
      * such as
-     * {@link ADBHandler#rxDisableEmulatorAnimations(DeviceUIDProtocol)}.
+     * {@link ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)}.
      * @return A {@link Long} value.
      */
     default long emulatorSettingTimeout() {

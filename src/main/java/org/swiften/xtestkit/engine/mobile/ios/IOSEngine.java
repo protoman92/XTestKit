@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
 import org.swiften.xtestkit.engine.mobile.Automation;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.Platform;
@@ -13,7 +13,6 @@ import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
-import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
@@ -30,8 +29,8 @@ public class IOSEngine extends MobileEngine<
     IOSElement,
     IOSDriver<IOSElement>>
     implements
-    IOSDelayProtocol,
-    IOSErrorProtocol
+    IOSDelayType,
+    IOSErrorType
 {
     @NotNull
     public static Builder builder() {
@@ -82,7 +81,7 @@ public class IOSEngine extends MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryProtocol)
+     * @see #rxStartDriver(RetriableType)
      */
     @NotNull
     @Override
@@ -105,7 +104,7 @@ public class IOSEngine extends MobileEngine<
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
-     * @see XCRunHandler#rxStopSimulator(RetryProtocol)
+     * @see XCRunHandler#rxStopSimulator(RetriableType)
      * @see #startDriverOnlyOnce()
      * @see #rxStopDriver()
      */

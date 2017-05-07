@@ -1,17 +1,17 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
-import org.swiften.xtestkit.engine.base.AppPackageProtocol;
+import org.swiften.xtestkit.engine.base.AppPackageType;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
 
 /**
  * Created by haipham on 4/10/17.
  */
 public class ClearCacheParam implements
-    AppPackageProtocol,
-    DeviceUIDProtocol,
-    RetryProtocol {
+    AppPackageType,
+    DeviceUIDType,
+    RetriableType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -27,7 +27,7 @@ public class ClearCacheParam implements
         deviceUID = "";
     }
 
-    //region AppPackageProtocol
+    //region AppPackageType
     @NotNull
     @Override
     public String appPackage() {
@@ -35,7 +35,7 @@ public class ClearCacheParam implements
     }
     //endregion
 
-    //region DeviceUIDProtocol
+    //region DeviceUIDType
     @NotNull
     @Override
     public String deviceUID() {
@@ -43,7 +43,7 @@ public class ClearCacheParam implements
     }
     //endregion
 
-    //region RetryProtocol
+    //region RetriableType
     @Override
     public int retries() {
         return retries;
@@ -70,12 +70,12 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #PARAM#appPackage} value.
-         * @param param A {@link AppPackageProtocol} instance.
+         * @param param A {@link AppPackageType} instance.
          * @return The current {@link Builder} instance.
          * @see #withAppPackage(String)
          */
         @NotNull
-        public Builder withAppPackageProtocol(@NotNull AppPackageProtocol param) {
+        public Builder withAppPackageProtocol(@NotNull AppPackageType param) {
             return this.withAppPackage(param.appPackage());
         }
 
@@ -92,12 +92,12 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #PARAM#deviceUID} value.
-         * @param param A {@link DeviceUIDProtocol} instance.
+         * @param param A {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          * @see #withDeviceUID(String)
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 
@@ -114,11 +114,11 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #PARAM#retries} value.
-         * @param param A {@link RetryProtocol} instance.
+         * @param param A {@link RetriableType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryProtocol param) {
+        public Builder withRetryProtocol(@NotNull RetriableType param) {
             return this.withRetries(param.retries());
         }
 

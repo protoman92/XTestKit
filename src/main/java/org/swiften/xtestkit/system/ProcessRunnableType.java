@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by haipham on 4/6/17.
  */
-public interface ProcessRunnerProtocol {
+public interface ProcessRunnableType {
     /**
      * Execute a command on the main thread.
      * @param args A {@link String} command to be executed.

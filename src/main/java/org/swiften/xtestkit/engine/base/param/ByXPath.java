@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.base.param;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.View;
+import org.swiften.xtestkit.engine.base.ViewType;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class ByXPath {
         return new Builder();
     }
 
-    @NotNull private List<View> classes;
+    @NotNull private List<ViewType> classes;
     @NotNull private String error;
     @NotNull private String xPath;
     @Nullable private Flowable<List<WebElement>> parent;
@@ -38,7 +38,7 @@ public class ByXPath {
     }
 
     @NotNull
-    public List<View> classes() {
+    public List<ViewType> classes() {
         return classes;
     }
 
@@ -67,22 +67,22 @@ public class ByXPath {
         /**
          * Add view classes to {@link #PARAM#classes}. These view classes
          * are used to construct the {@link XPath} query.
-         * @param cls The {@link Collection} of {@link View}.
+         * @param cls The {@link Collection} of {@link ViewType}.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withClasses(@NotNull Collection<? extends View> cls) {
+        public Builder withClasses(@NotNull Collection<? extends ViewType> cls) {
             PARAM.classes.addAll(cls);
             return this;
         }
 
         /**
-         * Add a {@link View} instance to {@link #PARAM#classes}.
-         * @param cls The {@link View} to be added.
+         * Add a {@link ViewType} instance to {@link #PARAM#classes}.
+         * @param cls The {@link ViewType} to be added.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder addClasses(@NotNull View cls) {
+        public Builder addClasses(@NotNull ViewType cls) {
             PARAM.classes.add(cls);
             return this;
         }
@@ -131,7 +131,7 @@ public class ByXPath {
         @NotNull
         public ByXPath build() {
             if (PARAM.classes.isEmpty()) {
-                addClasses(View.ANY_VIEW);
+                addClasses(ViewType.ANY_VIEW);
             }
 
             return PARAM;

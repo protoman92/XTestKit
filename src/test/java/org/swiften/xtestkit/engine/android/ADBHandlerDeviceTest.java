@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.engine.android;
 
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public final class ADBHandlerDeviceTest {
     @NotNull private final ClearCacheParam CC_PARAM;
     @NotNull private final StartEmulatorParam SE_PARAM;
     @NotNull private final StopEmulatorParam ST_PARAM;
-    @NotNull private final DeviceUIDProtocol DUID_PARAM;
+    @NotNull private final DeviceUIDType DUID_PARAM;
     @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
@@ -41,7 +41,7 @@ public final class ADBHandlerDeviceTest {
         CC_PARAM = mock(ClearCacheParam.class);
         SE_PARAM = mock(StartEmulatorParam.class);
         ST_PARAM = mock(StopEmulatorParam.class);
-        DUID_PARAM = mock(DeviceUIDProtocol.class);
+        DUID_PARAM = mock(DeviceUIDType.class);
 
         /* Return this when calling SE_PARAM#deviceName() */
         APP_PACKAGE = "com.android.development";

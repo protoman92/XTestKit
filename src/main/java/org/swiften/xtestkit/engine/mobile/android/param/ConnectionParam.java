@@ -4,16 +4,16 @@ package org.swiften.xtestkit.engine.mobile.android.param;
  * Created by haipham on 3/23/17.
  */
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
 
 /**
  * Parameter object for
  * {@link ADBHandler#rxToggleInternetConnection(ConnectionParam)}
  */
-public class ConnectionParam implements DeviceUIDProtocol, RetryProtocol {
+public class ConnectionParam implements DeviceUIDType, RetriableType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -76,13 +76,13 @@ public class ConnectionParam implements DeviceUIDProtocol, RetryProtocol {
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDProtocol}
+         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDProtocol} instance.
+         * @param param A {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 

@@ -14,7 +14,7 @@ import java.util.Iterator;
 public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
     @NotNull private static final RepeatRunner RUNNER;
     @NotNull private static final RepeatRunner.IndexConsumer PC;
-    @NotNull private static final TestListener LISTENER;
+    @NotNull private static final TestListenerType LISTENER;
 
     private static final int RETRY;
     private static final int PARTITION_SIZE;
@@ -32,7 +32,7 @@ public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
             }
         };
 
-        LISTENER = mock(TestListener.class);
+        LISTENER = mock(TestListenerType.class);
 
         RUNNER = RepeatRunner.builder()
             .addTestClass(RepeatRunnerTest.class)

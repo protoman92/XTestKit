@@ -1,12 +1,12 @@
 package org.swiften.xtestkit.engine.android;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.engine.mobile.android.ADBErrorProtocol;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
+import org.swiften.xtestkit.engine.mobile.android.ADBErrorType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
 import io.reactivex.Flowable;
@@ -29,14 +29,14 @@ import static org.testng.Assert.*;
 /**
  * Created by haipham on 4/8/17.
  */
-public final class MockADBHandlerTest implements ADBErrorProtocol {
+public final class MockADBHandlerTest implements ADBErrorType {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final StartEmulatorParam SE_PARAM;
     @NotNull private final ClearCacheParam CC_PARAM;
-    @NotNull private final DeviceUIDProtocol DUID_PARAM;
-    @NotNull private final RetryProtocol RETRY;
+    @NotNull private final DeviceUIDType DUID_PARAM;
+    @NotNull private final RetriableType RETRY;
     @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
@@ -55,9 +55,9 @@ public final class MockADBHandlerTest implements ADBErrorProtocol {
 
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);
-        RETRY = mock(RetryProtocol.class);
+        RETRY = mock(RetriableType.class);
         CC_PARAM = mock(ClearCacheParam.class);
-        DUID_PARAM = mock(DeviceUIDProtocol.class);
+        DUID_PARAM = mock(DeviceUIDType.class);
 
         /* Return this appPackage when calling CC_PARAM#appPackage */
         APP_PACKAGE = "TestAppPackage";

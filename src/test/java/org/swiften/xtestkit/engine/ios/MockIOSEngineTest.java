@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.engine.ios;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.base.PlatformErrorType;
 import org.swiften.xtestkit.engine.mobile.ios.IOSEngine;
-import org.swiften.xtestkit.engine.mobile.ios.IOSErrorProtocol;
+import org.swiften.xtestkit.engine.mobile.ios.IOSErrorType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.system.ProcessRunner;
 import io.reactivex.subscribers.TestSubscriber;
@@ -20,11 +20,11 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/31/17.
  */
-public final class MockIOSEngineTest implements PlatformErrorType, IOSErrorProtocol {
+public final class MockIOSEngineTest implements PlatformErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSCap CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final RetryProtocol RETRY;
+    @NotNull private final RetriableType RETRY;
 
     {
         ENGINE = spy(IOSEngine.builder()
@@ -38,8 +38,8 @@ public final class MockIOSEngineTest implements PlatformErrorType, IOSErrorProto
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
 
-        /* Use this parameter when a RetryProtocol is needed */
-        RETRY = mock(RetryProtocol.class);
+        /* Use this parameter when a RetriableType is needed */
+        RETRY = mock(RetriableType.class);
     }
 
     @BeforeMethod

@@ -4,10 +4,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.xtestkit.engine.base.capability.BaseCap;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.param.*;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.ProcessRunner;
 import org.swiften.xtestkit.engine.base.xpath.Attribute;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
@@ -51,7 +47,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final MockPlatformView PLATFORM_VIEWS;
     @NotNull private final String LOCALIZED_TEXT;
-    @NotNull private final RetryProtocol RETRY;
+    @NotNull private final RetriableType RETRY;
     private final int ELEMENT_COUNT, TRIES;
 
     {
@@ -98,8 +94,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
-        /* Use this parameter when a RetryProtocol is needed */
-        RETRY = mock(RetryProtocol.class);
+        /* Use this parameter when a RetriableType is needed */
+        RETRY = mock(RetriableType.class);
 
         /* The number of tries for certain test */
         TRIES = 10;
@@ -481,7 +477,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         when(DRIVER.findElements(any(By.ByXPath.class)))
             .thenThrow(new RuntimeException());
 
-        List<View> views = PLATFORM_VIEWS.allViews();
+        List<ViewType> views = PLATFORM_VIEWS.allViews();
 
         ByXPath param = ByXPath.builder()
             .withClasses(views)
@@ -506,7 +502,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
     @SuppressWarnings("unchecked")
     public void test_elementsByXPath_shouldSucceed() {
         // Setup
-        List<View> views = PLATFORM_VIEWS.allViews();
+        List<ViewType> views = PLATFORM_VIEWS.allViews();
 
         ByXPath param = ByXPath.builder()
             .withClasses(views)
@@ -881,17 +877,17 @@ public final class PlatformEngineTest implements PlatformErrorType {
         {
             RAND = new Random();
 
-            /* The number of View to pass to PlatformView */
+            /* The number of ViewType to pass to PlatformView */
             VIEW_COUNT = 1000;
         }
 
         @NotNull
         @Override
-        protected View[] getViews() {
+        protected ViewType[] getViews() {
             return Arrays
                 .stream(new Object[VIEW_COUNT])
                 .map(a -> spy(new MockView(RAND)))
-                .toArray(View[]::new);
+                .toArray(ViewType[]::new);
         }
     }
 
@@ -906,7 +902,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         @NotNull
         @Override
         public XPath.Builder newXPathBuilderInstance() {
-            PlatformProtocol platform = mock(PlatformProtocol.class);
+            PlatformType platform = mock(PlatformType.class);
 
             when(platform.enabledAttribute())
                 .thenReturn(Attribute.withSingleAttribute("enabled"));
@@ -935,7 +931,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         }
     }
 
-    static class MockView implements View {
+    static class MockView implements ViewType {
         @NotNull private final Random RAND;
 
         MockView(@NotNull Random rand) {

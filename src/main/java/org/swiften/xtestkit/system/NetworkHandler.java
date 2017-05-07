@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.system;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  * Created by haipham on 4/7/17.
  */
-public class NetworkHandler implements NetworkHandlerError {
+public class NetworkHandler implements NetworkHandlerErrorType {
     @NotNull private static Collection<Integer> USED_PORTS;
 
     static {
@@ -38,9 +38,9 @@ public class NetworkHandler implements NetworkHandlerError {
 
     //region Getters
     /**
-     * Return a {@link ProcessRunnerProtocol} instance from
+     * Return a {@link ProcessRunnableType} instance from
      * {@link #PROCESS_RUNNER}.
-     * @return A {@link ProcessRunnerProtocol} instance.
+     * @return A {@link ProcessRunnableType} instance.
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -94,9 +94,9 @@ public class NetworkHandler implements NetworkHandlerError {
      * @see #isPortAvailable(String, int)
      */
     @NotNull
-    public <T extends PortProtocol & RetryProtocol>
+    public <T extends PortType & RetriableType>
     Flowable<Boolean> rxCheckPortAvailable(@NonNull final T PARAM) {
-        ProcessRunnerProtocol processRunner = processRunner();
+        ProcessRunnableType processRunner = processRunner();
         String command = cmListAllPorts();
 
         return processRunner
@@ -132,7 +132,7 @@ public class NetworkHandler implements NetworkHandlerError {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public <T extends PIDProtocol & RetryProtocol>
+    public <T extends PIDIdentifiableType & RetriableType>
     Flowable<String> rxGetProcessName(@NotNull T param) {
         ProcessRunner runner = processRunner();
         String command = cmFindProcessName(param.pid());
@@ -146,10 +146,10 @@ public class NetworkHandler implements NetworkHandlerError {
      *              initial port to be checked.
      * @param <T> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxCheckPortAvailable(PortProtocol)
+     * @see #rxCheckPortAvailable(PortType)
      */
     @NotNull
-    public <T extends PortProtocol & RetryProtocol>
+    public <T extends PortType & RetriableType>
     Flowable<Integer> rxCheckUntilPortAvailable(@NonNull final T PARAM) {
         return rxCheckPortAvailable(PARAM)
             /* If we use filter() and switchIfEmpty() here, a StackOverflow
@@ -162,7 +162,7 @@ public class NetworkHandler implements NetworkHandlerError {
                 }
 
                 /* Create a temporary parameter class to check a new port */
-                class Param implements PortProtocol, RetryProtocol {
+                class Param implements PortType, RetriableType {
                     @Override
                     public int port() {
                         return PARAM.port() + 1;
@@ -187,7 +187,7 @@ public class NetworkHandler implements NetworkHandlerError {
      */
     @NotNull
     public Flowable<Boolean> rxKillProcessWithPid(@NotNull String pid) {
-        ProcessRunnerProtocol runner = processRunner();
+        ProcessRunnableType runner = processRunner();
         String command = cmKillPID(pid);
 
         return runner
@@ -214,7 +214,7 @@ public class NetworkHandler implements NetworkHandlerError {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public <T extends RetryProtocol & PortProtocol>
+    public <T extends RetriableType & PortType>
     Flowable<Boolean> rxKillProcessWithPort(@NotNull final T PARAM,
                                             @NotNull final Predicate<String> NP) {
         return processRunner()

@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.system.ProcessRunner;
 import io.reactivex.Flowable;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by haipham on 4/8/17.
  */
-public class XCRunHandler implements XCRunDelayProtocol {
+public class XCRunHandler implements XCRunDelayType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -214,7 +214,7 @@ public class XCRunHandler implements XCRunDelayProtocol {
 
     /**
      * Start a simulator.
-     * @param PARAM A {@link RetryProtocol} instance.
+     * @param PARAM A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStartSimulator(String)
      * @see #rxCheckSimulatorBooted(String)
@@ -256,12 +256,12 @@ public class XCRunHandler implements XCRunDelayProtocol {
     //region Stop Simulator
     /**
      * Stop the currently active simulator.
-     * @param param A {@link RetryProtocol} instance.
+     * @param param A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopSimulator()
      */
     @NotNull
-    public Flowable<Boolean> rxStopSimulator(@NotNull RetryProtocol param) {
+    public Flowable<Boolean> rxStopSimulator(@NotNull RetriableType param) {
         ProcessRunner processRunner = processRunner();
         String command = cmStopSimulator();
 

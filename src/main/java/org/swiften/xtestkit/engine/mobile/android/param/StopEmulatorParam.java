@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
-import org.swiften.xtestkit.system.PortProtocol;
+import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link ADBHandler#rxStopEmulator(StopEmulatorParam)}
  */
-public class StopEmulatorParam implements RetryProtocol, PortProtocol {
+public class StopEmulatorParam implements RetriableType, PortType {
     @NotNull
     public static StopEmulatorParam DEFAULT;
 
@@ -30,14 +30,14 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
 
     StopEmulatorParam() {}
 
-    //region RetryProtocol
+    //region RetriableType
     @Override
     public int retries() {
         return minRetries;
     }
     //endregion
 
-    //region PortProtocol
+    //region PortType
     /**
      * Return {@link #port}.
      * @return An {@link Integer} value.
@@ -79,23 +79,23 @@ public class StopEmulatorParam implements RetryProtocol, PortProtocol {
 
         /**
          * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
-         * @param param A {@link RetryProtocol} instance.
+         * @param param A {@link RetriableType} instance.
          * @return The current {@link Builder} instance.
          * @see #withMinRetries(int)
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryProtocol param) {
+        public Builder withRetryProtocol(@NotNull RetriableType param) {
             return this.withMinRetries(param.retries());
         }
 
         /**
          * Set {@link #PARAM#port}.
-         * @param param A {@link PortProtocol} instance.
+         * @param param A {@link PortType} instance.
          * @return The current {@link Builder} instance.
          * @see #withPort(int)
          */
         @NotNull
-        public Builder withPortProtocol(@NotNull PortProtocol param) {
+        public Builder withPortProtocol(@NotNull PortType param) {
             return this.withPort(param.port());
         }
 

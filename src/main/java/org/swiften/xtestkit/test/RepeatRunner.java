@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.test;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -39,8 +39,8 @@ public class RepeatRunner implements
     IAnnotationTransformer2,
     ITestListener,
     ITestNGListener,
-    RepeatRunnerError,
-    TestListener {
+    RepeatRunnerErrorType,
+    TestListenerType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -48,7 +48,7 @@ public class RepeatRunner implements
 
     @NotNull private final Pagination PAGINATION;
     @NotNull final List<Class<?>> TEST_CLASSES;
-    @NotNull final Collection<TestListener> LISTENERS;
+    @NotNull final Collection<TestListenerType> LISTENERS;
 
     int verbosity;
 
@@ -172,11 +172,11 @@ public class RepeatRunner implements
 
     /**
      * Return {@link #LISTENERS}.
-     * @return A {@link Collection} of {@link TestListener}.
+     * @return A {@link Collection} of {@link TestListenerType}.
      * @throws RuntimeException If {@link #LISTENERS} is empty.
      */
     @NotNull
-    public Collection<TestListener> testListeners() {
+    public Collection<TestListenerType> testListeners() {
         if (LISTENERS.isEmpty()) {
             throw new RuntimeException(LISTENERS_EMPTY);
         }
@@ -185,13 +185,13 @@ public class RepeatRunner implements
     }
     //endregion
 
-    //region TestListener
+    //region TestListenerType
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
         return Flowable
             .fromIterable(testListeners())
-            .flatMap(TestListener::rxOnFreshStart)
+            .flatMap(TestListenerType::rxOnFreshStart)
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
@@ -226,7 +226,7 @@ public class RepeatRunner implements
     public Flowable<Boolean> rxOnAllTestsFinished() {
         return Flowable
             .fromIterable(testListeners())
-            .flatMap(TestListener::rxOnAllTestsFinished)
+            .flatMap(TestListenerType::rxOnAllTestsFinished)
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(a -> true)
@@ -348,12 +348,12 @@ public class RepeatRunner implements
         }
 
         /**
-         * Add a {@link TestListener} instance to {@link #RUNNER#LISTENERS}.
-         * @param listener A {@link TestListener} instance.
+         * Add a {@link TestListenerType} instance to {@link #RUNNER#LISTENERS}.
+         * @param listener A {@link TestListenerType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder addListener(@NotNull TestListener listener) {
+        public Builder addListener(@NotNull TestListenerType listener) {
             RUNNER.LISTENERS.add(listener);
             return this;
         }
@@ -366,7 +366,7 @@ public class RepeatRunner implements
     //endregion
 
     //region Pagination
-    public static final class Pagination implements RetryProtocol {
+    public static final class Pagination implements RetriableType {
         @Nullable IndexConsumer indexConsumer;
         int retries;
         int partitionSize;
@@ -387,7 +387,7 @@ public class RepeatRunner implements
             throw new RuntimeException(PARAMETER_CONSUMER_UNAVAILABLE);
         }
 
-        //region RetryProtocol
+        //region RetriableType
         /**
          * Override this method to provide custom retry count.
          * @return An {@link Integer} value.

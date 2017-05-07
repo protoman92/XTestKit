@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
+import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
 
 /**
  * Created by haipham on 3/23/17.
@@ -13,7 +13,7 @@ import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
  * Parameter object for
  * {@link ADBHandler#rxChangeSettings(DeviceSettingParam)}
  */
-public class DeviceSettingParam implements DeviceUIDProtocol, RetryProtocol {
+public class DeviceSettingParam implements DeviceUIDType, RetriableType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -127,13 +127,13 @@ public class DeviceSettingParam implements DeviceUIDProtocol, RetryProtocol {
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDProtocol}
+         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDProtocol} instance.
+         * @param param A {@link DeviceUIDType} instance.
          * @return The current {@link ConnectionParam.Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProtocol param) {
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 

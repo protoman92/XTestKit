@@ -16,7 +16,7 @@ import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.test.TestListener;
+import org.swiften.xtestkit.test.TestListenerType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -31,7 +31,6 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.string.StringUtil;
-import sun.rmi.runtime.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -43,10 +42,10 @@ import java.util.function.Predicate;
  * should extend this class and provide its own wrappers for Appium methods.
  */
 public abstract class PlatformEngine<T extends WebDriver> implements
-    DelayProtocol,
+    PlatformDelayType,
     Distinctive,
     PlatformErrorType,
-    TestListener
+    TestListenerType
 {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -84,7 +83,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
-    //region TestListener
+    //region TestListenerType
     @NotNull
     @Override
     public Flowable<Boolean> rxOnFreshStart() {
@@ -194,13 +193,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     /**
      * Start appium with a specified {@link #serverUri()}.
-     * @param PARAM A {@link RetryProtocol} instance.
+     * @param PARAM A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmWhichAppium()
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryProtocol PARAM) {
+    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetriableType PARAM) {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
 
@@ -249,7 +248,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryProtocol, Predicate)
+     * @see NetworkHandler#rxKillProcessWithPort(RetriableType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
@@ -474,13 +473,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Start the Appium driver. If {@link TestCapabilityType#isComplete(Map)}
      * returns false, throw an {@link Exception}.
-     * @param PARAM A {@link RetryProtocol} instance.
+     * @param PARAM A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see TestCapabilityType#isComplete(Map)
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
-    public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
+    public Flowable<Boolean> rxStartDriver(@NotNull final RetriableType PARAM) {
         TestCapabilityType capabilityType = capabilityType();
         Map<String,Object> capabilities = capabilities();
 
@@ -636,7 +635,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         final String XPATH = param.xPath();
-        List<View> classes = param.classes();
+        List<ViewType> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
 
         return Flowable.fromIterable(classes)
@@ -678,7 +677,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region With Text
     /**
-     * Get all {@link View#hasText()} {@link WebElement} that are displaying
+     * Get all {@link ViewType#hasText()} {@link WebElement} that are displaying
      * a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -708,7 +707,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Get a {@link View#hasText()} {@link WebElement} that is displaying
+     * Get a {@link ViewType#hasText()} {@link WebElement} that is displaying
      * a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -738,7 +737,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Contains Text
     /**
-     * Get all {@link View#hasText()} {@link WebElement} whose texts contain
+     * Get all {@link ViewType#hasText()} {@link WebElement} whose texts contain
      * another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -754,7 +753,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Get a {@link View#hasText()} {@link WebElement} whose text contains
+     * Get a {@link ViewType#hasText()} {@link WebElement} whose text contains
      * another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -784,7 +783,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region With Hint
     /**
-     * Get all {@link View#isEditable()} {@link WebElement} that have a
+     * Get all {@link ViewType#isEditable()} {@link WebElement} that have a
      * certain hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -800,7 +799,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Get a {@link View#isEditable()} {@link WebElement} that has a certain
+     * Get a {@link ViewType#isEditable()} {@link WebElement} that has a certain
      * hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -818,7 +817,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Contains Hint
     /**
-     * Get all {@link View#isEditable()} {@link WebElement} whose hints
+     * Get all {@link ViewType#isEditable()} {@link WebElement} whose hints
      * contain another hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -834,7 +833,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Get a {@link View#isEditable()} {@link WebElement} whose hint contains
+     * Get a {@link ViewType#isEditable()} {@link WebElement} whose hint contains
      * another hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -852,7 +851,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Editable Elements
     /**
-     * Get all {@link View#isEditable()} {@link WebElement}.
+     * Get all {@link ViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull
@@ -868,7 +867,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Clear all {@link View#isEditable()} {@link WebElement}.
+     * Clear all {@link ViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull
@@ -883,7 +882,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Clickable Elements
     /**
-     * Get all {@link View#isClickable()} {@link WebElement}.
+     * Get all {@link ViewType#isClickable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull

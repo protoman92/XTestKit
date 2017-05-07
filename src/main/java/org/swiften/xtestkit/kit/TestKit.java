@@ -2,16 +2,16 @@ package org.swiften.xtestkit.kit;
 
 import org.swiften.xtestkit.engine.base.Platform;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.system.ProcessRunnerProtocol;
+import org.swiften.xtestkit.system.ProcessRunnableType;
 import org.swiften.xtestkit.test.RepeatRunner;
-import org.swiften.xtestkit.test.TestListener;
+import org.swiften.xtestkit.test.TestListenerType;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +34,9 @@ import java.util.*;
 public class TestKit implements
     RepeatRunner.IndexConsumer,
     PlatformEngine.TextDelegate,
-    ProcessRunnerProtocol,
-    TestKitError,
-    TestListener {
+    ProcessRunnableType,
+    TestKitErrorType,
+    TestListenerType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -53,7 +53,7 @@ public class TestKit implements
         ENGINES = new LinkedList<>();
     }
 
-    //region ProcessRunnerProtocol
+    //region ProcessRunnableType
     @NotNull
     @Override
     public String execute(@NotNull String args) throws IOException {
@@ -94,7 +94,7 @@ public class TestKit implements
     }
     //endregion
 
-    //region TestListener
+    //region TestListenerType
     /**
      * Return a distinct stream of {@link PlatformEngine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
@@ -342,7 +342,7 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * @param param A {@link RetryProtocol} instance.
+     * @param param A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterMethod(AfterParam)
      */

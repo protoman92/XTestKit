@@ -1,14 +1,14 @@
-package org.swiften.xtestkit.system;
+package org.swiften.xtestkit.engine.base;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by haipham on 4/10/17.
  */
-public interface PIDProtocol {
+public interface AppPackageType {
     /**
-     * Get a PID value.
+     * Get an app package.
      * @return A {@link String} value.
      */
-    @NotNull String pid();
+    @NotNull String appPackage();
 }

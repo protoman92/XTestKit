@@ -3,7 +3,7 @@ package org.swiften.xtestkit.engine.base;
 /**
  * Created by haipham on 3/19/17.
  */
-public interface DelayProtocol {
+public interface PlatformDelayType {
     default long appiumStartDelay() {
         return 5000;
     }

@@ -74,7 +74,7 @@ public final class MockTestKitTest {
         reset(ENGINE, TEST_KIT, NETWORK_HANDLER, PROCESS_RUNNER);
     }
 
-    //region TestListener
+    //region TestListenerType
     @Test
     @SuppressWarnings("unchecked")
     public void test_distinctEngines_shouldReturnCorrectResults() {

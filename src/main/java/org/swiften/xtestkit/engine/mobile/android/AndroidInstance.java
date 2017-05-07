@@ -5,13 +5,13 @@ package org.swiften.xtestkit.engine.mobile.android;
  */
 
 import org.swiften.xtestkit.engine.base.TestMode;
-import org.swiften.xtestkit.system.PortProtocol;
+import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Use this class to store device/emulator information.
  */
-public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
+public class AndroidInstance implements DeviceUIDType, PortType {
     @NotNull
     public static Builder builder() {
         return new Builder();

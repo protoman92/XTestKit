@@ -4,16 +4,16 @@ package org.swiften.xtestkit.system.param;
  * Created by haipham on 4/10/17.
  */
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.PIDProtocol;
+import org.swiften.xtestkit.system.PIDIdentifiableType;
 
 /**
  * Parameter object for
- * {@link NetworkHandler#rxGetProcessName(PIDProtocol)}
+ * {@link NetworkHandler#rxGetProcessName(PIDIdentifiableType)}
  */
-public class GetProcessNameParam implements PIDProtocol, RetryProtocol {
+public class GetProcessNameParam implements PIDIdentifiableType, RetriableType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -27,7 +27,7 @@ public class GetProcessNameParam implements PIDProtocol, RetryProtocol {
         pid = "";
     }
 
-    //region PIDProtocol
+    //region PIDIdentifiableType
     /**
      * Return {@link #pid}.
      * @return A {@link String} value.
@@ -68,11 +68,11 @@ public class GetProcessNameParam implements PIDProtocol, RetryProtocol {
 
         /**
          * Set the {@link #PARAM#pid} value.
-         * @param param A {@link PIDProtocol} instance.
+         * @param param A {@link PIDIdentifiableType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withPIDProtocol(@NotNull PIDProtocol param) {
+        public Builder withPIDProtocol(@NotNull PIDIdentifiableType param) {
             return this.withPID(param.pid());
         }
 
@@ -89,11 +89,11 @@ public class GetProcessNameParam implements PIDProtocol, RetryProtocol {
 
         /**
          * Set the {@link #PARAM#retries} value.
-         * @param param A {@link RetryProtocol} instance.
+         * @param param A {@link RetriableType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryProtocol param) {
+        public Builder withRetryProtocol(@NotNull RetriableType param) {
             return this.withRetries(param.retries());
         }
 

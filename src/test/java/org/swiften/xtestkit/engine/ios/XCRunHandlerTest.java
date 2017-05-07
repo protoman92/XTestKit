@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.ios;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
 import org.swiften.xtestkit.engine.mobile.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.system.ProcessRunner;
@@ -28,7 +28,7 @@ public final class XCRunHandlerTest {
     @NotNull private final XCRunHandler XC_HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final StartSimulatorParam SS_PARAM;
-    @NotNull private final RetryProtocol RETRY;
+    @NotNull private final RetriableType RETRY;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
 
@@ -38,9 +38,9 @@ public final class XCRunHandlerTest {
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
 
-        /* Use this parameter when a RetryProtocol is needed */
+        /* Use this parameter when a RetriableType is needed */
         SS_PARAM = mock(StartSimulatorParam.class);
-        RETRY = mock(RetryProtocol.class);
+        RETRY = mock(RetriableType.class);
 
         DEVICE_NAME = "iPhone 7 Plus";
 

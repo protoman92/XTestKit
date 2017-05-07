@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.android;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -19,11 +19,11 @@ import static org.testng.Assert.assertTrue;
  */
 public final class ActualADBHandlerTest {
     @NotNull private final ADBHandler ADB_HANDLER;
-    @NotNull private final RetryProtocol RETRY;
+    @NotNull private final RetriableType RETRY;
 
     {
         ADB_HANDLER = spy(ADBHandler.builder().build());
-        RETRY = mock(RetryProtocol.class);
+        RETRY = mock(RetriableType.class);
     }
 
     @BeforeMethod

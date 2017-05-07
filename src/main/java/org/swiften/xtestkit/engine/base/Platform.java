@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Created by haipham on 3/20/17.
  */
-public enum Platform implements PlatformProtocol {
+public enum Platform implements PlatformType {
     ANDROID,
     IOS;
 

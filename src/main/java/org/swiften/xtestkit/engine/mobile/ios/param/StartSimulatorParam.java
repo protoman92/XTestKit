@@ -4,7 +4,7 @@ package org.swiften.xtestkit.engine.mobile.ios.param;
  * Created by haipham on 4/8/17.
  */
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
 
@@ -12,7 +12,7 @@ import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
  * Parameter object for
  * {@link XCRunHandler#rxStartSimulator(StartSimulatorParam)}
  */
-public class StartSimulatorParam implements RetryProtocol {
+public class StartSimulatorParam implements RetriableType {
     @NotNull public static StartSimulatorParam DEFAULT;
 
     static {
@@ -73,11 +73,11 @@ public class StartSimulatorParam implements RetryProtocol {
 
         /**
          * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
-         * @param param A {@link RetryProtocol} instance.
+         * @param param A {@link RetriableType} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryProtocol param) {
+        public Builder withRetryProtocol(@NotNull RetriableType param) {
             return this.retries(param.retries());
         }
 

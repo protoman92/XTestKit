@@ -12,56 +12,56 @@ import java.util.stream.Collectors;
  */
 
 /**
- * Subclass this class to provide platform-specific {@link View}.
+ * Subclass this class to provide platform-specific {@link ViewType}.
  */
 public abstract class PlatformView {
     @NotNull
-    public List<View> anyView() {
-        return Collections.singletonList(View.ANY_VIEW);
+    public List<ViewType> anyView() {
+        return Collections.singletonList(ViewType.ANY_VIEW);
     }
 
     @NotNull
-    public List<View> allViews() {
+    public List<ViewType> allViews() {
         return Arrays.asList(getViews());
     }
 
     /**
-     * Get all {@link View} that {@link View#hasText()}.
-     * @return A {@link List} of {@link View}.
+     * Get all {@link ViewType} that {@link ViewType#hasText()}.
+     * @return A {@link List} of {@link ViewType}.
      */
     @NotNull
-    public List<? extends View> hasText() {
+    public List<? extends ViewType> hasText() {
         return allViews().stream()
-            .filter(View::hasText)
+            .filter(ViewType::hasText)
             .collect(Collectors.toList());
     }
 
     /**
-     * Get all {@link View} that {@link View#isClickable()}.
-     * @return A {@link List} of {@link View}.
+     * Get all {@link ViewType} that {@link ViewType#isClickable()}.
+     * @return A {@link List} of {@link ViewType}.
      */
-    public List<? extends View> isClickable() {
+    public List<? extends ViewType> isClickable() {
         return allViews().stream()
-            .filter(View::isClickable)
+            .filter(ViewType::isClickable)
             .collect(Collectors.toList());
     }
 
     /**
-     * Get all {@link View} that {@link View#isEditable()}.
-     * @return A {@link List} of {@link View}.
+     * Get all {@link ViewType} that {@link ViewType#isEditable()}.
+     * @return A {@link List} of {@link ViewType}.
      */
     @NotNull
-    public List<? extends View> isEditable() {
+    public List<? extends ViewType> isEditable() {
         return allViews().stream()
-            .filter(View::isEditable)
+            .filter(ViewType::isEditable)
             .collect(Collectors.toList());
     }
 
     /**
      * We return an array here because we will probably be using enums to
-     * store the {@link View} types.
-     * @return An array of {@link View}
+     * store the {@link ViewType} types.
+     * @return An array of {@link ViewType}
      */
     @NotNull
-    protected abstract View[] getViews();
+    protected abstract ViewType[] getViews();
 }

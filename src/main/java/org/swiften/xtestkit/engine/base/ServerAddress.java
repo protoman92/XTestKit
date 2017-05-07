@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.base;
 
-import org.swiften.xtestkit.system.PortProtocol;
+import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
  * convenience methods for when {@link Mode#LOCAL} is used.
  */
 public class ServerAddress implements
-    PortProtocol,
-    RetryProtocol,
-    ServerAddressError
+    PortType,
+    RetriableType,
+    ServerAddressErrorType
 {
     public enum Mode {
         LOCAL;

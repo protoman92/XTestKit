@@ -1,14 +1,10 @@
 package org.swiften.xtestkit.system;
 
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.NetworkHandlerError;
-import org.swiften.xtestkit.system.PortProtocol;
-import org.swiften.xtestkit.system.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,7 +21,7 @@ import static org.testng.Assert.fail;
 /**
  * Created by haipham on 4/7/17.
  */
-public final class NetworkHandlerTest implements NetworkHandlerError {
+public final class NetworkHandlerTest implements NetworkHandlerErrorType {
     @NotNull private final NetworkHandler HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
@@ -107,8 +103,8 @@ public final class NetworkHandlerTest implements NetworkHandlerError {
     }
 
     private static final class CheckPortParam implements
-        PortProtocol,
-        RetryProtocol
+        PortType,
+        RetriableType
     {
         private final int PORT;
 
@@ -116,7 +112,7 @@ public final class NetworkHandlerTest implements NetworkHandlerError {
             PORT = port;
         }
 
-        //region PortProtocol
+        //region PortType
         @Override
         public int port() {
             return PORT;

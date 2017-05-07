@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.RetriableType;
 
 /**
  * Created by haipham on 3/25/17.
@@ -12,7 +12,7 @@ import org.swiften.xtestkit.engine.base.RetryProtocol;
  * Parameter object for
  * {@link PlatformEngine#rxDismissAlert(AlertParam)}
  */
-public class AlertParam implements RetryProtocol {
+public class AlertParam implements RetriableType {
     @NotNull
     public static Builder builder() {
         return new Builder();

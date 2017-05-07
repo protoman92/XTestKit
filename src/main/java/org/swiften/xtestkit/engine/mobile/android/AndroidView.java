@@ -1,7 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.PlatformView;
-import org.swiften.xtestkit.engine.base.View;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.Platform;
 
@@ -10,10 +9,10 @@ import org.swiften.xtestkit.engine.base.Platform;
  */
 
 /**
- * Provide {@link Platform#ANDROID} {@link View}.
+ * Provide {@link Platform#ANDROID} {@link org.swiften.xtestkit.engine.base.ViewType}.
  */
 public class AndroidView extends PlatformView {
-    enum ViewType implements View {
+    enum ViewType implements org.swiften.xtestkit.engine.base.ViewType {
         BUTTON,
         EDIT_TEXT,
         LINEAR_LAYOUT,
@@ -81,7 +80,7 @@ public class AndroidView extends PlatformView {
 
     @NotNull
     @Override
-    protected View[] getViews() {
-        return ViewType.values();
+    protected org.swiften.xtestkit.engine.base.ViewType[] getViews() {
+        return AndroidView.ViewType.values();
     }
 }

@@ -1,13 +1,13 @@
 package org.swiften.xtestkit.kit.param;
 
-import org.swiften.xtestkit.engine.base.IndexProtocol;
-import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.IndexType;
+import org.swiften.xtestkit.engine.base.RetriableType;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by haipham on 4/1/17.
  */
-public class AfterParam implements IndexProtocol, RetryProtocol {
+public class AfterParam implements IndexType, RetriableType {
     @NotNull public static AfterParam DEFAULT;
 
     static {
