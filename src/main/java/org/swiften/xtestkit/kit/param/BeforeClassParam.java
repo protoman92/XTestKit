@@ -4,9 +4,9 @@ package org.swiften.xtestkit.kit.param;
  * Created by haipham on 4/1/17.
  */
 
-import org.swiften.xtestkit.engine.base.IndexType;
+import org.swiften.xtestkit.engine.base.type.IndexType;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.jetbrains.annotations.NotNull;
 
 /**

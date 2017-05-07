@@ -5,6 +5,7 @@ package org.swiften.xtestkit.engine.mobile.android;
  */
 
 import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 

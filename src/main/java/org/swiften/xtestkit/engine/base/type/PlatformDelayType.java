@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.base.type;
 
 /**
  * Created by haipham on 3/19/17.

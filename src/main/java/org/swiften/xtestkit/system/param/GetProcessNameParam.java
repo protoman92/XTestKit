@@ -4,7 +4,7 @@ package org.swiften.xtestkit.system.param;
  * Created by haipham on 4/10/17.
  */
 
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.PIDIdentifiableType;

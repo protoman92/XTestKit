@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.Platform;
 
 /**
- * Provide {@link Platform#IOS} {@link org.swiften.xtestkit.engine.base.ViewType}
+ * Provide {@link Platform#IOS} {@link org.swiften.xtestkit.engine.base.type.ViewType}
  */
 public class IOSView extends PlatformView {
-    enum ViewType implements org.swiften.xtestkit.engine.base.ViewType {
+    enum ViewType implements org.swiften.xtestkit.engine.base.type.ViewType {
         UI_BUTTON,
         UI_LABEL,
         UI_TEXTFIELD;
@@ -73,7 +73,7 @@ public class IOSView extends PlatformView {
 
     @NotNull
     @Override
-    public org.swiften.xtestkit.engine.base.ViewType[] getViews() {
+    public org.swiften.xtestkit.engine.base.type.ViewType[] getViews() {
         return IOSView.ViewType.values();
     }
 }

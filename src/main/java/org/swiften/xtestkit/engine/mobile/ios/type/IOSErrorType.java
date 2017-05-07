@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.mobile.ios;
+package org.swiften.xtestkit.engine.mobile.ios.type;
 
 /**
  * Created by haipham on 4/1/17.

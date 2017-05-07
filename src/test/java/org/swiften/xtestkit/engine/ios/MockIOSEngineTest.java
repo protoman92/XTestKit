@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.engine.ios;
 
-import org.swiften.xtestkit.engine.base.RetriableType;
-import org.swiften.xtestkit.engine.base.PlatformErrorType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 import org.swiften.xtestkit.engine.mobile.ios.IOSEngine;
-import org.swiften.xtestkit.engine.mobile.ios.IOSErrorType;
+import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.system.ProcessRunner;
 import io.reactivex.subscribers.TestSubscriber;

@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;

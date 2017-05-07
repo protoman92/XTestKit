@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.engine.base.capability;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
@@ -9,6 +10,7 @@ import org.swiften.xtestkit.engine.base.TestMode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -63,7 +65,7 @@ public abstract class BaseCap implements
     @NotNull
     @Override
     public Map<String,Object> distill(@NotNull Map<String,Object> capabilities) {
-        return capabilities;
+        return new HashMap<>(capabilities);
     }
     //endregion
 

@@ -4,7 +4,7 @@ package org.swiften.xtestkit.engine.mobile.ios.param;
  * Created by haipham on 4/8/17.
  */
 
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
 

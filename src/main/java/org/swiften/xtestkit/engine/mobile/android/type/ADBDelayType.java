@@ -1,5 +1,6 @@
-package org.swiften.xtestkit.engine.mobile.android;
+package org.swiften.xtestkit.engine.mobile.android.type;
 
+import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 
 /**

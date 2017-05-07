@@ -1,8 +1,10 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
+import org.swiften.xtestkit.engine.mobile.ios.type.IOSDelayType;
+import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.engine.mobile.Automation;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
@@ -16,7 +18,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.engine.base.PlatformErrorType;
+import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 
 import java.net.MalformedURLException;
 import java.net.URL;

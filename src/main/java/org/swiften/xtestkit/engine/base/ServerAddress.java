@@ -1,5 +1,7 @@
 package org.swiften.xtestkit.engine.base;
 
+import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.ServerAddressErrorType;
 import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
 

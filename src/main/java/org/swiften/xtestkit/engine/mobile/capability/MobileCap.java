@@ -2,6 +2,7 @@ package org.swiften.xtestkit.engine.mobile.capability;
 
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.base.capability.BaseCap;
@@ -22,11 +23,8 @@ public class MobileCap extends BaseCap {
             MobileCapabilityType.AUTOMATION_NAME,
             MobileCapabilityType.DEVICE_NAME,
             MobileCapabilityType.PLATFORM_NAME,
+            MobileCapabilityType.PLATFORM_VERSION,
             "autoLaunch");
-
-        if (testMode().isTestingOnSimulatedEnvironment()) {
-            parent.add(MobileCapabilityType.PLATFORM_VERSION);
-        }
 
         return parent;
     }
@@ -34,12 +32,11 @@ public class MobileCap extends BaseCap {
     @NotNull
     public Map<String,Object> distill(@NotNull Map<String,Object> capabilities) {
         Map<String,Object> result = new HashMap<>(super.distill(capabilities));
-        result.putAll(capabilities);
 
         /* Distill based on test mode */
         TestMode testMode = testMode();
 
-        if (testMode.isTestingOnSimulatedEnvironment()) {
+        if (testMode.isTestingOnActualEnvironment()) {
             result.remove(MobileCapabilityType.PLATFORM_VERSION);
         }
 

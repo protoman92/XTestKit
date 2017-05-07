@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.android;
 
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
-import org.swiften.xtestkit.engine.mobile.android.DeviceUIDType;
+import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;

@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.kit.param;
 
-import org.swiften.xtestkit.engine.base.IndexType;
-import org.swiften.xtestkit.engine.base.RetriableType;
+import org.swiften.xtestkit.engine.base.type.IndexType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.jetbrains.annotations.NotNull;
 
 /**

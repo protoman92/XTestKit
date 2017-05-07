@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.base.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityErrorType;

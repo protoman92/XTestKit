@@ -7,6 +7,7 @@ package org.swiften.xtestkit.engine.base;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.param.*;
+import org.swiften.xtestkit.engine.base.type.*;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -43,7 +44,7 @@ import java.util.function.Predicate;
  */
 public abstract class PlatformEngine<T extends WebDriver> implements
     PlatformDelayType,
-    Distinctive,
+    DistinctiveType,
     PlatformErrorType,
     TestListenerType
 {
@@ -70,7 +71,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         serverAddress = ServerAddress.defaultInstance();
     }
 
-    //region Distinctive
+    //region DistinctiveType
     /**
      * This should be used with {@link Flowable#distinct(Function)}.
      * @return An {@link Object} instance.
@@ -476,15 +477,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @param PARAM A {@link RetriableType} instance.
      * @return A {@link Flowable} instance.
      * @see TestCapabilityType#isComplete(Map)
+     * @see TestCapabilityType#distill(Map)
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetriableType PARAM) {
-        TestCapabilityType capabilityType = capabilityType();
-        Map<String,Object> capabilities = capabilities();
+        TestCapabilityType capType = capabilityType();
+        Map<String,Object> caps = capabilities();
 
-        if (capabilityType.isComplete(capabilities)) {
-            final DesiredCapabilities CAPS = new DesiredCapabilities(capabilities);
+        if (capType.isComplete(caps)) {
+            final Map<String,Object> distilled = capType.distill(caps);
+            final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
 
             return Completable.fromAction(() -> {
@@ -1001,6 +1004,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         @NotNull
         public T build() {
+            ENGINE.capability = CAP_BUILDER.build();
             return ENGINE;
         }
     }

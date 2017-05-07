@@ -80,5 +80,11 @@ public interface TestCapabilityType {
          * @return The current {@link Builder} instance.
          */
         Builder withTestMode(@NotNull TestMode testMode);
+
+        /**
+         * Return a {@link TestCapabilityType} instance.
+         * @return A {@link TestCapabilityType} instance.
+         */
+        TestCapabilityType build();
     }
 }

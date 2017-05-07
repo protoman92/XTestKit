@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.base.type;
 
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +11,6 @@ import org.jetbrains.annotations.NotNull;
  * This should be used with {@link io.reactivex.Flowable#distinct(Function)}.
  * @see io.reactivex.Flowable#distinct(Function)
  */
-public interface Distinctive {
+public interface DistinctiveType {
     @NotNull Object getComparisonObject();
 }

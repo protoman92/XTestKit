@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.mobile.android;
+package org.swiften.xtestkit.engine.mobile.android.type;
 
 import org.jetbrains.annotations.NotNull;
 

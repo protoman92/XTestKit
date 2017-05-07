@@ -3,12 +3,16 @@ package org.swiften.xtestkit.engine.mobile.android;
 import org.swiften.xtestkit.engine.base.*;
 import org.swiften.xtestkit.engine.base.param.AlertParam;
 import org.swiften.xtestkit.engine.base.param.NavigateBack;
+import org.swiften.xtestkit.engine.base.type.AppPackageType;
+import org.swiften.xtestkit.engine.base.type.RetriableType;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.type.AndroidErrorType;
+import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -54,7 +58,7 @@ public class AndroidEngine extends MobileEngine<
         appActivity = "";
     }
 
-    //region Distinctive
+    //region DistinctiveType
     /**
      * Since we can control multiple emulators/devices at once, there is no
      * need to have only one {@link AndroidEngine} active at a time. Therefore,

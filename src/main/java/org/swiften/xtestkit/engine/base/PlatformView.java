@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.engine.base;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.engine.base.type.ViewType;
 
 import java.util.Arrays;
 import java.util.Collections;
