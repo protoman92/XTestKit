@@ -4,7 +4,6 @@ package org.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import io.reactivex.Maybe;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.param.*;
@@ -12,7 +11,7 @@ import org.swiften.xtestkit.engine.base.type.*;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.engine.base.xpath.XPath;
+import org.swiften.xtestkit.locator.xpath.XPath;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
@@ -636,7 +635,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         final String ERROR = param.error();
         List<ViewType> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
-        
+
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
             .doOnNext(LogUtil::println)

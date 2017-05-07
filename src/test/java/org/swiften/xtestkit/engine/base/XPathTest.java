@@ -1,8 +1,7 @@
 package org.swiften.xtestkit.engine.base;
 
-import org.swiften.xtestkit.engine.base.xpath.XPath;
+import org.swiften.xtestkit.locator.xpath.XPath;
 
-import org.swiften.xtestkit.engine.base.Platform;
 import static org.testng.Assert.*;
 
 import org.swiften.javautilities.log.LogUtil;
@@ -18,7 +17,7 @@ public final class XPathTest {
     @Test
     public void test_buildXPath_shouldSucceed() {
         // Setup
-        XPath xPath = XPath.builder(Platform.ANDROID)
+        XPath xPath = XPath.builder(Platform.IOS)
             .hasText("Text1")
             .containsText("Text2")
             .hasHint("Hint1")

@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.base;
 
 import org.swiften.xtestkit.engine.base.type.PlatformType;
-import org.swiften.xtestkit.engine.base.xpath.Attribute;
+import org.swiften.xtestkit.locator.xpath.Attribute;
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
 

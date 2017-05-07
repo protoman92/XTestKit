@@ -3,11 +3,8 @@ package org.swiften.xtestkit.engine.base.param;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ViewType;
-import org.swiften.xtestkit.engine.base.xpath.XPath;
-import io.reactivex.Flowable;
+import org.swiften.xtestkit.locator.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.Collection;
