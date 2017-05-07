@@ -34,6 +34,7 @@ public class ByXPath implements RetryType {
     ByXPath() {
         classes = new ArrayList<>();
         xPath = "";
+        error = "";
         retries = RetryType.super.retries();
     }
 

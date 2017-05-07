@@ -26,14 +26,14 @@ public class StopEmulatorParam implements RetryType, PortType {
         return new StopEmulatorParam.Builder();
     }
 
-    private int port, minRetries;
+    private int port, retries;
 
     StopEmulatorParam() {}
 
     //region RetryType
     @Override
     public int retries() {
-        return minRetries;
+        return retries;
     }
     //endregion
 
@@ -56,18 +56,18 @@ public class StopEmulatorParam implements RetryType, PortType {
         }
 
         /**
-         * Set the {@link #PARAM#minRetries} value.
+         * Set the {@link #retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withMinRetries(int retries) {
-            PARAM.minRetries = retries;
+        public Builder withRetries(int retries) {
+            PARAM.retries = retries;
             return this;
         }
 
         /**
-         * Set the {@link #PARAM#port} value.
+         * Set the {@link #port} value.
          * @param port An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -78,24 +78,24 @@ public class StopEmulatorParam implements RetryType, PortType {
         }
 
         /**
-         * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
+         * Set {@link #retries} value.
          * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
-         * @see #withMinRetries(int)
+         * @see #withRetries(int)
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryType param) {
-            return this.withMinRetries(param.retries());
+        public Builder withRetryType(@NotNull RetryType param) {
+            return this.withRetries(param.retries());
         }
 
         /**
-         * Set {@link #PARAM#port}.
+         * Set {@link #port}.
          * @param param A {@link PortType} instance.
          * @return The current {@link Builder} instance.
          * @see #withPort(int)
          */
         @NotNull
-        public Builder withPortProtocol(@NotNull PortType param) {
+        public Builder withPortType(@NotNull PortType param) {
             return this.withPort(param.port());
         }
 

@@ -6,19 +6,23 @@ package org.swiften.xtestkit.engine.mobile.ios.param;
 
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
 
 /**
- * Parameter object for
- * {@link XCRunHandler#rxStartSimulator(StartSimulatorParam)}
+ * Parameter object for {@link XCRunHandler#rxStartSimulator(StartSimulatorParam)}.
  */
-public class StartSimulatorParam implements RetryType {
+public class StartSimulatorParam implements RetryType, DeviceUIDType {
     @NotNull public static StartSimulatorParam DEFAULT;
 
     static {
         DEFAULT = new StartSimulatorParam();
     }
 
+    /**
+     * Return a {@link Builder} instance.
+     * @return A {@link Builder} instance.
+     */
     @NotNull
     public static StartSimulatorParam.Builder builder() {
         return new StartSimulatorParam.Builder();
@@ -32,16 +36,24 @@ public class StartSimulatorParam implements RetryType {
         deviceUID = "";
     }
 
+    //region RetryType.
     @Override
     public int retries() {
         return retries;
     }
+    //endregion
 
+    //region DeviceUIDType.
     @NotNull
     public String deviceUID() {
         return deviceUID;
     }
+    //endregion
 
+    //region Builder.
+    /**
+     * Builder class for {@link StartSimulatorParam}.
+     */
     public static final class Builder {
         @NotNull final StartSimulatorParam PARAM;
 
@@ -50,7 +62,7 @@ public class StartSimulatorParam implements RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#deviceUID} value.
+         * Set the {@link #deviceUID} value.
          * @param name A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -61,24 +73,24 @@ public class StartSimulatorParam implements RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder retries(int retries) {
+        public Builder withRetries(int retries) {
             PARAM.retries = retries;
             return this;
         }
 
         /**
-         * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
+         * Set {@link #retries} value.
          * @param param A {@link RetryType} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryType param) {
-            return this.retries(param.retries());
+        public Builder withRetryType(@NotNull RetryType param) {
+            return this.withRetries(param.retries());
         }
 
         @NotNull
@@ -86,5 +98,6 @@ public class StartSimulatorParam implements RetryType {
             return PARAM;
         }
     }
+    //endregion
 }
 

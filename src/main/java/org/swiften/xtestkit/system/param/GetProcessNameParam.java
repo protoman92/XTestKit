@@ -39,6 +39,7 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
     }
     //endregion
 
+    //region RetryType.
     /**
      * Return {@link #retries}.
      * @return An {@link Integer} value.
@@ -47,7 +48,12 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
     public int retries() {
         return retries;
     }
+    //endregion
 
+    //region Builder.
+    /**
+     * Builder class for {@link GetProcessNameParam}.
+     */
     public static final class Builder {
         @NotNull private GetProcessNameParam PARAM;
 
@@ -56,7 +62,7 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#pid} value.
+         * Set the {@link #pid} value.
          * @param pid A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -67,7 +73,7 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#pid} value.
+         * Set the {@link #pid} value.
          * @param param A {@link PIDIdentifiableType} instance.
          * @return The current {@link Builder} instance.
          */
@@ -77,7 +83,7 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -88,12 +94,12 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryType param) {
+        public Builder withRetryType(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 
@@ -102,4 +108,5 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
             return PARAM;
         }
     }
+    //endregion
 }

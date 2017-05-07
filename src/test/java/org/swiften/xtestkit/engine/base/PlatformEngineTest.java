@@ -455,28 +455,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
     //region Element By XPATH
     @Test
     @SuppressWarnings("unchecked")
-    public void test_elementsByXPathWithNoDriver_shouldThrow() {
-        // Setup
-        doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
-        ByXPath param = ByXPath.builder().build();
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
-        subscriber.assertNoValues();
-        subscriber.assertNotComplete();
-        verify(ENGINE).driver();
-        verify(DRIVER, never()).findElements(any(By.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_failToFindElements_shouldReturnEmptyList() {
+    public void test_failToFindElements_shouldThrow() {
         // Setup
         when(DRIVER.findElements(any(By.ByXPath.class)))
             .thenThrow(new RuntimeException());
@@ -486,6 +465,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         ByXPath param = ByXPath.builder()
             .withClasses(views)
             .withXPath(XPath.EMPTY)
+            .withError("")
             .build();
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
@@ -496,10 +476,9 @@ public final class PlatformEngineTest implements PlatformErrorType {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertEquals(RxTestUtil.<List>getFirstNextEvent(subscriber).size(), 0);
-        views.forEach(a -> verify(a).className());
+        subscriber.assertError(Exception.class);
+        subscriber.assertNotComplete();
+        views.forEach(a -> verify(a, atLeastOnce()).className());
     }
 
     @Test
@@ -511,6 +490,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         ByXPath param = ByXPath.builder()
             .withClasses(views)
             .withXPath(XPath.EMPTY)
+            .withError("")
             .build();
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
@@ -525,92 +505,12 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertComplete();
 
         assertEquals(
-            RxTestUtil.<List>getFirstNextEvent(subscriber).size(),
+            RxTestUtil.getNextEvents(subscriber).size(),
             PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
 
         views.forEach(a -> {
             verify(a).className();
         });
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithNoElement_shouldThrow() {
-        // Setup
-        List<WebElement> result = mock(ArrayList.class);
-        when(DRIVER.findElements(any(By.ByXPath.class))).thenReturn(result);
-
-        ByXPath param = mock(ByXPath.class);
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(null);
-        subscriber.assertNoValues();
-        subscriber.assertNotComplete();
-        verify(result, never()).get(anyInt());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithParent_shouldSuccess() {
-        // Setup
-        WebElement element = mock(WebElement.class);
-        List<WebElement> result = spy(new ArrayList<WebElement>());
-        result.add(element);
-
-        Flowable<List<WebElement>> parent = Flowable.just(result);
-
-        ByXPath param = ByXPath.builder()
-            .withParent(parent)
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(result).get(anyInt());
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementByXPathWithNoParent_shouldSucceed() {
-        // Setup
-        WebElement element = mock(WebElement.class);
-        List<WebElement> result = spy(new ArrayList<WebElement>());
-        result.add(element);
-
-        doReturn(Flowable.just(result))
-            .when(ENGINE).rxElementsByXPath(any(ByXPath.class));
-
-        ByXPath param = ByXPath.builder()
-            .withClasses(PLATFORM_VIEWS.allViews())
-            .withError("")
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(result).get(anyInt());
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
     }
     //endregion
 
@@ -654,7 +554,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -675,7 +574,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -719,7 +617,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -740,7 +637,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -784,7 +680,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertErrorMessage(noElementsWithHint(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -805,7 +700,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -849,7 +743,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertErrorMessage(noElementsContainingHint(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -870,7 +763,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
         verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-        verify(ENGINE).rxElementByXPath(any(ByXPath.class));
     }
     //endregion
 

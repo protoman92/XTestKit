@@ -424,9 +424,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public T driver() {
         if (ObjectUtil.nonNull(driver)) {
             return driver;
+        } else {
+            throw new RuntimeException(DRIVER_UNAVAILABLE);
         }
-
-        throw new RuntimeException(DRIVER_UNAVAILABLE);
     }
 
     /**
@@ -630,22 +630,16 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<List<WebElement>> rxElementsByXPath(@NotNull ByXPath param) {
-        final T DRIVER;
-
-        try {
-            DRIVER = driver();
-        } catch (Exception e) {
-            return Flowable.error(e);
-        }
-
+    public Flowable<WebElement> rxElementsByXPath(@NotNull ByXPath param) {
+        final T DRIVER = driver();
         final String XPATH = param.xPath();
         final String ERROR = param.error();
         List<ViewType> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
-
+        
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
+            .doOnNext(LogUtil::println)
             .map(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -656,10 +650,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             })
             .filter(ObjectUtil::nonNull)
             .reduce(elements, (a, b) -> CollectionUtil.unify(a, b))
-            .filter(a -> !a.isEmpty())
-            .switchIfEmpty(Maybe.error(new Exception(ERROR)))
-            .retry(param.retries())
-            .toFlowable();
+            .toFlowable()
+            .flatMap(Flowable::fromIterable)
+            .switchIfEmpty(Flowable.error(new Exception(ERROR)))
+            .retry(param.retries());
     }
 
     //region With Text
@@ -671,7 +665,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsWithText(@NotNull TextParam param) {
+    public Flowable<WebElement> rxElementsWithText(@NotNull TextParam param) {
         String localized = localizer().localize(param.text());
         XPath xPath = newXPathBuilder().hasText(localized).build();
 
@@ -692,7 +686,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @see #rxElementsWithText(TextParam)
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsWithText(@NotNull String text) {
+    public Flowable<WebElement> rxElementsWithText(@NotNull String text) {
         TextParam param = TextParam.builder().withText(text).build();
         return rxElementsWithText(param);
     }
@@ -705,7 +699,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
-        return rxElementsWithText(param).map(a -> a.get(0));
+        return rxElementsWithText(param).firstElement().toFlowable();
     }
 
     /**
@@ -729,7 +723,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsContainingText(@NotNull TextParam param) {
+    public Flowable<WebElement> rxElementsContainingText(@NotNull TextParam param) {
         String localized = localizer().localize(param.text());
         XPath xPath = newXPathBuilder().containsText(localized).build();
 
@@ -743,6 +737,19 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
+     * Same as above, but uses a default {@link TextParam} with a specified
+     * text.
+     * @param text A {@link String} value.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(TextParam)
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementsContainingText(@NotNull String text) {
+        TextParam param = TextParam.builder().withText(text).build();
+        return rxElementsContainingText(param);
+    }
+
+    /**
      * Get a {@link ViewType#hasText()} {@link WebElement} whose text contains
      * another text.
      * @param param A {@link TextParam} instance.
@@ -750,7 +757,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
-        return rxElementsContainingText(param).map(a -> a.get(0));
+        return rxElementsContainingText(param).firstElement().toFlowable();
     }
 
     /**
@@ -774,7 +781,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsWithHint(@NotNull HintParam param) {
+    public Flowable<WebElement> rxElementsWithHint(@NotNull HintParam param) {
         String localized = localizer().localize(param.hint());
         XPath xPath = newXPathBuilder().hasHint(localized).build();
 
@@ -795,7 +802,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
-        return rxElementsWithHint(param).map(a -> a.get(0));
+        return rxElementsWithHint(param).firstElement().toFlowable();
     }
     //endregion
 
@@ -807,7 +814,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxElementsContainingHint(@NotNull HintParam param) {
+    public Flowable<WebElement> rxElementsContainingHint(@NotNull HintParam param) {
         String localized = localizer().localize(param.hint());
         XPath xPath = newXPathBuilder().containsHint(localized).build();
 
@@ -828,7 +835,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingHint(@NotNull HintParam param) {
-        return rxElementsContainingHint(param).map(a -> a.get(0));
+        return rxElementsContainingHint(param).firstElement().toFlowable();
     }
     //endregion
 
@@ -838,7 +845,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxAllEditableElements() {
+    public Flowable<WebElement> rxAllEditableElements() {
         List<? extends ViewType> views = platformView().isEditable();
         ByXPath query = ByXPath.builder().withClasses(views).build();
         return rxElementsByXPath(query);
@@ -851,7 +858,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxClearAllEditableElements() {
         return rxAllEditableElements()
-            .flatMap(Flowable::fromIterable)
             .flatMapCompletable(a -> Completable.fromAction(a::clear))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
@@ -864,7 +870,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<List<WebElement>> rxAllClickableElements() {
+    public Flowable<WebElement> rxAllClickableElements() {
         XPath xPath = newXPathBuilder().isClickable(true).build();
 
         ByXPath query = ByXPath.builder()

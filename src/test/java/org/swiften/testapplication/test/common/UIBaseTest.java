@@ -36,7 +36,6 @@ public class UIBaseTest {
     protected final int INDEX;
 
     public UIBaseTest(int index) {
-        LogUtil.printf("Running test instance %d", index);
         INDEX = index;
         TEST_KIT = Config.TEST_KIT;
         INTERACTION = new Interaction(TEST_KIT, index);

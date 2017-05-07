@@ -69,8 +69,7 @@ public class XPath {
                                        @NotNull final String FORMAT,
                                        @NotNull final String VALUE) {
             List<String> attributes = attribute
-                .attributes()
-                .stream()
+                .attributes().stream()
                 .map(a -> String.format(FORMAT, a, VALUE))
                 .collect(Collectors.toList());
 

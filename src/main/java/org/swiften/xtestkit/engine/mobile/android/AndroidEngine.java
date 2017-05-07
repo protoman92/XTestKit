@@ -206,12 +206,11 @@ public class AndroidEngine extends MobileEngine<
 
             case SIMULATED:
                 String deviceUID = androidInstance.deviceUID();
-                LogUtil.printf("Stopping %1$s for %2$s", deviceUID, this);
 
                 StopEmulatorParam seParam = StopEmulatorParam
                     .builder()
-                    .withRetryProtocol(param)
-                    .withPortProtocol(androidInstance)
+                    .withRetryType(param)
+                    .withPortType(androidInstance)
                     .build();
 
                 SOURCE = adbHandler().rxStopEmulator(seParam);
@@ -254,8 +253,8 @@ public class AndroidEngine extends MobileEngine<
         ClearCacheParam CC_PARAM = ClearCacheParam
             .builder()
             .withAppPackage(appPackage())
-            .withDeviceUIDProtocol(androidInstance())
-            .withRetryProtocol(param)
+            .withDeviceUIDType(androidInstance())
+            .withRetryType(param)
             .build();
 
         /* Clear cached data such as SharedPreferences. If the app is not

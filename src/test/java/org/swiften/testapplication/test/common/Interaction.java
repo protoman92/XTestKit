@@ -72,8 +72,9 @@ public final class Interaction implements DelayProtocol {
             .concatArray(
                 /* These should be 2 editable elements */
                 ENGINE.rxAllEditableElements()
-                    .map(List::size)
+                    .count()
                     .filter(a -> a == 2)
+                    .toFlowable()
                     .switchIfEmpty(Flowable.error(new Exception())),
 
                 ENGINE.rxElementWithText("auth_title_signInOrRegister"),

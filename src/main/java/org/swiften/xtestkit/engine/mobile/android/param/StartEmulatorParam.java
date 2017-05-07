@@ -18,13 +18,18 @@ import org.jetbrains.annotations.NotNull;
 public class StartEmulatorParam implements
     DeviceUIDType,
     RetryType,
-    PortType {
+    PortType
+{
     @NotNull public static StartEmulatorParam DEFAULT;
 
     static {
         DEFAULT = new StartEmulatorParam();
     }
 
+    /**
+     * Get a {@link Builder} instance.
+     * @return A {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -73,6 +78,10 @@ public class StartEmulatorParam implements
         return port;
     }
 
+    //region Builder.
+    /**
+     * Builder class for {@link StartEmulatorParam}.
+     */
     public static final class Builder {
         @NotNull final StartEmulatorParam PARAM;
 
@@ -81,7 +90,7 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set the {@link #PARAM#deviceName} value.
+         * Set the {@link #deviceName} value.
          * @param name A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -92,7 +101,7 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set the {@link #PARAM#deviceUID} value.
+         * Set the {@link #deviceUID} value.
          * @param uid A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -103,7 +112,7 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -114,7 +123,7 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set the {@link #PARAM#port} value.
+         * Set the {@link #port} value.
          * @param port An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -125,12 +134,12 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
+         * Set {@link #retries}.
          * @param param A {@link RetryType} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryType param) {
+        public Builder withRetryType(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 
@@ -141,7 +150,7 @@ public class StartEmulatorParam implements
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
+        public Builder withDeviceUIDType(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 
@@ -154,7 +163,7 @@ public class StartEmulatorParam implements
         public Builder withAndroidInstance(@NotNull AndroidInstance instance) {
             return this
                 .withDeviceName(instance.deviceName())
-                .withDeviceUIDProtocol(instance)
+                .withDeviceUIDType(instance)
                 .withPort(instance.port());
         }
 
@@ -163,4 +172,5 @@ public class StartEmulatorParam implements
             return PARAM;
         }
     }
+    //endregion
 }

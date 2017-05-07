@@ -50,6 +50,10 @@ public class ClearCacheParam implements
     }
     //endregion
 
+    //region Builder.
+    /**
+     * Builder class for {@link ClearCacheParam}.
+     */
     public static final class Builder {
         @NotNull private final ClearCacheParam PARAM;
 
@@ -58,7 +62,7 @@ public class ClearCacheParam implements
         }
 
         /**
-         * Set the {@link #PARAM#appPackage} value.
+         * Set the {@link #appPackage} value.
          * @param appPackage A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -69,18 +73,18 @@ public class ClearCacheParam implements
         }
 
         /**
-         * Set the {@link #PARAM#appPackage} value.
+         * Set the {@link #appPackage} value.
          * @param param A {@link AppPackageType} instance.
          * @return The current {@link Builder} instance.
          * @see #withAppPackage(String)
          */
         @NotNull
-        public Builder withAppPackageProtocol(@NotNull AppPackageType param) {
+        public Builder withAppPackageType(@NotNull AppPackageType param) {
             return this.withAppPackage(param.appPackage());
         }
 
         /**
-         * Set the {@link #PARAM#deviceUID} value.
+         * Set the {@link #deviceUID} value.
          * @param deviceUID A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -91,18 +95,18 @@ public class ClearCacheParam implements
         }
 
         /**
-         * Set the {@link #PARAM#deviceUID} value.
+         * Set the {@link #deviceUID} value.
          * @param param A {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          * @see #withDeviceUID(String)
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
+        public Builder withDeviceUIDType(@NotNull DeviceUIDType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
@@ -113,12 +117,12 @@ public class ClearCacheParam implements
         }
 
         /**
-         * Set the {@link #PARAM#retries} value.
+         * Set the {@link #retries} value.
          * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetryType param) {
+        public Builder withRetryType(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 
@@ -127,4 +131,5 @@ public class ClearCacheParam implements
             return PARAM;
         }
     }
+    //endregion
 }

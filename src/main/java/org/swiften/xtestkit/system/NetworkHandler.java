@@ -157,25 +157,24 @@ public class NetworkHandler implements NetworkHandlerErrorType {
              * but it works correctly */
             .flatMap(a -> {
                 if (BooleanUtil.isTrue(a)) {
-                    LogUtil.printf("Port %d is currently available", PARAM.port());
                     return Flowable.just(PARAM.port());
-                }
+                } else {
+                    /* Create a temporary parameter class to check a new port */
+                    class Param implements PortType, RetryType {
+                        @Override
+                        public int port() {
+                            return PARAM.port() + 1;
+                        }
 
-                /* Create a temporary parameter class to check a new port */
-                class Param implements PortType, RetryType {
-                    @Override
-                    public int port() {
-                        return PARAM.port() + 1;
+                        @Override
+                        public int retries() {
+                            return PARAM.retries();
+                        }
                     }
 
-                    @Override
-                    public int retries() {
-                        return PARAM.retries();
-                    }
+                    /* Keep checking ports until one is available */
+                    return rxCheckUntilPortAvailable(new Param());
                 }
-
-                /* Keep checking ports until one is available */
-                return rxCheckUntilPortAvailable(new Param());
             });
     }
 
@@ -224,7 +223,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
             .flatMap(Flowable::fromArray)
             .map(a -> GetProcessNameParam.builder()
                 .withPID(a)
-                .withRetryProtocol(PARAM)
+                .withRetryType(PARAM)
                 .build())
 
             /* Here we have the opportunity to check whether a process can

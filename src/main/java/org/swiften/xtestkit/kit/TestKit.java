@@ -112,8 +112,6 @@ public class TestKit implements
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnFreshStart() {
-        LogUtil.println("Fresh start for all test");
-
         return Flowable
             .concatArray(
                 rxKillAllAppiumInstances(),
@@ -148,8 +146,6 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
-        LogUtil.printf("Starting batch with indexes %s", Arrays.toString(INDEXES));
-
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
@@ -160,8 +156,6 @@ public class TestKit implements
     @NotNull
     @Override
     public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
-        LogUtil.printf("Finishing batch with indexes %s", Arrays.toString(INDEXES));
-
         return rxEnginesFromIndexes(INDEXES)
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
