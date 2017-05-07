@@ -4,6 +4,7 @@ package org.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
+import io.reactivex.Maybe;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.param.*;
@@ -194,13 +195,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     /**
      * Start appium with a specified {@link #serverUri()}.
-     * @param PARAM A {@link RetriableType} instance.
+     * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmWhichAppium()
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetriableType PARAM) {
+    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryType PARAM) {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
 
@@ -249,7 +250,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetriableType, Predicate)
+     * @see NetworkHandler#rxKillProcessWithPort(RetryType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
@@ -474,14 +475,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Start the Appium driver. If {@link TestCapabilityType#isComplete(Map)}
      * returns false, throw an {@link Exception}.
-     * @param PARAM A {@link RetriableType} instance.
+     * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see TestCapabilityType#isComplete(Map)
      * @see TestCapabilityType#distill(Map)
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
-    public Flowable<Boolean> rxStartDriver(@NotNull final RetriableType PARAM) {
+    public Flowable<Boolean> rxStartDriver(@NotNull final RetryType PARAM) {
         TestCapabilityType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
@@ -618,7 +619,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link XPath.Builder} instance.
      */
     @NotNull
-    protected XPath.Builder newXPathBuilderInstance() {
+    protected XPath.Builder newXPathBuilder() {
         return XPath.builder(platform());
     }
 
@@ -628,6 +629,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     public Flowable<List<WebElement>> rxElementsByXPath(@NotNull ByXPath param) {
         final T DRIVER;
 
@@ -638,11 +640,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         final String XPATH = param.xPath();
+        final String ERROR = param.error();
         List<ViewType> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
 
         return Flowable.fromIterable(classes)
-            .map(cls -> String.format("//%s%s", cls.className(), XPATH))
+            .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
             .map(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -651,32 +654,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
                     return Collections.<WebElement>emptyList();
                 }
             })
+            .filter(ObjectUtil::nonNull)
             .reduce(elements, (a, b) -> CollectionUtil.unify(a, b))
+            .filter(a -> !a.isEmpty())
+            .switchIfEmpty(Maybe.error(new Exception(ERROR)))
+            .retry(param.retries())
             .toFlowable();
     }
-
-    /**
-     * Get a single {@link WebElement} that satisfies an {@link XPath}
-     * request. If there are multiple such elements, take the first one.
-     * Throw an {@link Exception} if none is found.
-     * @param PARAM A {@link ByXPath} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<WebElement> rxElementByXPath(@NotNull final ByXPath PARAM) {
-        Flowable<List<WebElement>> source = PARAM.parent();
-
-        if (ObjectUtil.isNull(source)) {
-            source = rxElementsByXPath(PARAM);
-        }
-
-        return source
-            .filter(a -> !a.isEmpty())
-            .map(a -> a.get(0))
-            .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(Flowable.error(new Exception(PARAM.error())));
-    }
-    //endregion
 
     //region With Text
     /**
@@ -688,11 +672,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsWithText(@NotNull TextParam param) {
-        XPath xPath = newXPathBuilderInstance()
-            .hasText(localizer().localize(param.text()))
+        String localized = localizer().localize(param.text());
+        XPath xPath = newXPathBuilder().hasText(localized).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsWithText(localized))
+            .withRetryType(param)
             .build();
 
-        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -717,12 +705,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
-        ByXPath query = ByXPath.builder()
-            .withParent(rxElementsWithText(param))
-            .withError(noElementsWithText(localizer().localize(param.text())))
-            .build();
-
-        return rxElementByXPath(query);
+        return rxElementsWithText(param).map(a -> a.get(0));
     }
 
     /**
@@ -747,11 +730,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsContainingText(@NotNull TextParam param) {
-        XPath xPath = newXPathBuilderInstance()
-            .containsText(localizer().localize(param.text()))
+        String localized = localizer().localize(param.text());
+        XPath xPath = newXPathBuilder().containsText(localized).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsContainingText(localized))
+            .withRetryType(param)
             .build();
 
-        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -763,12 +750,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
-        ByXPath query = ByXPath.builder()
-            .withParent(rxElementsContainingText(param))
-            .withError(noElementsContainingText(localizer().localize(param.text())))
-            .build();
-
-        return rxElementByXPath(query);
+        return rxElementsContainingText(param).map(a -> a.get(0));
     }
 
     /**
@@ -793,11 +775,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsWithHint(@NotNull HintParam param) {
-        XPath xPath = newXPathBuilderInstance()
-            .hasHint(localizer().localize(param.hint()))
+        String localized = localizer().localize(param.hint());
+        XPath xPath = newXPathBuilder().hasHint(localized).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsWithHint(localized))
+            .withRetryType(param)
             .build();
 
-        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -809,12 +795,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
-        ByXPath query = ByXPath.builder()
-            .withParent(rxElementsWithHint(param))
-            .withError(noElementsWithHint(localizer().localize(param.hint())))
-            .build();
-
-        return rxElementByXPath(query);
+        return rxElementsWithHint(param).map(a -> a.get(0));
     }
     //endregion
 
@@ -827,11 +808,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxElementsContainingHint(@NotNull HintParam param) {
-        XPath xPath = newXPathBuilderInstance()
-            .containsHint(localizer().localize(param.hint()))
+        String localized = localizer().localize(param.hint());
+        XPath xPath = newXPathBuilder().containsHint(localized).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsContainingHint(localized))
+            .withRetryType(param)
             .build();
 
-        ByXPath query = ByXPath.builder().withXPath(xPath).build();
         return rxElementsByXPath(query);
     }
 
@@ -843,12 +828,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementContainingHint(@NotNull HintParam param) {
-        ByXPath query = ByXPath.builder()
-            .withParent(rxElementsContainingHint(param))
-            .withError(noElementsContainingHint(localizer().localize(param.hint())))
-            .build();
-
-        return rxElementByXPath(query);
+        return rxElementsContainingHint(param).map(a -> a.get(0));
     }
     //endregion
 
@@ -859,13 +839,8 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxAllEditableElements() {
-//        XPath xPath = newXPathBuilderInstance().isEditable(true).build();
-
-        ByXPath query = ByXPath.builder()
-            .withClasses(platformView().isEditable())
-//            .withXPath(xPath)
-            .build();
-
+        List<? extends ViewType> views = platformView().isEditable();
+        ByXPath query = ByXPath.builder().withClasses(views).build();
         return rxElementsByXPath(query);
     }
 
@@ -890,8 +865,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<List<WebElement>> rxAllClickableElements() {
+        XPath xPath = newXPathBuilder().isClickable(true).build();
+
         ByXPath query = ByXPath.builder()
-            .withXPath(newXPathBuilderInstance().isClickable(true).build())
+            .withXPath(xPath)
+            .withError(NO_EDITABLE_ELEMENTS)
             .build();
 
         return rxElementsByXPath(query);
@@ -930,6 +908,10 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     //region Builder
+    /**
+     * Builder class for {@link PlatformEngine}.
+     * @param <T> Generics parameter that extends {@link PlatformEngine}.
+     */
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
         @NotNull final protected TestCapabilityType.Builder CAP_BUILDER;
@@ -1011,7 +993,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     /**
-     * Implement this interface to localize text when needed
+     * Implement this interface to localize text when needed.
      */
     public interface TextDelegate {
         /**

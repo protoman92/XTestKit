@@ -2,17 +2,20 @@ package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 
 /**
  * Created by haipham on 3/20/17.
  */
 
 /**
- * Parameter object for
- * {@link PlatformEngine#rxElementsWithHint(HintParam)}
+ * Parameter object for {@link PlatformEngine#rxElementsWithHint(HintParam)}
  */
-public class HintParam implements RetriableType {
+public class HintParam implements RetryType {
+    /**
+     * Get a {@link Builder} instance.
+     * @return A {@link Builder} instance.
+     */
     @NotNull
     public static HintParam.Builder builder() {
         return new Builder();
@@ -29,6 +32,10 @@ public class HintParam implements RetriableType {
         return hint;
     }
 
+    //region Builder.
+    /**
+     * Builder class for {@link HintParam}.
+     */
     public static final class Builder {
         @NotNull private final HintParam PARAM;
 
@@ -52,4 +59,5 @@ public class HintParam implements RetriableType {
             return PARAM;
         }
     }
+    //endregion
 }

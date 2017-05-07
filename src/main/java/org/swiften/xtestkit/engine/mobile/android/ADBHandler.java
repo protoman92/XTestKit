@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.type.AppPackageType;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.android.param.ConnectionParam;
 import org.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
@@ -156,14 +156,14 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Recursively find an available port and emit and error if none is found.
-     * @param PARAM A {@link RetriableType} instance.
+     * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * * @see #rxIsAcceptablePort(int)
      * @see NetworkHandler#checkPortsMarkedAsUsed(Collection)
      * @see NetworkHandler#rxCheckPortAvailable(PortType)
      */
     @NotNull
-    public Flowable<Integer> rxFindAvailablePort(@NotNull final RetriableType PARAM) {
+    public Flowable<Integer> rxFindAvailablePort(@NotNull final RetryType PARAM) {
         final NetworkHandler NETWORK_HANDLER = networkHandler();
         Collection<Integer> availablePorts = availablePorts();
 
@@ -176,7 +176,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             @SuppressWarnings("WeakerAccess")
             Flowable<Integer> check(final int PORT) {
                 if (PORT >= MIN_PORT && PORT <= MAX_PORT) {
-                    class Param implements PortType, RetriableType {
+                    class Param implements PortType, RetryType {
                         @Override
                         public int port() {
                             return PORT;
@@ -288,12 +288,12 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Stop Emulator
     /**
      * Shut down all emulators.
-     * @param param A {@link RetriableType} instance.
+     * @param param A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopAllEmulators()
      */
     @NotNull
-    public Flowable<Boolean> rxStopAllEmulators(@NotNull RetriableType param) {
+    public Flowable<Boolean> rxStopAllEmulators(@NotNull RetryType param) {
         String command = cmStopAllEmulators();
 
         return processRunner()
@@ -306,7 +306,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Kill a specific emulator instance, based on its port number.
      * @param param A {@link StopEmulatorParam} instance.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetriableType, Predicate)
+     * @see NetworkHandler#rxKillProcessWithPort(RetryType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEmulatorParam param) {
@@ -323,7 +323,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cmClearCachedData(AppPackageType)
      */
     @NotNull
-    public <T extends AppPackageType & DeviceUIDType & RetriableType>
+    public <T extends AppPackageType & DeviceUIDType & RetryType>
     Flowable<Boolean> rxClearCachedData(@NotNull T param) {
         ProcessRunner runner = processRunner();
         final String APP = param.appPackage();
@@ -352,7 +352,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cmListPackages(DeviceUIDType)
      */
     @NotNull
-    public <T extends AppPackageType & DeviceUIDType & RetriableType>
+    public <T extends AppPackageType & DeviceUIDType & RetryType>
     Flowable<Boolean> rxCheckAppInstalled(@NotNull final T PARAM) {
         ProcessRunner processRunner = processRunner();
         String listCommand = cmListPackages(PARAM);

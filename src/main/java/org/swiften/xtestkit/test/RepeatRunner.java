@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.test;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -366,7 +366,7 @@ public class RepeatRunner implements
     //endregion
 
     //region Pagination
-    public static final class Pagination implements RetriableType {
+    public static final class Pagination implements RetryType {
         @Nullable IndexConsumer indexConsumer;
         int retries;
         int partitionSize;
@@ -387,7 +387,7 @@ public class RepeatRunner implements
             throw new RuntimeException(PARAMETER_CONSUMER_UNAVAILABLE);
         }
 
-        //region RetriableType
+        //region RetryType
         /**
          * Override this method to provide custom retry count.
          * @return An {@link Integer} value.

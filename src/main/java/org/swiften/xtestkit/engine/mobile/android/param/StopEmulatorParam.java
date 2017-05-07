@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.system.PortType;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link ADBHandler#rxStopEmulator(StopEmulatorParam)}
  */
-public class StopEmulatorParam implements RetriableType, PortType {
+public class StopEmulatorParam implements RetryType, PortType {
     @NotNull
     public static StopEmulatorParam DEFAULT;
 
@@ -30,7 +30,7 @@ public class StopEmulatorParam implements RetriableType, PortType {
 
     StopEmulatorParam() {}
 
-    //region RetriableType
+    //region RetryType
     @Override
     public int retries() {
         return minRetries;
@@ -79,12 +79,12 @@ public class StopEmulatorParam implements RetriableType, PortType {
 
         /**
          * Set {@link #PARAM#minRetries} and {@link #PARAM#maxRetries}.
-         * @param param A {@link RetriableType} instance.
+         * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withMinRetries(int)
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetriableType param) {
+        public Builder withRetryProtocol(@NotNull RetryType param) {
             return this.withMinRetries(param.retries());
         }
 

@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.engine.mobile.ios.type.XCRunDelayType;
 import org.swiften.xtestkit.system.ProcessRunner;
@@ -215,7 +215,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Start a simulator.
-     * @param PARAM A {@link RetriableType} instance.
+     * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStartSimulator(String)
      * @see #rxCheckSimulatorBooted(String)
@@ -257,12 +257,12 @@ public class XCRunHandler implements XCRunDelayType {
     //region Stop Simulator
     /**
      * Stop the currently active simulator.
-     * @param param A {@link RetriableType} instance.
+     * @param param A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmStopSimulator()
      */
     @NotNull
-    public Flowable<Boolean> rxStopSimulator(@NotNull RetriableType param) {
+    public Flowable<Boolean> rxStopSimulator(@NotNull RetryType param) {
         ProcessRunner processRunner = processRunner();
         String command = cmStopSimulator();
 

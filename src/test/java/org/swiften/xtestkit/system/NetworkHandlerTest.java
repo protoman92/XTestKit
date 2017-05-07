@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.system;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
@@ -104,7 +104,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
 
     private static final class CheckPortParam implements
         PortType,
-        RetriableType
+        RetryType
     {
         private final int PORT;
 

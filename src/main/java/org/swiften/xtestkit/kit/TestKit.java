@@ -2,7 +2,7 @@ package org.swiften.xtestkit.kit;
 
 import org.swiften.xtestkit.engine.base.Platform;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -342,7 +342,7 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * @param param A {@link RetriableType} instance.
+     * @param param A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterMethod(AfterParam)
      */

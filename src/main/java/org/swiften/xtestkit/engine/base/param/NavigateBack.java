@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 
 /**
  * Created by haipham on 3/19/17.
@@ -11,7 +11,7 @@ import org.swiften.xtestkit.engine.base.type.RetriableType;
 /**
  * Parameter object for {@link PlatformEngine#rxNavigateBack(NavigateBack)}.
  */
-public final class NavigateBack implements RetriableType {
+public final class NavigateBack implements RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();

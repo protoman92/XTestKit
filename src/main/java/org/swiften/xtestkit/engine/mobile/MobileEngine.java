@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.mobile;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import org.swiften.xtestkit.engine.mobile.type.MobileErrorType;
@@ -35,11 +35,11 @@ public abstract class MobileEngine<
     @NotNull String platformVersion;
 
     /**
-     * If this is true, call {@link #rxStartDriver(RetriableType)} in
+     * If this is true, call {@link #rxStartDriver(RetryType)} in
      * {@link #rxBeforeClass(BeforeClassParam)}. Correspondingly,
      * {@link #rxStopDriver()} will be called in
      * {@link #rxBeforeMethod(BeforeParam)}.
-     * Otherwise, {@link #rxStartDriver(RetriableType)} is called in
+     * Otherwise, {@link #rxStartDriver(RetryType)} is called in
      * {@link #rxBeforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
      * is called in {@link #rxAfterMethod(AfterParam)}.
      */
@@ -128,7 +128,7 @@ public abstract class MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetriableType)
+     * @see #rxStartDriver(RetryType)
      * @see #rxLaunchApp()
      */
     @NotNull

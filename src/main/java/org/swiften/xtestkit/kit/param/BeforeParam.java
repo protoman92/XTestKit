@@ -6,14 +6,14 @@ package org.swiften.xtestkit.kit.param;
 
 import org.swiften.xtestkit.engine.base.type.IndexType;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
  * {@link PlatformEngine#rxBeforeMethod(BeforeParam)}
  */
-public class BeforeParam implements IndexType, RetriableType {
+public class BeforeParam implements IndexType, RetryType {
     @NotNull public static BeforeParam DEFAULT;
 
     static {

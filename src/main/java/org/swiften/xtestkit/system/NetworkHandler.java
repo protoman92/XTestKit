@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.system;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +94,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
      * @see #isPortAvailable(String, int)
      */
     @NotNull
-    public <T extends PortType & RetriableType>
+    public <T extends PortType & RetryType>
     Flowable<Boolean> rxCheckPortAvailable(@NonNull final T PARAM) {
         ProcessRunnableType processRunner = processRunner();
         String command = cmListAllPorts();
@@ -132,7 +132,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public <T extends PIDIdentifiableType & RetriableType>
+    public <T extends PIDIdentifiableType & RetryType>
     Flowable<String> rxGetProcessName(@NotNull T param) {
         ProcessRunner runner = processRunner();
         String command = cmFindProcessName(param.pid());
@@ -149,7 +149,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
      * @see #rxCheckPortAvailable(PortType)
      */
     @NotNull
-    public <T extends PortType & RetriableType>
+    public <T extends PortType & RetryType>
     Flowable<Integer> rxCheckUntilPortAvailable(@NonNull final T PARAM) {
         return rxCheckPortAvailable(PARAM)
             /* If we use filter() and switchIfEmpty() here, a StackOverflow
@@ -162,7 +162,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
                 }
 
                 /* Create a temporary parameter class to check a new port */
-                class Param implements PortType, RetriableType {
+                class Param implements PortType, RetryType {
                     @Override
                     public int port() {
                         return PARAM.port() + 1;
@@ -214,7 +214,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public <T extends RetriableType & PortType>
+    public <T extends RetryType & PortType>
     Flowable<Boolean> rxKillProcessWithPort(@NotNull final T PARAM,
                                             @NotNull final Predicate<String> NP) {
         return processRunner()

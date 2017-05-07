@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.AndroidInstance;
 import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class StartEmulatorParam implements
     DeviceUIDType,
-    RetriableType,
+    RetryType,
     PortType {
     @NotNull public static StartEmulatorParam DEFAULT;
 
@@ -126,11 +126,11 @@ public class StartEmulatorParam implements
 
         /**
          * Set {@link #PARAM#retries} and {@link #PARAM#maxRetries}.
-         * @param param A {@link RetriableType} instance.
+         * @param param A {@link RetryType} instance.
          * @return A {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetriableType param) {
+        public Builder withRetryProtocol(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 

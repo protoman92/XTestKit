@@ -4,7 +4,7 @@ import org.swiften.xtestkit.engine.base.*;
 import org.swiften.xtestkit.engine.base.param.AlertParam;
 import org.swiften.xtestkit.engine.base.param.NavigateBack;
 import org.swiften.xtestkit.engine.base.type.AppPackageType;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
@@ -125,7 +125,7 @@ public class AndroidEngine extends MobileEngine<
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetriableType)
+     * @see #rxStartDriver(RetryType)
      */
     @NotNull
     @Override
@@ -193,11 +193,17 @@ public class AndroidEngine extends MobileEngine<
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+        AndroidInstance androidInstance = androidInstance();
+        final NetworkHandler HANDLER = networkHandler();
+        final int PORT = androidInstance.port();
         final Flowable<Boolean> SOURCE;
         Flowable<Boolean> quitApp;
-        AndroidInstance androidInstance = androidInstance();
 
         switch (testMode()) {
+            case ACTUAL:
+                SOURCE = Flowable.just(true);
+                break;
+
             case SIMULATED:
                 String deviceUID = androidInstance.deviceUID();
                 LogUtil.printf("Stopping %1$s for %2$s", deviceUID, this);
@@ -208,22 +214,7 @@ public class AndroidEngine extends MobileEngine<
                     .withPortProtocol(androidInstance)
                     .build();
 
-                final NetworkHandler HANDLER = networkHandler();
-                int PORT = androidInstance.port();
-
-                SOURCE = Flowable
-                    .concatArray(
-                        Completable
-                            .fromAction(() -> HANDLER.markPortAsAvailable(PORT))
-                            .toFlowable()
-                            .map(a -> true)
-                            .defaultIfEmpty(true),
-
-                        adbHandler().rxStopEmulator(seParam)
-                    )
-                    .all(BooleanUtil::isTrue)
-                    .toFlowable();
-
+                SOURCE = adbHandler().rxStopEmulator(seParam);
                 break;
 
             default:
@@ -241,7 +232,12 @@ public class AndroidEngine extends MobileEngine<
             .concat(super.rxAfterClass(param), quitApp)
             .all(BooleanUtil::isTrue)
             .toFlowable()
-            .flatMap(a -> SOURCE);
+            .flatMap(a -> SOURCE)
+            .flatMapCompletable(a -> Completable.fromAction(
+                () -> HANDLER.markPortAsAvailable(PORT)
+            ))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 
     /**

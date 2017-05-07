@@ -4,7 +4,7 @@ package org.swiften.xtestkit.system.param;
  * Created by haipham on 4/10/17.
  */
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.PIDIdentifiableType;
@@ -13,7 +13,7 @@ import org.swiften.xtestkit.system.PIDIdentifiableType;
  * Parameter object for
  * {@link NetworkHandler#rxGetProcessName(PIDIdentifiableType)}
  */
-public class GetProcessNameParam implements PIDIdentifiableType, RetriableType {
+public class GetProcessNameParam implements PIDIdentifiableType, RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -89,11 +89,11 @@ public class GetProcessNameParam implements PIDIdentifiableType, RetriableType {
 
         /**
          * Set the {@link #PARAM#retries} value.
-         * @param param A {@link RetriableType} instance.
+         * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetriableType param) {
+        public Builder withRetryProtocol(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 

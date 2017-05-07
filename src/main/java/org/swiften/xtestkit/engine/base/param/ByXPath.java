@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.engine.base.param;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import io.reactivex.Flowable;
@@ -17,10 +18,9 @@ import java.util.List;
  */
 
 /**
- * Parameter object for
- * {@link PlatformEngine#rxElementsByXPath(ByXPath)}.
+ * Parameter object for {@link PlatformEngine#rxElementsByXPath(ByXPath)}.
  */
-public class ByXPath {
+public class ByXPath implements RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -29,13 +29,20 @@ public class ByXPath {
     @NotNull private List<ViewType> classes;
     @NotNull private String error;
     @NotNull private String xPath;
-    @Nullable private Flowable<List<WebElement>> parent;
+    private int retries;
 
     ByXPath() {
         classes = new ArrayList<>();
-        error = "";
         xPath = "";
+        retries = RetryType.super.retries();
     }
+
+    //region RetryType.
+    @Override
+    public int retries() {
+        return retries;
+    }
+    //endregion
 
     @NotNull
     public List<ViewType> classes() {
@@ -50,11 +57,6 @@ public class ByXPath {
     @NotNull
     public String xPath() {
         return xPath;
-    }
-
-    @Nullable
-    public Flowable<List<WebElement>> parent() {
-        return parent;
     }
 
     public static final class Builder {
@@ -112,20 +114,24 @@ public class ByXPath {
         }
 
         /**
-         * Sometimes, there is already a plural method (e.g. elements vs
-         * element) that return a {@link Flowable} that emits a {@link List}
-         * of {@link WebElement} and we simply want to take the first
-         * {@link WebElement}. We can take the first element from that method
-         * instead of composing a new XPath query. If {@link #PARAM#parent}
-         * is set, {@link #PARAM#classes} and {@link #PARAM#xPath} will be
-         * ignored.
-         * @param parent A {@link Flowable} instance.
+         * Set {@link #retries} value.
+         * @param retries An {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withParent(@NotNull Flowable<List<WebElement>> parent) {
-            PARAM.parent = parent;
+        public Builder withRetryCount(int retries) {
+            PARAM.retries = retries;
             return this;
+        }
+
+        /**
+         * Set {@link #retries} value.
+         * @param type A {@link RetryType} instance.
+         * @return THe current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withRetryType(@NotNull RetryType type) {
+            return withRetryCount(type.retries());
         }
 
         @NotNull

@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.android;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -32,7 +32,7 @@ public final class MockAndroidEngineTest {
     @NotNull private final AndroidInstance ANDROID_INSTANCE;
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final RetriableType RETRY;
+    @NotNull private final RetryType RETRY;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
@@ -60,7 +60,7 @@ public final class MockAndroidEngineTest {
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
 
         /* Create a mock here to fake retries() */
-        RETRY = mock(RetriableType.class);
+        RETRY = mock(RetryType.class);
 
         RETRIES_ON_ERROR = 3;
     }

@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.android;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
@@ -36,7 +36,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     @NotNull private final StartEmulatorParam SE_PARAM;
     @NotNull private final ClearCacheParam CC_PARAM;
     @NotNull private final DeviceUIDType DUID_PARAM;
-    @NotNull private final RetriableType RETRY;
+    @NotNull private final RetryType RETRY;
     @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
@@ -55,7 +55,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
 
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);
-        RETRY = mock(RetriableType.class);
+        RETRY = mock(RetryType.class);
         CC_PARAM = mock(ClearCacheParam.class);
         DUID_PARAM = mock(DeviceUIDType.class);
 

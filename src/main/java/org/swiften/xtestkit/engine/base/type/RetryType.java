@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/23/17.
  */
-public interface RetriableType {
+public interface RetryType {
     @NotNull
-    RetriableType DEFAULT = new RetriableType() {};
+    RetryType DEFAULT = new RetryType() {};
 
     /**
      * Use this retry count if we are running an operation that is not expected

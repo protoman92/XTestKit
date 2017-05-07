@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.ios;
 
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 import org.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
@@ -24,7 +24,7 @@ public final class MockIOSEngineTest implements PlatformErrorType, IOSErrorType 
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSCap CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final RetriableType RETRY;
+    @NotNull private final RetryType RETRY;
 
     {
         ENGINE = spy(IOSEngine.builder()
@@ -38,8 +38,8 @@ public final class MockIOSEngineTest implements PlatformErrorType, IOSErrorType 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
 
-        /* Use this parameter when a RetriableType is needed */
-        RETRY = mock(RetriableType.class);
+        /* Use this parameter when a RetryType is needed */
+        RETRY = mock(RetryType.class);
     }
 
     @BeforeMethod

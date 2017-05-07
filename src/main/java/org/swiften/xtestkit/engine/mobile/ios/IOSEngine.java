@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSDelayType;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
@@ -83,7 +83,7 @@ public class IOSEngine extends MobileEngine<
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetriableType)
+     * @see #rxStartDriver(RetryType)
      */
     @NotNull
     @Override
@@ -106,7 +106,7 @@ public class IOSEngine extends MobileEngine<
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
      * @see PlatformEngine#rxAfterClass(AfterClassParam)
-     * @see XCRunHandler#rxStopSimulator(RetriableType)
+     * @see XCRunHandler#rxStopSimulator(RetryType)
      * @see #startDriverOnlyOnce()
      * @see #rxStopDriver()
      */

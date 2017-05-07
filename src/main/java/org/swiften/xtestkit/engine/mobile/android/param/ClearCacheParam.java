@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.mobile.android.param;
 
 import org.swiften.xtestkit.engine.base.type.AppPackageType;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 
@@ -11,7 +11,7 @@ import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 public class ClearCacheParam implements
     AppPackageType,
     DeviceUIDType,
-    RetriableType {
+    RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -43,7 +43,7 @@ public class ClearCacheParam implements
     }
     //endregion
 
-    //region RetriableType
+    //region RetryType
     @Override
     public int retries() {
         return retries;
@@ -114,11 +114,11 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #PARAM#retries} value.
-         * @param param A {@link RetriableType} instance.
+         * @param param A {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryProtocol(@NotNull RetriableType param) {
+        public Builder withRetryProtocol(@NotNull RetryType param) {
             return this.withRetries(param.retries());
         }
 

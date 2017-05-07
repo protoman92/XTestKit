@@ -6,7 +6,7 @@ import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
-import org.swiften.xtestkit.engine.base.type.RetriableType;
+import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.swiften.xtestkit.system.ProcessRunner;
 import org.swiften.xtestkit.engine.base.xpath.Attribute;
@@ -51,7 +51,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final MockPlatformView PLATFORM_VIEWS;
     @NotNull private final String LOCALIZED_TEXT;
-    @NotNull private final RetriableType RETRY;
+    @NotNull private final RetryType RETRY;
     private final int ELEMENT_COUNT, TRIES;
 
     {
@@ -98,8 +98,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
-        /* Use this parameter when a RetriableType is needed */
-        RETRY = mock(RetriableType.class);
+        /* Use this parameter when a RetryType is needed */
+        RETRY = mock(RetryType.class);
 
         /* The number of tries for certain test */
         TRIES = 10;
@@ -905,7 +905,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
 
         @NotNull
         @Override
-        public XPath.Builder newXPathBuilderInstance() {
+        public XPath.Builder newXPathBuilder() {
             PlatformType platform = mock(PlatformType.class);
 
             when(platform.enabledAttribute())
