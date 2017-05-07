@@ -4,7 +4,7 @@ package org.swiften.xtestkit.engine.mobile.android;
  * Created by haipham on 4/8/17.
  */
 
-import org.swiften.xtestkit.engine.mobile.TestMode;
+import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.system.PortProtocol;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,13 +18,14 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
     }
 
     @NotNull private String deviceName;
+    @NotNull private String uid;
     @NotNull private TestMode mode;
 
     private int port;
 
     AndroidInstance() {
         deviceName = "";
-        mode = TestMode.EMULATOR;
+        mode = TestMode.SIMULATED;
     }
 
     /**
@@ -40,7 +41,7 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
      * Return {@link #port}.
      * @return An {@link Integer} value.
      */
-    public int port() {
+    public synchronized int port() {
         return port;
     }
 
@@ -52,11 +53,11 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
     @NotNull
     public String deviceUID() {
         switch (mode) {
-            case EMULATOR:
+            case SIMULATED:
                 return String.format("emulator-%d", port());
 
             default:
-                return "";
+                return uid;
         }
     }
 
@@ -64,7 +65,7 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
      * Set {@link #port}.
      * @param port An {@link Integer} value.
      */
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 
@@ -76,13 +77,24 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
         }
 
         /**
-         * Set the {@link #INSTANCE#deviceName} value.
+         * Set the {@link #deviceName} value.
          * @param name A {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceName(@NotNull String name) {
             INSTANCE.deviceName = name;
+            return this;
+        }
+
+        /**
+         * Set the {@link #uid} value.
+         * @param uid A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUID(@NotNull String uid) {
+            INSTANCE.uid = uid;
             return this;
         }
 
@@ -98,7 +110,7 @@ public class AndroidInstance implements DeviceUIDProtocol, PortProtocol {
         }
 
         /**
-         * Set the {@link #INSTANCE#mode} instance.
+         * Set the {@link #mode} instance.
          * @param mode A {@link TestMode} instance.
          * @return The current {@link Builder} instance.
          */

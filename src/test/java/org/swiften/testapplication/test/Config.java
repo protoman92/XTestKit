@@ -1,7 +1,7 @@
 package org.swiften.testapplication.test;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.mobile.TestMode;
+import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import org.swiften.xtestkit.kit.TestKit;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class Config {
             .withAppPackage(APP_PACKAGE)
             .withDeviceName("iPhone 7")
             .withPlatformVersion("10.2")
-            .withTestMode(TestMode.EMULATOR)
+            .withTestMode(TestMode.SIMULATED)
             .build());
 
         ENGINES.add(IOSEngine.builder()
@@ -44,7 +44,7 @@ public class Config {
             .withAppPackage(APP_PACKAGE)
             .withDeviceName("iPhone 7 Plus")
             .withPlatformVersion("10.2")
-            .withTestMode(TestMode.EMULATOR)
+            .withTestMode(TestMode.SIMULATED)
             .build());
 
 //        ENGINES.add(AndroidEngine.builder()
@@ -53,7 +53,7 @@ public class Config {
 //            .withAppPackage(APP_PACKAGE)
 //            .withDeviceName("Nexus_4_API_23")
 //            .withPlatformVersion("6.0")
-//            .withTestMode(TestMode.EMULATOR)
+//            .withTestMode(TestMode.SIMULATED)
 //            .build());
 //
 //        ENGINES.add(AndroidEngine.builder()
@@ -61,7 +61,7 @@ public class Config {
 //            .withApp(ANDROID_APP_NAME)
 //            .withAppPackage(APP_PACKAGE)
 //            .withDeviceName("Nexus_4_API_22")
-//            .withTestMode(TestMode.EMULATOR)
+//            .withTestMode(TestMode.SIMULATED)
 //            .withPlatformVersion("5.1")
 //            .build());
 

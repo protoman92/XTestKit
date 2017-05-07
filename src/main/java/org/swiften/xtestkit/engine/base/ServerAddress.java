@@ -14,7 +14,8 @@ import org.jetbrains.annotations.NotNull;
 public class ServerAddress implements
     PortProtocol,
     RetryProtocol,
-    ServerAddressError {
+    ServerAddressError
+{
     public enum Mode {
         LOCAL;
 
@@ -109,7 +110,7 @@ public class ServerAddress implements
      * Return {@link #port).
      * @return An {@link Integer} value.
      */
-    public int port() {
+    public synchronized int port() {
         return port;
     }
 
@@ -117,7 +118,7 @@ public class ServerAddress implements
      * Set {@link #port}.
      * @param port An {@link Integer} value.
      */
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 

@@ -2,10 +2,12 @@ package org.swiften.xtestkit.engine.mobile;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
 import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
-import org.swiften.xtestkit.kit.BeforeParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.kit.param.BeforeParam;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Completable;
@@ -24,14 +26,14 @@ public abstract class MobileEngine<
     E extends WebElement,
     T extends MobileDriver<E>>
     extends PlatformEngine<T>
-    implements MobileEngineError {
+    implements MobileEngineError
+{
     @NotNull String app;
     @NotNull String appPackage;
     @NotNull String appiumVersion;
     @NotNull String automationName;
     @NotNull String deviceName;
     @NotNull String platformVersion;
-    @NotNull TestMode testMode;
 
     /**
      * If this is true, call {@link #rxStartDriver(RetryProtocol)} in
@@ -51,7 +53,6 @@ public abstract class MobileEngine<
         automationName = "";
         deviceName = "";
         platformVersion = "";
-        testMode = TestMode.EMULATOR;
         startDriverOnlyOnce = true;
     }
 
@@ -120,16 +121,6 @@ public abstract class MobileEngine<
     public String platformVersion() {
         return platformVersion;
     }
-
-    /**
-     * Return {@link #testMode}. This can be stubbed out for custom
-     * implementation.
-     * @return The specified {@link #testMode} {@link TestMode}.
-     */
-    @NotNull
-    public TestMode testMode() {
-        return testMode;
-    }
     //endregion
 
     //region Test Setup
@@ -186,26 +177,6 @@ public abstract class MobileEngine<
 
     //region Appium Setup
     /**
-     * @return A {@link List} of {@link String}.
-     * @see PlatformEngine#requiredCapabilities().
-     */
-    @NotNull
-    @Override
-    public List<String> requiredCapabilities() {
-        List<String> required = super.requiredCapabilities();
-
-        Collections.addAll(required,
-            app(),
-            appPackage(),
-            automationName(),
-            deviceName(),
-            platformName(),
-            platformVersion());
-
-        return required;
-    }
-
-    /**
      * @return A {@link Map} of {@link String} and {@link Object}. Do not
      * set {@link MobileCapabilityType#FULL_RESET} to be true because we
      * want to start a device and keep it open until all test for one
@@ -233,43 +204,45 @@ public abstract class MobileEngine<
 
     //region Driver Methods
     /**
-     * Launch an app as specified in {@link #desiredCapabilities()}.
+     * Launch an app}.
      * @return A {@link Flowable} instance.
      * @see T#launchApp()
      */
     @NotNull
     public Flowable<Boolean> rxLaunchApp() {
-        LogUtil.printf("Launching %1$s for %2$s", appPackage, this);
-
-        final T DRIVER = driver();
-
         return Completable
-            .fromAction(DRIVER::launchApp)
+            .fromAction(driver()::launchApp)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
 
     /**
-     * Reset an installed app as specified in {@link #desiredCapabilities()}.
+     * Reset an installed app.
      * @return A {@link Flowable} instance.
      * @see T#resetApp()
      */
     @NotNull
     public Flowable<Boolean> rxResetApp() {
-        LogUtil.printf("Resetting %1$s for %2$s", appPackage, this);
-
-        final T DRIVER = driver();
-
         return Completable
-            .fromAction(DRIVER::closeApp)
+            .fromAction(driver()::closeApp)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
     //endregion
 
     //region Builder
+    /**
+     * Builder class for {@link MobileEngine}.
+     * @param <T> Generics parameter that extends {@link MobileEngine}.
+     */
     public static abstract class Builder<T extends MobileEngine> extends
-        PlatformEngine.Builder<T> {
+        PlatformEngine.Builder<T>
+    {
+        protected Builder(@NotNull T engine,
+                          @NotNull TestCapabilityType.Builder capBuilder) {
+            super(engine, capBuilder);
+        }
+
         /**
          * Set the {@link #ENGINE#appiumVersion} value.
          * @param version The Appium version that will run the test.
@@ -358,18 +331,6 @@ public abstract class MobileEngine<
                 withAutomation(Automation.APPIUM);
             }
 
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#testMode} value. This variable specifies
-         * which test environment to be used.
-         * @param mode A {@link TestMode} instance.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withTestMode(@NotNull TestMode mode) {
-            ENGINE.testMode = mode;
             return this;
         }
 

@@ -2,6 +2,10 @@ package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.AppPackageProtocol;
 import org.swiften.xtestkit.engine.base.RetryProtocol;
+import org.swiften.xtestkit.engine.mobile.android.param.ConnectionParam;
+import org.swiften.xtestkit.engine.mobile.android.param.DeviceSettingParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
 import org.swiften.xtestkit.system.PortProtocol;
@@ -749,12 +753,13 @@ public class ADBHandler implements ADBErrorProtocol, ADBDelayProtocol {
      */
     @NotNull
     public String cmGetSettings(@NotNull DeviceSettingParam param) {
-        return String.format(
-            "%1$s settings %2$s",
-            cmAdbShell(param), param.getCommand());
+        return String.format("%1$s settings %2$s", cmAdbShell(param), param.getCommand());
     }
     //endregion
 
+    /**
+     * Builder class for {@link ADBHandler}.
+     */
     public static final class Builder {
         @NotNull private final ADBHandler HANDLER;
 

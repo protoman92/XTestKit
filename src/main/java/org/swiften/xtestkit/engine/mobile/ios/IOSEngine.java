@@ -1,12 +1,13 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.kit.AfterClassParam;
+import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.engine.base.RetryProtocol;
 import org.swiften.xtestkit.engine.mobile.Automation;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.Platform;
-import org.swiften.xtestkit.kit.BeforeClassParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
@@ -16,12 +17,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.engine.base.ErrorProtocol;
+import org.swiften.xtestkit.engine.base.PlatformErrorType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +31,8 @@ public class IOSEngine extends MobileEngine<
     IOSDriver<IOSElement>>
     implements
     IOSDelayProtocol,
-    IOSErrorProtocol {
+    IOSErrorProtocol
+{
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -76,43 +76,6 @@ public class IOSEngine extends MobileEngine<
         return launchTimeout;
     }
 
-    /**
-     * Check whether the app file extension matches {@link #testMode()}.
-     * @return A {@link Boolean} value.
-     * @see #testMode()
-     */
-    public boolean hasCorrectFileExtension() {
-        String extension = FilenameUtils.getExtension(app());
-
-        switch (testMode()) {
-            case EMULATOR:
-                return extension.equalsIgnoreCase("app");
-
-            case DEVICE:
-                return extension.equalsIgnoreCase("ipa");
-
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Same as above, but returns a {@link Flowable} which may emit an
-     * {@link Exception} for easier chaining.
-     * @return A {@link Flowable} instance.
-     * @see #hasCorrectFileExtension()
-     */
-    public Flowable<Boolean> rxHasCorrectFileExtension() {
-        boolean correct = hasCorrectFileExtension();
-
-        if (correct) {
-            return Flowable.just(true);
-        }
-
-        return Flowable.error(new Exception(INVALID_APP_EXTENSION));
-    }
-    //endregion
-
     //region Test Setup
     /**
      * @param param A {@link BeforeClassParam} instance.
@@ -153,12 +116,12 @@ public class IOSEngine extends MobileEngine<
         Flowable<Boolean> source;
 
         switch (testMode()) {
-            case EMULATOR:
+            case SIMULATED:
                 source = XC_HANDLER.rxStopSimulator(param);
                 break;
 
             default:
-                Exception error = new Exception(ErrorProtocol.PLATFORM_UNAVAILABLE);
+                Exception error = new Exception(PlatformErrorType.PLATFORM_UNAVAILABLE);
                 source = Flowable.error(error);
                 break;
         }
@@ -180,81 +143,39 @@ public class IOSEngine extends MobileEngine<
     //region Appium Setup
     @NotNull
     @Override
-    public List<String> requiredCapabilities() {
-        List<String> required = super.requiredCapabilities();
-        Collections.addAll(required, deviceUID());
-        return required;
-    }
-
-    @NotNull
-    @Override
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
         capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
         capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
-//        capabilities.put("autoLaunch", false);
-
-        /* Prevent Appium from resetting/shutting down opened simulators */
-//        capabilities.put(MobileCapabilityType.NO_RESET, true);
-//        capabilities.put(MobileCapabilityType.FULL_RESET, true);
-
-        /* We need to add different capabilities depending on whether the
-         * test are running on simulator or real device */
-        switch (testMode()) {
-            case DEVICE:
-                capabilities.put(MobileCapabilityType.UDID, deviceUID());
-                break;
-
-            default:
-                break;
-        }
-
+        capabilities.put(MobileCapabilityType.UDID, deviceUID());
         return capabilities;
     }
 
-    /**
-     * Override
-     * {@link PlatformEngine#rxHasAllRequiredInformation()}
-     * to add additional validations.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxHasAllRequiredInformation()
-     * @see #rxHasCorrectFileExtension()
-     */
     @NotNull
     @Override
-    public Flowable<Boolean> rxHasAllRequiredInformation() {
-        return Flowable
-            .concat(
-                super.rxHasAllRequiredInformation(),
-                rxHasCorrectFileExtension()
-            )
-            .all(a -> a)
-            .toFlowable();
-    }
-
-    @NotNull
-    @Override
-    protected IOSDriver<IOSElement> createDriverInstance() {
+    protected IOSDriver<IOSElement> driver(@NotNull String serverUrl,
+                                           @NotNull DesiredCapabilities caps) {
         try {
-            URL url = new URL(serverUri());
-            DesiredCapabilities capabilities = desiredCapabilities();
-            return new IOSDriver<>(url, capabilities);
+            URL url = new URL(serverUrl);
+            return new IOSDriver<>(url, caps);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
     //endregion
 
+    //region Builder.
+    /**
+     * Builder class for {@link IOSEngine}.
+     */
     public static final class Builder extends MobileEngine.Builder<IOSEngine> {
-        @NotNull
-        @Override
-        protected IOSEngine createEngineInstance() {
-            return new IOSEngine();
+        Builder() {
+            super(new IOSEngine(), IOSCap.builder());
         }
 
         /**
-         * Set the {@link #ENGINE#deviceUID} value. This value will be used
-         * to start the correct simulator.
+         * Set the {@link #deviceUID} value. This value will be used to start
+         * the correct simulator.
          * @param uid A {@link String} value.
          * @return The current {@link Builder} instance.
          */
@@ -265,7 +186,7 @@ public class IOSEngine extends MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#launchTimeout} value.
+         * Set the {@link #launchTimeout} value.
          * @param timeout A {@link Long} value.
          * @return The current {@link Builder} instance.
          */
@@ -284,4 +205,5 @@ public class IOSEngine extends MobileEngine<
             return super.build();
         }
     }
+    //endregion
 }

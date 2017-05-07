@@ -1,11 +1,17 @@
 package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.*;
+import org.swiften.xtestkit.engine.base.param.AlertParam;
+import org.swiften.xtestkit.engine.base.param.NavigateBack;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
-import org.swiften.xtestkit.engine.mobile.TestMode;
-import org.swiften.xtestkit.kit.AfterClassParam;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
+import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
+import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -31,7 +37,8 @@ import java.util.Objects;
 public class AndroidEngine extends MobileEngine<
     AndroidElement,
     AndroidDriver<AndroidElement>> implements
-    AndroidErrorProtocol {
+    AndroidErrorProtocol
+{
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -120,14 +127,13 @@ public class AndroidEngine extends MobileEngine<
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxBeforeClass(@NotNull final BeforeClassParam PARAM) {
+        final ADBHandler HANDLER = adbHandler();
+        final AndroidInstance ANDROID_INSTANCE = androidInstance();
         final Flowable<Boolean> START_APP;
         Flowable<Boolean> source;
 
         switch (testMode()) {
-            case EMULATOR:
-                final ADBHandler HANDLER = adbHandler();
-                final AndroidInstance ANDROID_INSTANCE = androidInstance();
-
+            case SIMULATED:
                 source = HANDLER.rxFindAvailablePort(PARAM)
                     .doOnNext(ANDROID_INSTANCE::setPort)
                     .map(a -> StartEmulatorParam.builder()
@@ -135,17 +141,13 @@ public class AndroidEngine extends MobileEngine<
                         .withAndroidInstance(ANDROID_INSTANCE)
                         .withRetries(100)
                         .build())
-                    .flatMap(SE_PARAM -> HANDLER
-                        .rxStartEmulator(SE_PARAM)
+                    .flatMap(HANDLER::rxStartEmulator);
 
-                        /* Disable animations to avoid erratic behaviors */
-                        .flatMap(a -> HANDLER
-                            .rxDisableEmulatorAnimations(SE_PARAM)
+                break;
 
-                            /* This is not absolutely crucial, so even if
-                             * there is an error, we proceed anyway */
-                            .onErrorResumeNext(Flowable.just(true))));
-
+            case ACTUAL:
+                /* Assuming the device is already started up */
+                source = Flowable.just(true);
                 break;
 
             default:
@@ -163,6 +165,14 @@ public class AndroidEngine extends MobileEngine<
             .concat(super.rxBeforeClass(PARAM), source)
             .all(BooleanUtil::isTrue)
             .toFlowable()
+
+            /* Disable animations to avoid erratic behaviors */
+            .flatMap(a -> HANDLER
+                .rxDisableEmulatorAnimations(ANDROID_INSTANCE)
+
+                /* This is not absolutely crucial, so even if
+                 * there is an error, we proceed anyway */
+                .onErrorResumeNext(Flowable.just(true)))
             .flatMap(a -> START_APP);
     }
 
@@ -184,7 +194,7 @@ public class AndroidEngine extends MobileEngine<
         AndroidInstance androidInstance = androidInstance();
 
         switch (testMode()) {
-            case EMULATOR:
+            case SIMULATED:
                 String deviceUID = androidInstance.deviceUID();
                 LogUtil.printf("Stopping %1$s for %2$s", deviceUID, this);
 
@@ -267,33 +277,29 @@ public class AndroidEngine extends MobileEngine<
      * @see MobileEngine#capabilities()
      * @see #appPackage()
      * @see #appActivity()
+     * @see #deviceName()
      */
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = super.capabilities();
-        AndroidInstance androidInstance = androidInstance();
         capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage());
         capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity());
-//        capabilities.put(AndroidMobileCapabilityType.AVD, deviceName());
-
-        /* androidInstance should have already called setPort(), during
-         * initialization phase */
-//        capabilities.put(AndroidMobileCapabilityType.ADB_PORT, androidInstance.port());
+        capabilities.put(AndroidMobileCapabilityType.AVD, deviceName());
         return capabilities;
     }
 
     /**
      * @return An {@link AndroidDriver} instance.
-     * @see PlatformEngine#createDriverInstance()
+     * @see PlatformEngine#driver(String, DesiredCapabilities)
      */
     @NotNull
     @Override
-    protected AndroidDriver<AndroidElement> createDriverInstance() {
+    protected AndroidDriver<AndroidElement> driver(@NotNull String serverUrl,
+                                                   @NotNull DesiredCapabilities caps) {
         try {
-            URL url = new URL(serverUri());
-            DesiredCapabilities capabilities = desiredCapabilities();
-            return new AndroidDriver<>(url, capabilities);
+            URL url = new URL(serverUrl);
+            return new AndroidDriver<>(url, caps);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -351,14 +357,8 @@ public class AndroidEngine extends MobileEngine<
         @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
 
         Builder() {
-            super();
+            super(new AndroidEngine(), AndroidCap.builder());
             ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
-        }
-
-        @NotNull
-        @Override
-        protected AndroidEngine createEngineInstance() {
-            return new AndroidEngine();
         }
 
         /**
@@ -382,13 +382,29 @@ public class AndroidEngine extends MobileEngine<
          */
         @NotNull
         @Override
-        public MobileEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
+        public PlatformEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
             ANDROID_INSTANCE_BUILDER.withTestMode(mode);
             return super.withTestMode(mode);
         }
 
+        /**
+         * Set {@link #appActivity}.
+         * @param appActivity A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
         public Builder withAppActivity(@NotNull String appActivity) {
             ENGINE.appActivity = appActivity;
+            return this;
+        }
+
+        /**
+         * Set the {@link AndroidInstance#uid} value.
+         * @param uid A {@link String} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withDeviceUID(@NotNull String uid) {
+            ANDROID_INSTANCE_BUILDER.withDeviceUID(uid);
             return this;
         }
 

@@ -4,13 +4,16 @@ package org.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
-import org.swiften.xtestkit.kit.AfterClassParam;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
+import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
+import org.swiften.xtestkit.engine.base.param.*;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.kit.TestKit;
-import org.swiften.xtestkit.kit.BeforeParam;
+import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
 import org.swiften.xtestkit.test.TestListener;
@@ -28,10 +31,10 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.string.StringUtil;
+import sun.rmi.runtime.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -42,14 +45,9 @@ import java.util.function.Predicate;
 public abstract class PlatformEngine<T extends WebDriver> implements
     DelayProtocol,
     Distinctive,
-    ErrorProtocol,
-    TestListener {
-    @NotNull private static final Queue<String> SERVER_QUEUE;
-
-    static {
-        SERVER_QUEUE = new ConcurrentLinkedQueue<>();
-    }
-
+    PlatformErrorType,
+    TestListener
+{
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
@@ -57,16 +55,19 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @Nullable private T driver;
     @Nullable PlatformView platformView;
+    @Nullable TestCapabilityType capability;
 
     @NotNull String browserName;
     @NotNull String platformName;
     @NotNull ServerAddress serverAddress;
+    @NotNull TestMode testMode;
 
     public PlatformEngine() {
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
         browserName = "";
         platformName = "";
+        testMode = TestMode.SIMULATED;
         serverAddress = ServerAddress.defaultInstance();
     }
 
@@ -231,29 +232,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
-                final Queue<String> SERVER_QUEUE = serverQueue();
-                SERVER_QUEUE.offer(COMMAND);
 
                 /* Need to start on a new Thread, or else it will block */
                 new Thread(() -> {
-                    for (;;) {
-                        String top = SERVER_QUEUE.peek();
-
-                        if (Objects.isNull(top) || top.equals(COMMAND)) {
-                            new Thread(() -> {
-                                try {
-                                    RUNNER.execute(COMMAND);
-                                } catch (Exception e) {
-                                    LogUtil.println(e);
-                                }
-                            }).start();
-
-                            synchronized (SERVER_QUEUE) {
-                                SERVER_QUEUE.poll();
-                            }
-
-                            break;
-                        }
+                    try {
+                        RUNNER.execute(COMMAND);
+                    } catch (Exception e) {
+                        LogUtil.println(e);
                     }
                 }).start();
             })
@@ -270,11 +255,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
         NetworkHandler handler = networkHandler();
         ServerAddress address = serverAddress();
-
-        LogUtil.printf(
-            "Stopping appium instance at port %d for %s",
-            address.port(), this);
-
         return handler.rxKillProcessWithPort(address, this::isAppiumProcess);
     }
 
@@ -328,13 +308,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     //region Getters
-    /**
-     * Return {@link #SERVER_QUEUE}.
-     * @return A {@link Queue} instance.
-     */
-    @NotNull
-    public Queue<String> serverQueue() {
-        return SERVER_QUEUE;
+    public TestCapabilityType capabilityType() {
+        if (ObjectUtil.nonNull(capability)) {
+            return capability;
+        } else {
+            throw new RuntimeException(CAPABILITY_UNAVAILABLE);
+        }
     }
 
     /**
@@ -384,23 +363,36 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         if (platform.isPresent()) {
             return platform.get();
+        } else {
+            throw new RuntimeException(PLATFORM_UNAVAILABLE);
         }
-
-        throw new RuntimeException(PLATFORM_UNAVAILABLE);
     }
 
+    /**
+     * Return {@link #testMode}. This can be stubbed out for custom
+     * implementation.
+     * @return The specified {@link #testMode} {@link TestMode}.
+     */
+    @NotNull
+    public TestMode testMode() {
+        return testMode;
+    }
+
+    /**
+     * Get the associated {@link TextDelegate} instance.
+     * @return A {@link TextDelegate} instance.
+     */
     @NotNull
     public TextDelegate localizer() {
-        TextDelegate delegate;
+        WeakReference<TextDelegate> td = textDelegate;
 
-        if
-            (Objects.nonNull(textDelegate) &&
-            (Objects.nonNull((delegate = textDelegate.get()))))
-        {
-            return delegate;
+        TextDelegate ref;
+
+        if (ObjectUtil.nonNull(td) && ObjectUtil.nonNull((ref = td.get()))) {
+            return ref;
+        } else {
+            throw new RuntimeException(TEXT_DELEGATE_UNAVAILABLE);
         }
-
-        throw new RuntimeException(TEXT_DELEGATE_UNAVAILABLE);
     }
 
     /**
@@ -429,7 +421,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public T driver() {
-        if (Objects.nonNull(driver)) {
+        if (ObjectUtil.nonNull(driver)) {
             return driver;
         }
 
@@ -459,48 +451,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Appium Setup
     /**
-     * Get a {@link List} of required capabilities. We convert all values to
-     * {@link String} and check if all values are non-empty. If a value is
-     * not a {@link String}, but is falsy (e.g. a zero value), we replace
-     * it with an empty {@link String}. Subclasses of {@link PlatformEngine}
-     * can append to this {@link List}.
-     * @return A {@link List} of {@link String}.
-     */
-    @NotNull
-    public List<String> requiredCapabilities() {
-        List<String> required = Collections.singletonList(
-            serverAddress.uri()
-        );
-
-        return new ArrayList<>(required);
-    }
-
-    /**
-     * If this method returns false, we should throw an {@link Exception}.
-     * @return A {@link Boolean} value.
-     */
-    public boolean hasAllRequiredInformation() {
-        List<String> required = requiredCapabilities();
-        return required.stream().noneMatch(String::isEmpty);
-    }
-
-    /**
-     * Same as above, but returns a {@link Flowable} for easier chaining
-     * and composition.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxHasAllRequiredInformation() {
-        boolean correct = hasAllRequiredInformation();
-
-        if (correct) {
-            return Flowable.just(true);
-        }
-
-        return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
-    }
-
-    /**
      * Get a {@link Map} of capabilities to pass to Appium driver.
      * @return A {@link Map} instance.
      */
@@ -510,17 +460,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         capabilities.put(CapabilityType.BROWSER_NAME, browserName());
         return capabilities;
     }
-
-    /**
-     * Get a {@link DesiredCapabilities} instance from {@link #capabilities()}.
-     * @return A {@link DesiredCapabilities} instance.
-     */
-    @NotNull
-    public DesiredCapabilities desiredCapabilities() {
-        Map<String,Object> capabilities = capabilities();
-        LogUtil.printf("Desired capabilities for %1$s: %2$s", this, capabilities);
-        return new DesiredCapabilities(capabilities);
-    }
     //endregion
 
     //region Driver Methods
@@ -529,29 +468,35 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link T} instance.
      */
     @NotNull
-    protected abstract T createDriverInstance();
+    protected abstract T driver(@NotNull String serverUrl,
+                                @NotNull DesiredCapabilities caps);
 
     /**
-     * Start the Appium driver. If {@link #hasAllRequiredInformation()}
+     * Start the Appium driver. If {@link TestCapabilityType#isComplete(Map)}
      * returns false, throw an {@link Exception}.
      * @param PARAM A {@link RetryProtocol} instance.
      * @return A {@link Flowable} instance.
-     * @see #hasAllRequiredInformation()
-     * @see #rxHasAllRequiredInformation()
-     * @see #createDriverInstance()
+     * @see TestCapabilityType#isComplete(Map)
+     * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryProtocol PARAM) {
-        return rxHasAllRequiredInformation()
-            .flatMapCompletable(a -> Completable.fromAction(() -> {
-                driver = createDriverInstance();
-            }))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true)
-            .retry(PARAM.retries())
-            .doOnNext(a -> LogUtil.printf(
-                "Starting driver at %1$s for %2$s",
-                serverAddress.uri(), this));
+        TestCapabilityType capabilityType = capabilityType();
+        Map<String,Object> capabilities = capabilities();
+
+        if (capabilityType.isComplete(capabilities)) {
+            final DesiredCapabilities CAPS = new DesiredCapabilities(capabilities);
+            final String SERVER_URL = serverUri();
+
+            return Completable.fromAction(() -> {
+                    driver = driver(SERVER_URL, CAPS);
+                })
+                .<Boolean>toFlowable()
+                .defaultIfEmpty(true)
+                .retry(PARAM.retries());
+        } else {
+            return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
+        }
     }
 
     /**
@@ -561,10 +506,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        LogUtil.printf(
-            "Stopping driver at %1$s for %2$s",
-            serverAddress.uri(), this);
-
         return Completable.fromAction(() -> driver().quit())
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
@@ -700,9 +641,6 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%s%s", cls.className(), XPATH))
-            .doOnNext(a -> {
-                LogUtil.println(String.format("Searching for \"%s\"", a));
-            })
             .map(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -726,14 +664,14 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     public Flowable<WebElement> rxElementByXPath(@NotNull final ByXPath PARAM) {
         Flowable<List<WebElement>> source = PARAM.parent();
 
-        if (Objects.isNull(source)) {
+        if (ObjectUtil.isNull(source)) {
             source = rxElementsByXPath(PARAM);
         }
 
         return source
             .filter(a -> !a.isEmpty())
             .map(a -> a.get(0))
-            .filter(Objects::nonNull)
+            .filter(ObjectUtil::nonNull)
             .switchIfEmpty(Flowable.error(new Exception(PARAM.error())));
     }
     //endregion
@@ -992,9 +930,12 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //region Builder
     public static abstract class Builder<T extends PlatformEngine> {
         @NotNull final protected T ENGINE;
+        @NotNull final protected TestCapabilityType.Builder CAP_BUILDER;
 
-        protected Builder() {
-            ENGINE = createEngineInstance();
+        protected Builder(@NotNull T engine,
+                          @NotNull TestCapabilityType.Builder capBuilder) {
+            ENGINE = engine;
+            CAP_BUILDER = capBuilder;
         }
 
         /**
@@ -1033,33 +974,36 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         /**
-         * Set the {@link #ENGINE#platformName} value.
-         * @param name The name of the platform for which test are executed.
+         * Same as above, but use a {@link Platform} instance.
+         * @param platform A {@link Platform} instance.
          * @return The current {@link MobileEngine.Builder} instance.
+         * @see TestCapabilityType.Builder#withPlatform(Platform)
          */
         @NotNull
-        public Builder<T> withPlatformName(@NotNull String name) {
-            ENGINE.platformName = name;
+        public Builder<T> withPlatform(@NotNull Platform platform) {
+            ENGINE.platformName =  platform.value();
+            CAP_BUILDER.withPlatform(platform);
             return this;
         }
 
         /**
-         * Same as above, but use a {@link Platform} instance.
-         * @param platform A {@link Platform} instance.
-         * @return The current {@link MobileEngine.Builder} instance.
+         * Set the {@link #ENGINE#testMode} value. This variable specifies
+         * which test environment to be used.
+         * @param mode A {@link TestMode} instance.
+         * @return The current {@link Builder} instance.
+         * @see TestCapabilityType.Builder#withTestMode(TestMode)
          */
         @NotNull
-        public Builder<T> withPlatform(@NotNull Platform platform) {
-            return withPlatformName(platform.value());
+        public Builder<T> withTestMode(@NotNull TestMode mode) {
+            ENGINE.testMode = mode;
+            CAP_BUILDER.withTestMode(mode);
+            return this;
         }
 
         @NotNull
         public T build() {
             return ENGINE;
         }
-
-        @NotNull
-        protected abstract T createEngineInstance();
     }
     //endregion
 

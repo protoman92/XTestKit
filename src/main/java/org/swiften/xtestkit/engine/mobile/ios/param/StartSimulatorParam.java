@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.mobile.ios;
+package org.swiften.xtestkit.engine.mobile.ios.param;
 
 /**
  * Created by haipham on 4/8/17.
@@ -6,6 +6,7 @@ package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.RetryProtocol;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.engine.mobile.ios.XCRunHandler;
 
 /**
  * Parameter object for

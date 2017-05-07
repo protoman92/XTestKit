@@ -1,10 +1,10 @@
 package org.swiften.testapplication.test.common;
 
 import org.swiften.testapplication.test.Config;
-import org.swiften.xtestkit.kit.AfterClassParam;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
-import org.swiften.xtestkit.kit.BeforeParam;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.kit.TestKit;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.log.LogUtil;
@@ -48,22 +48,16 @@ public class UIBaseTest {
 
     @BeforeSuite
     public void beforeSuite() {
-        LogUtil.println(">>>>>>>>>> BeforeSuite <<<<<<<<<<");
         TEST_KIT.beforeSuite();
     }
 
     @AfterSuite
     public void afterSuite() {
-        LogUtil.println(">>>>>>>>>> AfterSuite <<<<<<<<<<");
         TEST_KIT.afterSuite();
     }
 
     @BeforeClass
     public void beforeClass() {
-        LogUtil.printf(">>>>>>>>>> BeforeClass for %s, thread %d <<<<<<<<<<",
-            TEST_KIT.engine(INDEX),
-            currentThread());
-
         /* Calling beforeClass() here ensures that each PlatformEngine will
          * only start the test environment once */
         TEST_KIT.beforeClass(beforeClassParam());
@@ -71,10 +65,6 @@ public class UIBaseTest {
 
     @AfterClass
     public void afterClass() {
-        LogUtil.printf(">>>>>>>>>> AfterClass for %s, thread %d <<<<<<<<<<",
-            TEST_KIT.engine(INDEX),
-            currentThread());
-
         TEST_KIT.afterClass(afterClassParam());
     }
 

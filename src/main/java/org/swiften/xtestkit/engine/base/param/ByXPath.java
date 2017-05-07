@@ -1,5 +1,7 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.base.param;
 
+import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.View;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;

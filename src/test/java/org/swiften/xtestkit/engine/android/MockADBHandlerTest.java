@@ -2,9 +2,9 @@ package org.swiften.xtestkit.engine.android;
 
 import org.swiften.xtestkit.engine.base.RetryProtocol;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
-import org.swiften.xtestkit.engine.mobile.android.ClearCacheParam;
-import org.swiften.xtestkit.engine.mobile.android.StartEmulatorParam;
-import org.swiften.xtestkit.engine.mobile.android.StopEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.engine.mobile.android.ADBErrorProtocol;
 import org.swiften.xtestkit.engine.mobile.android.DeviceUIDProtocol;
 import org.swiften.xtestkit.system.NetworkHandler;
@@ -79,6 +79,7 @@ public final class MockADBHandlerTest implements ADBErrorProtocol {
     @BeforeMethod
     public void beforeMethod() {
         doReturn(PROCESS_RUNNER).when(ADB_HANDLER).processRunner();
+        doReturn(PROCESS_RUNNER).when(NETWORK_HANDLER).processRunner();
         doReturn(NETWORK_HANDLER).when(ADB_HANDLER).networkHandler();
         doReturn(true).when(ADB_HANDLER).isAcceptablePort(anyInt());
 
@@ -107,7 +108,7 @@ public final class MockADBHandlerTest implements ADBErrorProtocol {
     public void test_restartAdb_shouldSucceed() {
         try {
             // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            doReturn("Valid Output").when(PROCESS_RUNNER).execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When

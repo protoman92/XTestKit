@@ -1,14 +1,14 @@
 package org.swiften.xtestkit.engine.android;
 
-import org.swiften.xtestkit.kit.AfterClassParam;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
-import org.swiften.xtestkit.engine.base.NavigateBack;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.engine.base.param.NavigateBack;
 import org.swiften.xtestkit.engine.base.RetryProtocol;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import org.swiften.xtestkit.engine.mobile.android.AndroidInstance;
-import org.swiften.xtestkit.engine.mobile.android.StartEmulatorParam;
+import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
 import io.reactivex.Flowable;
@@ -117,7 +117,6 @@ public final class MockAndroidEngineTest {
         verify(ENGINE, atLeastOnce()).processRunner();
         verify(ENGINE).appiumStartDelay();
         verify(ENGINE).networkHandler();
-        verify(ENGINE).serverQueue();
         verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).cmWhichAppium();
         verify(ENGINE).cmFallBackAppium();

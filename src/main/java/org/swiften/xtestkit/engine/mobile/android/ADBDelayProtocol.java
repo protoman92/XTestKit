@@ -1,5 +1,7 @@
 package org.swiften.xtestkit.engine.mobile.android;
 
+import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
+
 /**
  * Created by haipham on 4/8/17.
  */

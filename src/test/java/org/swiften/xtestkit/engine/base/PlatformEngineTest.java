@@ -1,10 +1,13 @@
 package org.swiften.xtestkit.engine.base;
 
-import org.swiften.xtestkit.engine.base.*;
-import org.swiften.xtestkit.kit.AfterClassParam;
-import org.swiften.xtestkit.kit.AfterParam;
-import org.swiften.xtestkit.kit.BeforeClassParam;
-import org.swiften.xtestkit.kit.BeforeParam;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.xtestkit.engine.base.capability.BaseCap;
+import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
+import org.swiften.xtestkit.engine.base.param.*;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.ProcessRunner;
 import org.swiften.xtestkit.engine.base.xpath.Attribute;
 import org.swiften.xtestkit.engine.base.xpath.XPath;
@@ -36,8 +39,9 @@ import java.util.stream.Collectors;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class PlatformEngineTest implements ErrorProtocol {
+public final class PlatformEngineTest implements PlatformErrorType {
     @NotNull private final WebDriver DRIVER;
+    @NotNull private final TestCapabilityType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -54,6 +58,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
         ENGINE = spy(new MockEngine.Builder()
             .withPlatformView(mock(PlatformView.class))
             .build());
+
+        /* Return this capability when we cann ENGINE.capabilityType() */
+        CAPABILITY = mock(TestCapabilityType.class);
 
         /* Return this processRunner when we call ENGINE.processRunner() */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
@@ -100,6 +107,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
     @BeforeMethod
     public void beforeMethod() {
+        doReturn(CAPABILITY).when(ENGINE).capabilityType();
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
@@ -122,16 +130,16 @@ public final class PlatformEngineTest implements ErrorProtocol {
 
     @AfterMethod
     public void afterMethod() {
-        reset(DRIVER, ENGINE, PROCESS_RUNNER, NETWORK_HANDLER, NAVIGATION, PLATFORM_VIEWS);
+        reset(
+            CAPABILITY,
+            DRIVER,
+            ENGINE,
+            PROCESS_RUNNER,
+            NETWORK_HANDLER,
+            NAVIGATION,
+            PLATFORM_VIEWS
+        );
     }
-
-    //region Engine Setup
-    @Test
-    public void test_createEngine_shouldHaveCorrectCapabilities() {
-        // Setup & When & Then
-        assertTrue(ENGINE.hasAllRequiredInformation());
-    }
-    //endregion
 
     //region Appium Server
     @Test
@@ -188,7 +196,6 @@ public final class PlatformEngineTest implements ErrorProtocol {
             subscriber.assertComplete();
             verify(ENGINE).serverAddress();
             verify(ENGINE).networkHandler();
-            verify(ENGINE).serverQueue();
             verify(ENGINE).cmWhichAppium();
             verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
             verify(ENGINE).cmFallBackAppium();
@@ -256,7 +263,7 @@ public final class PlatformEngineTest implements ErrorProtocol {
     @SuppressWarnings("unchecked")
     public void test_startDriverWithWrongConfigs_shouldThrow() {
         // Setup
-        doReturn(false).when(ENGINE).hasAllRequiredInformation();
+        doReturn(false).when(CAPABILITY).isComplete(any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -267,17 +274,20 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(INSUFFICIENT_SETTINGS);
         subscriber.assertNotComplete();
-        verify(ENGINE, never()).createDriverInstance();
+        verify(ENGINE, never()).driver(any(), any());
+        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).capabilityType();
+        verify(ENGINE).capabilities();
+        verify(ENGINE).browserName();
+        verifyNoMoreInteractions(ENGINE);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void test_unableToStartDriver_shouldThrow() {
         // Setup
-        doThrow(new RuntimeException(DRIVER_UNAVAILABLE))
-            .when(ENGINE)
-            .createDriverInstance();
-
+        doReturn(true).when(CAPABILITY).isComplete(any());
+        doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver(any(), any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -288,13 +298,21 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
-        verify(ENGINE, times(TRIES + 1)).createDriverInstance();
+        verify(ENGINE, times(TRIES + 1)).driver(any(), any());
+        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).capabilityType();
+        verify(ENGINE).capabilities();
+        verify(ENGINE).browserName();
+        verify(ENGINE).serverAddress();
+        verify(ENGINE).serverUri();
+        verifyNoMoreInteractions(ENGINE);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void test_startDriver_shouldSucceed() {
         // Setup
+        doReturn(true).when(CAPABILITY).isComplete(any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -306,7 +324,15 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-        verify(ENGINE).createDriverInstance();
+        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).serverAddress();
+        verify(ENGINE).serverUri();
+        verify(ENGINE).driver(any(), any());
+        verify(ENGINE).driver(any(), any());
+        verify(ENGINE).capabilities();
+        verify(ENGINE).capabilityType();
+        verify(ENGINE).browserName();
+        verifyNoMoreInteractions(ENGINE);
     }
     //endregion
 
@@ -325,7 +351,10 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        verify(ENGINE).driver();
+        verify(ENGINE).rxAcceptAlert();
         verify(ENGINE).rxDismissAlert(any(AlertParam.class));
+        verifyNoMoreInteractions(ENGINE);
     }
     //endregion
 
@@ -345,7 +374,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
+        verify(ENGINE).rxStopDriver();
         verify(ENGINE).driver();
+        verifyNoMoreInteractions(ENGINE);
     }
 
     @Test
@@ -867,32 +898,9 @@ public final class PlatformEngineTest implements ErrorProtocol {
     static class MockEngine extends PlatformEngine<WebDriver> {
         @NotNull
         @Override
-        protected WebDriver createDriverInstance() {
+        protected WebDriver driver(@NotNull String serverUrl,
+                                   @NotNull DesiredCapabilities capabilities) {
             return mock(WebDriver.class);
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-            return Flowable.empty();
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-            return Flowable.empty();
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-            return Flowable.empty();
-        }
-
-        @NotNull
-        @Override
-        public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-            return Flowable.empty();
         }
 
         @NotNull
@@ -913,10 +921,16 @@ public final class PlatformEngineTest implements ErrorProtocol {
         }
 
         static final class Builder extends PlatformEngine.Builder<MockEngine> {
-            @NotNull
-            @Override
-            protected MockEngine createEngineInstance() {
-                return new MockEngine();
+            Builder() {
+                super(new MockEngine(), new MockCap.Builder());
+            }
+        }
+    }
+
+    static class MockCap extends BaseCap {
+        static final class Builder extends BaseCap.Builder<MockCap> {
+            Builder() {
+                super(new MockCap());
             }
         }
     }

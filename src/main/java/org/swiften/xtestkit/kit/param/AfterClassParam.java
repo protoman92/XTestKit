@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.kit;
+package org.swiften.xtestkit.kit.param;
 
 /**
  * Created by haipham on 4/1/17.
