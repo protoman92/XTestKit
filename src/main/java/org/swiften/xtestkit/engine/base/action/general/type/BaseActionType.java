@@ -7,6 +7,7 @@ package org.swiften.xtestkit.engine.base.action.general.type;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.omg.CORBA.TIMEOUT;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -26,6 +27,23 @@ public interface BaseActionType<D extends WebDriver> extends
     DriverContainerType<D>,
     BaseActionErrorType
 {
+    /**
+     * Implicitly wait before search for elements.
+     * @param param A {@link DelayType} param.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Boolean> rxImplicitlyWait(@NotNull DelayType param) {
+        final WebDriver.Timeouts TIMEOUTS = driver().manage().timeouts();
+        final long DELAY = param.delay();
+        final TimeUnit UNIT = param.timeUnit();
+
+        return Completable
+            .fromAction(() -> TIMEOUTS.implicitlyWait(DELAY, UNIT))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+
     /**
      * Navigate backwards for certain number of times.
      * @param param A {@link RepeatableType} object.

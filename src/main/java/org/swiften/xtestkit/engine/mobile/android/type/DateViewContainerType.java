@@ -21,6 +21,34 @@ public interface DateViewContainerType {
         SPINNER;
 
         /**
+         * Check if the current {@link DateViewType} is of type calendar.
+         * @return A {@link Boolean} value.
+         */
+        public boolean isCalendarType() {
+            switch (this) {
+                case CALENDAR:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        /**
+         * Check if the current {@link DateViewType} is of type spinner.
+         * @return A {@link Boolean} value.
+         */
+        public boolean isSpinnerType() {
+            switch (this) {
+                case SPINNER:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        /**
          * Get the format the day is formatted in.
          * @return A {@link String} value.
          */

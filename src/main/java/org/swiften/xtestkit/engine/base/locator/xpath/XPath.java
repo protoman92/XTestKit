@@ -86,6 +86,54 @@ public class XPath {
         }
 
         /**
+         * Append a contains(@class) attribute.
+         * @param ofClass A {@link OfClass} instance.
+         * @return The current {@link Builder} instance.
+         * @see OfClass#format()
+         */
+        @NotNull
+        public Builder ofClass(@NotNull OfClass ofClass) {
+            Attribute attribute = PLATFORM.classAttribute();
+            String format = ofClass.format();
+            return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses a default {@link OfClass}.
+         * @param STRING_TYPE A {@link StringType} instance.
+         * @return The current {@link Builder} instance.
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
+         * @see #ofClass(OfClass)
+         */
+        @NotNull
+        public Builder ofClass(@NotNull final StringType STRING_TYPE) {
+            return ofClass(new OfClass() {
+                @NotNull
+                @Override
+                public String value() {
+                    return STRING_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return STRING_TYPE.ignoreCase();
+                }
+            });
+        }
+
+        /**
+         * Same as above, but uses a default {@link OfClass}.
+         * @param CLS A {@link String} value.
+         * @return The current {@link Builder} instance.
+         * @see #ofClass(OfClass)
+         */
+        @NotNull
+        public Builder ofClass(@NotNull final String CLS) {
+            return ofClass(() -> CLS);
+        }
+
+        /**
          * Append a contains(@id) attribute.
          * @param containsID A {@link ContainsID} instance.
          * @return The current {@link Builder} instance.
@@ -109,6 +157,7 @@ public class XPath {
         @NotNull
         public Builder containsID(@NotNull final StringType STRING_TYPE) {
             return containsID(new ContainsID() {
+                @NotNull
                 @Override
                 public String value() {
                     return STRING_TYPE.value();
@@ -157,6 +206,7 @@ public class XPath {
         @NotNull
         public Builder hasText(@NotNull final StringType STRING_TYPE) {
             return hasText(new HasText() {
+                @NotNull
                 @Override
                 public String value() {
                     return STRING_TYPE.value();
@@ -205,6 +255,7 @@ public class XPath {
         @NotNull
         public Builder containsText(@NotNull final StringType STRING_TYPE) {
             return containsText(new ContainsText() {
+                @NotNull
                 @Override
                 public String value() {
                     return STRING_TYPE.value();
@@ -254,6 +305,7 @@ public class XPath {
         @NotNull
         public Builder hasHint(@NotNull final StringType STRING_TYPE) {
             return hasHint(new HasHint() {
+                @NotNull
                 @Override
                 public String value() {
                     return STRING_TYPE.value();
@@ -301,6 +353,7 @@ public class XPath {
         @NotNull
         public Builder containsHint(@NotNull final StringType STRING_TYPE) {
             return containsHint(new ContainsHint() {
+                @NotNull
                 @Override
                 public String value() {
                     return STRING_TYPE.value();
@@ -466,5 +519,8 @@ public class XPath {
 
     @FunctionalInterface
     public interface HasText extends HasTextType, Formattable<String> {}
+
+    @FunctionalInterface
+    public interface OfClass extends OfClassType, ContainsIgnoreCase {}
     //endregion
 }

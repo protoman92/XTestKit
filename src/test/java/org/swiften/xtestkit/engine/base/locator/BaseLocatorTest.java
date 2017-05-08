@@ -18,9 +18,8 @@ import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.swiften.xtestkit.engine.base.param.ByXPath;
 import org.swiften.xtestkit.engine.base.param.HintParam;
 import org.swiften.xtestkit.engine.base.param.TextParam;
+import org.swiften.xtestkit.engine.base.type.BaseViewType;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
-import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -122,7 +121,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         when(DRIVER.findElements(any(By.ByXPath.class)))
             .thenThrow(new RuntimeException());
 
-        List<ViewType> views = PLATFORM_VIEWS.allViews();
+        List<BaseViewType> views = PLATFORM_VIEWS.allViews();
 
         ByXPath param = ByXPath.builder()
             .withClasses(views)
@@ -147,7 +146,7 @@ public class BaseLocatorTest implements BaseLocatorType {
     @SuppressWarnings("unchecked")
     public void test_elementsByXPath_shouldSucceed() {
         // Setup
-        List<ViewType> views = PLATFORM_VIEWS.allViews();
+        List<BaseViewType> views = PLATFORM_VIEWS.allViews();
 
         ByXPath param = ByXPath.builder()
             .withClasses(views)

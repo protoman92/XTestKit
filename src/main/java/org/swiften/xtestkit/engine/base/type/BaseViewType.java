@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface provides view-specific properties. Each {@link PlatformType}
- * should have a set of {@link ViewType} that can be used to search for
+ * should have a set of {@link BaseViewType} that can be used to search for
  * elements.
  */
-public interface ViewType {
+public interface BaseViewType {
     @NotNull
-    ViewType ANY_VIEW = new ViewType() {
+    BaseViewType ANY_VIEW = new BaseViewType() {
         @NotNull
         @Override
         public String className() {
@@ -22,13 +22,13 @@ public interface ViewType {
     };
 
     /**
-     * Get the {@link ViewType} class name for XPath requests.
+     * Get the {@link BaseViewType} class name for XPath requests.
      * @return A {@link String} value.
      */
     @NotNull String className();
 
     /**
-     * Check whether the current {@link ViewType} could display a {@link String}
+     * Check whether the current {@link BaseViewType} could display a {@link String}
      * text.
      * @return A {@link Boolean} value.
      */
@@ -37,7 +37,7 @@ public interface ViewType {
     }
 
     /**
-     * Check whether the current {@link ViewType} is clickable. For e.g., Android's
+     * Check whether the current {@link BaseViewType} is clickable. For e.g., Android's
      * Button and iOS's UIButton classes.
      * @return A {@link Boolean} value.
      */
@@ -46,7 +46,7 @@ public interface ViewType {
     }
 
     /**
-     * Check whether the current {@link ViewType} is editable.
+     * Check whether the current {@link BaseViewType} is editable.
      * @return A {@link Boolean} value.
      */
     default boolean isEditable() {

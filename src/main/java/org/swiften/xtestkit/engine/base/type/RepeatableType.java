@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * This interface provides methods to repeat an action.
  */
 @FunctionalInterface
-public interface RepeatableType {
+public interface RepeatableType extends DelayType {
     /**
      * Get the number of times to repeat an action.
      * @return An {@link Integer} value.
@@ -25,14 +25,5 @@ public interface RepeatableType {
      */
     default long delay() {
         return 0;
-    }
-
-    /**
-     * Get the {@link TimeUnit} to be used with {@link #delay()}.
-     * @return A {@link TimeUnit} instance.
-     */
-    @NotNull
-    default TimeUnit timeUnit() {
-        return TimeUnit.MILLISECONDS;
     }
 }

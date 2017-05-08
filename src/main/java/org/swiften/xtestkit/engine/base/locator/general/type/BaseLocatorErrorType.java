@@ -10,6 +10,11 @@ public interface BaseLocatorErrorType {
     String NO_SUCH_ELEMENT = "No such element";
 
     @NotNull
+    default String noElementsWithClass(@NotNull String cls) {
+        return String.format("No elements with class: %s", cls);
+    }
+
+    @NotNull
     default String noElementsWithId(@NotNull String id) {
         return String.format("No elements with id: %s", id);
     }

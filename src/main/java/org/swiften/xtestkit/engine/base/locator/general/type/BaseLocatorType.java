@@ -13,10 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.engine.base.param.ByXPath;
-import org.swiften.xtestkit.engine.base.param.HintParam;
-import org.swiften.xtestkit.engine.base.param.IdParam;
-import org.swiften.xtestkit.engine.base.param.TextParam;
+import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.swiften.xtestkit.engine.base.type.*;
 
@@ -67,7 +64,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final WebDriver DRIVER = driver();
         final String XPATH = param.xPath();
         final String ERROR = param.error();
-        List<ViewType> classes = param.classes();
+        List<BaseViewType> classes = param.classes();
         List<WebElement> elements = new ArrayList<>();
 
         return Flowable.fromIterable(classes)
@@ -90,9 +87,62 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
     //endregion
 
+    //region With Class
+    /**
+     * Get all {@link BaseViewType} elements of a certain class.
+     * @param param An {@link ClassParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsByXPath(ByXPath)
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementsOfClass(@NotNull ClassParam param) {
+        XPath xPath = newXPathBuilder().ofClass(param).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsWithClass(param.value()))
+            .withRetryType(param)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Same as above, but uses a default {@link ClassParam}.
+     * @param cls A {@link String} value.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementsOfClass(@NotNull String cls) {
+        ClassParam param = ClassParam.builder().withClass(cls).build();
+        return rxElementsOfClass(param);
+    }
+
+    /**
+     * Get an element of a certain class.
+     * @param param An {@link IdParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementOfClass(@NotNull ClassParam param) {
+        return rxElementsOfClass(param).firstElement().toFlowable();
+    }
+
+    /**
+     * Same as above, but uses a default {@link ClassParam}.
+     * @param cls A {@link String} value.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementOfClass(@NotNull String cls) {
+        ClassParam param = ClassParam.builder().withClass(cls).build();
+        return rxElementOfClass(param);
+    }
+    //endregion
+
     //region With ID
     /**
-     * Get all {@link ViewType} elements whose IDs contain a certain
+     * Get all {@link BaseViewType} elements whose IDs contain a certain
      * {@link String}.
      * @param param An {@link IdParam} instance.
      * @return A {@link Flowable} instance.
@@ -146,7 +196,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With Text
     /**
-     * Get all {@link ViewType#hasText()} {@link WebElement} that are displaying
+     * Get all {@link BaseViewType#hasText()} {@link WebElement} that are displaying
      * a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -181,7 +231,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link ViewType#hasText()} {@link WebElement} that is displaying
+     * Get a {@link BaseViewType#hasText()} {@link WebElement} that is displaying
      * a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -206,7 +256,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Contains Text
     /**
-     * Get all {@link ViewType#hasText()} {@link WebElement} whose texts contain
+     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts contain
      * another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -240,7 +290,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link ViewType#hasText()} {@link WebElement} whose text contains
+     * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text contains
      * another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
@@ -265,7 +315,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With Hint
     /**
-     * Get all {@link ViewType#isEditable()} {@link WebElement} that have a
+     * Get all {@link BaseViewType#isEditable()} {@link WebElement} that have a
      * certain hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -286,7 +336,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link ViewType#isEditable()} {@link WebElement} that has a certain
+     * Get a {@link BaseViewType#isEditable()} {@link WebElement} that has a certain
      * hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -299,7 +349,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Contains Hint
     /**
-     * Get all {@link ViewType#isEditable()} {@link WebElement} whose hints
+     * Get all {@link BaseViewType#isEditable()} {@link WebElement} whose hints
      * contain another hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -320,7 +370,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link ViewType#isEditable()} {@link WebElement} whose hint contains
+     * Get a {@link BaseViewType#isEditable()} {@link WebElement} whose hint contains
      * another hint.
      * @param param A {@link HintParam} instance.
      * @return A {@link Flowable} instance.
@@ -333,18 +383,18 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Editable Elements
     /**
-     * Get all {@link ViewType#isEditable()} {@link WebElement}.
+     * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull
     default Flowable<WebElement> rxAllEditableElements() {
-        List<? extends ViewType> views = platformView().isEditable();
+        List<? extends BaseViewType> views = platformView().isEditable();
         ByXPath query = ByXPath.builder().withClasses(views).build();
         return rxElementsByXPath(query);
     }
 
     /**
-     * Clear all {@link ViewType#isEditable()} {@link WebElement}.
+     * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull
@@ -358,7 +408,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Clickable Elements
     /**
-     * Get all {@link ViewType#isClickable()} {@link WebElement}.
+     * Get all {@link BaseViewType#isClickable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
      */
     @NotNull

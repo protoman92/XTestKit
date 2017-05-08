@@ -7,6 +7,7 @@ package org.swiften.xtestkit.engine.base.action.date.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.engine.base.action.general.type.BaseActionType;
 import org.swiften.xtestkit.engine.base.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.engine.base.type.DriverContainerType;
@@ -42,5 +43,14 @@ public interface BaseDateActionType<D extends WebDriver> extends
     @NotNull
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
         return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
+    }
+
+    /**
+     * Get all calendar {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<WebElement> rxAllCalendarElements() {
+        return Flowable.empty();
     }
 }

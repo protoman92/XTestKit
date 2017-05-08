@@ -9,7 +9,7 @@ import org.swiften.xtestkit.engine.base.PlatformView;
 
 /**
  * This interface provides a {@link org.swiften.xtestkit.engine.base.PlatformView}
- * for {@link ViewType}-related operations.
+ * for {@link BaseViewType}-related operations.
  */
 @FunctionalInterface
 public interface PlatformViewContainerType {

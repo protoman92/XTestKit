@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.engine.base.param;
 
 import org.swiften.xtestkit.engine.base.BaseEngine;
+import org.swiften.xtestkit.engine.base.type.BaseViewType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class ByXPath implements RetryType {
         return new Builder();
     }
 
-    @NotNull private List<ViewType> classes;
+    @NotNull private List<BaseViewType> classes;
     @NotNull private String error;
     @NotNull private String xPath;
     private int retries;
@@ -43,7 +43,7 @@ public class ByXPath implements RetryType {
     //endregion
 
     @NotNull
-    public List<ViewType> classes() {
+    public List<BaseViewType> classes() {
         return classes;
     }
 
@@ -67,22 +67,22 @@ public class ByXPath implements RetryType {
         /**
          * Add view classes to {@link #PARAM#classes}. These view classes
          * are used to construct the {@link XPath} query.
-         * @param cls The {@link Collection} of {@link ViewType}.
+         * @param cls The {@link Collection} of {@link BaseViewType}.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withClasses(@NotNull Collection<? extends ViewType> cls) {
+        public Builder withClasses(@NotNull Collection<? extends BaseViewType> cls) {
             PARAM.classes.addAll(cls);
             return this;
         }
 
         /**
-         * Add a {@link ViewType} instance to {@link #PARAM#classes}.
-         * @param cls The {@link ViewType} to be added.
+         * Add a {@link BaseViewType} instance to {@link #PARAM#classes}.
+         * @param cls The {@link BaseViewType} to be added.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder addClasses(@NotNull ViewType cls) {
+        public Builder addClasses(@NotNull BaseViewType cls) {
             PARAM.classes.add(cls);
             return this;
         }
@@ -135,7 +135,7 @@ public class ByXPath implements RetryType {
         @NotNull
         public ByXPath build() {
             if (PARAM.classes.isEmpty()) {
-                addClasses(ViewType.ANY_VIEW);
+                addClasses(BaseViewType.ANY_VIEW);
             }
 
             return PARAM;

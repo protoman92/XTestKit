@@ -57,8 +57,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
 
     @Nullable private D driver;
     @Nullable PlatformView platformView;
-    @Nullable
-    CapType capability;
+    @Nullable CapType capability;
 
     @NotNull String browserName;
     @NotNull String platformName;

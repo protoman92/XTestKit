@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.base.locator;
 
 import org.swiften.xtestkit.engine.mobile.Platform;
 import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
@@ -16,7 +16,8 @@ public final class XPathTest {
     @Test
     public void test_buildXPath_shouldSucceed() {
         // Setup
-        XPath xPath = XPath.builder(Platform.IOS)
+        XPath xPath = XPath.builder(Platform.ANDROID)
+            .ofClass("class1")
             .containsID("id1")
             .hasText("Text1")
             .containsText("Text2")

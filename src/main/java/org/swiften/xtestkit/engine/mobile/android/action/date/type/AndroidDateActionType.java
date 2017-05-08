@@ -5,16 +5,15 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.engine.base.action.date.type.BaseDateActionErrorType;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.engine.base.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.engine.base.action.date.type.DateType;
 import org.swiften.xtestkit.engine.mobile.android.type.DateViewContainerType;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by haipham on 5/8/17.
@@ -43,36 +42,13 @@ public interface AndroidDateActionType extends
     @Override
     @SuppressWarnings("unchecked")
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
-        Date date = param.value();
-        DateViewType viewType = dateViewType();
-
-        String dayFormat = viewType.dayFormat();
-        String monthFormat = viewType.monthFormat();
-        String yearFormat = viewType.yearFormat();
-
-        DateFormat dayFormatter = new SimpleDateFormat(dayFormat);
-        DateFormat monthFormatter = new SimpleDateFormat(monthFormat);
-        DateFormat yearFormatter = new SimpleDateFormat(yearFormat);
-
-        final String DAY = dayFormatter.format(date);
-        final String MONTH = monthFormatter.format(date);
-        final String YEAR = yearFormatter.format(date);
-
-        LogUtil.println(DAY, MONTH, YEAR);
-
         return Flowable
             .concatArray(
-                rxDatePickerDay()
-                    .map(a -> a.getAttribute("@text"))
-                    .map(a -> a.equals(DAY)),
-                rxDatePickerMonth()
-                    .map(a -> a.getAttribute("@text"))
-                    .map(a -> a.equals(MONTH)),
-                rxDatePickerYear()
-                    .map(a -> a.getAttribute("@text"))
-                    .map(a -> a.equals(YEAR))
+                rxElementContainingText(day(param)),
+                rxElementContainingText(month(param)),
+                rxElementContainingText(year(param))
             )
-            .all(BooleanUtil::isTrue)
+            .all(ObjectUtil::nonNull)
             .toFlowable();
     }
 
@@ -82,7 +58,7 @@ public interface AndroidDateActionType extends
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerHeader() {
-        return rxElementContainingID("date_picker_header");
+        return rxElementContainingID("picker_header");
     }
 
     /**
@@ -110,5 +86,76 @@ public interface AndroidDateActionType extends
     @NotNull
     default Flowable<WebElement> rxDatePickerYear() {
         return rxElementContainingID("date_picker_year");
+    }
+
+    /**
+     * @return A {@link Flowable} instance.
+     * @see BaseDateActionType#rxAllCalendarElements()
+     */
+    @NotNull
+    @Override
+    default Flowable<WebElement> rxAllCalendarElements() {
+        Collection<Flowable<WebElement>> streams = new ArrayList<>();
+
+        Collections.addAll(streams,
+            rxDatePickerDay(),
+            rxDatePickerMonth(),
+            rxDatePickerYear()
+        );
+
+        /* If Calendar view mode is active, we need to add some additional
+         * views to be found. E.g. A SimpleMonthView */
+        if (dateViewType().isCalendarType()) {
+            Collections.addAll(streams, rxSimpleMonthViews());
+        }
+
+        return Flowable.concat(streams);
+    }
+
+    /**
+     * Get all
+     * {@link org.swiften.xtestkit.engine.mobile.android.AndroidView.ViewType#SIMPLE_MONTH_VIEW}
+     * {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<WebElement> rxSimpleMonthViews() {
+        return rxElementOfClass("DayPickerView");
+    }
+
+    /**
+     * Get the day, as formatted using {@link DateViewType#dayFormat()}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see DateViewType#dayFormat()
+     */
+    @NotNull
+    default String day(@NotNull DateType param) {
+        String format = dateViewType().dayFormat();
+        return new SimpleDateFormat(format).format(param.value());
+    }
+
+    /**
+     * Get the month, as formatted using {@link DateViewType#monthFormat()}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see DateViewType#monthFormat()
+     */
+    @NotNull
+    default String month(@NotNull DateType param) {
+        String format = dateViewType().monthFormat();
+        return new SimpleDateFormat(format).format(param.value());
+    }
+
+    /**
+     * Get the year, as formatted using {@link DateViewType#yearFormat()}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see DateViewType#yearFormat()
+     */
+    @NotNull
+    default String year(@NotNull DateType param) {
+        String format = dateViewType().yearFormat();
+        return new SimpleDateFormat(format).format(param.value());
     }
 }
