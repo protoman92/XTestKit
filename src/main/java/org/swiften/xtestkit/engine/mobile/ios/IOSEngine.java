@@ -18,7 +18,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
+import org.swiften.xtestkit.engine.base.type.BaseEngineErrorType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,8 +29,7 @@ import java.util.Map;
  */
 public class IOSEngine extends MobileEngine<
     IOSElement,
-    IOSDriver<IOSElement>>
-    implements
+    IOSDriver<IOSElement>> implements
     IOSDelayType,
     IOSErrorType
 {
@@ -122,7 +121,7 @@ public class IOSEngine extends MobileEngine<
                 break;
 
             default:
-                Exception error = new Exception(PlatformErrorType.PLATFORM_UNAVAILABLE);
+                Exception error = new Exception(BaseEngineErrorType.PLATFORM_UNAVAILABLE);
                 source = Flowable.error(error);
                 break;
         }

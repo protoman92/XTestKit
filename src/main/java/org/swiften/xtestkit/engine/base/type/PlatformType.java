@@ -6,6 +6,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/21/17.
  */
+
+/**
+ * This interface provides platform-specific properties.
+ */
 public interface PlatformType {
     @NotNull String value();
 

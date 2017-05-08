@@ -4,7 +4,7 @@ import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.android.ADBHandler;
 import org.swiften.xtestkit.engine.mobile.android.AndroidInstance;
 import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
-import org.swiften.xtestkit.system.PortType;
+import org.swiften.xtestkit.system.type.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**

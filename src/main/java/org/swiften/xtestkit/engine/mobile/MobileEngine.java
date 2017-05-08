@@ -1,19 +1,16 @@
 package org.swiften.xtestkit.engine.mobile;
 
 import org.swiften.xtestkit.engine.base.BaseEngine;
-import org.swiften.xtestkit.engine.base.type.PlatformType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.capability.CapType;
-import org.swiften.xtestkit.engine.base.type.SwipeActionType;
-import org.swiften.xtestkit.engine.mobile.android.type.MobileTouchActionType;
+import org.swiften.xtestkit.engine.mobile.action.general.type.MobileActionType;
 import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
-import org.swiften.xtestkit.engine.mobile.type.MobileErrorType;
+import org.swiften.xtestkit.engine.mobile.locator.general.type.MobileLocatorType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
@@ -26,9 +23,10 @@ import java.util.*;
  */
 public abstract class MobileEngine<
     E extends WebElement,
-    T extends MobileDriver<E>>
-    extends BaseEngine<T>
-    implements MobileErrorType
+    D extends MobileDriver<E>> extends
+    BaseEngine<D> implements
+    MobileActionType<D>,
+    MobileLocatorType<D>
 {
     @NotNull String app;
     @NotNull String appPackage;
@@ -65,22 +63,6 @@ public abstract class MobileEngine<
     }
 
     //region Getters
-    /**
-     * @return A {@link PlatformType} instance.
-     * @see BaseEngine#platform()
-     */
-    @NotNull
-    @Override
-    public PlatformType platform() {
-        Optional<Platform> platform = Platform.fromValue(platformName());
-
-        if (platform.isPresent()) {
-            return platform.get();
-        } else {
-            throw new RuntimeException(PLATFORM_UNAVAILABLE);
-        }
-    }
-
     /**
      * Return {@link #startDriverOnlyOnce}.
      * @return A {@link Boolean} value.
@@ -224,70 +206,12 @@ public abstract class MobileEngine<
     }
     //endregion
 
-    //region Driver Methods
-
-    /**
-     * Get a {@link MobileTouchActionType} to perform touch actions on mobile
-     * apps. Override this to provide custom subclasses.
-     * @return A {@link MobileTouchActionType} instance.
-     */
-    @NotNull
-    protected MobileTouchActionType touchAction() {
-        return new MobileTouchActionType() {};
-    }
-
-    /**
-     * Launch an app}.
-     * @return A {@link Flowable} instance.
-     * @see T#launchApp()
-     */
-    @NotNull
-    public Flowable<Boolean> rxLaunchApp() {
-        return Completable
-            .fromAction(driver()::launchApp)
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
-    /**
-     * Reset an installed app.
-     * @return A {@link Flowable} instance.
-     * @see T#resetApp()
-     */
-    @NotNull
-    public Flowable<Boolean> rxResetApp() {
-        return Completable
-            .fromAction(driver()::closeApp)
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
-    /**
-     * @param PARAM A {@link SwipeActionType} instance.
-     * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxSwipeOnce(SwipeActionType)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxSwipeOnce(@NotNull final SwipeActionType PARAM) {
-        final MobileDriver<?> DRIVER = driver();
-        final MobileTouchActionType TOUCH_ACTION = touchAction();
-
-        return Completable
-            .fromAction(() -> TOUCH_ACTION.swipe(DRIVER, PARAM))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-    //endregion
-
     //region Builder
     /**
      * Builder class for {@link MobileEngine}.
      * @param <T> Generics parameter that extends {@link MobileEngine}.
      */
-    public static abstract class Builder<T extends MobileEngine> extends
-        BaseEngine.Builder<T>
-    {
+    public static class Builder<T extends MobileEngine> extends BaseEngine.Builder<T> {
         protected Builder(@NotNull T engine,
                           @NotNull CapType.Builder capBuilder) {
             super(engine, capBuilder);

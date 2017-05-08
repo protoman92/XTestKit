@@ -7,9 +7,9 @@ package org.swiften.xtestkit.engine.base;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.xtestkit.engine.base.action.general.type.BaseActionType;
 import org.swiften.xtestkit.engine.base.capability.CapType;
 import org.swiften.xtestkit.engine.base.locator.general.type.BaseLocatorType;
-import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.type.*;
 import org.swiften.xtestkit.engine.mobile.*;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -19,7 +19,7 @@ import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.test.TestListenerType;
+import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -41,10 +41,11 @@ import java.util.function.Predicate;
  * should extend this class and provide its own wrappers for Appium methods.
  */
 public abstract class BaseEngine<D extends WebDriver> implements
-    PlatformErrorType,
-    PlatformDelayType,
-    DistinctiveType,
+    BaseActionType<D>,
     BaseLocatorType<D>,
+    BaseEngineErrorType,
+    EngineDelayType,
+    DistinctiveType,
     TestListenerType
 {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
@@ -353,16 +354,6 @@ public abstract class BaseEngine<D extends WebDriver> implements
     }
 
     /**
-     * Return a {@link PlatformType} instance based on {@link #platformName()}.
-     * @return A {@link org.swiften.xtestkit.engine.mobile.Platform} instance.
-     * @see #platformName()
-     */
-    @NotNull
-    public PlatformType platform() {
-        throw new RuntimeException(PLATFORM_UNAVAILABLE);
-    }
-
-    /**
      * Return {@link #testMode}. This can be stubbed out for custom
      * implementation.
      * @return The specified {@link #testMode} {@link TestMode}.
@@ -438,7 +429,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     //endregion
 
     //region Setters
-    public void setTextDelegate(@NotNull LocalizerType delegate) {
+    public void setLocalizer(@NotNull LocalizerType delegate) {
         textDelegate = new WeakReference<>(delegate);
     }
     //endregion
@@ -505,223 +496,6 @@ public abstract class BaseEngine<D extends WebDriver> implements
         return Completable.fromAction(() -> driver().quit())
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
-    }
-    //endregion
-
-    //region Device Methods
-    /**
-     * Navigate backwards for certain number of times.
-     * @param param A {@link RepeatableType} object.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxNavigateBack(@NotNull RepeatableType param) {
-        final D DRIVER = driver();
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
-        final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
-
-        class PerformBack {
-            /**
-             * Loop the operation until a stopping point is reached.
-             * finished navigating back x times.
-             */
-            @NotNull
-            private Completable back(final int ITERATION) {
-                if (ITERATION < TIMES) {
-                    return Completable
-                        .fromAction(NAVIGATION::back)
-                        .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .andThen(new PerformBack().back(ITERATION + 1));
-                }
-
-                return Completable.complete();
-            }
-        }
-
-        return new PerformBack().back(0).<Boolean>toFlowable().defaultIfEmpty(true);
-    }
-
-    /**
-     * Same as above, but uses a default {@link NavigateBack} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatableType)
-     */
-    @NotNull
-    public Flowable<Boolean> rxNavigateBackOnce() {
-        NavigateBack param = NavigateBack.builder().withTimes(1).build();
-        return rxNavigateBack(param);
-    }
-
-    /**
-     * Dismiss a currently active alert. Either accept or reject.
-     * @param PARAM An {@link AlertParam} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxDismissAlert(@NotNull final AlertParam PARAM) {
-        final Alert ALERT = driver().switchTo().alert();
-
-        return Completable.fromAction(() -> {
-                if (PARAM.shouldAccept()) {
-                    ALERT.accept();
-                } else {
-                    ALERT.dismiss();
-                }
-            })
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
-    /**
-     * Same as avove, but uses a default {@link AlertParam}.
-     * @return A {@link Flowable} instance.
-     * @see #rxDismissAlert(AlertParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxAcceptAlert() {
-        AlertParam param = AlertParam.builder().accept().build();
-        return rxDismissAlert(param);
-    }
-
-    /**
-     * Same as above, but uses a default {@link AlertParam}.
-     * @return A {@link Flowable} instance.
-     * @see #rxDismissAlert(AlertParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxRejectAlert() {
-        AlertParam param = AlertParam.builder().reject().build();
-        return rxDismissAlert(param);
-    }
-
-    /**
-     * Perform a swipe action. However, since {@link WebDriver} does not
-     * implement swiping, we need to override this method in subclasses.
-     * @param param A {@link SwipeActionType} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeActionType param) {
-        return Flowable.just(true);
-    }
-
-    /**
-     * Perform a repeated swipe action.
-     * @param param A {@link P} instance.
-     * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    public <P extends RepeatableType & SwipeActionType>
-    Flowable<Boolean> rxSwipe(@NotNull P param) {
-        LogUtil.printf("Performing swipe - %s", param);
-        final Flowable<Boolean> SWIPE = rxSwipeOnce(param);
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = param.timeUnit();
-
-        class PerformSwipe {
-            @NotNull
-            private Flowable<Boolean> swipe(final int ITERATION) {
-                if (ITERATION < TIMES) {
-                    return SWIPE
-                        .delay(DELAY, UNIT)
-                        .flatMap(a -> new PerformSwipe().swipe(ITERATION + 1));
-                }
-
-                return Flowable.empty();
-            }
-        }
-
-        return new PerformSwipe().swipe(0).defaultIfEmpty(true);
-    }
-
-    /**
-     * Perform a generic unidirectional swipe. This can be used anywhere a non-
-     * full swipe is required.
-     * @param param A {@link P} instance.
-     * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    private <P extends DurationType & UnidirectionType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
-        Dimension size = driver().manage().window().getSize();
-        double height = size.height, width = size.width;
-        int startX, endX, startY, endY;
-        double startRatio = 0.3d, endRatio = 0.7d;
-
-        int lowX = (int)(width * startRatio);
-        int midX = (int)(width / 2);
-        int highX = (int)(width * endRatio);
-        int lowY = (int)(height * startRatio);
-        int midY = (int)(height / 2);
-        int highY = (int)(height * endRatio);
-
-        switch (param.direction()) {
-            case LEFT_RIGHT:
-                startX = lowX;
-                endX = highX;
-                startY = endY = midY;
-                break;
-
-            case RIGHT_LEFT:
-                startX = highX;
-                endX = lowX;
-                startY = endY = midY;
-                break;
-
-            default:
-                return Flowable.error(new Exception(WRONG_DIRECTION));
-        }
-
-        SwipeParam swipeParam = SwipeParam.builder()
-            .withStartX(startX)
-            .withStartY(startY)
-            .withEndX(endX)
-            .withEndY(endY)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipe(swipeParam);
-    }
-
-    /**
-     * Perform a generic horizontal swipe motion from left to right.
-     * @param param A {@link P} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
-     */
-    @NotNull
-    public <P extends DurationType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(UnidirectionType.Unidirection.LEFT_RIGHT)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipeGenericUnidirectional(uniParam);
-    }
-
-    /**
-     * Perform a generic horizontal swipe motion from right to left.
-     * @param param A {@link RepeatableType} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
-     */
-    @NotNull
-    public <P extends DurationType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(UnidirectionType.Unidirection.RIGHT_LEFT)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipeGenericUnidirectional(uniParam);
     }
     //endregion
 

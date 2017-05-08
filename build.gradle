@@ -82,12 +82,12 @@ repositories {
 //    }
 //}
 //
-//task sourceJar(type: Jar, dependsOn: classes) {
+//task sourceJar(element: Jar, dependsOn: classes) {
 //    classifier 'sources'
 //    from sourceSets.main.allSource
 //}
 //
-//task javadocJar(type: Jar, dependsOn: javadoc) {
+//task javadocJar(element: Jar, dependsOn: javadoc) {
 //    classifier = 'javadoc'
 //    from javadoc.destinationDir
 //}

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * This should be used with {@link io.reactivex.Flowable#distinct(Function)}.
  * @see io.reactivex.Flowable#distinct(Function)
  */
+@FunctionalInterface
 public interface DistinctiveType {
     @NotNull Object getComparisonObject();
 }

@@ -33,8 +33,19 @@ public interface BaseLocatorType<D extends WebDriver> extends
     LocalizerContainerType,
     BaseLocatorErrorType,
     PlatformContainerType,
-    PlatformViewContainerType
+    PlatformViewContainerType,
+    PlatformErrorType
 {
+    /**
+     * @return A {@link PlatformType} instance.
+     * @see PlatformContainerType#platform()
+     */
+    @NotNull
+    @Override
+    default PlatformType platform() {
+        throw new RuntimeException(PLATFORM_UNAVAILABLE);
+    }
+
     //region By XPath
     /**
      * Convenience method to create a new {@link XPath.Builder} instance.

@@ -7,6 +7,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.xtestkit.system.type.ProcessRunnableType;
 
 import java.io.*;
 import java.util.Objects;

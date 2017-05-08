@@ -5,9 +5,12 @@ import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.system.param.GetProcessNameParam;
+import org.swiften.xtestkit.system.type.NetworkHandlerErrorType;
+import org.swiften.xtestkit.system.type.PIDIdentifiableType;
+import org.swiften.xtestkit.system.type.PortType;
+import org.swiften.xtestkit.system.type.ProcessRunnableType;
 
 import java.util.Collection;
 import java.util.HashSet;

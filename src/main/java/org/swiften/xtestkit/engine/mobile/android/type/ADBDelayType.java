@@ -6,6 +6,10 @@ import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
 /**
  * Created by haipham on 4/8/17.
  */
+
+/**
+ * This interface provides delay durations for {@link ADBHandler}.
+ */
 public interface ADBDelayType {
     /**
      * Use this timeout for

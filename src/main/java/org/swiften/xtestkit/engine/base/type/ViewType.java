@@ -5,6 +5,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/20/17.
  */
+
+/**
+ * This interface provides view-specific properties. Each {@link PlatformType}
+ * should have a set of {@link ViewType} that can be used to search for
+ * elements.
+ */
 public interface ViewType {
     @NotNull
     ViewType ANY_VIEW = new ViewType() {

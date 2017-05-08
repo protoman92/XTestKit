@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.base;
 
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ServerAddressErrorType;
-import org.swiften.xtestkit.system.PortType;
+import org.swiften.xtestkit.system.type.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**

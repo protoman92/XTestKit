@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * This interface provides {@link Unidirection} for certain actions, such as
  * swipes.
  */
+@FunctionalInterface
 public interface UnidirectionType {
     enum Unidirection {
         UP_DOWN,

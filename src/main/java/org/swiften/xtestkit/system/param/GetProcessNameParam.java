@@ -7,7 +7,7 @@ package org.swiften.xtestkit.system.param;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.PIDIdentifiableType;
+import org.swiften.xtestkit.system.type.PIDIdentifiableType;
 
 /**
  * Parameter object for

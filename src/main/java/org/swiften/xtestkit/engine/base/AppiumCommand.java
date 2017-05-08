@@ -40,7 +40,7 @@ public class AppiumCommand {
 
     /**
      * Append a flag value to the existing {@link #command}.
-     * @param flag The flag type to be appended.
+     * @param flag The flag element to be appended.
      * @param value The flag value to be appended.
      */
     void appendFlag(@NotNull String flag, @NotNull Object value) {

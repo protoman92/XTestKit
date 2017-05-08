@@ -8,11 +8,12 @@ import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
+import org.swiften.xtestkit.kit.type.TestKitErrorType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.system.ProcessRunnableType;
+import org.swiften.xtestkit.system.type.ProcessRunnableType;
 import org.swiften.xtestkit.test.RepeatRunner;
-import org.swiften.xtestkit.test.TestListenerType;
+import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -477,7 +478,7 @@ public class TestKit implements
         public TestKit build() {
             final TestKit KIT = TEST_KIT;
             List<BaseEngine> engines = KIT.engines();
-            engines.forEach(a -> a.setTextDelegate(KIT));
+            engines.forEach(a -> a.setLocalizer(KIT));
             KIT.localizer = LOCALIZER_BUILDER.build();
             return KIT;
         }

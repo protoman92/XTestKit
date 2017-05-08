@@ -5,6 +5,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 3/23/17.
  */
+
+/**
+ * This interface provides retry count.
+ */
 public interface RetryType {
     @NotNull
     RetryType DEFAULT = new RetryType() {};

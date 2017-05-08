@@ -5,6 +5,8 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.xtestkit.system.type.NetworkHandlerErrorType;
+import org.swiften.xtestkit.system.type.PortType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

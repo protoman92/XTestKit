@@ -1,12 +1,9 @@
 package org.swiften.xtestkit.engine.base;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.xtestkit.engine.base.capability.BaseCap;
 import org.swiften.xtestkit.engine.base.capability.CapType;
-import org.swiften.xtestkit.engine.base.model.MockPlatformView;
-import org.swiften.xtestkit.engine.base.param.*;
-import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
+import org.swiften.xtestkit.engine.base.type.BaseEngineErrorType;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.system.ProcessRunner;
@@ -20,13 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
 import org.mockito.ArgumentCaptor;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
 import static org.testng.Assert.*;
 
-import org.swiften.javautilities.number.NumberTestUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
@@ -34,21 +28,15 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * Created by haipham on 3/20/17.
  */
-public final class BaseEngineTest implements PlatformErrorType {
+public final class BaseEngineTest implements BaseEngineErrorType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final CapType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final Alert ALERT;
-    @NotNull private final WebDriver.Navigation NAVIGATION;
-    @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
     @NotNull private final RetryType RETRY;
     private final int TRIES;
 
@@ -73,16 +61,6 @@ public final class BaseEngineTest implements PlatformErrorType {
          * method to throw an Exception should stub the method themselves */
         DRIVER = mock(WebDriver.class);
 
-        /* We initialize a Navigate object and ask the driver to return it
-         * every time driver.navigate() is called */
-        NAVIGATION = mock(WebDriver.Navigation.class);
-
-        /* Return this mock when the driver requests switchTo() */
-        TARGET_LOCATOR = mock(WebDriver.TargetLocator.class);
-
-        /*  */
-        ALERT = mock(Alert.class);
-
         /* Use this parameter when a RetryType is needed */
         RETRY = mock(RetryType.class);
 
@@ -97,9 +75,6 @@ public final class BaseEngineTest implements PlatformErrorType {
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
         doReturn(TRIES).when(RETRY).retries();
-        when(DRIVER.navigate()).thenReturn(NAVIGATION);
-        when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
-        when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
     }
 
     @AfterMethod
@@ -109,8 +84,7 @@ public final class BaseEngineTest implements PlatformErrorType {
             DRIVER,
             ENGINE,
             PROCESS_RUNNER,
-            NETWORK_HANDLER,
-            NAVIGATION
+            NETWORK_HANDLER
         );
     }
 
@@ -309,28 +283,6 @@ public final class BaseEngineTest implements PlatformErrorType {
     }
     //endregion
 
-    //region Alert
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_acceptAlert_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxAcceptAlert().subscribe(subscriber);
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-        verify(ENGINE).driver();
-        verify(ENGINE).rxAcceptAlert();
-        verify(ENGINE).rxDismissAlert(any(AlertParam.class));
-        verifyNoMoreInteractions(ENGINE);
-    }
-    //endregion
-
     //region Stop Driver
     @Test
     @SuppressWarnings("unchecked")
@@ -367,60 +319,6 @@ public final class BaseEngineTest implements PlatformErrorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-    }
-    //endregion
-
-    //region Navigate Back
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_navigateBack_shouldSucceed() {
-        // Setup
-        int times = NumberTestUtil.randomBetween(1, 5);
-
-        NavigateBack param = NavigateBack.builder()
-            .withTimes(times)
-            .withDelay(100)
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxNavigateBack(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-        verify(ENGINE).rxNavigateBack(any());
-        verify(ENGINE).driver();
-        verify(NAVIGATION, times(times)).back();
-        verifyNoMoreInteractions(ENGINE);
-    }
-    //endregion
-
-    //region Swipe
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_swipe_shouldSucceed() {
-        // Setup
-        int times = NumberTestUtil.randomBetween(1, 5);
-        SwipeParam param = SwipeParam.builder().withDelay(100).build();
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxSwipe(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-        verify(ENGINE).rxSwipe(any());
-        verify(ENGINE).rxSwipeOnce(any());
-        verifyNoMoreInteractions(ENGINE);
     }
     //endregion
 

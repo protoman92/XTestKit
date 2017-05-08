@@ -33,7 +33,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
+import org.swiften.javautilities.object.ObjectUtil;
 
 /**
  * Created by haipham on 3/22/17.
@@ -110,11 +110,11 @@ public class AndroidEngine extends MobileEngine<
      */
     @NotNull
     public AndroidInstance androidInstance() {
-        if (Objects.nonNull(androidInstance)) {
+        if (ObjectUtil.nonNull(androidInstance)) {
             return androidInstance;
+        } else {
+            throw new RuntimeException(ANDROID_INSTANCE_UNAVAILABLE);
         }
-
-        throw new RuntimeException(ANDROID_INSTANCE_UNAVAILABLE);
     }
     //endregion
 
@@ -322,7 +322,7 @@ public class AndroidEngine extends MobileEngine<
             .map(a -> a ? "permission_allow_button" : "permission_deny_button")
             .map(id -> String.format("com.android.packageinstaller:id/%s", id))
             .map(id -> driver().findElement(By.id(id)))
-            .filter(Objects::nonNull)
+            .filter(ObjectUtil::nonNull)
             .switchIfEmpty(Flowable.error(new Exception(NO_SUCH_ELEMENT)))
             .flatMapCompletable(a -> Completable.fromAction(a::click))
             .<Boolean>toFlowable()

@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.locator.type.sub.ContainsIDType;
+import org.swiften.xtestkit.engine.base.locator.element.type.sub.ContainsIDType;
 
 /**
  * Created by haipham on 5/8/17.

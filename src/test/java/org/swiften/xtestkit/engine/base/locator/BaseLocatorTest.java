@@ -49,8 +49,6 @@ public class BaseLocatorTest implements BaseLocatorType {
     private final int ELEMENT_COUNT;
 
     {
-        LOCATOR = spy(this);
-
         /* Return this localizer when we call LOCATOR.localizer() */
         LOCALIZER = mock(Localizer.class);
         LOCALIZED_TEXT = "Localized Result";
@@ -68,6 +66,8 @@ public class BaseLocatorTest implements BaseLocatorType {
 
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
+
+        LOCATOR = spy(this);
     }
 
     @BeforeMethod
