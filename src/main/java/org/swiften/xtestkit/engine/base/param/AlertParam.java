@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 
 /**
@@ -10,7 +10,7 @@ import org.swiften.xtestkit.engine.base.type.RetryType;
 
 /**
  * Parameter object for
- * {@link PlatformEngine#rxDismissAlert(AlertParam)}
+ * {@link BaseEngine#rxDismissAlert(AlertParam)}
  */
 public class AlertParam implements RetryType {
     @NotNull

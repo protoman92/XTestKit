@@ -10,8 +10,14 @@ public interface PlatformType {
     @NotNull String value();
 
     /**
+     * Specify the name for a id attribute. Generally should be 'id'.
+     * @return A {@link Attribute} instance.
+     */
+    Attribute idAttribute();
+
+    /**
      * Specify the name for a text attribute. Generally should be 'text'.
-      * @return A {@link Attribute} value.
+      * @return A {@link Attribute} instance.
      */
     @NotNull
     Attribute textAttribute();
@@ -19,7 +25,7 @@ public interface PlatformType {
     /**
      * Specify the name for a hint attribute. For e.g., on Android it could
      * be 'hint', while on iOS it could be 'placeholder'.
-     * @return A {@link Attribute} value.
+     * @return A {@link Attribute} instance.
      */
     @NotNull
     Attribute hintAttribute();
@@ -27,7 +33,7 @@ public interface PlatformType {
     /**
      * Specify the name for an enabled attribute. Generally should be
      * 'enabled'.
-     * @return A {@link String} value.
+     * @return A {@link String} instance.
      */
     @NotNull
     default Attribute enabledAttribute() {
@@ -37,7 +43,7 @@ public interface PlatformType {
     /**
      * Specify the name for a clickable attribute. Generally should be
      * 'clickable'.
-     * @return A {@link Attribute} value.
+     * @return A {@link Attribute} instance.
      */
     @NotNull
     default Attribute clickableAttribute() {
@@ -47,7 +53,7 @@ public interface PlatformType {
     /**
      * Specify the name for a editable attribute. Generally should be
      * 'editable'.
-     * @return A {@link Attribute} value.
+     * @return A {@link Attribute} instance.
      */
     @NotNull
     default Attribute editableAttribute() {

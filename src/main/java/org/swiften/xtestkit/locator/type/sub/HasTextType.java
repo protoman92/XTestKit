@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.locator.type.sub;
 
-import org.swiften.xtestkit.locator.type.base.TextType;
+import org.swiften.xtestkit.locator.type.base.StringType;
 
 /**
  * Created by haipham on 5/7/17.
@@ -10,4 +10,5 @@ import org.swiften.xtestkit.locator.type.base.TextType;
  * This interface is the base for locator operations that involve searching
  * for elements with text.
  */
-public interface HasTextType extends TextType {}
+@FunctionalInterface
+public interface HasTextType extends StringType {}

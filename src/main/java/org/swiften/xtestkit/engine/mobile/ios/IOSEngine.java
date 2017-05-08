@@ -1,18 +1,14 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.reactivex.Completable;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
-import org.swiften.xtestkit.engine.base.param.SwipeParam;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSDelayType;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.engine.mobile.Automation;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
-import org.swiften.xtestkit.engine.base.Platform;
+import org.swiften.xtestkit.engine.mobile.Platform;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
@@ -85,7 +81,7 @@ public class IOSEngine extends MobileEngine<
     /**
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see BaseEngine#rxBeforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
      */
@@ -109,7 +105,7 @@ public class IOSEngine extends MobileEngine<
     /**
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfterClass(AfterClassParam)
+     * @see BaseEngine#rxAfterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryType)
      * @see #startDriverOnlyOnce()
      * @see #rxStopDriver()
@@ -166,31 +162,6 @@ public class IOSEngine extends MobileEngine<
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
-    }
-    //endregion
-
-    //region Driver methods
-    /**
-     * @param PARAM A {@link SwipeActionType} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxSwipe(SwipeActionType)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxSwipe(@NotNull final SwipeActionType PARAM) {
-        final IOSDriver DRIVER = driver();
-
-        return Completable
-            .fromAction(
-                () -> DRIVER.swipe(
-                    PARAM.startX(),
-                    PARAM.startY(),
-                    PARAM.endX(),
-                    PARAM.endY(),
-                    PARAM.duration())
-            )
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
     }
     //endregion
 

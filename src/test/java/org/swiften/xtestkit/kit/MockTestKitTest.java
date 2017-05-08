@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.kit;
 
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.mobile.android.AndroidEngine;
 import org.swiften.xtestkit.engine.mobile.ios.IOSEngine;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -32,14 +32,14 @@ import static org.mockito.ArgumentMatchers.any;
  */
 public final class MockTestKitTest {
     @NotNull private final TestKit TEST_KIT;
-    @NotNull private final PlatformEngine ENGINE;
+    @NotNull private final BaseEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     {
-        /* Redirect all calls to PlatformEngine here and check that method
+        /* Redirect all calls to BaseEngine here and check that method
          * call counts are correct */
-        ENGINE = mock(PlatformEngine.class);
+        ENGINE = mock(BaseEngine.class);
 
         /* Return this when we call ENGINE.processRunner() */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
@@ -79,10 +79,10 @@ public final class MockTestKitTest {
     @SuppressWarnings("unchecked")
     public void test_distinctEngines_shouldReturnCorrectResults() {
         // Setup
-        PlatformEngine engine1 = mock(AndroidEngine.class);
-        PlatformEngine engine2 = mock(AndroidEngine.class);
-        PlatformEngine engine3 = mock(IOSEngine.class);
-        PlatformEngine engine4 = mock(IOSEngine.class);
+        BaseEngine engine1 = mock(AndroidEngine.class);
+        BaseEngine engine2 = mock(AndroidEngine.class);
+        BaseEngine engine3 = mock(IOSEngine.class);
+        BaseEngine engine4 = mock(IOSEngine.class);
 
         doReturn(Arrays.asList(
             engine1, engine2, engine3, engine4

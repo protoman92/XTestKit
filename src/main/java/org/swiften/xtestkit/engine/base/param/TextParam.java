@@ -1,18 +1,18 @@
 package org.swiften.xtestkit.engine.base.param;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.locator.type.base.TextType;
+import org.swiften.xtestkit.locator.type.base.StringType;
 
 /**
  * Created by haipham on 3/20/17.
  */
 
 /**
- * Parameter object for {@link PlatformEngine#rxElementsWithText(TextParam)}.
+ * Parameter object for {@link BaseEngine#rxElementsWithText(TextParam)}.
  */
-public class TextParam implements TextType, RetryType {
+public class TextParam implements StringType, RetryType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -28,10 +28,10 @@ public class TextParam implements TextType, RetryType {
 
     TextParam() {
         text = "";
-        ignoreCase = TextType.super.ignoreCase();
+        ignoreCase = StringType.super.ignoreCase();
     }
 
-    //region TextType.
+    //region StringType.
     @NotNull
     @Override
     public String value() {
@@ -69,7 +69,7 @@ public class TextParam implements TextType, RetryType {
 
         /**
          * Set the {@link #text} value.
-         * @param text The text to be used to element query.
+         * @param text The text to be used to query elements.
          * @return The current {@link Builder} instance.
          */
         @NotNull

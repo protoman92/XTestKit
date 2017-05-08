@@ -4,15 +4,16 @@ package org.swiften.xtestkit.engine.base;
  * Created by haipham on 3/19/17.
  */
 
+import org.openqa.selenium.*;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
+import org.swiften.xtestkit.engine.base.capability.CapType;
 import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.type.*;
+import org.swiften.xtestkit.engine.mobile.*;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.locator.xpath.XPath;
-import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.NetworkHandler;
@@ -23,9 +24,6 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
@@ -42,7 +40,7 @@ import java.util.function.Predicate;
  * A base class for platform-specific implementations. Each Different platform
  * should extend this class and provide its own wrappers for Appium methods.
  */
-public abstract class PlatformEngine<T extends WebDriver> implements
+public abstract class BaseEngine<T extends WebDriver> implements
     PlatformDelayType,
     DistinctiveType,
     PlatformErrorType,
@@ -55,14 +53,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     @Nullable private T driver;
     @Nullable PlatformView platformView;
-    @Nullable TestCapabilityType capability;
+    @Nullable
+    CapType capability;
 
     @NotNull String browserName;
     @NotNull String platformName;
     @NotNull ServerAddress serverAddress;
     @NotNull TestMode testMode;
 
-    public PlatformEngine() {
+    public BaseEngine() {
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
         browserName = "";
@@ -115,7 +114,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * This method will be called by
      * {@link TestKit#rxBeforeClass(BeforeClassParam)}.
-     * Subclasses of {@link PlatformEngine} should provide their own
+     * Subclasses of {@link BaseEngine} should provide their own
      * implementations.
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
@@ -133,7 +132,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * This method will be called by
      * {@link TestKit#rxAfterClass(AfterClassParam)}.
-     * Subclasses of {@link PlatformEngine} should provide their own
+     * Subclasses of {@link BaseEngine} should provide their own
      * implementations.
      * @param param An {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
@@ -169,7 +168,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * This method will be
      * called by {@link TestKit#rxBeforeMethod(BeforeParam)}.
-     * Subclasses of {@link PlatformEngine} should provide their own
+     * Subclasses of {@link BaseEngine} should provide their own
      * implementations.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
@@ -182,7 +181,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * This method will be called by {@link TestKit#rxAfterMethod(AfterParam)}.
-     * Subclasses of {@link PlatformEngine} should provide their own
+     * Subclasses of {@link BaseEngine} should provide their own
      * implementations.
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
@@ -308,7 +307,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //endregion
 
     //region Getters
-    public TestCapabilityType capabilityType() {
+    public CapType capabilityType() {
         if (ObjectUtil.nonNull(capability)) {
             return capability;
         } else {
@@ -353,19 +352,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
 
     /**
-     * Return a {@link Platform} instance based on {@link #platformName()}.
-     * @return A {@link Platform} instance.
+     * Return a {@link PlatformType} instance based on {@link #platformName()}.
+     * @return A {@link org.swiften.xtestkit.engine.mobile.Platform} instance.
      * @see #platformName()
      */
     @NotNull
-    public Platform platform() {
-        Optional<Platform> platform = Platform.fromValue(platformName());
-
-        if (platform.isPresent()) {
-            return platform.get();
-        } else {
-            throw new RuntimeException(PLATFORM_UNAVAILABLE);
-        }
+    public PlatformType platform() {
+        throw new RuntimeException(PLATFORM_UNAVAILABLE);
     }
 
     /**
@@ -472,17 +465,17 @@ public abstract class PlatformEngine<T extends WebDriver> implements
                                 @NotNull DesiredCapabilities caps);
 
     /**
-     * Start the Appium driver. If {@link TestCapabilityType#isComplete(Map)}
+     * Start the Appium driver. If {@link CapType#isComplete(Map)}
      * returns false, throw an {@link Exception}.
      * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
-     * @see TestCapabilityType#isComplete(Map)
-     * @see TestCapabilityType#distill(Map)
+     * @see CapType#isComplete(Map)
+     * @see CapType#distill(Map)
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
     public Flowable<Boolean> rxStartDriver(@NotNull final RetryType PARAM) {
-        TestCapabilityType capType = capabilityType();
+        CapType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
         if (capType.isComplete(caps)) {
@@ -517,45 +510,41 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     //region Device Methods
     /**
      * Navigate backwards for certain number of times.
-     * @param param A {@link NavigateBack} object.
+     * @param param A {@link RepeatableType} object.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxNavigateBack(@NotNull NavigateBack param) {
+    public Flowable<Boolean> rxNavigateBack(@NotNull RepeatableType param) {
         final T DRIVER = driver();
         final int TIMES = param.times();
-
-        @SuppressWarnings("WeakerAccess")
         final long DELAY = param.delay();
-
         final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
 
-        class Back {
+        class PerformBack {
             /**
              * Loop the operation until a stopping point is reached.
              * finished navigating back x times.
              */
             @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Completable back(final int ITERATION) {
+            private Completable back(final int ITERATION) {
                 if (ITERATION < TIMES) {
                     return Completable
                         .fromAction(NAVIGATION::back)
                         .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .andThen(new Back().back(ITERATION + 1));
+                        .andThen(new PerformBack().back(ITERATION + 1));
                 }
 
                 return Completable.complete();
             }
         }
 
-        return new Back().back(0).<Boolean>toFlowable().defaultIfEmpty(true);
+        return new PerformBack().back(0).<Boolean>toFlowable().defaultIfEmpty(true);
     }
 
     /**
      * Same as above, but uses a default {@link NavigateBack} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(NavigateBack)
+     * @see #rxNavigateBack(RepeatableType)
      */
     @NotNull
     public Flowable<Boolean> rxNavigateBackOnce() {
@@ -570,14 +559,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxDismissAlert(@NotNull final AlertParam PARAM) {
-        return Flowable.just(driver().switchTo().alert())
-            .flatMapCompletable(a -> Completable.fromAction(() -> {
+        final Alert ALERT = driver().switchTo().alert();
+
+        return Completable.fromAction(() -> {
                 if (PARAM.shouldAccept()) {
-                    a.accept();
+                    ALERT.accept();
                 } else {
-                    a.dismiss();
+                    ALERT.dismiss();
                 }
-            }))
+            })
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
@@ -611,7 +601,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxSwipe(@NotNull SwipeActionType param) {
+    public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeActionType param) {
         return Flowable.just(true);
     }
 
@@ -622,9 +612,115 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    public <P extends RepeatableType & SwipeActionType> Flowable<Boolean>
-    rxSwipe(@NotNull P param) {
-        return Flowable.just(true);
+    public <P extends RepeatableType & SwipeActionType>
+    Flowable<Boolean> rxSwipe(@NotNull P param) {
+        LogUtil.printf("Performing swipe - %s", param);
+        final Flowable<Boolean> SWIPE = rxSwipeOnce(param);
+        final int TIMES = param.times();
+        final long DELAY = param.delay();
+        final TimeUnit UNIT = param.timeUnit();
+
+        class PerformSwipe {
+            @NotNull
+            private Flowable<Boolean> swipe(final int ITERATION) {
+                if (ITERATION < TIMES) {
+                    return SWIPE
+                        .delay(DELAY, UNIT)
+                        .flatMap(a -> new PerformSwipe().swipe(ITERATION + 1));
+                }
+
+                return Flowable.empty();
+            }
+        }
+
+        return new PerformSwipe().swipe(0).defaultIfEmpty(true);
+    }
+
+    /**
+     * Perform a generic unidirectional swipe. This can be used anywhere a non-
+     * full swipe is required.
+     * @param param A {@link P} instance.
+     * @param <P> Generics parameter.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    private <P extends DurationType & UnidirectionType & RepeatableType>
+    Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
+        Dimension size = driver().manage().window().getSize();
+        double height = size.height, width = size.width;
+        int startX, endX, startY, endY;
+        double startRatio = 0.3d, endRatio = 0.7d;
+
+        int lowX = (int)(width * startRatio);
+        int midX = (int)(width / 2);
+        int highX = (int)(width * endRatio);
+        int lowY = (int)(height * startRatio);
+        int midY = (int)(height / 2);
+        int highY = (int)(height * endRatio);
+
+        switch (param.direction()) {
+            case LEFT_RIGHT:
+                startX = lowX;
+                endX = highX;
+                startY = endY = midY;
+                break;
+
+            case RIGHT_LEFT:
+                startX = highX;
+                endX = lowX;
+                startY = endY = midY;
+                break;
+
+            default:
+                return Flowable.error(new Exception(WRONG_DIRECTION));
+        }
+
+        SwipeParam swipeParam = SwipeParam.builder()
+            .withStartX(startX)
+            .withStartY(startY)
+            .withEndX(endX)
+            .withEndY(endY)
+            .withRepeatableType(param)
+            .withDurationType(param)
+            .build();
+
+        return rxSwipe(swipeParam);
+    }
+
+    /**
+     * Perform a generic horizontal swipe motion from left to right.
+     * @param param A {@link P} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxSwipe(RepeatableType)
+     */
+    @NotNull
+    public <P extends DurationType & RepeatableType>
+    Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
+        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
+            .withDirection(UnidirectionType.Unidirection.LEFT_RIGHT)
+            .withRepeatableType(param)
+            .withDurationType(param)
+            .build();
+
+        return rxSwipeGenericUnidirectional(uniParam);
+    }
+
+    /**
+     * Perform a generic horizontal swipe motion from right to left.
+     * @param param A {@link RepeatableType} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxSwipe(RepeatableType)
+     */
+    @NotNull
+    public <P extends DurationType & RepeatableType>
+    Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
+        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
+            .withDirection(UnidirectionType.Unidirection.RIGHT_LEFT)
+            .withRepeatableType(param)
+            .withDurationType(param)
+            .build();
+
+        return rxSwipeGenericUnidirectional(uniParam);
     }
     //endregion
 
@@ -669,6 +765,60 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .flatMap(Flowable::fromIterable)
             .switchIfEmpty(Flowable.error(new Exception(ERROR)))
             .retry(param.retries());
+    }
+    //endregion
+
+    //region With ID
+    /**
+     * Get all {@link ViewType} elements whose IDs contain a certain
+     * {@link String}.
+     * @param param An {@link IdParam} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsByXPath(ByXPath)
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementsContainingID(@NotNull IdParam param) {
+        XPath xPath = newXPathBuilder().containsID(param).build();
+
+        ByXPath query = ByXPath.builder()
+            .withXPath(xPath)
+            .withError(noElementsWithId(param.value()))
+            .withRetryType(param)
+            .build();
+
+        return rxElementsByXPath(query);
+    }
+
+    /**
+     * Same as above, but uses a default {@link IdParam}.
+     * @param id A {@link String} value.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementsContainingID(@NotNull String id) {
+        IdParam param = IdParam.builder().withId(id).build();
+        return rxElementsContainingID(param);
+    }
+
+    /**
+     * Get an element whose ID contains a certain {@link String}.
+     * @param param An {@link IdParam} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementContainingID(@NotNull IdParam param) {
+        return rxElementsContainingID(param).firstElement().toFlowable();
+    }
+
+    /**
+     * Same as above, but uses a default {@link IdParam}.
+     * @param id A {@link String} value.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<WebElement> rxElementContainingID(@NotNull String id) {
+        IdParam param = IdParam.builder().withId(id).build();
+        return rxElementContainingID(param);
     }
     //endregion
 
@@ -935,15 +1085,15 @@ public abstract class PlatformEngine<T extends WebDriver> implements
 
     //region Builder
     /**
-     * Builder class for {@link PlatformEngine}.
-     * @param <T> Generics parameter that extends {@link PlatformEngine}.
+     * Builder class for {@link BaseEngine}.
+     * @param <T> Generics parameter that extends {@link BaseEngine}.
      */
-    public static abstract class Builder<T extends PlatformEngine> {
+    public static abstract class Builder<T extends BaseEngine> {
         @NotNull final protected T ENGINE;
-        @NotNull final protected TestCapabilityType.Builder CAP_BUILDER;
+        @NotNull final protected CapType.Builder CAP_BUILDER;
 
         protected Builder(@NotNull T engine,
-                          @NotNull TestCapabilityType.Builder capBuilder) {
+                          @NotNull CapType.Builder capBuilder) {
             ENGINE = engine;
             CAP_BUILDER = capBuilder;
         }
@@ -984,13 +1134,13 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         }
 
         /**
-         * Same as above, but use a {@link Platform} instance.
-         * @param platform A {@link Platform} instance.
+         * Same as above, but use a {@link org.swiften.xtestkit.engine.mobile.Platform} instance.
+         * @param platform A {@link PlatformType} instance.
          * @return The current {@link MobileEngine.Builder} instance.
-         * @see TestCapabilityType.Builder#withPlatform(Platform)
+         * @see CapType.Builder#withPlatform(PlatformType)
          */
         @NotNull
-        public Builder<T> withPlatform(@NotNull Platform platform) {
+        public Builder<T> withPlatform(@NotNull PlatformType platform) {
             ENGINE.platformName =  platform.value();
             CAP_BUILDER.withPlatform(platform);
             return this;
@@ -1001,7 +1151,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
          * which test environment to be used.
          * @param mode A {@link TestMode} instance.
          * @return The current {@link Builder} instance.
-         * @see TestCapabilityType.Builder#withTestMode(TestMode)
+         * @see CapType.Builder#withTestMode(TestMode)
          */
         @NotNull
         public Builder<T> withTestMode(@NotNull TestMode mode) {

@@ -5,7 +5,7 @@ package org.swiften.xtestkit.locator.xpath;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.Platform;
+import org.swiften.xtestkit.engine.mobile.Platform;
 
 import java.util.ArrayList;
 import java.util.List;

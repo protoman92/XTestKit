@@ -12,7 +12,7 @@
 
     <test name="Base Platform Test">
         <classes>
-            <class name="org.swiften.xtestkit.engine.base.PlatformEngineTest"/>
+            <class name="org.swiften.xtestkit.engine.base.BaseEngineTest"/>
         </classes>
     </test>
 

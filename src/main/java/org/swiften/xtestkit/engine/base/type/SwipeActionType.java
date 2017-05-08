@@ -12,5 +12,8 @@ public interface SwipeActionType {
     int startY();
     int endX();
     int endY();
-    int duration();
+
+    default int duration() {
+        return 1000;
+    }
 }

@@ -1,19 +1,18 @@
 package org.swiften.xtestkit.engine.base.param;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.locator.type.base.TextType;
+import org.swiften.xtestkit.locator.type.base.StringType;
 
 /**
  * Created by haipham on 3/20/17.
  */
 
 /**
- * Parameter object for {@link PlatformEngine#rxElementsWithHint(HintParam)}
+ * Parameter object for {@link BaseEngine#rxElementsWithHint(HintParam)}
  */
-public class HintParam implements TextType, RetryType {
+public class HintParam implements StringType, RetryType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -29,10 +28,10 @@ public class HintParam implements TextType, RetryType {
 
     HintParam() {
         hint = "";
-        ignoreCase = TextType.super.ignoreCase();
+        ignoreCase = StringType.super.ignoreCase();
     }
 
-    //region TextType
+    //region StringType
     @NotNull
     @Override
     public String value() {
@@ -70,7 +69,7 @@ public class HintParam implements TextType, RetryType {
 
         /**
          * Set the {@link #PARAM##hint} value.
-         * @param hint The hint to be used to element query.
+         * @param hint The hint to be used to query elements.
          * @return The current {@link Builder} instance.
          */
         @NotNull

@@ -6,7 +6,7 @@ package org.swiften.xtestkit.engine.mobile.ios;
 
 import org.swiften.xtestkit.engine.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.Platform;
+import org.swiften.xtestkit.engine.mobile.Platform;
 
 /**
  * Provide {@link Platform#IOS} {@link org.swiften.xtestkit.engine.base.type.ViewType}

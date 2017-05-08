@@ -8,7 +8,7 @@ import org.swiften.xtestkit.locator.type.base.StringType;
 
 /**
  * This interface is the base for locator operations that involve searching
- * for elements containing text.
+ * for elements with id.
  */
 @FunctionalInterface
-public interface ContainsHintType extends StringType {}
+public interface ContainsIDType extends StringType {}

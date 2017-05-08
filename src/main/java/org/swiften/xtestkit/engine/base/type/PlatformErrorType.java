@@ -1,12 +1,12 @@
 package org.swiften.xtestkit.engine.base.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.capability.TestCapabilityErrorType;
+import org.swiften.xtestkit.engine.base.capability.CapErrorType;
 
 /**
  * Created by haipham on 3/19/17.
  */
-public interface PlatformErrorType extends TestCapabilityErrorType {
+public interface PlatformErrorType extends CapErrorType {
     String APPIUM_NOT_INSTALLED = "Appium not installed";
     String CAPABILITY_UNAVAILABLE = "Capability unavailable";
     String DRIVER_UNAVAILABLE = "Driver unavailable";
@@ -15,6 +15,12 @@ public interface PlatformErrorType extends TestCapabilityErrorType {
     String INSUFFICIENT_SETTINGS = "Insufficient settings";
     String NO_EDITABLE_ELEMENTS = "No editable elements";
     String NO_SUCH_ELEMENT = "No such element";
+    String WRONG_DIRECTION = "Wrong direction";
+
+    @NotNull
+    default String noElementsWithId(@NotNull String id) {
+        return String.format("No elements with id: %s", id);
+    }
 
     @NotNull
     default String noElementsWithText(@NotNull String text) {

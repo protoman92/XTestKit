@@ -10,4 +10,5 @@ import org.swiften.xtestkit.locator.type.base.BooleanType;
  * This interface is the base for locator operations that search for editable
  * elements.
  */
+@FunctionalInterface
 public interface EditableType extends BooleanType {}

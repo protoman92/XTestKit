@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.base;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.xtestkit.engine.base.capability.BaseCap;
-import org.swiften.xtestkit.engine.base.capability.TestCapabilityType;
+import org.swiften.xtestkit.engine.base.capability.CapType;
 import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
@@ -39,13 +39,13 @@ import java.util.stream.Collectors;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class PlatformEngineTest implements PlatformErrorType {
+public final class BaseEngineTest implements PlatformErrorType {
     @NotNull private final WebDriver DRIVER;
-    @NotNull private final TestCapabilityType CAPABILITY;
+    @NotNull private final CapType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final PlatformEngine.TextDelegate LOCALIZER;
+    @NotNull private final BaseEngine.TextDelegate LOCALIZER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
@@ -60,7 +60,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
             .build());
 
         /* Return this capability when we cann ENGINE.capabilityType() */
-        CAPABILITY = mock(TestCapabilityType.class);
+        CAPABILITY = mock(CapType.class);
 
         /* Return this processRunner when we call ENGINE.processRunner() */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
@@ -71,7 +71,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         NETWORK_HANDLER = spy(NetworkHandler.builder().build());
 
         /* Return this localizer when we call ENGINE.localizer() */
-        LOCALIZER = mock(PlatformEngine.TextDelegate.class);
+        LOCALIZER = mock(BaseEngine.TextDelegate.class);
         LOCALIZED_TEXT = "Localized Result";
 
         /* We initialize a driver here in order to access a common mock that
@@ -400,31 +400,6 @@ public final class PlatformEngineTest implements PlatformErrorType {
     //region Navigate Back
     @Test
     @SuppressWarnings("unchecked")
-    public void test_navigateBackWithNoDriver_shouldThrow() {
-        // Setup
-        doThrow(new RuntimeException(DRIVER_UNAVAILABLE))
-            .when(ENGINE)
-            .driver();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        NavigateBack param = NavigateBack.builder()
-            .withTimes(1)
-            .build();
-
-        // When
-        ENGINE.rxNavigateBack(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
-        subscriber.assertNoValues();
-        subscriber.assertNotComplete();
-        verify(DRIVER, never()).navigate();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void test_navigateBack_shouldSucceed() {
         // Setup
         int times = NumberTestUtil.randomBetween(1, 5);
@@ -448,6 +423,30 @@ public final class PlatformEngineTest implements PlatformErrorType {
         verify(ENGINE).rxNavigateBack(any());
         verify(ENGINE).driver();
         verify(NAVIGATION, times(times)).back();
+        verifyNoMoreInteractions(ENGINE);
+    }
+    //endregion
+
+    //region Swipe
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_swipe_shouldSucceed() {
+        // Setup
+        int times = NumberTestUtil.randomBetween(1, 5);
+        SwipeParam param = SwipeParam.builder().withDelay(100).build();
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ENGINE.rxSwipe(param).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        verify(ENGINE).rxSwipe(any());
+        verify(ENGINE).rxSwipeOnce(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion
@@ -521,7 +520,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(TextParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementsWithText(param).subscribe(subscriber);
@@ -540,7 +540,9 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(TextParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
+        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         when(DRIVER.findElements(any(By.ByXPath.class)))
             .thenReturn(Collections.emptyList());
@@ -562,7 +564,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(TextParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementWithText(param).subscribe(subscriber);
@@ -584,7 +587,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(TextParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementsContainingText(param).subscribe(subscriber);
@@ -647,7 +651,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(HintParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementsWithHint(param).subscribe(subscriber);
@@ -666,10 +671,9 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        when(param.value()).thenReturn("");
-
-        when(DRIVER.findElements(any(By.ByXPath.class)))
-            .thenReturn(Collections.emptyList());
+        doReturn(mock(HintParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
+        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
         ENGINE.rxElementWithHint(param).subscribe(subscriber);
@@ -688,7 +692,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(HintParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementWithHint(param).subscribe(subscriber);
@@ -710,7 +715,8 @@ public final class PlatformEngineTest implements PlatformErrorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        when(param.value()).thenReturn("");
+        doReturn(mock(HintParam.class)).when(param).withNewText(any());
+        doReturn("").when(param).value();
 
         // When
         ENGINE.rxElementsContainingHint(param).subscribe(subscriber);
@@ -787,7 +793,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
         }
     }
 
-    static class MockEngine extends PlatformEngine<WebDriver> {
+    static class MockEngine extends BaseEngine<WebDriver> {
         @NotNull
         @Override
         protected WebDriver driver(@NotNull String serverUrl,
@@ -812,7 +818,7 @@ public final class PlatformEngineTest implements PlatformErrorType {
             return XPath.builder(platform);
         }
 
-        static final class Builder extends PlatformEngine.Builder<MockEngine> {
+        static final class Builder extends BaseEngine.Builder<MockEngine> {
             Builder() {
                 super(new MockEngine(), new MockCap.Builder());
             }

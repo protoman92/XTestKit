@@ -5,12 +5,12 @@ package org.swiften.xtestkit.kit.param;
  */
 
 import org.swiften.xtestkit.engine.base.type.IndexType;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Parameter object for {@link PlatformEngine}
+ * Parameter object for {@link BaseEngine}
  */
 public class AfterClassParam implements IndexType, RetryType {
     @NotNull public static AfterClassParam DEFAULT;

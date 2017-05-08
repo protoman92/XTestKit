@@ -5,7 +5,7 @@ package org.swiften.xtestkit.test;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.kit.TestKit;
 
 /**
@@ -19,14 +19,14 @@ public interface BaseTestType {
     @NotNull TestKit testKit();
 
     /**
-     * Get the current {@link org.swiften.xtestkit.engine.base.PlatformEngine}
+     * Get the current {@link BaseEngine}
      * index.
      * @return An {@link Integer} value.
      */
     int currentIndex();
 
     @NotNull
-    default PlatformEngine currentEngine() {
+    default BaseEngine currentEngine() {
         TestKit testKit = testKit();
         int index = currentIndex();
         return testKit.engine(index);

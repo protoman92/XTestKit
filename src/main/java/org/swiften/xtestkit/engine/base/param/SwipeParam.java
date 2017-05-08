@@ -6,12 +6,14 @@ package org.swiften.xtestkit.engine.base.param;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.engine.base.BaseEngine;
+import org.swiften.xtestkit.engine.base.type.DurationType;
 import org.swiften.xtestkit.engine.base.type.RepeatableType;
 import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.engine.base.PlatformEngine#rxSwipe(SwipeParam)}
+ * {@link BaseEngine#rxSwipe(RepeatableType)}
  */
 public class SwipeParam implements RepeatableType, SwipeActionType {
     /**
@@ -30,6 +32,23 @@ public class SwipeParam implements RepeatableType, SwipeActionType {
     private int duration;
     private int times;
     private long delay;
+
+    SwipeParam() {
+        delay = RepeatableType.super.delay();
+        duration = SwipeActionType.super.duration();
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "startX %1$d, endX %2$d, startY %3$s, endY %4$s. Duration %5$d",
+            startX(),
+            endX(),
+            startY(),
+            endY(),
+            duration()
+        );
+    }
 
     //region Getters
     public int startX() {
@@ -147,6 +166,26 @@ public class SwipeParam implements RepeatableType, SwipeActionType {
         public Builder withDelay(long delay) {
             PARAM.delay = delay;
             return this;
+        }
+
+        /**
+         * Set {@link #times} and {@link #delay}.
+         * @param type A {@link RepeatableType} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withRepeatableType(@NotNull RepeatableType type) {
+            return withTimes(type.times()).withDelay(type.delay());
+        }
+
+        /**
+         * Set {@link #duration}.
+         * @param type A {@link DurationType} instance.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withDurationType(@NotNull DurationType type) {
+            return withDuration(type.duration());
         }
 
         @NonNull

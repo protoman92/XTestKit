@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.base.param;
 
-import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.swiften.xtestkit.locator.xpath.XPath;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 /**
- * Parameter object for {@link PlatformEngine#rxElementsByXPath(ByXPath)}.
+ * Parameter object for {@link BaseEngine#rxElementsByXPath(ByXPath)}.
  */
 public class ByXPath implements RetryType {
     @NotNull

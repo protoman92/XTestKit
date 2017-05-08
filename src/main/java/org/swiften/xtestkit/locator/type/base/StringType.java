@@ -5,9 +5,10 @@ package org.swiften.xtestkit.locator.type.base;
  */
 
 /**
- * This interface is the base for text-related locator operations.
+ * This interface is the base for {@link String}-related locator operations.
  */
-public interface TextType extends AttributeType<String> {
+@FunctionalInterface
+public interface StringType extends AttributeType<String> {
     /**
      * Check whether the locator should ignore case while looking for a
      * particular text.

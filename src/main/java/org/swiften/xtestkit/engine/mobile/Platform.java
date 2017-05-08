@@ -1,6 +1,7 @@
-package org.swiften.xtestkit.engine.base;
+package org.swiften.xtestkit.engine.mobile;
 
 import org.swiften.xtestkit.engine.base.type.PlatformType;
+import org.swiften.xtestkit.locator.type.base.AttributeType;
 import org.swiften.xtestkit.locator.xpath.Attribute;
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import java.util.Optional;
 /**
  * Created by haipham on 3/20/17.
  */
-public enum Platform implements PlatformType {
+public enum Platform implements PlatformType, AttributeType<String> {
     ANDROID,
     IOS;
 
@@ -54,6 +55,7 @@ public enum Platform implements PlatformType {
             .findFirst();
     }
 
+    //region AttributeType
     @NotNull
     @Override
     public String value() {
@@ -66,6 +68,20 @@ public enum Platform implements PlatformType {
 
             default:
                 return "";
+        }
+    }
+    //endregion
+
+    //region PlatformType
+    @NotNull
+    @Override
+    public Attribute idAttribute() {
+        switch (this) {
+            case ANDROID:
+                return Attribute.withSingleAttribute("resource-id");
+
+            default:
+                return Attribute.BLANK;
         }
     }
 
@@ -104,4 +120,5 @@ public enum Platform implements PlatformType {
                 return Attribute.BLANK;
         }
     }
+    //endregion
 }

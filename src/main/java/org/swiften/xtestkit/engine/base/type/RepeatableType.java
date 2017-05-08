@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to repeat an action.
  */
+@FunctionalInterface
 public interface RepeatableType {
     /**
      * Get the number of times to repeat an action.
@@ -23,7 +24,7 @@ public interface RepeatableType {
      * @return A {@link Long} value.
      */
     default long delay() {
-        return 500;
+        return 0;
     }
 
     /**

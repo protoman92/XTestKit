@@ -5,25 +5,25 @@ package org.swiften.xtestkit.engine.base.capability;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.string.StringUtil;
-import org.swiften.xtestkit.engine.base.Platform;
+import org.swiften.xtestkit.engine.base.BaseEngine;
+import org.swiften.xtestkit.engine.mobile.Platform;
 import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.base.type.PlatformType;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Implement this interface to selectively provide capabilities for
- * {@link org.swiften.xtestkit.engine.base.PlatformEngine}.
+ * {@link BaseEngine}.
  */
-public interface TestCapabilityType {
+public interface CapType {
     /**
      * Get the {@link Platform} for which we are getting capabilities.
      * @return A {@link Platform} instance.
      */
     @NotNull
-    Platform platform();
+    PlatformType platform();
 
     /**
      * Get the {@link TestMode} for which we are getting capabilities.
@@ -54,7 +54,7 @@ public interface TestCapabilityType {
 
     /**
      * Get all required capabilities from a {@link Map} of capabilities,
-     * taking into account the {@link org.swiften.xtestkit.engine.base.Platform}
+     * taking into account the {@link Platform}
      * and other information.
      * @param capabilities A {@link Map} that contains all available
      *                     capabilities.
@@ -64,7 +64,7 @@ public interface TestCapabilityType {
     Map<String,Object> distill(@NotNull Map<String,Object> capabilities);
 
     /**
-     * Builder class for {@link TestCapabilityType}.
+     * Builder class for {@link CapType}.
      */
     interface Builder {
         /**
@@ -72,7 +72,7 @@ public interface TestCapabilityType {
          * @param platform A {@link Platform} instance.
          * @return The current {@link Builder} instance.
          */
-        Builder withPlatform(@NotNull Platform platform);
+        Builder withPlatform(@NotNull PlatformType platform);
 
         /**
          * Set the {@link #testMode} instance.
@@ -82,9 +82,9 @@ public interface TestCapabilityType {
         Builder withTestMode(@NotNull TestMode testMode);
 
         /**
-         * Return a {@link TestCapabilityType} instance.
-         * @return A {@link TestCapabilityType} instance.
+         * Return a {@link CapType} instance.
+         * @return A {@link CapType} instance.
          */
-        TestCapabilityType build();
+        CapType build();
     }
 }

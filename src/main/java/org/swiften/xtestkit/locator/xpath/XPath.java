@@ -4,8 +4,7 @@ import io.reactivex.annotations.NonNull;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.locator.type.base.AttributeType;
-import org.swiften.xtestkit.locator.type.base.BooleanType;
-import org.swiften.xtestkit.locator.type.base.TextType;
+import org.swiften.xtestkit.locator.type.base.StringType;
 import org.swiften.xtestkit.locator.type.sub.*;
 
 import java.util.List;
@@ -87,9 +86,57 @@ public class XPath {
         }
 
         /**
+         * Append a contains(@id) attribute.
+         * @param containsID A {@link ContainsID} instance.
+         * @return The current {@link Builder} instance.
+         * @see ContainsID#format()
+         */
+        @NotNull
+        public Builder containsID(@NotNull ContainsID containsID) {
+            Attribute attribute = PLATFORM.idAttribute();
+            String format = containsID.format();
+            return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses a default {@link ContainsID} instance.
+         * @param STRING_TYPE A {@link StringType} instance.
+         * @return The current {@link Builder} instance.
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
+         * @see #containsID(ContainsID)
+         */
+        @NotNull
+        public Builder containsID(@NotNull final StringType STRING_TYPE) {
+            return containsID(new ContainsID() {
+                @Override
+                public String value() {
+                    return STRING_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return STRING_TYPE.ignoreCase();
+                }
+            });
+        }
+
+        /**
+         * Same as above, but uses a default {@link ContainsID} instance.
+         * @param ID A {@link String} value.
+         * @return The current {@link Builder} instance.
+         * @see #containsID(ContainsID)
+         */
+        @NotNull
+        public Builder containsID(@NotNull final String ID) {
+            return containsID(() -> ID);
+        }
+
+        /**
          * Appends a @text attribute.
          * @param hasText A {@link HasText} instance.
          * @return The current {@link Builder} instance.
+         * @see HasText#format()
          */
         @NotNull
         public Builder hasText(@NotNull HasText hasText) {
@@ -100,23 +147,24 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link TextType} instance.
-         * @param TEXT_TYPE A {@link TextType} instance.
+         * based on properties from a {@link StringType} instance.
+         * @param STRING_TYPE A {@link StringType} instance.
          * @return The current {@link Builder} instance.
-         * @see TextType#value()
-         * @see TextType#ignoreCase()
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
+         * @see #hasText(HasText)
          */
         @NotNull
-        public Builder hasText(@NotNull final TextType TEXT_TYPE) {
+        public Builder hasText(@NotNull final StringType STRING_TYPE) {
             return hasText(new HasText() {
                 @Override
                 public String value() {
-                    return TEXT_TYPE.value();
+                    return STRING_TYPE.value();
                 }
 
                 @Override
                 public boolean ignoreCase() {
-                    return TEXT_TYPE.ignoreCase();
+                    return STRING_TYPE.ignoreCase();
                 }
             });
         }
@@ -125,6 +173,7 @@ public class XPath {
          * Same as above, but uses a {@link HasText} instance.
          * @param TEXT The text to be appended.
          * @return The current {@link Builder} instance.
+         * @see #hasText(HasText)
          */
         @NotNull
         public Builder hasText(@NotNull final String TEXT) {
@@ -135,6 +184,7 @@ public class XPath {
          * Appends a contains(@text) attribute.
          * @param containsText A {@link ContainsText} instance.
          * @return The current {@link Builder} instance.
+         * @see ContainsText#format()
          */
         @NotNull
         public Builder containsText(@NotNull ContainsText containsText) {
@@ -145,23 +195,24 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link TextType} instance.
-         * @param TEXT_TYPE A {@link TextType} instance.
+         * based on properties from a {@link StringType} instance.
+         * @param STRING_TYPE A {@link StringType} instance.
          * @return The current {@link Builder} instance.
-         * @see TextType#value()
-         * @see TextType#ignoreCase()
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
+         * @see #containsText(ContainsText)
          */
         @NotNull
-        public Builder containsText(@NotNull final TextType TEXT_TYPE) {
+        public Builder containsText(@NotNull final StringType STRING_TYPE) {
             return containsText(new ContainsText() {
                 @Override
                 public String value() {
-                    return TEXT_TYPE.value();
+                    return STRING_TYPE.value();
                 }
 
                 @Override
                 public boolean ignoreCase() {
-                    return TEXT_TYPE.ignoreCase();
+                    return STRING_TYPE.ignoreCase();
                 }
             });
         }
@@ -170,6 +221,7 @@ public class XPath {
          * Same as above, but uses a default {@link ContainsText} instance.
          * @param TEXT The text to be appended.
          * @return The current {@link Builder} instance.
+         * @see #containsText(ContainsText)
          */
         @NotNull
         public Builder containsText(@NotNull final String TEXT) {
@@ -181,6 +233,7 @@ public class XPath {
          * since on iOS this may be called a placeholder.
          * @param hasHint A {@link HasHint} instance.
          * @return The current {@link Builder} instance.
+         * @see HasHint#format()
          */
         @NotNull
         public Builder hasHint(@NotNull HasHint hasHint) {
@@ -191,23 +244,24 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link TextType} instance.
-         * @param TEXT_TYPE A {@link TextType} instance.
+         * based on properties from a {@link StringType} instance.
+         * @param STRING_TYPE A {@link StringType} instance.
          * @return The current {@link Builder} instance.
-         * @see TextType#value()
-         * @see TextType#ignoreCase()
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
+         * @see #hasHint(HasHint)
          */
         @NotNull
-        public Builder hasHint(@NotNull final TextType TEXT_TYPE) {
+        public Builder hasHint(@NotNull final StringType STRING_TYPE) {
             return hasHint(new HasHint() {
                 @Override
                 public String value() {
-                    return TEXT_TYPE.value();
+                    return STRING_TYPE.value();
                 }
 
                 @Override
                 public boolean ignoreCase() {
-                    return TEXT_TYPE.ignoreCase();
+                    return STRING_TYPE.ignoreCase();
                 }
             });
         }
@@ -216,6 +270,7 @@ public class XPath {
          * Same as above, but uses a default {@link HasHint} instance.
          * @param HINT The hint to be appended.
          * @return The current {@link Builder} instance.
+         * @see #hasHint(HasHint)
          */
         @NotNull
         public Builder hasHint(@NotNull final String HINT) {
@@ -237,23 +292,23 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link TextType} instance.
-         * @param TEXT_TYPE A {@link TextType} instance.
+         * based on properties from a {@link StringType} instance.
+         * @param STRING_TYPE A {@link StringType} instance.
          * @return The current {@link Builder} instance.
-         * @see TextType#value()
-         * @see TextType#ignoreCase()
+         * @see StringType#value()
+         * @see StringType#ignoreCase()
          */
         @NotNull
-        public Builder containsHint(@NotNull final TextType TEXT_TYPE) {
+        public Builder containsHint(@NotNull final StringType STRING_TYPE) {
             return containsHint(new ContainsHint() {
                 @Override
                 public String value() {
-                    return TEXT_TYPE.value();
+                    return STRING_TYPE.value();
                 }
 
                 @Override
                 public boolean ignoreCase() {
-                    return TEXT_TYPE.ignoreCase();
+                    return STRING_TYPE.ignoreCase();
                 }
             });
         }
@@ -346,6 +401,7 @@ public class XPath {
      * Classes that implement this interface must provide an XPath format
      * that can be used to construct attributes.
      */
+    @FunctionalInterface
     private interface Formattable<T> extends AttributeType<T> {
         /**
          * Get the format {@link String} with which we construct an XPath
@@ -368,7 +424,8 @@ public class XPath {
      * lowercase. This way, it does not matter where the text is capitalized;
      * it will be standardized and subsequently can be searched.
      */
-    private interface ContainsIgnoreCase extends TextType, Formattable<String> {
+    @FunctionalInterface
+    private interface ContainsIgnoreCase extends StringType, Formattable<String> {
         @NotNull
         @Override
         default String format() {
@@ -386,12 +443,28 @@ public class XPath {
         }
     }
 
+    @FunctionalInterface
     public interface Clickable extends ClickableType, Formattable<Boolean> {}
+
+    @FunctionalInterface
     public interface ContainsHint extends ContainsHintType, ContainsIgnoreCase {}
+
+    @FunctionalInterface
+    public interface ContainsID extends ContainsIDType, ContainsIgnoreCase {}
+
+    @FunctionalInterface
     public interface ContainsText extends ContainsTextType, ContainsIgnoreCase {}
+
+    @FunctionalInterface
     public interface Editable extends EditableType, Formattable<Boolean> {}
+
+    @FunctionalInterface
     public interface Enabled extends EnabledType, Formattable<Boolean> {}
+
+    @FunctionalInterface
     public interface HasHint extends HasHintType, Formattable<String> {}
+
+    @FunctionalInterface
     public interface HasText extends HasTextType, Formattable<String> {}
     //endregion
 }

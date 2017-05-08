@@ -5,6 +5,7 @@ package org.swiften.xtestkit.locator.type.base;
  */
 
 /**
- * This interface is the base for boolean-based locator operations.
+ * This interface is the base for {@link Boolean}-based locator operations.
  */
+@FunctionalInterface
 public interface BooleanType extends AttributeType<Boolean> {}

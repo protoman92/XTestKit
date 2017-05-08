@@ -2,7 +2,7 @@ package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.Platform;
+import org.swiften.xtestkit.engine.mobile.Platform;
 
 /**
  * Created by haipham on 3/20/17.

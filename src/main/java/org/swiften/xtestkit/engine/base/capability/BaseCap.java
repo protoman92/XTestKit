@@ -1,12 +1,11 @@
 package org.swiften.xtestkit.engine.base.capability;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.string.StringUtil;
-import org.swiften.xtestkit.engine.base.Platform;
 import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.base.type.PlatformType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,19 +15,16 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseCap implements
-    TestCapabilityType,
-    TestCapabilityErrorType
-{
-    @Nullable Platform platform;
+public abstract class BaseCap implements CapType, CapErrorType {
+    @Nullable PlatformType platform;
     @Nullable TestMode testMode;
 
     protected BaseCap() {}
 
-    //region TestCapabilityType.
+    //region CapType.
     @NotNull
     @Override
-    public Platform platform() {
+    public PlatformType platform() {
         if (ObjectUtil.nonNull(platform)) {
             return platform;
         } else {
@@ -74,9 +70,7 @@ public abstract class BaseCap implements
      * Builder class for {@link BaseCap}.
      * @param <C> Generics that extends {@link BaseCap}.
      */
-    public static class Builder<C extends BaseCap> implements
-        TestCapabilityType.Builder
-    {
+    public static class Builder<C extends BaseCap> implements CapType.Builder {
         @NotNull private final C CAPABILITY;
 
         protected Builder(@NotNull C capability) {
@@ -84,7 +78,7 @@ public abstract class BaseCap implements
         }
 
         @NotNull
-        public Builder<C> withPlatform(@NotNull Platform platform) {
+        public Builder<C> withPlatform(@NotNull PlatformType platform) {
             CAPABILITY.platform = platform;
             return this;
         }

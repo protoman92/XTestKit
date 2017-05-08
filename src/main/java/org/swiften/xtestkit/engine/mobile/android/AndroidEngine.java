@@ -2,13 +2,12 @@ package org.swiften.xtestkit.engine.mobile.android;
 
 import org.swiften.xtestkit.engine.base.*;
 import org.swiften.xtestkit.engine.base.param.AlertParam;
-import org.swiften.xtestkit.engine.base.param.NavigateBack;
-import org.swiften.xtestkit.engine.base.param.SwipeParam;
 import org.swiften.xtestkit.engine.base.type.AppPackageType;
+import org.swiften.xtestkit.engine.base.type.RepeatableType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.TestMode;
+import org.swiften.xtestkit.engine.mobile.Platform;
 import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
@@ -18,7 +17,6 @@ import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.locator.type.base.BooleanType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -31,7 +29,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,10 +62,10 @@ public class AndroidEngine extends MobileEngine<
     /**
      * Since we can control multiple emulators/devices at once, there is no
      * need to have only one {@link AndroidEngine} active at a time. Therefore,
-     * we override {@link PlatformEngine#getComparisonObject()} to disable
+     * we override {@link BaseEngine#getComparisonObject()} to disable
      * this comparison filter.
      * @return An {@link Object} instance.
-     * @see PlatformEngine#getComparisonObject()
+     * @see BaseEngine#getComparisonObject()
      */
     @NotNull
     @Override
@@ -125,7 +122,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * @param PARAM A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxBeforeClass(BeforeClassParam)
+     * @see BaseEngine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
@@ -186,7 +183,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfterClass(AfterClassParam)
+     * @see BaseEngine#rxAfterClass(AfterClassParam)
      * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
@@ -245,7 +242,7 @@ public class AndroidEngine extends MobileEngine<
     /**
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxAfterMethod(AfterParam)
+     * @see BaseEngine#rxAfterMethod(AfterParam)
      * @see ADBHandler#rxClearCachedData(AppPackageType)
      */
     @NotNull
@@ -293,7 +290,7 @@ public class AndroidEngine extends MobileEngine<
 
     /**
      * @return An {@link AndroidDriver} instance.
-     * @see PlatformEngine#driver(String, DesiredCapabilities)
+     * @see BaseEngine#driver(String, DesiredCapabilities)
      */
     @NotNull
     @Override
@@ -316,7 +313,7 @@ public class AndroidEngine extends MobileEngine<
      * @param param An {@link AlertParam} instance.
      * @return A {@link Flowable} instance.
      * @see #driver()
-     * @see PlatformEngine#rxDismissAlert(AlertParam)
+     * @see BaseEngine#rxDismissAlert(AlertParam)
      */
     @NotNull
     @Override
@@ -331,29 +328,6 @@ public class AndroidEngine extends MobileEngine<
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
-
-    /**
-     * @param PARAM A {@link SwipeActionType} instance.
-     * @return A {@link Flowable} instance.
-     * @see PlatformEngine#rxSwipe(SwipeActionType)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxSwipe(@NotNull final SwipeActionType PARAM) {
-        final AndroidDriver DRIVER = driver();
-
-        return Completable
-            .fromAction(
-                () -> DRIVER.swipe(
-                    PARAM.startX(),
-                    PARAM.startY(),
-                    PARAM.endX(),
-                    PARAM.endY(),
-                    PARAM.duration())
-            )
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
     //endregion
 
     //region Dismiss Keyboard
@@ -362,9 +336,9 @@ public class AndroidEngine extends MobileEngine<
      * keyboard is present with
      * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
      * and then call
-     * {@link #rxNavigateBack(NavigateBack)}.
+     * {@link #rxNavigateBack(RepeatableType)}.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(NavigateBack)
+     * @see #rxNavigateBack(RepeatableType)
      * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull
@@ -408,7 +382,7 @@ public class AndroidEngine extends MobileEngine<
          */
         @NotNull
         @Override
-        public PlatformEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
+        public BaseEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
             ANDROID_INSTANCE_BUILDER.withTestMode(mode);
             return super.withTestMode(mode);
         }
