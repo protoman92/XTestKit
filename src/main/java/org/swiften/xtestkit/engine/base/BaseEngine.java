@@ -7,6 +7,7 @@ package org.swiften.xtestkit.engine.base;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.xtestkit.engine.base.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.engine.base.action.general.type.BaseActionType;
 import org.swiften.xtestkit.engine.base.capability.CapType;
 import org.swiften.xtestkit.engine.base.locator.general.type.BaseLocatorType;
@@ -42,6 +43,7 @@ import java.util.function.Predicate;
  */
 public abstract class BaseEngine<D extends WebDriver> implements
     BaseActionType<D>,
+    BaseDateActionType<D>,
     BaseLocatorType<D>,
     BaseEngineErrorType,
     EngineDelayType,

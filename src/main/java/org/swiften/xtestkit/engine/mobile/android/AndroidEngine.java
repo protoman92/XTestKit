@@ -8,6 +8,7 @@ import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.mobile.Platform;
+import org.swiften.xtestkit.engine.mobile.android.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
 import org.swiften.xtestkit.engine.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.engine.mobile.android.param.StartEmulatorParam;
@@ -41,6 +42,7 @@ import org.swiften.javautilities.object.ObjectUtil;
 public class AndroidEngine extends MobileEngine<
     AndroidElement,
     AndroidDriver<AndroidElement>> implements
+    AndroidDateActionType,
     AndroidErrorType
 {
     @NotNull
