@@ -3,8 +3,10 @@ package org.swiften.xtestkit.engine.mobile.android;
 import org.swiften.xtestkit.engine.base.*;
 import org.swiften.xtestkit.engine.base.param.AlertParam;
 import org.swiften.xtestkit.engine.base.param.NavigateBack;
+import org.swiften.xtestkit.engine.base.param.SwipeParam;
 import org.swiften.xtestkit.engine.base.type.AppPackageType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
+import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 import org.swiften.xtestkit.engine.mobile.MobileEngine;
 import org.swiften.xtestkit.engine.base.TestMode;
 import org.swiften.xtestkit.engine.mobile.android.capability.AndroidCap;
@@ -16,6 +18,7 @@ import org.swiften.xtestkit.engine.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.locator.type.base.BooleanType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -313,6 +316,7 @@ public class AndroidEngine extends MobileEngine<
      * @param param An {@link AlertParam} instance.
      * @return A {@link Flowable} instance.
      * @see #driver()
+     * @see PlatformEngine#rxDismissAlert(AlertParam)
      */
     @NotNull
     @Override
@@ -324,6 +328,29 @@ public class AndroidEngine extends MobileEngine<
             .filter(Objects::nonNull)
             .switchIfEmpty(Flowable.error(new Exception(NO_SUCH_ELEMENT)))
             .flatMapCompletable(a -> Completable.fromAction(a::click))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * @param PARAM A {@link SwipeActionType} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxSwipe(SwipeActionType)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxSwipe(@NotNull final SwipeActionType PARAM) {
+        final AndroidDriver DRIVER = driver();
+
+        return Completable
+            .fromAction(
+                () -> DRIVER.swipe(
+                    PARAM.startX(),
+                    PARAM.startY(),
+                    PARAM.endX(),
+                    PARAM.endY(),
+                    PARAM.duration())
+            )
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

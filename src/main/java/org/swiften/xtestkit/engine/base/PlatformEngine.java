@@ -522,18 +522,11 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rxNavigateBack(@NotNull NavigateBack param) {
-        final T DRIVER;
-
-        try {
-            DRIVER = driver();
-        } catch (Exception e) {
-            return Flowable.error(e);
-        }
-
+        final T DRIVER = driver();
         final int TIMES = param.times();
 
         @SuppressWarnings("WeakerAccess")
-        final long DELAY = backNavigationDelay();
+        final long DELAY = param.delay();
 
         final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
 
@@ -610,6 +603,29 @@ public abstract class PlatformEngine<T extends WebDriver> implements
         AlertParam param = AlertParam.builder().reject().build();
         return rxDismissAlert(param);
     }
+
+    /**
+     * Perform a swipe action. However, since {@link WebDriver} does not
+     * implement swiping, we need to override this method in subclasses.
+     * @param param A {@link SwipeActionType} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public Flowable<Boolean> rxSwipe(@NotNull SwipeActionType param) {
+        return Flowable.just(true);
+    }
+
+    /**
+     * Perform a repeated swipe action.
+     * @param param A {@link P} instance.
+     * @param <P> Generics parameter.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    public <P extends RepeatableType & SwipeActionType> Flowable<Boolean>
+    rxSwipe(@NotNull P param) {
+        return Flowable.just(true);
+    }
     //endregion
 
     //region By XPath
@@ -654,6 +670,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
             .switchIfEmpty(Flowable.error(new Exception(ERROR)))
             .retry(param.retries());
     }
+    //endregion
 
     //region With Text
     /**
@@ -665,8 +682,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementsWithText(@NotNull TextParam param) {
-        String localized = localizer().localize(param.text());
-        XPath xPath = newXPathBuilder().hasText(localized).build();
+        String localized = localizer().localize(param.value());
+        TextParam newParam = param.withNewText(localized);
+        XPath xPath = newXPathBuilder().hasText(newParam).build();
 
         ByXPath query = ByXPath.builder()
             .withXPath(xPath)
@@ -723,8 +741,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementsContainingText(@NotNull TextParam param) {
-        String localized = localizer().localize(param.text());
-        XPath xPath = newXPathBuilder().containsText(localized).build();
+        String localized = localizer().localize(param.value());
+        TextParam newParam = param.withNewText(localized);
+        XPath xPath = newXPathBuilder().containsText(newParam).build();
 
         ByXPath query = ByXPath.builder()
             .withXPath(xPath)
@@ -781,8 +800,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementsWithHint(@NotNull HintParam param) {
-        String localized = localizer().localize(param.hint());
-        XPath xPath = newXPathBuilder().hasHint(localized).build();
+        String localized = localizer().localize(param.value());
+        HintParam newParam = param.withNewText(localized);
+        XPath xPath = newXPathBuilder().hasHint(newParam).build();
 
         ByXPath query = ByXPath.builder()
             .withXPath(xPath)
@@ -814,8 +834,9 @@ public abstract class PlatformEngine<T extends WebDriver> implements
      */
     @NotNull
     public Flowable<WebElement> rxElementsContainingHint(@NotNull HintParam param) {
-        String localized = localizer().localize(param.hint());
-        XPath xPath = newXPathBuilder().containsHint(localized).build();
+        String localized = localizer().localize(param.value());
+        HintParam newParam = param.withNewText(localized);
+        XPath xPath = newXPathBuilder().containsHint(newParam).build();
 
         ByXPath query = ByXPath.builder()
             .withXPath(xPath)
@@ -997,6 +1018,7 @@ public abstract class PlatformEngine<T extends WebDriver> implements
     }
     //endregion
 
+    //region TextDelegate
     /**
      * Implement this interface to localize text when needed.
      */
@@ -1015,4 +1037,5 @@ public abstract class PlatformEngine<T extends WebDriver> implements
          */
         @NotNull String localize(@NotNull String text);
     }
+    //endregion
 }

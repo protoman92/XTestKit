@@ -8,10 +8,6 @@ public interface PlatformDelayType {
         return 5000;
     }
 
-    default long backNavigationDelay() {
-        return 1000;
-    }
-
     default long startDriverDelay() {
         return 3000;
     }

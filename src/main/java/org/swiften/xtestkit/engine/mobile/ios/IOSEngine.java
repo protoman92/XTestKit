@@ -1,7 +1,11 @@
 package org.swiften.xtestkit.engine.mobile.ios;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.reactivex.Completable;
 import org.swiften.xtestkit.engine.base.PlatformEngine;
+import org.swiften.xtestkit.engine.base.param.SwipeParam;
 import org.swiften.xtestkit.engine.base.type.RetryType;
+import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 import org.swiften.xtestkit.engine.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSDelayType;
 import org.swiften.xtestkit.engine.mobile.ios.type.IOSErrorType;
@@ -165,7 +169,32 @@ public class IOSEngine extends MobileEngine<
     }
     //endregion
 
-    //region Builder.
+    //region Driver methods
+    /**
+     * @param PARAM A {@link SwipeActionType} instance.
+     * @return A {@link Flowable} instance.
+     * @see PlatformEngine#rxSwipe(SwipeActionType)
+     */
+    @NotNull
+    @Override
+    public Flowable<Boolean> rxSwipe(@NotNull final SwipeActionType PARAM) {
+        final IOSDriver DRIVER = driver();
+
+        return Completable
+            .fromAction(
+                () -> DRIVER.swipe(
+                    PARAM.startX(),
+                    PARAM.startY(),
+                    PARAM.endX(),
+                    PARAM.endY(),
+                    PARAM.duration())
+            )
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+    //endregion
+
+    //region Builder
     /**
      * Builder class for {@link IOSEngine}.
      */

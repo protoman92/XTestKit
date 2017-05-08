@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
  * to write cross-platform test.
  */
 public class XPath {
-    @NotNull
-    public static XPath EMPTY = new XPath();
+    @NotNull public static XPath EMPTY = new XPath();
 
     @NotNull
     public static Builder builder(@NotNull PlatformType platform) {
@@ -43,7 +42,7 @@ public class XPath {
         attribute = String.format("%1$s[%2$s]", attribute, attr);
     }
 
-    //region Builder.
+    //region Builder
     /**
      * Builder class for {@link XPath}.
      */
@@ -100,6 +99,29 @@ public class XPath {
         }
 
         /**
+         * Same as above, but uses an anonymously-created {@link HasText},
+         * based on properties from a {@link TextType} instance.
+         * @param TEXT_TYPE A {@link TextType} instance.
+         * @return The current {@link Builder} instance.
+         * @see TextType#value()
+         * @see TextType#ignoreCase()
+         */
+        @NotNull
+        public Builder hasText(@NotNull final TextType TEXT_TYPE) {
+            return hasText(new HasText() {
+                @Override
+                public String value() {
+                    return TEXT_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return TEXT_TYPE.ignoreCase();
+                }
+            });
+        }
+
+        /**
          * Same as above, but uses a {@link HasText} instance.
          * @param TEXT The text to be appended.
          * @return The current {@link Builder} instance.
@@ -119,6 +141,29 @@ public class XPath {
             Attribute attribute = PLATFORM.textAttribute();
             String format = containsText.format();
             return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses an anonymously-created {@link HasText},
+         * based on properties from a {@link TextType} instance.
+         * @param TEXT_TYPE A {@link TextType} instance.
+         * @return The current {@link Builder} instance.
+         * @see TextType#value()
+         * @see TextType#ignoreCase()
+         */
+        @NotNull
+        public Builder containsText(@NotNull final TextType TEXT_TYPE) {
+            return containsText(new ContainsText() {
+                @Override
+                public String value() {
+                    return TEXT_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return TEXT_TYPE.ignoreCase();
+                }
+            });
         }
 
         /**
@@ -145,6 +190,29 @@ public class XPath {
         }
 
         /**
+         * Same as above, but uses an anonymously-created {@link HasText},
+         * based on properties from a {@link TextType} instance.
+         * @param TEXT_TYPE A {@link TextType} instance.
+         * @return The current {@link Builder} instance.
+         * @see TextType#value()
+         * @see TextType#ignoreCase()
+         */
+        @NotNull
+        public Builder hasHint(@NotNull final TextType TEXT_TYPE) {
+            return hasHint(new HasHint() {
+                @Override
+                public String value() {
+                    return TEXT_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return TEXT_TYPE.ignoreCase();
+                }
+            });
+        }
+
+        /**
          * Same as above, but uses a default {@link HasHint} instance.
          * @param HINT The hint to be appended.
          * @return The current {@link Builder} instance.
@@ -165,6 +233,29 @@ public class XPath {
             Attribute attribute = PLATFORM.hintAttribute();
             String format = containsHint.format();
             return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses an anonymously-created {@link HasText},
+         * based on properties from a {@link TextType} instance.
+         * @param TEXT_TYPE A {@link TextType} instance.
+         * @return The current {@link Builder} instance.
+         * @see TextType#value()
+         * @see TextType#ignoreCase()
+         */
+        @NotNull
+        public Builder containsHint(@NotNull final TextType TEXT_TYPE) {
+            return containsHint(new ContainsHint() {
+                @Override
+                public String value() {
+                    return TEXT_TYPE.value();
+                }
+
+                @Override
+                public boolean ignoreCase() {
+                    return TEXT_TYPE.ignoreCase();
+                }
+            });
         }
 
         /**
@@ -250,7 +341,7 @@ public class XPath {
     }
     //endregion
 
-    //region Locator Types.
+    //region Locator Types
     /**
      * Classes that implement this interface must provide an XPath format
      * that can be used to construct attributes.
