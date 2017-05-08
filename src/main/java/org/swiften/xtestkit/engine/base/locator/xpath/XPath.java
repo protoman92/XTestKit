@@ -1,11 +1,11 @@
-package org.swiften.xtestkit.locator.xpath;
+package org.swiften.xtestkit.engine.base.locator.xpath;
 
 import io.reactivex.annotations.NonNull;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.locator.type.base.AttributeType;
-import org.swiften.xtestkit.locator.type.base.StringType;
-import org.swiften.xtestkit.locator.type.sub.*;
+import org.swiften.xtestkit.engine.base.locator.type.base.AttributeType;
+import org.swiften.xtestkit.engine.base.locator.type.base.StringType;
+import org.swiften.xtestkit.engine.base.locator.type.sub.*;
 
 import java.util.List;
 import java.util.stream.Collectors;

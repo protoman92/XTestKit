@@ -1,16 +1,17 @@
 package org.swiften.xtestkit.engine.base;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.xtestkit.engine.base.capability.BaseCap;
 import org.swiften.xtestkit.engine.base.capability.CapType;
+import org.swiften.xtestkit.engine.base.model.MockPlatformView;
 import org.swiften.xtestkit.engine.base.param.*;
 import org.swiften.xtestkit.engine.base.type.PlatformErrorType;
 import org.swiften.xtestkit.engine.base.type.PlatformType;
 import org.swiften.xtestkit.engine.base.type.RetryType;
-import org.swiften.xtestkit.engine.base.type.ViewType;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.locator.xpath.Attribute;
-import org.swiften.xtestkit.locator.xpath.XPath;
+import org.swiften.xtestkit.engine.base.locator.xpath.Attribute;
+import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.swiften.xtestkit.system.NetworkHandler;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
@@ -45,14 +46,11 @@ public final class BaseEngineTest implements PlatformErrorType {
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final BaseEngine.TextDelegate LOCALIZER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;
     @NotNull private final WebDriver.TargetLocator TARGET_LOCATOR;
-    @NotNull private final MockPlatformView PLATFORM_VIEWS;
-    @NotNull private final String LOCALIZED_TEXT;
     @NotNull private final RetryType RETRY;
-    private final int ELEMENT_COUNT, TRIES;
+    private final int TRIES;
 
     {
         ENGINE = spy(new MockEngine.Builder()
@@ -70,10 +68,6 @@ public final class BaseEngineTest implements PlatformErrorType {
          * NETWORK_HANDLER.processRunner() */
         NETWORK_HANDLER = spy(NetworkHandler.builder().build());
 
-        /* Return this localizer when we call ENGINE.localizer() */
-        LOCALIZER = mock(BaseEngine.TextDelegate.class);
-        LOCALIZED_TEXT = "Localized Result";
-
         /* We initialize a driver here in order to access a common mock that
          * stores call counts on its methods. Tests that require the driver()
          * method to throw an Exception should stub the method themselves */
@@ -83,20 +77,11 @@ public final class BaseEngineTest implements PlatformErrorType {
          * every time driver.navigate() is called */
         NAVIGATION = mock(WebDriver.Navigation.class);
 
-        /* This PlatformView object will be returned by ENGINE. We return
-         * an implementation whose getViews() method returns a list of mock
-         * WebElement, instead of a mock PlatformView. This way, we do not
-         * have to rewrite view login for PlatformView */
-        PLATFORM_VIEWS = spy(new MockPlatformView());
-
         /* Return this mock when the driver requests switchTo() */
         TARGET_LOCATOR = mock(WebDriver.TargetLocator.class);
 
         /*  */
         ALERT = mock(Alert.class);
-
-        /* The number of elements to return for a DRIVER.findElement request */
-        ELEMENT_COUNT = 2;
 
         /* Use this parameter when a RetryType is needed */
         RETRY = mock(RetryType.class);
@@ -111,21 +96,10 @@ public final class BaseEngineTest implements PlatformErrorType {
         doReturn(DRIVER).when(ENGINE).driver();
         doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
-        doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
-        doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
-        doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
-        doReturn(LOCALIZER).when(ENGINE).localizer();
         doReturn(TRIES).when(RETRY).retries();
         when(DRIVER.navigate()).thenReturn(NAVIGATION);
         when(DRIVER.switchTo()).thenReturn(TARGET_LOCATOR);
         when(TARGET_LOCATOR.alert()).thenReturn(ALERT);
-
-        when(DRIVER.findElements(any(By.class))).thenReturn(
-            Arrays
-                .stream(new Object[ELEMENT_COUNT])
-                .map(a -> mock(WebElement.class))
-                .collect(Collectors.toList())
-        );
     }
 
     @AfterMethod
@@ -136,8 +110,7 @@ public final class BaseEngineTest implements PlatformErrorType {
             ENGINE,
             PROCESS_RUNNER,
             NETWORK_HANDLER,
-            NAVIGATION,
-            PLATFORM_VIEWS
+            NAVIGATION
         );
     }
 
@@ -451,348 +424,6 @@ public final class BaseEngineTest implements PlatformErrorType {
     }
     //endregion
 
-    //region Element By XPATH
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_failToFindElements_shouldThrow() {
-        // Setup
-        when(DRIVER.findElements(any(By.ByXPath.class)))
-            .thenThrow(new RuntimeException());
-
-        List<ViewType> views = PLATFORM_VIEWS.allViews();
-
-        ByXPath param = ByXPath.builder()
-            .withClasses(views)
-            .withXPath(XPath.EMPTY)
-            .withError("")
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertError(Exception.class);
-        subscriber.assertNotComplete();
-        views.forEach(a -> verify(a, atLeastOnce()).className());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsByXPath_shouldSucceed() {
-        // Setup
-        List<ViewType> views = PLATFORM_VIEWS.allViews();
-
-        ByXPath param = ByXPath.builder()
-            .withClasses(views)
-            .withXPath(XPath.EMPTY)
-            .withError("")
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-
-        assertEquals(
-            RxTestUtil.getNextEvents(subscriber).size(),
-            PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
-
-        views.forEach(a -> {
-            verify(a).className();
-        });
-    }
-    //endregion
-
-    //region Element With Text
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsWithText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementsWithText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithTextWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        when(DRIVER.findElements(any(By.ByXPath.class)))
-            .thenReturn(Collections.emptyList());
-
-        // When
-        ENGINE.rxElementWithText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementWithText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    //region Element Containing Text
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsContainingText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementsContainingText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingTextWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        ENGINE.rxElementContainingText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementContainingText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    //region Element With Hint
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsWithHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementsWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithHintWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        ENGINE.rxElementWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithHint(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    //region Element Containing Hint
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsContainingHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementsContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingHintWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        ENGINE.rxElementContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingHint(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rxElementContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    static class MockPlatformView extends PlatformView {
-        @NotNull private final Random RAND;
-        final int VIEW_COUNT;
-
-        {
-            RAND = new Random();
-
-            /* The number of ViewType to pass to PlatformView */
-            VIEW_COUNT = 1000;
-        }
-
-        @NotNull
-        @Override
-        protected ViewType[] getViews() {
-            return Arrays
-                .stream(new Object[VIEW_COUNT])
-                .map(a -> spy(new MockView(RAND)))
-                .toArray(ViewType[]::new);
-        }
-    }
-
     static class MockEngine extends BaseEngine<WebDriver> {
         @NotNull
         @Override
@@ -830,45 +461,6 @@ public final class BaseEngineTest implements PlatformErrorType {
             Builder() {
                 super(new MockCap());
             }
-        }
-    }
-
-    static class MockView implements ViewType {
-        @NotNull private final Random RAND;
-
-        MockView(@NotNull Random rand) {
-            RAND = rand;
-        }
-
-        @NotNull
-        @Override
-        public String className() {
-            return getClass().getSimpleName();
-        }
-
-        @Override
-        public boolean hasText() {
-            return RAND.nextBoolean();
-        }
-
-        @Override
-        public boolean isEditable() {
-            return RAND.nextBoolean();
-        }
-
-        @Override
-        public boolean isClickable() {
-            return RAND.nextBoolean();
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            String base = "";
-            base += ("\nhasText: " + hasText());
-            base += ("\nisClickable: " + isClickable());
-            base += ("\nisEditable: " + isEditable());
-            return base;
         }
     }
 }

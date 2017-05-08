@@ -3,7 +3,7 @@ package org.swiften.xtestkit.engine.base.param;
 import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.type.ViewType;
-import org.swiften.xtestkit.locator.xpath.XPath;
+import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

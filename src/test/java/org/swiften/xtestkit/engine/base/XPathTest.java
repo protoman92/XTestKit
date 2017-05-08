@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.engine.base;
 
 import org.swiften.xtestkit.engine.mobile.Platform;
-import org.swiften.xtestkit.locator.xpath.XPath;
+import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 
 import org.swiften.javautilities.log.LogUtil;
 import org.testng.annotations.Test;

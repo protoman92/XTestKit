@@ -6,7 +6,7 @@ import org.swiften.xtestkit.engine.base.type.RetryType;
 import org.swiften.xtestkit.engine.base.capability.CapType;
 import org.swiften.xtestkit.engine.base.type.SwipeActionType;
 import org.swiften.xtestkit.engine.mobile.android.type.MobileTouchActionType;
-import org.swiften.xtestkit.locator.xpath.XPath;
+import org.swiften.xtestkit.engine.base.locator.xpath.XPath;
 import org.swiften.xtestkit.engine.mobile.type.MobileErrorType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;

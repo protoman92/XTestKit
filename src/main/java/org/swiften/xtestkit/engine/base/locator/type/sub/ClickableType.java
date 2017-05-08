@@ -1,6 +1,6 @@
-package org.swiften.xtestkit.locator.type.sub;
+package org.swiften.xtestkit.engine.base.locator.type.sub;
 
-import org.swiften.xtestkit.locator.type.base.BooleanType;
+import org.swiften.xtestkit.engine.base.locator.type.base.BooleanType;
 
 /**
  * Created by haipham on 5/7/17.

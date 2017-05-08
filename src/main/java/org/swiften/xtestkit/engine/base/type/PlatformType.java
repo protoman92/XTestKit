@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.engine.base.type;
 
-import org.swiften.xtestkit.locator.xpath.Attribute;
+import org.swiften.xtestkit.engine.base.locator.xpath.Attribute;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,6 +13,7 @@ public interface PlatformType {
      * Specify the name for a id attribute. Generally should be 'id'.
      * @return A {@link Attribute} instance.
      */
+    @NotNull
     Attribute idAttribute();
 
     /**

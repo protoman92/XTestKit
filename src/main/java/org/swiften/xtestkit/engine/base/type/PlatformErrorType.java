@@ -13,32 +13,5 @@ public interface PlatformErrorType extends CapErrorType {
     String PLATFORM_VIEW_UNAVAILABLE = "Platform view unavailable";
     String TEXT_DELEGATE_UNAVAILABLE = "Text delegate unavailable";
     String INSUFFICIENT_SETTINGS = "Insufficient settings";
-    String NO_EDITABLE_ELEMENTS = "No editable elements";
-    String NO_SUCH_ELEMENT = "No such element";
     String WRONG_DIRECTION = "Wrong direction";
-
-    @NotNull
-    default String noElementsWithId(@NotNull String id) {
-        return String.format("No elements with id: %s", id);
-    }
-
-    @NotNull
-    default String noElementsWithText(@NotNull String text) {
-        return String.format("No elements with text: %s", text);
-    }
-
-    @NotNull
-    default String noElementsContainingText(@NotNull String text) {
-        return String.format("No elements containing text: %s", text);
-    }
-
-    @NotNull
-    default String noElementsWithHint(@NotNull String hint) {
-        return String.format("No elements with hint: %s", hint);
-    }
-
-    @NotNull
-    default String noElementsContainingHint(@NotNull String hint) {
-        return String.format("No elements containing hint: %s", hint);
-    }
 }

@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.locator.type.base;
+package org.swiften.xtestkit.engine.base.locator.type.base;
 
 /**
  * Created by haipham on 5/7/17.

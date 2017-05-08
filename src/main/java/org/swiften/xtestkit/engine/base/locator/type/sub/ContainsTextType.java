@@ -1,10 +1,10 @@
-package org.swiften.xtestkit.locator.type.sub;
+package org.swiften.xtestkit.engine.base.locator.type.sub;
 
 /**
  * Created by haipham on 5/7/17.
  */
 
-import org.swiften.xtestkit.locator.type.base.StringType;
+import org.swiften.xtestkit.engine.base.locator.type.base.StringType;
 
 /**
  * This interface is the base for locator operations that involve searching

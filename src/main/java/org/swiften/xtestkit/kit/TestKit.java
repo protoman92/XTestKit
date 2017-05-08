@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.kit;
 
+import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.engine.base.BaseEngine;
 import org.swiften.xtestkit.engine.mobile.Platform;
 import org.swiften.xtestkit.engine.base.type.RetryType;
@@ -32,7 +33,7 @@ import java.util.*;
  */
 public class TestKit implements
     RepeatRunner.IndexConsumer,
-    BaseEngine.TextDelegate,
+    LocalizerType,
     ProcessRunnableType,
     TestKitErrorType,
     TestListenerType {
