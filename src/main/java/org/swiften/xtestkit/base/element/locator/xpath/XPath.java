@@ -469,7 +469,7 @@ public class XPath {
      * that can be used to construct attributes.
      */
     @FunctionalInterface
-    private interface Formattable<T> extends AttributeType<T> {
+    public interface Formattable<T> extends AttributeType<T> {
         /**
          * Get the format {@link String} with which we construct an XPath
          * query.
