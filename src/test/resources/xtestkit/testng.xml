@@ -12,19 +12,19 @@
 
     <test name="Base Platform Test">
         <classes>
-            <class name="org.swiften.xtestkit.engine.base.BaseEngineTest"/>
+            <class name="org.swiften.xtestkit.base.BaseEngineTest"/>
         </classes>
     </test>
 
     <test name="Android Test">
         <classes>
-            <class name="org.swiften.xtestkit.engine.android.MockAndroidEngineTest"/>
+            <class name="org.swiften.xtestkit.mobile.android.MockAndroidEngineTest"/>
         </classes>
     </test>
 
     <test name="iOS Test">
         <classes>
-            <class name="org.swiften.xtestkit.engine.ios.MockIOSEngineTest"/>
+            <class name="org.swiften.xtestkit.mobile.ios.MockIOSEngineTest"/>
         </classes>
     </test>
 

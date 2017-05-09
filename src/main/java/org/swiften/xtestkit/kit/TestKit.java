@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.kit;
 
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.xtestkit.engine.base.BaseEngine;
-import org.swiften.xtestkit.engine.mobile.Platform;
-import org.swiften.xtestkit.engine.base.type.RetryType;
+import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -24,7 +24,7 @@ import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.engine.mobile.android.AndroidEngine;
+import org.swiften.xtestkit.mobile.android.AndroidEngine;
 
 import java.io.IOException;
 import java.util.*;

@@ -5,7 +5,7 @@ package org.swiften.xtestkit.test.type;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.engine.base.BaseEngine;
+import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.kit.TestKit;
 
 /**

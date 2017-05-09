@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.system;
 
-import org.swiften.xtestkit.engine.base.type.RetryType;
+import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
