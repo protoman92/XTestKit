@@ -6,6 +6,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.date.DateUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
@@ -216,7 +217,7 @@ public interface AndroidDateActionType extends
         /* We first need to determine the scroll direction */
         return rxDisplayedComponent(ELEMENT)
             .map(a -> a > COMPONENT)
-            .map(a -> a ? Unidirection.UP_DOWN : Unidirection.DOWN_UP)
+            .map(Unidirection::vertical)
             .flatMap(new ScrollAndCheck()::repeat);
     }
 
@@ -246,27 +247,50 @@ public interface AndroidDateActionType extends
      * Regrettably we cannot use
      * {@link #rxSelectComponent(DateType, CalendarElement, XPath, double)}
      * for this as day selection has too many odd design choices.
+     * We need to define an {@link Attribute} with "content-desc", and
+     * repeatedly search for the correct day until it is found. However, even
+     * if the day is found, Appium could still select the wrong element -
+     * so in this case an additional iteration is required.
+     * This is called the calibration phase because
+     * {@link #rxSelectYear(DateType)} should have brought the picker close
+     * to the date we want.
      * @param PARAM A {@link DateType} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxSelectDayForCalendarType(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxCalibrateDateForCalendar(@NotNull final DateType PARAM) {
         final AndroidDateActionType THIS = this;
+        final Date DATE = PARAM.value();
 
         /* dd MMMM YYYY is the format accepted by the content-desc property */
-        final String DATE = PARAM.dateString("dd MMMM");
+        final String DATE_STRING = PARAM.dateString("dd MMMM YYYY");
 
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
         Attribute contentDesc = Attribute.withSingleAttribute("content-desc");
-        String format = ((XPath.ContainsString) () -> DATE).format();
+        String format = ((XPath.ContainsString) () -> DATE_STRING).format();
 
         XPath xPath = XPath.builder(platform())
             .appendAttribute(contentDesc, format)
             .build();
 
+        /* Since there is no way to check the current month in focus, we need
+         * to use a crude workaround. Every time the list view is scrolled to
+         * a new page/the previous page, click on the first day element in
+         * order to update the displayed date. We can then use rxDisplayedDate
+         * to check */
         final ByXPath BY_XPATH = ByXPath.builder()
             .withXPath(xPath)
+            .withError(NO_SUCH_ELEMENT)
+            .withRetryCount(0)
+            .build();
+
+        XPath defaultXP = XPath.builder(platform())
+            .appendAttribute(contentDesc, ((XPath.ContainsString) () -> "01"))
+            .build();
+
+        final ByXPath DEFAULT_BY_XPATH = ByXPath.builder()
+            .withXPath(defaultXP)
             .withError(NO_SUCH_ELEMENT)
             .withRetryCount(0)
             .build();
@@ -280,23 +304,36 @@ public interface AndroidDateActionType extends
         class ScrollAndCheck {
             @NotNull
             @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat(@NotNull final Unidirection DIRECTION) {
-                return THIS.rxElementsByXPath(BY_XPATH)
+            Flowable<Boolean> repeat() {
+                /* First step is to click on the first element in the current
+                 * month view */
+                return THIS.rxElementByXPath(DEFAULT_BY_XPATH)
                     .flatMap(THIS::rxClick)
+                    .flatMap(a -> THIS.rxElementsByXPath(BY_XPATH))
+                    .flatMap(THIS::rxClick)
+                    .flatMap(a -> rxHasDate(PARAM))
+                    .filter(BooleanUtil::isTrue)
                     .switchIfEmpty(Flowable.error(new Exception()))
-                    .onErrorResumeNext(rxCalendarListView()
-                        .flatMap(a -> THIS.rxScrollList(a, DIRECTION, 0.7))
-                        .flatMap(a -> new ScrollAndCheck().repeat(DIRECTION))
-                    );
+                    .onErrorResumeNext(Flowable.zip(
+                        rxCalendarListView(),
+
+                        /* We use month to compare because the month and day
+                         * views are intertwined in CALENDAR mode */
+                        rxDisplayedDate()
+                            .map(a -> DateUtil.notEarlierThan(
+                                a, DATE, CalendarElement.DAY.value()
+                            ))
+                            .map(Unidirection::vertical),
+
+                        (element, direction) -> {
+                            return THIS.rxScrollList(element, direction, 0.7d);
+                        })
+                        .flatMap(a -> a)
+                        .flatMap(a -> new ScrollAndCheck().repeat()));
             }
         }
 
-        /* We also month to compare because the month and day views are
-         * intertwined in CALENDAR mode */
-        return rxDisplayedComponent(CalendarElement.MONTH)
-            .map(a -> a > PARAM.month())
-            .map(a -> a ? Unidirection.UP_DOWN : Unidirection.DOWN_UP)
-            .flatMap(new ScrollAndCheck()::repeat);
+        return new ScrollAndCheck().repeat();
     }
 
     /**
@@ -324,7 +361,7 @@ public interface AndroidDateActionType extends
      * Select a day.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSelectDayForCalendarType(DateType)
+     * @see #rxCalibrateDateForCalendar(DateType)
      * @see #rxSelectComponent(DateType, CalendarElement)
      */
     @NotNull
@@ -335,7 +372,7 @@ public interface AndroidDateActionType extends
                  * need to scroll the list view and check content description
                  * for the date String. We also need to continually click
                  * on a day to snap the list view into position */
-                return rxSelectDayForCalendarType(param);
+                return rxCalibrateDateForCalendar(param);
 
             case SPINNER:
                 return rxSelectComponent(param, CalendarElement.DAY);

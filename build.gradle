@@ -118,7 +118,7 @@ dependencies {
     compile "io.appium:java-client:+"
     compile "org.testng:testng:+"
     compile "org.mockito:mockito-core:+"
-    compile "org.swiften:JavaUtilities:+"
+    compile "org.swiften:JavaUtilities:1.0.4-SNAPSHOT"
 }
 
 /* Get Gradle home directory to set up Gradle project */

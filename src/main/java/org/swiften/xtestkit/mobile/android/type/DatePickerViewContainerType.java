@@ -133,7 +133,7 @@ public interface DatePickerViewContainerType {
          */
         @NotNull
         private String yearFormat() {
-            return "YYYY";
+            return "yyyy";
         }
     }
 
