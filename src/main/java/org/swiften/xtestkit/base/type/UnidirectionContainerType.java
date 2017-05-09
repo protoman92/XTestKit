@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 
 /**
  * Created by haipham on 5/8/17.
@@ -11,14 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * swipes.
  */
 @FunctionalInterface
-public interface UnidirectionType {
-    enum Unidirection {
-        UP_DOWN,
-        DOWN_UP,
-        LEFT_RIGHT,
-        RIGHT_LEFT;
-    }
-
+public interface UnidirectionContainerType {
     /**
      * Get the associated {@link Unidirection}.
      * @return A {@link Unidirection} instance.

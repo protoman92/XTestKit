@@ -2,9 +2,10 @@ package org.swiften.xtestkit.base.param;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatableType;
-import org.swiften.xtestkit.base.type.UnidirectionType;
+import org.swiften.xtestkit.base.type.UnidirectionContainerType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -18,7 +19,7 @@ import org.swiften.xtestkit.base.type.UnidirectionType;
 public class UnidirectionalSwipeParam implements
     DurationType,
     RepeatableType,
-    UnidirectionType
+    UnidirectionContainerType
 {
     /**
      * Get a {@link Builder} instance.

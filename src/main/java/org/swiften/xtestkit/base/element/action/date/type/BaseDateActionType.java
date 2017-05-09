@@ -27,17 +27,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
     DriverContainerType<D>,
     BaseDateActionErrorType
 {
-    /**
-     * Select a {@link Date}. This assumes that the user is in a calendar
-     * view.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default Flowable<Boolean> rxSelectDate(@NotNull DateType param) {
-        return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
-    }
-
+    //region Validation
     /**
      * Check if a {@link Date} is currently active. This assumes that the
      * user is in a calendar view.
@@ -48,7 +38,22 @@ public interface BaseDateActionType<D extends WebDriver> extends
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
         return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
     }
+    //endregion
 
+    //region Actions
+    /**
+     * Select a {@link Date}. This assumes that the user is in a calendar
+     * view.
+     * @param param A {@link DateType} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Boolean> rxSelectDate(@NotNull DateType param) {
+        return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
+    }
+    //endregion
+
+    //region Elements
     /**
      * Get all calendar {@link WebElement}. This assumes that the user is in a
      * calendar view.
@@ -58,4 +63,5 @@ public interface BaseDateActionType<D extends WebDriver> extends
     default Flowable<WebElement> rxAllCalendarElements() {
         return Flowable.empty();
     }
+    //endregion
 }

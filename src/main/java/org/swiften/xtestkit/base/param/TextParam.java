@@ -25,13 +25,15 @@ public class TextParam implements StringType, RetryType {
     @NotNull private String text;
 
     private boolean ignoreCase;
+    private int retries;
 
     TextParam() {
         text = "";
         ignoreCase = StringType.super.ignoreCase();
+        retries = RetryType.super.retries();
     }
 
-    //region StringType.
+    //region StringType
     @NotNull
     @Override
     public String value() {
@@ -41,6 +43,13 @@ public class TextParam implements StringType, RetryType {
     @Override
     public boolean ignoreCase() {
         return ignoreCase;
+    }
+    //endregion
+
+    //region RetryType
+    @Override
+    public int retries() {
+        return retries;
     }
     //endregion
 
@@ -75,6 +84,17 @@ public class TextParam implements StringType, RetryType {
         @NotNull
         public Builder withText(@NotNull String text) {
             PARAM.text = text;
+            return this;
+        }
+
+        /**
+         * Set the {@link #retries} value.
+         * @param retries An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         */
+        @NotNull
+        public Builder withRetries(int retries) {
+            PARAM.retries = retries;
             return this;
         }
 

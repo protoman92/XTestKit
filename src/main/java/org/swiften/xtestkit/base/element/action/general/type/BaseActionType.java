@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
 import org.swiften.xtestkit.base.param.SwipeGestureParam;
@@ -184,7 +185,7 @@ public interface BaseActionType<D extends WebDriver> extends
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default <P extends DurationType & UnidirectionType & RepeatableType>
+    default <P extends DurationType & UnidirectionContainerType & RepeatableType>
     Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
         Dimension size = driver().manage().window().getSize();
         double height = size.height, width = size.width;
@@ -237,7 +238,7 @@ public interface BaseActionType<D extends WebDriver> extends
     default <P extends DurationType & RepeatableType>
     Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
         UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(UnidirectionType.Unidirection.LEFT_RIGHT)
+            .withDirection(Unidirection.LEFT_RIGHT)
             .withRepeatableType(param)
             .withDurationType(param)
             .build();
@@ -255,7 +256,7 @@ public interface BaseActionType<D extends WebDriver> extends
     default <P extends DurationType & RepeatableType>
     Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
         UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(UnidirectionType.Unidirection.RIGHT_LEFT)
+            .withDirection(Unidirection.RIGHT_LEFT)
             .withRepeatableType(param)
             .withDurationType(param)
             .build();

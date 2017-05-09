@@ -19,6 +19,6 @@ public interface RetryType {
      * @return An {@link Integer} value.
      */
     default int retries() {
-        return 10;
+        return 3;
     }
 }
