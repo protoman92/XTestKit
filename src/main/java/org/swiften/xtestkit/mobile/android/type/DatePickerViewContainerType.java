@@ -13,16 +13,16 @@ import org.swiften.xtestkit.base.element.action.date.CalendarElement;
  * helps us hide the implementation for
  * {@link org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType}.
  */
-public interface DateViewContainerType {
+public interface DatePickerViewContainerType {
     /**
      * Represents the available types of calendar views.
      */
-    enum DateViewType {
+    enum DatePickerViewType {
         CALENDAR,
         SPINNER;
 
         /**
-         * Check if the current {@link DateViewType} is of type calendar.
+         * Check if the current {@link DatePickerViewType} is of type calendar.
          * @return A {@link Boolean} value.
          */
         public boolean isCalendarType() {
@@ -36,7 +36,7 @@ public interface DateViewContainerType {
         }
 
         /**
-         * Check if the current {@link DateViewType} is of type spinner.
+         * Check if the current {@link DatePickerViewType} is of type spinner.
          * @return A {@link Boolean} value.
          */
         public boolean isSpinnerType() {
@@ -72,12 +72,12 @@ public interface DateViewContainerType {
         }
 
         /**
-         * Get the view id that corresponds to a {@link CalendarElement}.
+         * Get the display view id that corresponds to a {@link CalendarElement}.
          * @param element A {@link CalendarElement} instance.
          * @return A {@link String} value.
          */
         @NotNull
-        public String viewId(@NotNull CalendarElement element) {
+        public String displayViewId(@NotNull CalendarElement element) {
             switch (element) {
                 case DAY:
                     return "date_picker_day";
@@ -87,6 +87,22 @@ public interface DateViewContainerType {
 
                 case YEAR:
                     return "date_picker_year";
+
+                default:
+                    return "";
+            }
+        }
+
+        /**
+         * Get the picker view id that corresponds to a {@link CalendarElement}.
+         * @param element A {@link CalendarElement} instance.
+         * @return A {@link String} value.
+         */
+        @NotNull
+        public String pickerViewId(@NotNull CalendarElement element) {
+            switch (element) {
+                case YEAR:
+                    return "month_text_view";
 
                 default:
                     return "";
@@ -122,11 +138,11 @@ public interface DateViewContainerType {
     }
 
     /**
-     * Get the associated {@link DateViewType} instance.
-     * @return A {@link DateViewType} instance.
+     * Get the associated {@link DatePickerViewType} instance.
+     * @return A {@link DatePickerViewType} instance.
      */
     @NotNull
-    default DateViewType dateViewType() {
-        return DateViewType.CALENDAR;
+    default DatePickerViewType datePickerViewType() {
+        return DatePickerViewType.CALENDAR;
     }
 }

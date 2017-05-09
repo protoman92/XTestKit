@@ -5,6 +5,7 @@ import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
 import org.swiften.xtestkit.base.type.RetryType;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -70,5 +71,17 @@ public interface DateType extends AttributeType<Date>, RetryType {
     @SuppressWarnings("MagicConstant")
     default int component(@NotNull CalendarElement element) {
         return calendar().get(element.value());
+    }
+
+    /**
+     * Get a {@link String} representation of {@link #value()}.
+     * @param format A {@link String} format.
+     * @return A {@link String} value.
+     * @see #value()
+     */
+    @NotNull
+    default String dateString(@NotNull String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(value());
     }
 }

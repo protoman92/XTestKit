@@ -1,7 +1,6 @@
 package org.swiften.xtestkit.base.element.locator.xpath;
 
 import io.reactivex.annotations.NonNull;
-import org.swiften.xtestkit.base.type.ClassContainerType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
@@ -84,6 +83,20 @@ public class XPath {
             String append = String.join(joiner, attributes);
             XPATH.appendAttribute(append);
             return this;
+        }
+
+        /**
+         * Same as above, but get a format {@link String} from a
+         * {@link Formattable} instance.
+         * @param attribute An {@link Attribute} instance.
+         * @param formattable A {@link Formattable} instance.
+         * @return The current {@link Builder} instance.
+         * @see #appendAttribute(Attribute, String)
+         */
+        @NotNull
+        public Builder appendAttribute(@NotNull Attribute attribute,
+                                       @NotNull Formattable<?> formattable) {
+            return appendAttribute(attribute, formattable.format());
         }
 
         /**
@@ -479,7 +492,7 @@ public class XPath {
      * it will be standardized and subsequently can be searched.
      */
     @FunctionalInterface
-    private interface ContainsIgnoreCase extends StringType, Formattable<String> {
+    public interface ContainsString extends StringType, Formattable<String> {
         @NotNull
         @Override
         default String format() {
@@ -501,13 +514,13 @@ public class XPath {
     public interface Clickable extends ClickableType, Formattable<Boolean> {}
 
     @FunctionalInterface
-    public interface ContainsHint extends ContainsHintType, ContainsIgnoreCase {}
+    public interface ContainsHint extends ContainsHintType, ContainsString {}
 
     @FunctionalInterface
-    public interface ContainsID extends ContainsIDType, ContainsIgnoreCase {}
+    public interface ContainsID extends ContainsIDType, ContainsString {}
 
     @FunctionalInterface
-    public interface ContainsText extends ContainsTextType, ContainsIgnoreCase {}
+    public interface ContainsText extends ContainsTextType, ContainsString {}
 
     @FunctionalInterface
     public interface Editable extends EditableType, Formattable<Boolean> {}
@@ -522,6 +535,6 @@ public class XPath {
     public interface HasText extends HasTextType, Formattable<String> {}
 
     @FunctionalInterface
-    public interface OfClass extends OfClassType, ContainsIgnoreCase {}
+    public interface OfClass extends OfClassType, ContainsString {}
     //endregion
 }
