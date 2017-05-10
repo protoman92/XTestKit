@@ -110,6 +110,23 @@ public interface DatePickerContainerType {
         }
 
         /**
+         * Get the list view's item id that corresponds to a
+         * {@link CalendarElement}.
+         * @param element A {@link CalendarElement} instance.
+         * @return A {@link String} value.
+         */
+        @NotNull
+        public String listViewItemId(@NotNull CalendarElement element) {
+            switch (element) {
+                case YEAR:
+                    return "month_text_view";
+
+                default:
+                    return "";
+            }
+        }
+
+        /**
          * Get the format the day is formatted in.
          * @return A {@link String} value.
          */
