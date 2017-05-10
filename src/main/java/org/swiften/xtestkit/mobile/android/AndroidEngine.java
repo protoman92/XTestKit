@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.mobile.android;
 
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.*;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.type.AppPackageType;
@@ -159,7 +160,7 @@ public class AndroidEngine extends MobileEngine<
                 break;
 
             default:
-                source = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                source = RxUtil.error(PLATFORM_UNAVAILABLE);
                 break;
         }
 
@@ -221,7 +222,7 @@ public class AndroidEngine extends MobileEngine<
                 break;
 
             default:
-                SOURCE = Flowable.error(new Exception(PLATFORM_UNAVAILABLE));
+                SOURCE = RxUtil.error(PLATFORM_UNAVAILABLE);
                 break;
         }
 
@@ -327,7 +328,7 @@ public class AndroidEngine extends MobileEngine<
             .map(id -> String.format("com.android.packageinstaller:id/%s", id))
             .map(id -> driver().findElement(By.id(id)))
             .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(Flowable.error(new Exception(NO_SUCH_ELEMENT)))
+            .switchIfEmpty(RxUtil.error(NO_SUCH_ELEMENT))
             .flatMapCompletable(a -> Completable.fromAction(a::click))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);

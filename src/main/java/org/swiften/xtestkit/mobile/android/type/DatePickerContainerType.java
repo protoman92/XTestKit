@@ -13,16 +13,16 @@ import org.swiften.xtestkit.base.element.action.date.CalendarElement;
  * helps us hide the implementation for
  * {@link org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType}.
  */
-public interface DatePickerViewContainerType {
+public interface DatePickerContainerType {
     /**
      * Represents the available types of calendar views.
      */
-    enum DatePickerViewType {
+    enum DatePickerType {
         CALENDAR,
         SPINNER;
 
         /**
-         * Check if the current {@link DatePickerViewType} is of type calendar.
+         * Check if the current {@link DatePickerType} is of type calendar.
          * @return A {@link Boolean} value.
          */
         public boolean isCalendarType() {
@@ -36,7 +36,7 @@ public interface DatePickerViewContainerType {
         }
 
         /**
-         * Check if the current {@link DatePickerViewType} is of type spinner.
+         * Check if the current {@link DatePickerType} is of type spinner.
          * @return A {@link Boolean} value.
          */
         public boolean isSpinnerType() {
@@ -138,11 +138,11 @@ public interface DatePickerViewContainerType {
     }
 
     /**
-     * Get the associated {@link DatePickerViewType} instance.
-     * @return A {@link DatePickerViewType} instance.
+     * Get the associated {@link DatePickerType} instance.
+     * @return A {@link DatePickerType} instance.
      */
     @NotNull
-    default DatePickerViewType datePickerViewType() {
-        return DatePickerViewType.CALENDAR;
+    default DatePickerType datePickerViewType() {
+        return DatePickerType.CALENDAR;
     }
 }

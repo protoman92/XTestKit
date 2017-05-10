@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.mobile.android;
 
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.android.param.ConnectionParam;
@@ -168,7 +169,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         Collection<Integer> availablePorts = availablePorts();
 
         if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts)) {
-            return Flowable.error(new Exception(NO_PORT_AVAILABLE));
+            return RxUtil.error(NO_PORT_AVAILABLE);
         }
 
         class CheckPort {
@@ -201,7 +202,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
                         .switchIfEmpty(new CheckPort().check(PORT + 1));
                 }
 
-                return Flowable.error(new Exception(NO_PORT_AVAILABLE));
+                return RxUtil.error(NO_PORT_AVAILABLE);
             }
         }
 
@@ -220,7 +221,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     public Flowable<Boolean> rxStartEmulator(@NotNull final StartEmulatorParam PARAM) {
         if (!isAcceptablePort(PARAM.port())) {
             String error = unacceptablePort(PARAM.port());
-            return Flowable.error(new Exception(error));
+            return RxUtil.error(error);
         }
 
         final ProcessRunner PROCESS_RUNNER = processRunner();
@@ -257,7 +258,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * Afterwards, when the emulator has booted up fully, a value
              * 'stopped' will be emitted */
             .filter(a -> a.equals("stopped"))
-            .switchIfEmpty(Flowable.error(new Exception()))
+            .switchIfEmpty(RxUtil.error(""))
             .retryWhen(a -> a
                 /* We add one to the retry count, or else we won't be able
                  * to catch when the count is exceeded */
@@ -336,7 +337,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * 'Failed'. Failures may be due to the app's package name not
              * present in the device/emulator. */
             .filter(a -> a.contains("Success"))
-            .switchIfEmpty(Flowable.error(new Exception(unableToClearCache(APP))))
+            .switchIfEmpty(RxUtil.error(unableToClearCache(APP)))
             .retry(param.retries())
             .map(a -> true);
     }
@@ -363,7 +364,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .filter(a -> a.contains(PKG))
             .retry(PARAM.retries())
             .map(a -> true)
-            .switchIfEmpty(Flowable.error(new Exception(appNotInstalled(PKG))));
+            .switchIfEmpty(RxUtil.error(appNotInstalled(PKG)));
     }
     //endregion
 
@@ -383,7 +384,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             /* If successful, there should be no output */
             .filter(String::isEmpty)
             .map(a -> true)
-            .switchIfEmpty(Flowable.error(new Exception(NO_OUTPUT_EXPECTED)));
+            .switchIfEmpty(RxUtil.error(NO_OUTPUT_EXPECTED));
     }
 
     /**
@@ -476,7 +477,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
             /* Throw error if the returned value does not match the new
              * setting value */
-            .switchIfEmpty(Flowable.error(new Exception(changeSettingsFailed(PARAM.key()))))
+            .switchIfEmpty(RxUtil.error(changeSettingsFailed(PARAM.key())))
 
             /* Sometimes an adb error may be thrown if the currently active
              * adb instance does not acknowledge the request */

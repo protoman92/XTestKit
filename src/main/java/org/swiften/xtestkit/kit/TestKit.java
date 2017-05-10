@@ -141,7 +141,7 @@ public class TestKit implements
             .filter(a -> a >= 0 && a < SIZE)
             .map(ENGINES::get)
             .filter(Objects::nonNull)
-            .switchIfEmpty(Flowable.error(new Exception(PLATFORM_ENGINE_UNAVAILABLE)));
+            .switchIfEmpty(RxUtil.error(PLATFORM_ENGINE_UNAVAILABLE));
     }
 
     @NotNull

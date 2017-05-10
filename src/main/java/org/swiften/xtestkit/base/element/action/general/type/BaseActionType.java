@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
@@ -213,7 +214,7 @@ public interface BaseActionType<D extends WebDriver> extends
                 break;
 
             default:
-                return Flowable.error(new Exception(WRONG_DIRECTION));
+                return RxUtil.error(WRONG_DIRECTION);
         }
 
         SwipeGestureParam swipeParam = SwipeGestureParam.builder()

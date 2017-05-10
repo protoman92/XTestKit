@@ -6,22 +6,17 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.date.DateUtil;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.element.locator.xpath.Attribute;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.param.ByXPath;
-import org.swiften.xtestkit.base.param.SwipeGestureParam;
-import org.swiften.xtestkit.base.type.ClassContainerType;
-import org.swiften.xtestkit.base.type.SwipeGestureType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
-import org.swiften.xtestkit.mobile.android.type.DatePickerViewContainerType;
+import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 
 import java.text.SimpleDateFormat;
@@ -37,10 +32,12 @@ import java.util.*;
  */
 public interface AndroidDateActionType extends
     AndroidDateActionErrorType,
+    CalendarPickerActionType,
     MobileActionType<AndroidDriver<AndroidElement>>,
+    BaseAndroidDateActionType,
     BaseDateActionType<AndroidDriver<AndroidElement>>,
     AndroidElementInteractionType,
-    DatePickerViewContainerType
+    DatePickerContainerType
 {
     //region Validation
     /**
@@ -64,73 +61,6 @@ public interface AndroidDateActionType extends
     //endregion
 
     //region Actions
-    /**
-     * Scroll the calendar list view to a new page or the previous page.
-     * Only applicable to {@link DatePickerViewType#CALENDAR}.
-     * @param element The calendar list view {@link WebElement}.
-     * @param direction A {@link Unidirection} instance.
-     * @param scrollRatio A dampening ratio for a vertical scroll.
-     * @return A {@link Flowable} instance.
-     * @see #rxSwipeOnce(SwipeGestureType)
-     */
-    @NotNull
-    default Flowable<Boolean> rxScrollList(
-        @NotNull WebElement element,
-        @NotNull Unidirection direction,
-        double scrollRatio
-    ) {
-        Dimension dimension = element.getSize();
-        Point location = element.getLocation();
-        double height = dimension.getHeight();
-        int startX = location.getX() + dimension.getWidth() / 2;
-        int startY = 0, endY = 0;
-
-        /* Depending on the swipe direction, we need to have different
-         * startY and endY values. The direction corresponds to whether the
-         * year being searched is after or before the current selected year */
-        switch (direction) {
-            case UP_DOWN:
-                endY = (int)(location.getY() + height);
-                startY = (int)(endY - height * scrollRatio);
-                break;
-
-            case DOWN_UP:
-                endY = location.getY();
-                startY = (int)(endY + height * scrollRatio);
-                break;
-
-            default:
-                break;
-        }
-
-        SwipeGestureType param = SwipeGestureParam.builder()
-            .withStartX(startX)
-            .withEndX(startX)
-            .withStartY(startY)
-            .withEndY(endY)
-            .build();
-
-        return rxSwipeOnce(param);
-    }
-
-    /**
-     * Same as above, but uses a default scroll ratio.
-     * @param element The calendar list view {@link WebElement}.
-     * @param direction A {@link Unidirection} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxScrollList(WebElement, Unidirection, double)
-     */
-    @NotNull
-    default Flowable<Boolean> rxScrollList(@NotNull WebElement element,
-                                           @NotNull Unidirection direction) {
-        /* Do not perform a full vertical scroll from top-bottom or bottom-top
-         * because we may overshoot. Rather, perform short swipes and
-         * repeatedly check for the wanted component */
-        double scrollRatio = 0.5d;
-        return rxScrollList(element, direction, scrollRatio);
-    }
-
-
     /**
      * Open the year picker.
      * @return A {@link Flowable} instance.
@@ -167,10 +97,10 @@ public interface AndroidDateActionType extends
      * @param SCROLL_RATIO A dampening ratio for vertical scroll.
      * @return A {@link Flowable} instance.
      * @see #rxListView(CalendarElement)
-     * @see #rxScrollList(WebElement, Unidirection)
+     * @see #rxScrollPickerView(WebElement, Unidirection)
      */
     @NotNull
-    default Flowable<Boolean> rxSelectComponent(
+    default Flowable<Boolean> rxScrollAndSelectComponent(
         @NotNull final DateType PARAM,
         @NotNull final CalendarElement ELEMENT,
         @NotNull XPath xPath,
@@ -194,7 +124,7 @@ public interface AndroidDateActionType extends
         class ScrollAndCheck {
             @NotNull
             @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat(@NotNull final Unidirection DIRECTION) {
+            Flowable<Boolean> repeat() {
                 return THIS.rxElementsByXPath(BY_XPATH)
                     /* Sometimes the driver will get the wrong element. In
                      * this case, keep scrolling so that in the next scroll,
@@ -204,130 +134,17 @@ public interface AndroidDateActionType extends
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
                     .flatMap(THIS::rxClick)
-                    .switchIfEmpty(Flowable.error(new Exception()))
-                    .onErrorResumeNext(rxListView(ELEMENT)
-                        .flatMap(a -> THIS.rxScrollList(a, DIRECTION, SCROLL_RATIO))
-                        /* Recursively repeat until the we reach the component
-                         * we want */
-                        .flatMap(a -> new ScrollAndCheck().repeat(DIRECTION))
-                    );
-            }
-        }
-
-        /* We first need to determine the scroll direction */
-        return rxDisplayedComponent(ELEMENT)
-            .map(a -> a > COMPONENT)
-            .map(Unidirection::vertical)
-            .flatMap(new ScrollAndCheck()::repeat);
-    }
-
-    /**
-     * Same as above, but uses a default {@link XPath} instance and a default
-     * scroll ratio.
-     * @param param A {@link DateType} instance.
-     * @param element A {@link CalendarElement} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxSelectComponent(DateType, CalendarElement, XPath, double)
-     */
-    @NotNull
-    default Flowable<Boolean> rxSelectComponent(
-        @NotNull DateType param,
-        @NotNull CalendarElement element
-    ) {
-        XPath xPath = XPath.builder(platform())
-            .containsID(datePickerViewType().pickerViewId(element))
-            .containsText(string(param, element))
-            .build();
-
-        return rxSelectComponent(param, element, xPath, 0.5d);
-    }
-
-    /**
-     * Select a day if the app is using {@link DatePickerViewType#CALENDAR}.
-     * Regrettably we cannot use
-     * {@link #rxSelectComponent(DateType, CalendarElement, XPath, double)}
-     * for this as day selection has too many odd design choices.
-     * We need to define an {@link Attribute} with "content-desc", and
-     * repeatedly search for the correct day until it is found. However, even
-     * if the day is found, Appium could still select the wrong element -
-     * so in this case an additional iteration is required.
-     * This is called the calibration phase because
-     * {@link #rxSelectYear(DateType)} should have brought the picker close
-     * to the date we want.
-     * @param PARAM A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default Flowable<Boolean> rxCalibrateDateForCalendar(@NotNull final DateType PARAM) {
-        final AndroidDateActionType THIS = this;
-        final Date DATE = PARAM.value();
-
-        /* dd MMMM YYYY is the format accepted by the content-desc property */
-        final String DATE_STRING = PARAM.dateString("dd MMMM YYYY");
-
-        /* Weirdly enough, the individual view element that contains the day
-         * values use content description to store the day */
-        Attribute contentDesc = Attribute.withSingleAttribute("content-desc");
-        String format = ((XPath.ContainsString) () -> DATE_STRING).format();
-
-        XPath xPath = XPath.builder(platform())
-            .appendAttribute(contentDesc, format)
-            .build();
-
-        /* Since there is no way to check the current month in focus, we need
-         * to use a crude workaround. Every time the list view is scrolled to
-         * a new page/the previous page, click on the first day element in
-         * order to update the displayed date. We can then use rxDisplayedDate
-         * to check */
-        final ByXPath BY_XPATH = ByXPath.builder()
-            .withXPath(xPath)
-            .withError(NO_SUCH_ELEMENT)
-            .withRetryCount(0)
-            .build();
-
-        XPath defaultXP = XPath.builder(platform())
-            .appendAttribute(contentDesc, ((XPath.ContainsString) () -> "01"))
-            .build();
-
-        final ByXPath DEFAULT_BY_XPATH = ByXPath.builder()
-            .withXPath(defaultXP)
-            .withError(NO_SUCH_ELEMENT)
-            .withRetryCount(0)
-            .build();
-
-        /* We need the scroll ratio to be higher because the calendar day view
-         * tends to snap into place if the scroll/swipe motion is not strong
-         * enough, which, sometimes, may lead to wrong page in focus
-         *
-         * Based on empirical tests, it seems 0.7-0.8 are a good ratios. Amend
-         * if necessary */
-        class ScrollAndCheck {
-            @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat() {
-                /* First step is to click on the first element in the current
-                 * month view */
-                return THIS.rxElementByXPath(DEFAULT_BY_XPATH)
-                    .flatMap(THIS::rxClick)
-                    .flatMap(a -> THIS.rxElementsByXPath(BY_XPATH))
-                    .flatMap(THIS::rxClick)
-                    .flatMap(a -> rxHasDate(PARAM))
-                    .filter(BooleanUtil::isTrue)
-                    .switchIfEmpty(Flowable.error(new Exception()))
+                    .switchIfEmpty(RxUtil.error(""))
                     .onErrorResumeNext(Flowable.zip(
-                        rxCalendarListView(),
+                        rxListView(ELEMENT),
 
-                        /* We use month to compare because the month and day
-                         * views are intertwined in CALENDAR mode */
-                        rxDisplayedDate()
-                            .map(a -> DateUtil.notEarlierThan(
-                                a, DATE, CalendarElement.DAY.value()
-                            ))
+                        rxDisplayedComponent(ELEMENT)
+                            .map(a -> a > COMPONENT)
                             .map(Unidirection::vertical),
 
-                        (element, direction) -> {
-                            return THIS.rxScrollList(element, direction, 0.7d);
-                        })
+                        (element, direction) -> THIS.rxScrollPickerView(
+                            element, direction, SCROLL_RATIO)
+                        )
                         .flatMap(a -> a)
                         .flatMap(a -> new ScrollAndCheck().repeat()));
             }
@@ -337,22 +154,47 @@ public interface AndroidDateActionType extends
     }
 
     /**
+     * Same as above, but uses a default {@link XPath} instance and a default
+     * scroll ratio.
+     * @param param A {@link DateType} instance.
+     * @param element A {@link CalendarElement} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxScrollAndSelectComponent(DateType, CalendarElement, XPath, double)
+     */
+    @NotNull
+    default Flowable<Boolean> rxScrollAndSelectComponent(
+        @NotNull DateType param,
+        @NotNull CalendarElement element
+    ) {
+        XPath xPath = XPath.builder(platform())
+            .containsID(datePickerViewType().pickerViewId(element))
+            .containsText(string(param, element))
+            .build();
+
+        return rxScrollAndSelectComponent(param, element, xPath, 0.5d);
+    }
+
+    /**
      * Select a year {@link String} by scrolling until it becomes visible.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSelectComponent(DateType, CalendarElement)
+     * @see BaseDateActionType#rxSelectDate(DateType)
+     * @see #rxScrollAndSelectComponent(DateType, CalendarElement)
      */
     @NotNull
+    @Override
     default Flowable<Boolean> rxSelectYear(@NotNull DateType param) {
-        return rxSelectComponent(param, CalendarElement.YEAR);
+        return rxScrollAndSelectComponent(param, CalendarElement.YEAR);
     }
 
     /**
      * Select a month {@link String}. To be implemented when necessary.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
+     * @see BaseDateActionType#rxSelectMonth(DateType)
      */
     @NotNull
+    @Override
     default Flowable<Boolean> rxSelectMonth(@NotNull DateType param) {
         return Flowable.just(true);
     }
@@ -361,8 +203,9 @@ public interface AndroidDateActionType extends
      * Select a day.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
+     * @see BaseDateActionType#rxSelectDay(DateType)
      * @see #rxCalibrateDateForCalendar(DateType)
-     * @see #rxSelectComponent(DateType, CalendarElement)
+     * @see #rxScrollAndSelectComponent(DateType, CalendarElement)
      */
     @NotNull
     default Flowable<Boolean> rxSelectDay(@NotNull DateType param) {
@@ -375,10 +218,10 @@ public interface AndroidDateActionType extends
                 return rxCalibrateDateForCalendar(param);
 
             case SPINNER:
-                return rxSelectComponent(param, CalendarElement.DAY);
+                return rxScrollAndSelectComponent(param, CalendarElement.DAY);
 
             default:
-                return Flowable.error(new Exception(UNKNOWN_DATE_VIEW_TYPE));
+                return RxUtil.error(UNKNOWN_DATE_VIEW_TYPE);
         }
     }
 
@@ -398,25 +241,15 @@ public interface AndroidDateActionType extends
             .flatMap(a -> rxSelectDay(PARAM))
             .flatMap(a -> rxHasDate(PARAM))
             .filter(BooleanUtil::isTrue)
-            .switchIfEmpty(Flowable.error(new Exception(DATES_NOT_MATCHED)));
+            .switchIfEmpty(RxUtil.error(DATES_NOT_MATCHED));
     }
     //endregion
 
     //region Calendar WebElement
     /**
-     * Get the calendar list view. Applicable to {@link DatePickerViewType#CALENDAR}.
-     * @return A {@link Flowable} instance.
-     * @see #rxElementOfClass(ClassContainerType)
-     */
-    @NotNull
-    default Flowable<WebElement> rxCalendarListView() {
-        return rxElementOfClass(AndroidView.ViewType.LIST_VIEW);
-    }
-
-    /**
      * Get the list view that corresponds to a {@link CalendarElement}.
      * The implementations may change based on
-     * {@link DatePickerViewType}.
+     * {@link DatePickerType}.
      * @param element A {@link CalendarElement} instance.
      * @return A {@link Flowable} instance.
      * @see #rxCalendarListView()
@@ -430,7 +263,7 @@ public interface AndroidDateActionType extends
      * Get the {@link WebElement} that corresponds to a {@link CalendarElement}.
      * @param element A {@link CalendarElement} instance.
      * @return A {@link Flowable} instance.
-     * @see DatePickerViewType#displayViewId(CalendarElement)
+     * @see DatePickerType#displayViewId(CalendarElement)
      */
     @NotNull
     default Flowable<WebElement> rxDisplayElement(@NotNull CalendarElement element) {
@@ -520,7 +353,7 @@ public interface AndroidDateActionType extends
      * @param param A {@link DateType} instance.
      * @param element A {@link CalendarElement} instance.
      * @return A {@link String} value.
-     * @see DatePickerViewType#stringFormat(CalendarElement)
+     * @see DatePickerType#stringFormat(CalendarElement)
      */
     @NotNull
     default String string(@NotNull DateType param,
@@ -530,7 +363,7 @@ public interface AndroidDateActionType extends
     }
 
     /**
-     * Get the day, as formatted using {@link DatePickerViewType#dayFormat()}.
+     * Get the day, as formatted using {@link DatePickerType#dayFormat()}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
      * @see #string(DateType, CalendarElement)
@@ -541,7 +374,7 @@ public interface AndroidDateActionType extends
     }
 
     /**
-     * Get the month, as formatted using {@link DatePickerViewType#monthFormat()}.
+     * Get the month, as formatted using {@link DatePickerType#monthFormat()}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
      * @see #string(DateType, CalendarElement)
@@ -552,7 +385,7 @@ public interface AndroidDateActionType extends
     }
 
     /**
-     * Get the year, as formatted using {@link DatePickerViewType#yearFormat()}.
+     * Get the year, as formatted using {@link DatePickerType#yearFormat()}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
      * @see #string(DateType, CalendarElement)
@@ -626,11 +459,13 @@ public interface AndroidDateActionType extends
     /**
      * Get the {@link Date} as displayed by the date picker.
      * @return A {@link Flowable} instance.
+     * @see BaseDateActionType#rxDisplayedDate()
      * @see #rxDisplayedDay()
      * @see #rxDisplayedMonth()
      * @see #rxDisplayedYear()
      */
     @NotNull
+    @Override
     @SuppressWarnings("MagicConstant")
     default Flowable<Date> rxDisplayedDate() {
         return Flowable

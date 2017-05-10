@@ -5,13 +5,19 @@ package org.swiften.xtestkit.base.element.action.date.type;
  */
 
 import io.reactivex.Flowable;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.base.element.action.date.CalendarElement;
+import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.DriverContainerType;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -36,7 +42,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
-        return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
     }
     //endregion
 
@@ -49,7 +55,37 @@ public interface BaseDateActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxSelectDate(@NotNull DateType param) {
-        return Flowable.error(new Exception(DATE_NOT_IMPLEMENTED));
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Select a year based on the {@link Date} from a {@link DateType} instance.
+     * @param param A {@link DateType} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Boolean> rxSelectYear(@NotNull DateType param) {
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Select a month based on the {@link Date} from a {@link DateType} instance.
+     * @param param A {@link DateType} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Boolean> rxSelectMonth(@NotNull DateType param) {
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Select a day based on the {@link Date} from a {@link DateType} instance.
+     * @param param A {@link DateType} instance.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Boolean> rxSelectDay(@NotNull DateType param) {
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
     }
     //endregion
 
@@ -61,7 +97,17 @@ public interface BaseDateActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxAllCalendarElements() {
-        return Flowable.empty();
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Get the currently displayed {@link Date}, assuming the user is in a
+     * calendar view.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    default Flowable<Date> rxDisplayedDate() {
+        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
     }
     //endregion
 }

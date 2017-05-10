@@ -7,6 +7,7 @@ package org.swiften.xtestkit.base;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.capability.type.CapType;
@@ -210,7 +211,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
         return RUNNER.rxExecute(whichAppium)
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
-            .switchIfEmpty(Flowable.error(new Exception(APPIUM_NOT_INSTALLED)))
+            .switchIfEmpty(RxUtil.error(APPIUM_NOT_INSTALLED))
             .onErrorReturnItem(cmFallBackAppium())
             .doOnNext(this::startAppiumOnNewThread)
             .map(a -> true)
@@ -484,7 +485,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
                 .defaultIfEmpty(true)
                 .retry(PARAM.retries());
         } else {
-            return Flowable.error(new Exception(INSUFFICIENT_SETTINGS));
+            return RxUtil.error(INSUFFICIENT_SETTINGS);
         }
     }
 

@@ -26,7 +26,7 @@ public interface BaseTestType {
     int currentIndex();
 
     @NotNull
-    default BaseEngine<?> currentEngine() {
+    default BaseEngine<?> engine() {
         TestKit testKit = testKit();
         int index = currentIndex();
         return testKit.engine(index);

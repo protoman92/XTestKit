@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.param.*;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.*;
@@ -82,7 +83,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .reduce(elements, (a, b) -> CollectionUtil.unify(a, b))
             .toFlowable()
             .flatMap(Flowable::fromIterable)
-            .switchIfEmpty(Flowable.error(new Exception(ERROR)))
+            .switchIfEmpty(RxUtil.error(ERROR))
             .retry(param.retries());
     }
 
