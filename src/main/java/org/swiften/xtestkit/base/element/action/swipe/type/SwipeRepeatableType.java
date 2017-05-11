@@ -14,11 +14,21 @@ import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.param.SwipeParam;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * This interface provides methods to repeatedly scroll a scrollable view so
  * long as a condition is satisfied.
  */
 public interface SwipeRepeatableType extends SwipeOnceType {
+    /**
+     * Get the delay for each iteration.
+     * @return A {@link Long} value.
+     */
+    default long delayEveryIteration() {
+        return 1000;
+    }
+
     /**
      * Get the swipe ratio that is used to dampen the swipe gesture in order
      * to avoid a full unidirectional swipe.
@@ -69,6 +79,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
                     element, direction, elementSwipeRatio())
                 )
                 .flatMap(a -> a)
+                .delay(delayEveryIteration(), TimeUnit.MILLISECONDS)
                 .flatMap(a -> rxRepeatSwipe())
             );
     }
