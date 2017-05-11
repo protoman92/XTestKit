@@ -9,13 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatableType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 /**
  * Parameter object for
  * {@link BaseEngine#rxSwipe(RepeatableType)}
  */
-public class SwipeGestureParam implements RepeatableType, SwipeGestureType {
+public class SwipeParam implements RepeatableType, SwipeType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -33,9 +33,9 @@ public class SwipeGestureParam implements RepeatableType, SwipeGestureType {
     private int times;
     private long delay;
 
-    SwipeGestureParam() {
+    SwipeParam() {
         delay = RepeatableType.super.delay();
-        duration = SwipeGestureType.super.duration();
+        duration = SwipeType.super.duration();
     }
 
     @Override
@@ -82,13 +82,13 @@ public class SwipeGestureParam implements RepeatableType, SwipeGestureType {
 
     //region Builder
     /**
-     * Builder class for {@link SwipeGestureParam}.
+     * Builder class for {@link SwipeParam}.
      */
     public static final class Builder {
-        @NotNull private final SwipeGestureParam PARAM;
+        @NotNull private final SwipeParam PARAM;
 
         Builder() {
-            PARAM = new SwipeGestureParam();
+            PARAM = new SwipeParam();
         }
 
         /**
@@ -189,7 +189,7 @@ public class SwipeGestureParam implements RepeatableType, SwipeGestureType {
         }
 
         @NonNull
-        public SwipeGestureParam build() {
+        public SwipeParam build() {
             return PARAM;
         }
     }

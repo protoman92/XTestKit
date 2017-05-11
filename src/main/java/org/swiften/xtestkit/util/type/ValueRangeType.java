@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.util.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.number.NumberTestUtil;
 
 import java.util.LinkedList;
@@ -35,7 +36,7 @@ public interface ValueRangeType {
 
         while (current.doubleValue() < max.doubleValue()) {
             range.add(current);
-            double currentValue = (current.doubleValue() + step.doubleValue());
+            double currentValue = current.doubleValue() + step.doubleValue();
             current = converter.convert(currentValue);
         }
 

@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 public interface SwipeOnceType {
     /**
      * Perform a swipe action.
-     * @param param A {@link SwipeGestureType} instance.
+     * @param param A {@link SwipeType} instance.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param);
+    Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param);
 
     /**
      * Perform a repeated swipe action.
@@ -29,7 +29,7 @@ public interface SwipeOnceType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default <P extends RepeatableType & SwipeGestureType>
+    default <P extends RepeatableType & SwipeType>
     Flowable<Boolean> rxSwipe(@NotNull P param) {
         final Flowable<Boolean> SWIPE = rxSwipeOnce(param);
         final int TIMES = param.times();

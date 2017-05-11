@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.element.action.swipe.type;
 /**
  * This interface provides the methods necessary for a swipe action.
  */
-public interface SwipeGestureType {
+public interface SwipeType {
     int startX();
     int startY();
     int endX();

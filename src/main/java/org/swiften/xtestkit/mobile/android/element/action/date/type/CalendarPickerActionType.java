@@ -16,7 +16,7 @@ import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
@@ -78,7 +78,7 @@ public interface CalendarPickerActionType extends
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
         Attribute contentDesc = Attribute.withSingleAttribute("content-desc");
-        String format = ((XPath.ContainsString) () -> DATE_STRING).format();
+        String format = ((XPath.ContainsString) () -> DATE_STRING).stringFormat();
 
         XPath xPath = XPath.builder(platform())
             .appendAttribute(contentDesc, format)
@@ -131,7 +131,7 @@ public interface CalendarPickerActionType extends
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxElementToSwipe() {
+            public Flowable<WebElement> rxScrollableElementToSwipe() {
                 return rxCalendarListView();
             }
 
@@ -149,7 +149,7 @@ public interface CalendarPickerActionType extends
 
             @NotNull
             @Override
-            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param) {
+            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
                 return THIS.rxSwipeOnce(param);
             }
         };

@@ -10,7 +10,6 @@ import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
-import org.swiften.xtestkit.base.param.SwipeGestureParam;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -116,35 +115,6 @@ public class BaseActionTest implements BaseActionType {
         verify(ENGINE).rxNavigateBack(any());
         verify(ENGINE).driver();
         verify(NAVIGATION, times(times)).back();
-        verifyNoMoreInteractions(ENGINE);
-    }
-    //endregion
-
-    //region Swipe
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_swipe_shouldSucceed() {
-        // Setup
-        int times = NumberTestUtil.randomBetween(1, 5);
-
-        SwipeGestureParam param = SwipeGestureParam.builder()
-            .withDelay(100)
-            .withTimes(times)
-            .build();
-
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxSwipe(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
-        verify(ENGINE).rxSwipe(any());
-        verify(ENGINE).rxSwipeOnce(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

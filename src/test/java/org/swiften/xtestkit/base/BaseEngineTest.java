@@ -3,6 +3,7 @@ package org.swiften.xtestkit.base;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.xtestkit.base.capability.BaseCap;
 import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.base.type.BaseEngineErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.base.type.RetryType;
@@ -345,6 +346,12 @@ public final class BaseEngineTest implements BaseEngineErrorType {
                 .thenReturn(Attribute.withSingleAttribute("text"));
 
             return XPath.builder(platform);
+        }
+
+        @NotNull
+        @Override
+        public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
+            return Flowable.empty();
         }
 
         static final class Builder extends BaseEngine.Builder<MockEngine> {

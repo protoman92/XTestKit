@@ -3,7 +3,7 @@ package org.swiften.xtestkit.mobile.element.action.general.type;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 import java.time.Duration;
 
@@ -19,10 +19,10 @@ public interface MobileTouchActionType {
     /**
      * Perform a swipe action.
      * @param driver A {@link MobileDriver} instance.
-     * @param param A {@link SwipeGestureType} instance.
+     * @param param A {@link SwipeType} instance.
      */
     default void swipe(@NotNull MobileDriver<?> driver,
-                       @NotNull SwipeGestureType param) {
+                       @NotNull SwipeType param) {
         new TouchAction(driver)
             .press(param.startX(), param.startY())
             .waitAction(Duration.ofMillis(param.duration()))

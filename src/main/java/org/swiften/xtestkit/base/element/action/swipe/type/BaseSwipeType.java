@@ -10,11 +10,9 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.param.SwipeGestureParam;
+import org.swiften.xtestkit.base.param.SwipeParam;
 import org.swiften.xtestkit.base.param.UnidirectionalSwipeParam;
 import org.swiften.xtestkit.base.type.*;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides methods to perform swipe gestures.
@@ -63,7 +61,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
                 return RxUtil.error(WRONG_DIRECTION);
         }
 
-        SwipeGestureParam swipeParam = SwipeGestureParam.builder()
+        SwipeParam swipeParam = SwipeParam.builder()
             .withStartX(startX)
             .withStartY(startY)
             .withEndX(endX)

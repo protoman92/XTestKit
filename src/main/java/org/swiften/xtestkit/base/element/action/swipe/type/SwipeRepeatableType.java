@@ -11,7 +11,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.param.SwipeGestureParam;
+import org.swiften.xtestkit.base.param.SwipeParam;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
 /**
@@ -40,7 +40,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<WebElement> rxElementToSwipe();
+    Flowable<WebElement> rxScrollableElementToSwipe();
 
     /**
      * Get the {@link Unidirection} to swipe towards.
@@ -53,7 +53,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
      * Repeat a scroll while a condition is satisfied.
      * @return A {@link Flowable} instance.
      * @see #rxShouldKeepSwiping()
-     * @see #rxElementToSwipe()
+     * @see #rxScrollableElementToSwipe()
      * @see #rxDirectionToSwipe()
      * @see #rxSwipeElement(WebElement, Unidirection, double)
      * @see #rxRepeatSwipe()
@@ -63,7 +63,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
         return rxShouldKeepSwiping()
             .switchIfEmpty(RxUtil.error(""))
             .onErrorResumeNext(Flowable.zip(
-                rxElementToSwipe(),
+                rxScrollableElementToSwipe(),
                 rxDirectionToSwipe(),
                 (element, direction) -> rxSwipeElement(
                     element, direction, elementSwipeRatio())
@@ -82,7 +82,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
      * @param direction A {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeOnce(SwipeGestureType)
+     * @see #rxSwipeOnce(SwipeType)
      */
     @NotNull
     default Flowable<Boolean> rxSwipeElement(
@@ -114,7 +114,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
                 break;
         }
 
-        SwipeGestureType param = SwipeGestureParam.builder()
+        SwipeType param = SwipeParam.builder()
             .withStartX(startX)
             .withEndX(startX)
             .withStartY(startY)

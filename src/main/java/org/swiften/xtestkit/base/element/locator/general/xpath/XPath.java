@@ -1,13 +1,16 @@
 package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
 import org.swiften.xtestkit.base.element.property.type.base.StringType;
 import org.swiften.xtestkit.base.element.property.type.sub.*;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -96,19 +99,19 @@ public class XPath {
         @NotNull
         public Builder appendAttribute(@NotNull Attribute attribute,
                                        @NotNull Formattable<?> formattable) {
-            return appendAttribute(attribute, formattable.format());
+            return appendAttribute(attribute, formattable.stringFormat());
         }
 
         /**
          * Append a contains(@class) attribute.
          * @param ofClass A {@link OfClass} instance.
          * @return The current {@link Builder} instance.
-         * @see OfClass#format()
+         * @see OfClass#stringFormat()
          */
         @NotNull
         public Builder ofClass(@NotNull OfClass ofClass) {
             Attribute attribute = PLATFORM.classAttribute();
-            String format = ofClass.format();
+            String format = ofClass.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -151,12 +154,12 @@ public class XPath {
          * Append a contains(@id) attribute.
          * @param containsID A {@link ContainsID} instance.
          * @return The current {@link Builder} instance.
-         * @see ContainsID#format()
+         * @see ContainsID#stringFormat()
          */
         @NotNull
         public Builder containsID(@NotNull ContainsID containsID) {
             Attribute attribute = PLATFORM.idAttribute();
-            String format = containsID.format();
+            String format = containsID.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -199,12 +202,12 @@ public class XPath {
          * Appends a @text attribute.
          * @param hasText A {@link HasText} instance.
          * @return The current {@link Builder} instance.
-         * @see HasText#format()
+         * @see HasText#stringFormat()
          */
         @NotNull
         public Builder hasText(@NotNull HasText hasText) {
             Attribute attribute = PLATFORM.textAttribute();
-            String format = hasText.format();
+            String format = hasText.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -248,12 +251,12 @@ public class XPath {
          * Appends a contains(@text) attribute.
          * @param containsText A {@link ContainsText} instance.
          * @return The current {@link Builder} instance.
-         * @see ContainsText#format()
+         * @see ContainsText#stringFormat()
          */
         @NotNull
         public Builder containsText(@NotNull ContainsText containsText) {
             Attribute attribute = PLATFORM.textAttribute();
-            String format = containsText.format();
+            String format = containsText.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -298,12 +301,12 @@ public class XPath {
          * since on iOS this may be called a placeholder.
          * @param hasHint A {@link HasHint} instance.
          * @return The current {@link Builder} instance.
-         * @see HasHint#format()
+         * @see HasHint#stringFormat()
          */
         @NotNull
         public Builder hasHint(@NotNull HasHint hasHint) {
             Attribute attribute = PLATFORM.hintAttribute();
-            String format = hasHint.format();
+            String format = hasHint.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -352,7 +355,7 @@ public class XPath {
         @NotNull
         public Builder containsHint(@NotNull ContainsHint containsHint) {
             Attribute attribute = PLATFORM.hintAttribute();
-            String format = containsHint.format();
+            String format = containsHint.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -398,7 +401,7 @@ public class XPath {
         @NotNull
         public Builder isEnabled(@NotNull Enabled enabled) {
             Attribute attribute = PLATFORM.enabledAttribute();
-            String format = enabled.format();
+            String format = enabled.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -420,7 +423,7 @@ public class XPath {
         @NotNull
         public Builder isClickable(@NonNull Clickable clickable) {
             Attribute attribute = PLATFORM.clickableAttribute();
-            String format = clickable.format();
+            String format = clickable.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -442,7 +445,7 @@ public class XPath {
         @NotNull
         public Builder isEditable(@NonNull Editable editable) {
             Attribute attribute = PLATFORM.editableAttribute();
-            String format = editable.format();
+            String format = editable.stringFormat();
             return appendAttribute(attribute, format);
         }
 
@@ -465,22 +468,105 @@ public class XPath {
 
     //region Locator Types
     /**
-     * Classes that implement this interface must provide an XPath format
-     * that can be used to construct attributes.
+     * Classes that implement this interface must provide an {@link XPath}
+     * format that can be used to construct {@link Attribute}.
      */
     @FunctionalInterface
     public interface Formattable<T> extends AttributeType<T> {
         /**
+         * Get the value to be formatted. Override this to provide custom
+         * values.
+         * @param value A {@link T} instance.
+         * @return A {@link String} value.
+         */
+        @NotNull
+        default String formatValue(@NotNull T value) {
+            return String.format("'%s'", value);
+        }
+
+        /**
          * Get the format {@link String} with which we construct an XPath
          * query.
          * @return A {@link String} value.
-         * @see #value()
          */
         @NotNull
-        default String format() {
-            T raw = value();
-            String value = String.valueOf(raw);
-            return String.format("@%1$s='%2$s'", "%1$s", value);
+        default String stringFormat() {
+            String raw = formatValue(value());
+            return String.format("@%1$s=%2$s", "%1$s", raw);
+        }
+    }
+
+    /**
+     * This interface provides methods to clean a {@link String} of double
+     * and single quote marks. Note that this is applicable both to direct
+     * comparison queries and @contain(@translate) - however, we must not
+     * use concat() when there are no quotation marks.
+     */
+    public interface QuotationFree extends Formattable<String> {
+        /**
+         * Strip the {@link String} to be formatted of single and double
+         * quotes by separating and concatenating.
+         * @param value A {@link String} value.
+         * @return A {@link String} value.
+         * @see XPathQuoteMark#wrapInQuotation(String)
+         */
+        @NotNull
+        @Override
+        default String formatValue(@NotNull String value) {
+            if (!value.isEmpty()) {
+                String fQuote = "", lQuote = "";
+                List<String> fParts = new LinkedList<>();
+
+                /* We need to take case of cases whereby the quotation marks
+                 * are the first or the last character, or both. */
+                String fChar = String.valueOf(value.charAt(0));
+                String lChar = String.valueOf(value.charAt(value.length() - 1));
+                Optional<XPathQuoteMark> fqm = XPathQuoteMark.from(fChar);
+                Optional<XPathQuoteMark> lqm = XPathQuoteMark.from(lChar);
+                String fFormat = "%s";
+
+                if (fqm.isPresent()) {
+                    fQuote = fqm.get().wrappedInQuotation();
+                    value = value.substring(1, value.length());
+                    fFormat = String.format("%1$s,%2$s", fQuote, fFormat);
+                }
+
+                if (lqm.isPresent()) {
+                    lQuote = lqm.get().wrappedInQuotation();
+                    value = value.substring(0, value.length() - 1);
+                    fFormat = String.format("%1$s,%2$s", fFormat, lQuote);
+                }
+
+                /* Sequentially split the String using ', and then split each
+                 * sub-string using " */
+                String[] fSplit = value.split("'");
+
+                for (String fs : fSplit) {
+                    List<String> lParts = new LinkedList<>();
+                    String[] lSplit = fs.split("\"");
+
+                    for (String ss : lSplit) {
+                        lParts.add(String.format("'%s'", ss));
+                    }
+
+                    String lJoined = String.join(",'\"',", lParts);
+                    fParts.add(lJoined);
+                }
+
+                String joined = String.join(",\"'\",", fParts);
+                String formatted = String.format(fFormat, joined);
+
+                /* Only use concat if there is more than one concatenated
+                 * sub-string, or there is either a quotation mark at the
+                 * start/end of the String */
+                if (fParts.size() > 1 || !(fQuote + lQuote).isEmpty()) {
+                    return String.format("concat(%s)", formatted);
+                } else {
+                    return formatted;
+                }
+            } else {
+                return "";
+            }
         }
     }
 
@@ -492,49 +578,67 @@ public class XPath {
      * it will be standardized and subsequently can be searched.
      */
     @FunctionalInterface
-    public interface ContainsString extends StringType, Formattable<String> {
+    public interface ContainsString extends StringType, QuotationFree {
+        /**
+         * Override this method to provide custom format that can add ignore
+         * case capability.
+         * @return A {@link String} value.
+         * @see #value()
+         */
         @NotNull
         @Override
-        default String format() {
+        default String stringFormat() {
             String value = value();
 
             if (ignoreCase()) {
                 return String.format(
-                    "contains(translate(@%1$s, '%2$s', '%3$s'), '%3$s')",
+                    "contains(translate(@%1$s, %2$s, %3$s), %3$s)",
                     "%1$s",
-                    value.toUpperCase(),
-                    value.toLowerCase());
+                    formatValue(value.toUpperCase()),
+                    formatValue(value.toLowerCase())
+                );
             } else {
-                return String.format("contains(@%1$s, '%2$s')", "%1$s", value);
+                return String.format(
+                    "contains(@%1$s, %2$s)", "%1$s",
+                    formatValue(value)
+                );
             }
         }
     }
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface Clickable extends ClickableType, Formattable<Boolean> {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface ContainsHint extends ContainsHintType, ContainsString {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface ContainsID extends ContainsIDType, ContainsString {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface ContainsText extends ContainsTextType, ContainsString {}
 
     @FunctionalInterface
     public interface Editable extends EditableType, Formattable<Boolean> {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface Enabled extends EnabledType, Formattable<Boolean> {}
 
     @FunctionalInterface
-    public interface HasHint extends HasHintType, Formattable<String> {}
+    @SuppressWarnings("WeakerAccess")
+    public interface HasHint extends HasHintType, QuotationFree {}
 
     @FunctionalInterface
-    public interface HasText extends HasTextType, Formattable<String> {}
+    @SuppressWarnings("WeakerAccess")
+    public interface HasText extends HasTextType, QuotationFree {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface OfClass extends OfClassType, ContainsString {}
     //endregion
 }

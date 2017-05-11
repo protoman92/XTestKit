@@ -11,12 +11,12 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
-import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableSubElementType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.param.ByXPath;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
@@ -113,60 +113,6 @@ public interface AndroidDateActionType extends
     }
 
     /**
-     * Get the scroll direction for a picker view. If the component we are
-     * interested is less than value displayed by the first element of the list
-     * view, return {@link Unidirection#UP_DOWN}. Otherwise, if it is more than
-     * that displayed by the last element, return {@link Unidirection#DOWN_UP}.
-     * Return a default {@link Unidirection} if the stream is empty.
-     * This method is needed because sometimes Appium cannot correctly detect
-     * the {@link WebElement} that contains the text we are looking for - as
-     * as result, it will continue scrolling in the same direction forever.
-     * With this method, even if the correct {@link WebElement} is scrolled
-     * past, it will again come into focus (even several times if needed),
-     * and eventually the {@link WebElement} will be detected.
-     * @param param A {@link DateType} instance.
-     * @param element A {@link CalendarElement} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxListViewItems(CalendarElement)
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    default Flowable<Unidirection> rxScrollDirectionForListView(
-        @NotNull DateType param,
-        @NotNull CalendarElement element
-    ) {
-        final int COMPONENT = param.component(element);
-        String format = datePickerViewType().stringFormat(element);
-        final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
-
-        return Flowable
-            .concat(
-                rxListViewItems(element)
-                    .firstElement()
-                    .toFlowable()
-                    .map(this::getText)
-                    .map(FORMATTER::parse)
-                    .map(a -> ((DateType) () -> a))
-                    .map(a -> a.component(element))
-                    .filter(a -> a > COMPONENT)
-                    .map(a -> Unidirection.UP_DOWN),
-
-                rxListViewItems(element)
-                    .lastElement()
-                    .toFlowable()
-                    .map(this::getText)
-                    .map(FORMATTER::parse)
-                    .map(a -> ((DateType) () -> a))
-                    .map(a -> a.component(element))
-                    .filter(a -> a < COMPONENT)
-                    .map(a -> Unidirection.DOWN_UP)
-            )
-            .firstElement()
-            .toFlowable()
-            .defaultIfEmpty(Unidirection.UP_DOWN);
-    }
-
-    /**
      * Select a component by scrolling until the component {@link String} is
      * visible. We can supply a custom {@link XPath} here in case the element
      * being searched for require a non-standard query.
@@ -187,6 +133,9 @@ public interface AndroidDateActionType extends
     ) {
         final AndroidDateActionType THIS = this;
         final String CP_STRING = string(PARAM, ELEMENT);
+        final int COMPONENT = PARAM.component(ELEMENT);
+        String format = datePickerViewType().stringFormat(ELEMENT);
+        final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
 
         /* We need a custom ByXPath because we want to limit the retry
          * count. Otherwise, the scroll action will take quite a long time as
@@ -198,7 +147,41 @@ public interface AndroidDateActionType extends
             .withRetryCount(0)
             .build();
 
-        SwipeRepeatableType repeater = new SwipeRepeatableType() {
+        /* This method is needed because sometimes Appium cannot correctly
+         * detect the {@link WebElement} that contains the text we are looking
+         * for - as a result, it will continue scrolling in the same direction
+         * forever. With this method, even if the correct {@link WebElement}
+         * is scrolled past, it will again come into focus (even several times
+         * if needed), and eventually the element will be detected. */
+        SwipeRepeatableType repeater = new SwipeRepeatableSubElementType() {
+            @NotNull
+            @Override
+            public Flowable<?> rxCompareFirst(@NotNull WebElement element) {
+                return Flowable.just(element)
+                    .map(THIS::getText)
+                    .map(FORMATTER::parse)
+                    .map(a -> ((DateType) () -> a))
+                    .map(a -> a.component(ELEMENT))
+                    .filter(a -> a > COMPONENT);
+            }
+
+            @NotNull
+            @Override
+            public Flowable<?> rxCompareLast(@NotNull WebElement element) {
+                return Flowable.just(element)
+                    .map(THIS::getText)
+                    .map(FORMATTER::parse)
+                    .map(a -> ((DateType) () -> a))
+                    .map(a -> a.component(ELEMENT))
+                    .filter(a -> a < COMPONENT);
+            }
+
+            @NotNull
+            @Override
+            public Flowable<WebElement> rxScrollViewChildItems() {
+                return THIS.rxListViewItems(ELEMENT);
+            }
+
             @Override
             public double elementSwipeRatio() {
                 return SCROLL_RATIO;
@@ -220,19 +203,13 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxElementToSwipe() {
+            public Flowable<WebElement> rxScrollableElementToSwipe() {
                 return THIS.rxListView(ELEMENT);
             }
 
             @NotNull
             @Override
-            public Flowable<Unidirection> rxDirectionToSwipe() {
-                return THIS.rxScrollDirectionForListView(PARAM, ELEMENT);
-            }
-
-            @NotNull
-            @Override
-            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param) {
+            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
                 return THIS.rxSwipeOnce(param);
             }
         };
