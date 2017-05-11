@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.type;
+package org.swiften.xtestkit.base.element.action.swipe.type;
 
 /**
  * Created by haipham on 5/8/17.

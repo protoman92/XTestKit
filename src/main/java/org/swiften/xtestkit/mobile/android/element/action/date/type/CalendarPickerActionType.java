@@ -11,19 +11,23 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.element.locator.xpath.Attribute;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
+import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.param.ByXPath;
 import org.swiften.xtestkit.base.type.ClassContainerType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
+import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 
 import java.util.Date;
 
@@ -32,10 +36,12 @@ import java.util.Date;
  * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
  */
 public interface CalendarPickerActionType extends
-    BaseAndroidDateActionType,
-    BaseDateActionType<AndroidDriver<AndroidElement>>,
+    BaseDateActionType,
+    BaseLocatorType<AndroidDriver<AndroidElement>>,
     AndroidElementInteractionType,
-    MobileActionType<AndroidDriver<AndroidElement>>
+    MobileActionType<AndroidDriver<AndroidElement>>,
+    BaseActionType<AndroidDriver<AndroidElement>>,
+    MobileSwipeType<AndroidDriver<AndroidElement>>
 {
     /**
      * Get the calendar list view. Applicable to
@@ -62,7 +68,7 @@ public interface CalendarPickerActionType extends
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxCalibrateDateForCalendar(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxCalibrateDate(@NotNull final DateType PARAM) {
         final CalendarPickerActionType THIS = this;
         final Date DATE = PARAM.value();
 
@@ -78,11 +84,6 @@ public interface CalendarPickerActionType extends
             .appendAttribute(contentDesc, format)
             .build();
 
-        /* Since there is no way to check the current month in focus, we need
-         * to use a crude workaround. Every time the list view is scrolled to
-         * a new page/the previous page, click on the first day element in
-         * order to update the displayed date. We can then use rxDisplayedDate
-         * to check */
         final ByXPath BY_XPATH = ByXPath.builder()
             .withXPath(xPath)
             .withError(NO_SUCH_ELEMENT)
@@ -99,44 +100,60 @@ public interface CalendarPickerActionType extends
             .withRetryCount(0)
             .build();
 
-        /* We need the scroll ratio to be higher because the calendar day view
-         * tends to snap into place if the scroll/swipe motion is not strong
-         * enough, which, sometimes, may lead to wrong page in focus
-         *
-         * Based on empirical tests, it seems 0.7-0.8 are a good ratios. Amend
-         * if necessary */
-        class ScrollAndCheck {
+        SwipeRepeatableType repeater = new SwipeRepeatableType() {
+            @Override
+            public double elementSwipeRatio() {
+                /* We need the scroll ratio to be higher because the calendar
+                 * day view tends to snap into place if the scroll/swipe motion
+                 * is not strong enough, which, sometimes, may lead to wrong
+                 * page in focus.
+                 *
+                 * Based on empirical tests, it seems 0.7-0.8 are a good
+                 * ratios. Amend if necessary */
+                return 0.7d;
+            }
+
             @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat() {
-                /* First step is to click on the first element in the current
-                 * month view */
+            @Override
+            public Flowable<Boolean> rxShouldKeepSwiping() {
+                /* Since there is no way to check the current month in focus,
+                 * we need to use a crude workaround. Every time the list view
+                 * is scrolled to a new page/the previous page, click on the
+                 * first day element in order to update the displayed date.
+                 * We can then use rxDisplayedDate to check */
                 return THIS.rxElementByXPath(DEFAULT_BY_XPATH)
                     .flatMap(THIS::rxClick)
                     .flatMap(a -> THIS.rxElementsByXPath(BY_XPATH))
                     .flatMap(THIS::rxClick)
                     .flatMap(a -> rxHasDate(PARAM))
-                    .filter(BooleanUtil::isTrue)
-                    .switchIfEmpty(RxUtil.error(""))
-                    .onErrorResumeNext(Flowable.zip(
-                        rxCalendarListView(),
-
-                        /* We use month to compare because the month and day
-                         * views are intertwined in CALENDAR mode */
-                        rxDisplayedDate()
-                            .map(a -> DateUtil.notEarlierThan(
-                                a, DATE, CalendarElement.DAY.value()
-                            ))
-                            .map(Unidirection::vertical),
-
-                        (element, direction) -> THIS.rxScrollPickerView(
-                            element, direction, 0.7d
-                        ))
-                        .flatMap(a -> a)
-                        .flatMap(a -> new ScrollAndCheck().repeat()));
+                    .filter(BooleanUtil::isTrue);
             }
-        }
 
-        return new ScrollAndCheck().repeat();
+            @NotNull
+            @Override
+            public Flowable<WebElement> rxElementToSwipe() {
+                return rxCalendarListView();
+            }
+
+            @NotNull
+            @Override
+            public Flowable<Unidirection> rxDirectionToSwipe() {
+                /* We use month to compare because the month and day views
+                 * are intertwined in CALENDAR mode */
+                return rxDisplayedDate()
+                    .map(a -> DateUtil.notEarlierThan(
+                        a, DATE, CalendarElement.DAY.value()
+                    ))
+                    .map(Unidirection::vertical);
+            }
+
+            @NotNull
+            @Override
+            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param) {
+                return THIS.rxSwipeOnce(param);
+            }
+        };
+
+        return repeater.rxRepeatSwipe();
     }
 }

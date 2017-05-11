@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.xpath;
+package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 /**
  * Created by haipham on 4/4/17.

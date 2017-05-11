@@ -6,19 +6,22 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.param.ByXPath;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
+import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -35,8 +38,8 @@ public interface AndroidDateActionType extends
     AndroidDateActionErrorType,
     CalendarPickerActionType,
     MobileActionType<AndroidDriver<AndroidElement>>,
-    BaseAndroidDateActionType,
-    BaseDateActionType<AndroidDriver<AndroidElement>>,
+    BaseActionType<AndroidDriver<AndroidElement>>,
+    MobileSwipeType<AndroidDriver<AndroidElement>>,
     AndroidElementInteractionType,
     DatePickerContainerType
 {
@@ -173,7 +176,7 @@ public interface AndroidDateActionType extends
      * @param SCROLL_RATIO A dampening ratio for vertical scroll.
      * @return A {@link Flowable} instance.
      * @see #rxListView(CalendarElement)
-     * @see #rxScrollPickerView(WebElement, Unidirection)
+     * @see SwipeRepeatableType#rxRepeatSwipe()
      */
     @NotNull
     default Flowable<Boolean> rxScrollAndSelectComponent(
@@ -195,11 +198,15 @@ public interface AndroidDateActionType extends
             .withRetryCount(0)
             .build();
 
-        /* Keep scrolling and checking until the component comes into focus */
-        class ScrollAndCheck {
+        SwipeRepeatableType repeater = new SwipeRepeatableType() {
+            @Override
+            public double elementSwipeRatio() {
+                return SCROLL_RATIO;
+            }
+
             @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat() {
+            @Override
+            public Flowable<Boolean> rxShouldKeepSwiping() {
                 return THIS.rxElementsByXPath(BY_XPATH)
                     /* Sometimes the driver will get the wrong element. In
                      * this case, keep scrolling so that in the next scroll,
@@ -208,20 +215,29 @@ public interface AndroidDateActionType extends
                      * scroll low in order to catch potential oddities like
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
-                    .flatMap(THIS::rxClick)
-                    .switchIfEmpty(RxUtil.error(""))
-                    .onErrorResumeNext(Flowable.zip(
-                        THIS.rxListView(ELEMENT),
-                        THIS.rxScrollDirectionForListView(PARAM, ELEMENT),
-                        (element, direction) -> THIS.rxScrollPickerView(
-                            element, direction, SCROLL_RATIO)
-                        )
-                        .flatMap(a -> a)
-                        .flatMap(a -> new ScrollAndCheck().repeat()));
+                    .flatMap(THIS::rxClick);
             }
-        }
 
-        return new ScrollAndCheck().repeat();
+            @NotNull
+            @Override
+            public Flowable<WebElement> rxElementToSwipe() {
+                return THIS.rxListView(ELEMENT);
+            }
+
+            @NotNull
+            @Override
+            public Flowable<Unidirection> rxDirectionToSwipe() {
+                return THIS.rxScrollDirectionForListView(PARAM, ELEMENT);
+            }
+
+            @NotNull
+            @Override
+            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param) {
+                return THIS.rxSwipeOnce(param);
+            }
+        };
+
+        return repeater.rxRepeatSwipe();
     }
 
     /**
@@ -275,7 +291,7 @@ public interface AndroidDateActionType extends
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
      * @see BaseDateActionType#rxSelectDay(DateType)
-     * @see #rxCalibrateDateForCalendar(DateType)
+     * @see #rxCalibrateDate(DateType)
      * @see #rxScrollAndSelectComponent(DateType, CalendarElement)
      */
     @NotNull
@@ -286,7 +302,7 @@ public interface AndroidDateActionType extends
                  * need to scroll the list view and check content description
                  * for the date String. We also need to continually click
                  * on a day to snap the list view into position */
-                return rxCalibrateDateForCalendar(param);
+                return rxCalibrateDate(param);
 
             case SPINNER:
                 return rxScrollAndSelectComponent(param, CalendarElement.DAY);

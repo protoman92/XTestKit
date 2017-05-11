@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatableType;
-import org.swiften.xtestkit.base.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
 
 /**
  * Parameter object for

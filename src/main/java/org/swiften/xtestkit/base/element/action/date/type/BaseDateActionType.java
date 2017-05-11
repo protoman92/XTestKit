@@ -5,19 +5,13 @@ package org.swiften.xtestkit.base.element.action.date.type;
  */
 
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.action.date.CalendarElement;
-import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.DriverContainerType;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -27,12 +21,7 @@ import java.util.Date;
  *
  * These methods assume that the user is in a calendar view.
  */
-public interface BaseDateActionType<D extends WebDriver> extends
-    BaseActionType<D>,
-    BaseLocatorType<D>,
-    DriverContainerType<D>,
-    BaseDateActionErrorType
-{
+public interface BaseDateActionType extends BaseDateActionErrorType {
     //region Validation
     /**
      * Check if a {@link Date} is currently active. This assumes that the

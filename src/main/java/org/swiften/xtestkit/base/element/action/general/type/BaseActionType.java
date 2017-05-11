@@ -8,14 +8,9 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
-import org.swiften.xtestkit.base.param.SwipeGestureParam;
-import org.swiften.xtestkit.base.param.UnidirectionalSwipeParam;
 import org.swiften.xtestkit.base.type.*;
 
 import java.util.concurrent.TimeUnit;
@@ -24,10 +19,7 @@ import java.util.concurrent.TimeUnit;
  * This interface provides general actions, such as back/swipe navigation.
  * * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseActionType<D extends WebDriver> extends
-    DriverContainerType<D>,
-    BaseActionErrorType
-{
+public interface BaseActionType<D extends WebDriver> extends DriverContainerType<D> {
     /**
      * Implicitly wait before search for elements.
      * @param param A {@link DelayType} param.
@@ -135,133 +127,5 @@ public interface BaseActionType<D extends WebDriver> extends
     default Flowable<Boolean> rxRejectAlert() {
         AlertParam param = AlertParam.builder().reject().build();
         return rxDismissAlert(param);
-    }
-
-    /**
-     * Perform a swipe action. However, since {@link WebDriver} does not
-     * implement swiping, we need to override this method in subclasses.
-     * @param param A {@link SwipeGestureType} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default Flowable<Boolean> rxSwipeOnce(@NotNull SwipeGestureType param) {
-        return Flowable.just(true);
-    }
-
-    /**
-     * Perform a repeated swipe action.
-     * @param param A {@link P} instance.
-     * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default <P extends RepeatableType & SwipeGestureType>
-    Flowable<Boolean> rxSwipe(@NotNull P param) {
-        final Flowable<Boolean> SWIPE = rxSwipeOnce(param);
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = param.timeUnit();
-
-        class PerformSwipe {
-            @NotNull
-            private Flowable<Boolean> swipe(final int ITERATION) {
-                if (ITERATION < TIMES) {
-                    return SWIPE
-                        .delay(DELAY, UNIT)
-                        .flatMap(a -> new PerformSwipe().swipe(ITERATION + 1));
-                }
-
-                return Flowable.empty();
-            }
-        }
-
-        return new PerformSwipe().swipe(0).defaultIfEmpty(true);
-    }
-
-    /**
-     * Perform a generic unidirectional swipe. This can be used anywhere a non-
-     * full swipe is required.
-     * @param param A {@link P} instance.
-     * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default <P extends DurationType & UnidirectionContainerType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
-        Dimension size = driver().manage().window().getSize();
-        double height = size.height, width = size.width;
-        int startX, endX, startY, endY;
-        double startRatio = 0.3d, endRatio = 0.7d;
-
-        int lowX = (int)(width * startRatio);
-        int midX = (int)(width / 2);
-        int highX = (int)(width * endRatio);
-        int lowY = (int)(height * startRatio);
-        int midY = (int)(height / 2);
-        int highY = (int)(height * endRatio);
-
-        switch (param.direction()) {
-            case LEFT_RIGHT:
-                startX = lowX;
-                endX = highX;
-                startY = endY = midY;
-                break;
-
-            case RIGHT_LEFT:
-                startX = highX;
-                endX = lowX;
-                startY = endY = midY;
-                break;
-
-            default:
-                return RxUtil.error(WRONG_DIRECTION);
-        }
-
-        SwipeGestureParam swipeParam = SwipeGestureParam.builder()
-            .withStartX(startX)
-            .withStartY(startY)
-            .withEndX(endX)
-            .withEndY(endY)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipe(swipeParam);
-    }
-
-    /**
-     * Perform a generic horizontal swipe motion from left to right.
-     * @param param A {@link P} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
-     */
-    @NotNull
-    default <P extends DurationType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(Unidirection.LEFT_RIGHT)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipeGenericUnidirectional(uniParam);
-    }
-
-    /**
-     * Perform a generic horizontal swipe motion from right to left.
-     * @param param A {@link RepeatableType} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
-     */
-    @NotNull
-    default <P extends DurationType & RepeatableType>
-    Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
-            .withDirection(Unidirection.RIGHT_LEFT)
-            .withRepeatableType(param)
-            .withDurationType(param)
-            .build();
-
-        return rxSwipeGenericUnidirectional(uniParam);
     }
 }

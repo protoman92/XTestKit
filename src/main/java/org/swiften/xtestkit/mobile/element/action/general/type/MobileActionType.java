@@ -4,10 +4,7 @@ import io.appium.java_client.MobileDriver;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
-import org.swiften.xtestkit.base.type.SwipeGestureType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -50,23 +47,6 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
     default Flowable<Boolean> rxResetApp() {
         return Completable
             .fromAction(driver()::closeApp)
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
-    /**
-     * @param PARAM A {@link SwipeGestureType} instance.
-     * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxSwipeOnce(SwipeGestureType)
-     */
-    @NotNull
-    @Override
-    default Flowable<Boolean> rxSwipeOnce(@NotNull final SwipeGestureType PARAM) {
-        final MobileDriver<?> DRIVER = driver();
-        final MobileTouchActionType TOUCH_ACTION = touchAction();
-
-        return Completable
-            .fromAction(() -> TOUCH_ACTION.swipe(DRIVER, PARAM))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

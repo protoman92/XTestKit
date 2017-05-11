@@ -11,6 +11,7 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.property.type.BaseElementInteractionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.*;
@@ -45,10 +46,11 @@ import java.util.function.Predicate;
  */
 public abstract class BaseEngine<D extends WebDriver> implements
     BaseActionType<D>,
-    BaseDateActionType<D>,
+    BaseDateActionType,
     BaseLocatorType<D>,
     BaseEngineErrorType,
     BaseElementInteractionType,
+    BaseSwipeType<D>,
     EngineDelayType,
     DistinctiveType,
     TestListenerType

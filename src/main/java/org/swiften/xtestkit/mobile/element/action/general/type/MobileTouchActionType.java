@@ -3,7 +3,7 @@ package org.swiften.xtestkit.mobile.element.action.general.type;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.SwipeGestureType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeGestureType;
 
 import java.time.Duration;
 

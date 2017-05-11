@@ -15,7 +15,7 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.param.*;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.type.*;
 
 import java.util.ArrayList;

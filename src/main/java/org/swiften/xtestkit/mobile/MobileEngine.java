@@ -4,7 +4,8 @@ import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.locator.general.type.MobileLocatorType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
@@ -26,7 +27,8 @@ public abstract class MobileEngine<
     D extends MobileDriver<E>> extends
     BaseEngine<D> implements
     MobileActionType<D>,
-    MobileLocatorType<D>
+    MobileLocatorType<D>,
+    MobileSwipeType<D>
 {
     @NotNull String app;
     @NotNull String appPackage;

@@ -1,29 +1,78 @@
-package org.swiften.xtestkit.mobile.android.element.action.date.type;
+package org.swiften.xtestkit.base.element.action.swipe.type;
 
 /**
- * Created by haipham on 5/10/17.
+ * Created by haipham on 5/11/17.
  */
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.param.SwipeGestureParam;
-import org.swiften.xtestkit.base.type.SwipeGestureType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
 /**
- * This interface is the base for all Android date action types. It defines
- * common methods that will be used by all interfaces that extends it.
+ * This interface provides methods to repeatedly scroll a scrollable view so
+ * long as a condition is satisfied.
  */
-public interface BaseAndroidDateActionType extends
-    BaseActionType<AndroidDriver<AndroidElement>>
-{
+public interface SwipeRepeatableType extends SwipeOnceType {
+    /**
+     * Get the swipe ratio that is used to dampen the swipe gesture in order
+     * to avoid a full unidirectional swipe.
+     * @return A {@link Double} value.
+     */
+    double elementSwipeRatio();
+
+    /**
+     * Check whether the swipe action should be repeated, e.g. when we are
+     * searching for an element in a list view, we can use a {@link Flowable}
+     * that emits true as long as the element is not found yet.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    Flowable<Boolean> rxShouldKeepSwiping();
+
+    /**
+     * Get the {@link WebElement} to swipe.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    Flowable<WebElement> rxElementToSwipe();
+
+    /**
+     * Get the {@link Unidirection} to swipe towards.
+     * @return A {@link Flowable} instance.
+     */
+    @NotNull
+    Flowable<Unidirection> rxDirectionToSwipe();
+
+    /**
+     * Repeat a scroll while a condition is satisfied.
+     * @return A {@link Flowable} instance.
+     * @see #rxShouldKeepSwiping()
+     * @see #rxElementToSwipe()
+     * @see #rxDirectionToSwipe()
+     * @see #rxSwipeElement(WebElement, Unidirection, double)
+     * @see #rxRepeatSwipe()
+     */
+    @NotNull
+    default Flowable<Boolean> rxRepeatSwipe() {
+        return rxShouldKeepSwiping()
+            .switchIfEmpty(RxUtil.error(""))
+            .onErrorResumeNext(Flowable.zip(
+                rxElementToSwipe(),
+                rxDirectionToSwipe(),
+                (element, direction) -> rxSwipeElement(
+                    element, direction, elementSwipeRatio())
+                )
+                .flatMap(a -> a)
+                .flatMap(a -> rxRepeatSwipe())
+            );
+    }
+
     /**
      * Scroll the picker list view to a new page or the previous page.
      * Applicable to {@link DatePickerContainerType.DatePickerType#CALENDAR},
@@ -36,7 +85,7 @@ public interface BaseAndroidDateActionType extends
      * @see #rxSwipeOnce(SwipeGestureType)
      */
     @NotNull
-    default Flowable<Boolean> rxScrollPickerView(
+    default Flowable<Boolean> rxSwipeElement(
         @NotNull WebElement element,
         @NotNull Unidirection direction,
         double scrollRatio
@@ -73,22 +122,5 @@ public interface BaseAndroidDateActionType extends
             .build();
 
         return rxSwipeOnce(param);
-    }
-
-    /**
-     * Same as above, but uses a default scroll ratio.
-     * @param element The calendar list view {@link WebElement}.
-     * @param direction A {@link Unidirection} instance.
-     * @return A {@link Flowable} instance.
-     * @see #rxScrollPickerView(WebElement, Unidirection, double)
-     */
-    @NotNull
-    default Flowable<Boolean> rxScrollPickerView(@NotNull WebElement element,
-                                                 @NotNull Unidirection direction) {
-        /* Do not perform a full vertical scroll from top-bottom or bottom-top
-         * because we may overshoot. Rather, perform short swipes and
-         * repeatedly check for the wanted component */
-        double scrollRatio = 0.5d;
-        return rxScrollPickerView(element, direction, scrollRatio);
     }
 }

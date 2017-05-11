@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.xpath;
+package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
 import org.swiften.xtestkit.base.type.PlatformType;

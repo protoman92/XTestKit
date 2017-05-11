@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile;
 
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
-import org.swiften.xtestkit.base.element.locator.xpath.Attribute;
+import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
 
