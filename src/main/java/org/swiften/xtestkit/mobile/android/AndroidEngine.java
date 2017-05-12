@@ -210,15 +210,14 @@ public class AndroidEngine extends MobileEngine<
                 break;
 
             case SIMULATED:
-                String deviceUID = androidInstance.deviceUID();
-
-                StopEmulatorParam seParam = StopEmulatorParam
-                    .builder()
-                    .withRetryType(param)
-                    .withPortType(androidInstance)
-                    .build();
-
-                SOURCE = adbHandler().rxStopEmulator(seParam);
+                SOURCE = Flowable.just(true);
+//                StopEmulatorParam seParam = StopEmulatorParam
+//                    .builder()
+//                    .withRetryType(param)
+//                    .withPortType(androidInstance)
+//                    .build();
+//
+//                SOURCE = adbHandler().rxStopEmulator(seParam);
                 break;
 
             default:
