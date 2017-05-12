@@ -154,7 +154,6 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final int TIMES
     ) {
         final SwipeRepeatComparisonType THIS = this;
-        LogUtil.println(TIMES, RATIO, DIRECTION);
 
         class InitialSwipe {
             @NotNull

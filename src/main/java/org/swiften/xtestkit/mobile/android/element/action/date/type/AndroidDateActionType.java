@@ -544,19 +544,17 @@ public interface AndroidDateActionType extends
     @Override
     @SuppressWarnings("MagicConstant")
     default Flowable<Date> rxDisplayedDate() {
-        return Flowable
-            .combineLatest(
-                rxDisplayedDay(),
-                rxDisplayedMonth(),
-                rxDisplayedYear(),
-                (day, month, year) -> {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(CalendarElement.DAY.value(), day);
-                    calendar.set(CalendarElement.MONTH.value(), month);
-                    calendar.set(CalendarElement.YEAR.value(), year);
-                    return calendar;
-                })
-            .map(Calendar::getTime);
+        return Flowable.zip(
+            rxDisplayedDay(),
+            rxDisplayedMonth(),
+            rxDisplayedYear(),
+            (day, month, year) -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(CalendarElement.DAY.value(), day);
+                calendar.set(CalendarElement.MONTH.value(), month);
+                calendar.set(CalendarElement.YEAR.value(), year);
+                return calendar;
+            }).map(Calendar::getTime);
     }
     //endregion
 }
