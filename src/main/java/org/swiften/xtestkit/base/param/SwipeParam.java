@@ -8,14 +8,14 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.DurationType;
-import org.swiften.xtestkit.base.type.RepeatableType;
+import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 /**
  * Parameter object for
- * {@link BaseEngine#rxSwipe(RepeatableType)}
+ * {@link BaseEngine#rxSwipe(RepeatType)}
  */
-public class SwipeParam implements RepeatableType, SwipeType {
+public class SwipeParam implements RepeatType, SwipeType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -34,7 +34,7 @@ public class SwipeParam implements RepeatableType, SwipeType {
     private long delay;
 
     SwipeParam() {
-        delay = RepeatableType.super.delay();
+        delay = RepeatType.super.delay();
         duration = SwipeType.super.duration();
     }
 
@@ -170,11 +170,11 @@ public class SwipeParam implements RepeatableType, SwipeType {
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type A {@link RepeatableType} instance.
+         * @param type A {@link RepeatType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRepeatableType(@NotNull RepeatableType type) {
+        public Builder withRepeatableType(@NotNull RepeatType type) {
             return withTimes(type.times()).withDelay(type.delay());
         }
 

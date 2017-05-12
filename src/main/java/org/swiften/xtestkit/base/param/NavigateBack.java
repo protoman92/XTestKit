@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.BaseEngine;
-import org.swiften.xtestkit.base.type.RepeatableType;
+import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**
@@ -12,7 +12,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 /**
  * Parameter object for {@link BaseEngine#rxNavigateBack(NavigateBack)}.
  */
-public final class NavigateBack implements RepeatableType, RetryType {
+public final class NavigateBack implements RepeatType, RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -25,7 +25,7 @@ public final class NavigateBack implements RepeatableType, RetryType {
         times = 1;
     }
 
-    //region RepeatableType
+    //region RepeatType
     @Override
     public int times() {
         return times;

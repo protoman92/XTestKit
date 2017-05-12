@@ -6,14 +6,15 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableSubElementType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatComparisonType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.param.ByXPath;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
@@ -122,7 +123,7 @@ public interface AndroidDateActionType extends
      * @param SCROLL_RATIO A dampening ratio for vertical scroll.
      * @return A {@link Flowable} instance.
      * @see #rxListView(CalendarElement)
-     * @see SwipeRepeatableType#rxRepeatSwipe()
+     * @see SwipeRepeatType#rxRepeatSwipe()
      */
     @NotNull
     default Flowable<Boolean> rxScrollAndSelectComponent(
@@ -144,7 +145,7 @@ public interface AndroidDateActionType extends
         final ByXPath BY_XPATH = ByXPath.builder()
             .withXPath(xPath)
             .withError(NO_SUCH_ELEMENT)
-            .withRetryCount(0)
+            .withRetryCount(1)
             .build();
 
         /* This method is needed because sometimes Appium cannot correctly
@@ -153,7 +154,18 @@ public interface AndroidDateActionType extends
          * forever. With this method, even if the correct {@link WebElement}
          * is scrolled past, it will again come into focus (even several times
          * if needed), and eventually the element will be detected. */
-        SwipeRepeatableType repeater = new SwipeRepeatableSubElementType() {
+        SwipeRepeatComparisonType repeater = new SwipeRepeatComparisonType() {
+            @NotNull
+            @Override
+            public Flowable<Integer> rxInitialDifference(@NotNull WebElement element) {
+                return Flowable.just(element)
+                    .map(THIS::getText)
+                    .map(FORMATTER::parse)
+                    .map(a -> ((DateType) () -> a))
+                    .map(a -> a.component(ELEMENT))
+                    .map(a -> a - COMPONENT);
+            }
+
             @NotNull
             @Override
             public Flowable<?> rxCompareFirst(@NotNull WebElement element) {
@@ -203,7 +215,7 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxScrollableElementToSwipe() {
+            public Flowable<WebElement> rxScrollableViewToSwipe() {
                 return THIS.rxListView(ELEMENT);
             }
 

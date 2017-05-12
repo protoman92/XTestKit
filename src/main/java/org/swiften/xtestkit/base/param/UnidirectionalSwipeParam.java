@@ -4,7 +4,7 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.type.DurationType;
-import org.swiften.xtestkit.base.type.RepeatableType;
+import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.UnidirectionContainerType;
 
 /**
@@ -18,7 +18,7 @@ import org.swiften.xtestkit.base.type.UnidirectionContainerType;
  */
 public class UnidirectionalSwipeParam implements
     DurationType,
-    RepeatableType,
+    RepeatType,
     UnidirectionContainerType
 {
     /**
@@ -37,7 +37,7 @@ public class UnidirectionalSwipeParam implements
 
     UnidirectionalSwipeParam() {
         direction = Unidirection.LEFT_RIGHT;
-        delay = RepeatableType.super.delay();
+        delay = RepeatType.super.delay();
     }
 
     //region Getters
@@ -120,11 +120,11 @@ public class UnidirectionalSwipeParam implements
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type A {@link RepeatableType} instance.
+         * @param type A {@link RepeatType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRepeatableType(@NotNull RepeatableType type) {
+        public Builder withRepeatableType(@NotNull RepeatType type) {
             return withTimes(type.times()).withDelay(type.delay());
         }
 

@@ -5,11 +5,9 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -17,8 +15,8 @@ import org.testng.annotations.Test;
 /**
  * Created by haipham on 5/12/17.
  */
-public class SwipeRepeatableTest implements SwipeRepeatableType {
-    @NotNull private final SwipeRepeatableType ENGINE;
+public class SwipeRepeatTest implements SwipeRepeatType {
+    @NotNull private final SwipeRepeatType ENGINE;
     @NotNull private final WebElement ELEMENT;
     private int totalSwipeCount = 10, currentSwipeCount;
 
@@ -57,7 +55,7 @@ public class SwipeRepeatableTest implements SwipeRepeatableType {
 
     @NotNull
     @Override
-    public Flowable<WebElement> rxScrollableElementToSwipe() {
+    public Flowable<WebElement> rxScrollableViewToSwipe() {
         return Flowable.just(ELEMENT);
     }
 
@@ -90,7 +88,7 @@ public class SwipeRepeatableTest implements SwipeRepeatableType {
         // Then
         verify(ENGINE, times(totalSwipeCount)).rxRepeatSwipe();
         verify(ENGINE, times(totalSwipeCount)).rxShouldKeepSwiping();
-        verify(ENGINE, times(totalSwipeCount)).rxScrollableElementToSwipe();
+        verify(ENGINE, times(totalSwipeCount)).rxScrollableViewToSwipe();
         verify(ENGINE, times(totalSwipeCount)).rxDirectionToSwipe();
         verify(ENGINE, times(totalSwipeCount)).delayEveryIteration();
         verify(ENGINE, times(totalSwipeCount - 1)).elementSwipeRatio();

@@ -8,7 +8,7 @@ package org.swiften.xtestkit.base.type;
  * This interface provides methods to repeat an action.
  */
 @FunctionalInterface
-public interface RepeatableType extends DelayType {
+public interface RepeatType extends DelayType {
     /**
      * Get the number of times to repeat an action.
      * @return An {@link Integer} value.

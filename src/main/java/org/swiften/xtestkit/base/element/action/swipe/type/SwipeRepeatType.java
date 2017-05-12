@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * This interface provides methods to repeatedly scroll a scrollable view so
  * long as a condition is satisfied.
  */
-public interface SwipeRepeatableType extends SwipeOnceType {
+public interface SwipeRepeatType extends SwipeOnceType {
     /**
      * Get the delay for each iteration.
      * @return A {@link Long} value.
@@ -52,7 +51,7 @@ public interface SwipeRepeatableType extends SwipeOnceType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<WebElement> rxScrollableElementToSwipe();
+    Flowable<WebElement> rxScrollableViewToSwipe();
 
     /**
      * Get the {@link Unidirection} to swipe towards.
@@ -65,25 +64,35 @@ public interface SwipeRepeatableType extends SwipeOnceType {
      * Repeat a scroll while a condition is satisfied.
      * @return A {@link Flowable} instance.
      * @see #rxShouldKeepSwiping()
-     * @see #rxScrollableElementToSwipe()
+     * @see #rxScrollableViewToSwipe()
      * @see #rxDirectionToSwipe()
      * @see #rxSwipeElement(WebElement, Unidirection, double)
      * @see #rxRepeatSwipe()
      */
     @NotNull
-    default Flowable<Boolean> rxRepeatSwipe() {
+    default Flowable<Boolean> rxSwipeRecursively() {
         return rxShouldKeepSwiping()
             .switchIfEmpty(RxUtil.error(""))
             .onErrorResumeNext(Flowable.zip(
-                rxScrollableElementToSwipe(),
+                rxScrollableViewToSwipe(),
                 rxDirectionToSwipe(),
                 (element, direction) -> rxSwipeElement(
-                    element, direction, elementSwipeRatio())
-                )
+                    element, direction, elementSwipeRatio()
+                ))
                 .flatMap(a -> a)
                 .delay(delayEveryIteration(), TimeUnit.MILLISECONDS)
-                .flatMap(a -> rxRepeatSwipe())
+                .flatMap(a -> rxSwipeRecursively())
             );
+    }
+
+    /**
+     * Repeat a scroll while a condition is satisfied.
+     * @return A {@link Flowable} instance.
+     * @see #rxSwipeRecursively()
+     */
+    @NotNull
+    default Flowable<Boolean> rxRepeatSwipe() {
+        return rxSwipeRecursively();
     }
 
     /**

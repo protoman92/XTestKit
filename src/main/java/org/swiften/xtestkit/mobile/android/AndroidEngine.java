@@ -4,7 +4,7 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.*;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkit.base.type.RepeatableType;
+import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.base.TestMode;
@@ -340,9 +340,9 @@ public class AndroidEngine extends MobileEngine<
      * keyboard is present with
      * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
      * and then call
-     * {@link #rxNavigateBack(RepeatableType)}.
+     * {@link #rxNavigateBack(RepeatType)}.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatableType)
+     * @see #rxNavigateBack(RepeatType)
      * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull

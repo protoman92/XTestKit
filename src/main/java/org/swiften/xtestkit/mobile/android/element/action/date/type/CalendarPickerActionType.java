@@ -17,7 +17,7 @@ import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatableType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
@@ -100,7 +100,7 @@ public interface CalendarPickerActionType extends
             .withRetryCount(0)
             .build();
 
-        SwipeRepeatableType repeater = new SwipeRepeatableType() {
+        SwipeRepeatType repeater = new SwipeRepeatType() {
             @Override
             public double elementSwipeRatio() {
                 /* We need the scroll ratio to be higher because the calendar
@@ -131,7 +131,7 @@ public interface CalendarPickerActionType extends
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxScrollableElementToSwipe() {
+            public Flowable<WebElement> rxScrollableViewToSwipe() {
                 return rxCalendarListView();
             }
 

@@ -30,7 +30,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default <P extends DurationType & UnidirectionContainerType & RepeatableType>
+    default <P extends DurationType & UnidirectionContainerType & RepeatType>
     Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
         Dimension size = driver().manage().window().getSize();
         double height = size.height, width = size.width;
@@ -77,10 +77,10 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * Perform a generic horizontal swipe motion from left to right.
      * @param param A {@link P} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
+     * @see #rxSwipe(RepeatType)
      */
     @NotNull
-    default <P extends DurationType & RepeatableType>
+    default <P extends DurationType & RepeatType>
     Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
         UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
             .withDirection(Unidirection.LEFT_RIGHT)
@@ -93,12 +93,12 @@ public interface BaseSwipeType<D extends WebDriver> extends
 
     /**
      * Perform a generic horizontal swipe motion from right to left.
-     * @param param A {@link RepeatableType} instance.
+     * @param param A {@link RepeatType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatableType)
+     * @see #rxSwipe(RepeatType)
      */
     @NotNull
-    default <P extends DurationType & RepeatableType>
+    default <P extends DurationType & RepeatType>
     Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
         UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
             .withDirection(Unidirection.RIGHT_LEFT)

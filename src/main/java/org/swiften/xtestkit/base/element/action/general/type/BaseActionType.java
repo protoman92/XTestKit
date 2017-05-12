@@ -39,13 +39,13 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Navigate backwards for certain number of times.
-     * @param param A {@link RepeatableType} object.
+     * @param param A {@link RepeatType} object.
      * @return A {@link Flowable} instance.
      * @see WebDriver#navigate()
      * @see WebDriver.Navigation#back()
      */
     @NotNull
-    default Flowable<Boolean> rxNavigateBack(@NotNull RepeatableType param) {
+    default Flowable<Boolean> rxNavigateBack(@NotNull RepeatType param) {
         final WebDriver DRIVER = driver();
         final int TIMES = param.times();
         final long DELAY = param.delay();
@@ -75,7 +75,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
     /**
      * Same as above, but uses a default {@link NavigateBack} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatableType)
+     * @see #rxNavigateBack(RepeatType)
      */
     @NotNull
     default Flowable<Boolean> rxNavigateBackOnce() {
