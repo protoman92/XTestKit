@@ -118,8 +118,7 @@ public class BaseLocatorTest implements BaseLocatorType {
     @SuppressWarnings("unchecked")
     public void test_failToFindElements_shouldThrow() {
         // Setup
-        when(DRIVER.findElements(any(By.ByXPath.class)))
-            .thenThrow(new RuntimeException());
+        doThrow(new Exception()).when(DRIVER).findElements(any());
 
         List<BaseViewType> views = PLATFORM_VIEWS.allViews();
 
@@ -169,9 +168,7 @@ public class BaseLocatorTest implements BaseLocatorType {
             RxTestUtil.getNextEvents(subscriber).size(),
             PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
 
-        views.forEach(a -> {
-            verify(a).className();
-        });
+        views.forEach(a -> verify(a).className());
     }
     //endregion
 
@@ -182,8 +179,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementsWithText(param).subscribe(subscriber);
@@ -202,8 +199,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         when(DRIVER.findElements(any(By.ByXPath.class)))
@@ -226,8 +223,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementWithText(param).subscribe(subscriber);
@@ -249,8 +246,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementsContainingText(param).subscribe(subscriber);
@@ -269,8 +266,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
@@ -290,8 +287,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         TextParam param = mock(TextParam.class);
-        doReturn(mock(TextParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementContainingText(param).subscribe(subscriber);
@@ -313,8 +310,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementsWithHint(param).subscribe(subscriber);
@@ -333,8 +330,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
@@ -354,8 +351,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementWithHint(param).subscribe(subscriber);
@@ -377,8 +374,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementsContainingHint(param).subscribe(subscriber);
@@ -397,8 +394,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
@@ -418,8 +415,8 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
         HintParam param = mock(HintParam.class);
-        doReturn(mock(HintParam.class)).when(param).withNewText(any());
         doReturn("").when(param).value();
+        doReturn(param).when(param).withNewText(any());
 
         // When
         LOCATOR.rxElementContainingHint(param).subscribe(subscriber);

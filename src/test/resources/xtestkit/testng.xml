@@ -10,21 +10,42 @@
         </classes>
     </test>
 
-    <test name="Base Platform Test">
+    <test name="Base Engine Test">
         <classes>
             <class name="org.swiften.xtestkit.base.BaseEngineTest"/>
+            <class name="org.swiften.xtestkit.base.AppiumCommandTest"/>
+            <class name="org.swiften.xtestkit.base.ProcessRunnerTest"/>
+            <class name="org.swiften.xtestkit.base.ServerAddressTest"/>
+        </classes>
+    </test>
+
+    <test name="Base Engine Action Test">
+        <classes>
+            <class name="org.swiften.xtestkit.base.element.action.BaseActionTest"/>
+            <class name="org.swiften.xtestkit.base.element.action.BaseSwipeActionTest"/>
+            <class name="org.swiften.xtestkit.base.element.action.SwipeRepeatTest"/>
+            <class name="org.swiften.xtestkit.base.element.action.SwipeRepeatComparisonTest"/>
+        </classes>
+    </test>
+
+    <test name="Base Engine Locator Test">
+        <classes>
+            <class name="org.swiften.xtestkit.base.element.locator.BaseLocatorTest"/>
+            <class name="org.swiften.xtestkit.base.element.locator.XPathTest"/>
         </classes>
     </test>
 
     <test name="Android Test">
         <classes>
             <class name="org.swiften.xtestkit.mobile.android.MockAndroidEngineTest"/>
+            <class name="org.swiften.xtestkit.mobile.android.MockADBHandlerTest"/>
         </classes>
     </test>
 
     <test name="iOS Test">
         <classes>
             <class name="org.swiften.xtestkit.mobile.ios.MockIOSEngineTest"/>
+            <class name="org.swiften.xtestkit.mobile.ios.XCRunHandlerTest"/>
         </classes>
     </test>
 
@@ -34,21 +55,15 @@
         </classes>
     </test>
 
-    <test name="Localizer Test (Actual)">
-        <classes>
-            <class name="com.swiften.xtestkit.localizer.actual.LocalizerTest"/>
-        </classes>
-    </test>
-
-    <test name="Localizer Test (Mock)">
-        <classes>
-            <class name="com.swiften.xtestkit.localizer.mock.LocalizerTest"/>
-        </classes>
-    </test>
-
     <test name="Repeat Runner Test">
         <classes>
             <class name="org.swiften.xtestkit.test.RepeatRunnerTest"/>
+        </classes>
+    </test>
+
+    <test name="Util Test">
+        <classes>
+            <class name="org.swiften.xtestkit.util.ValueRangeTest"/>
         </classes>
     </test>
 
