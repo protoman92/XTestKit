@@ -17,9 +17,14 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.general.param.*;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.property.type.base.FormatStringType;
+import org.swiften.xtestkit.base.element.property.type.base.StringType;
+import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
+import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,6 +54,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Convenience method to create a new {@link XPath.Builder} instance.
      * @return A {@link XPath.Builder} instance.
+     * @see XPath#builder(PlatformType)
      */
     @NotNull
     default XPath.Builder newXPathBuilder() {
@@ -59,6 +65,9 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Find all elements that satisfies an {@link XPath} request.
      * @param param A {@link ByXPath} instance.
      * @return A {@link Flowable} instance.
+     * @see #driver()
+     * @see D#findElements(By)
+     * @see CollectionUtil#unify(Collection[])
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -92,6 +101,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Find an element that satisfies an {@link XPath} request.
      * @param param A {@link ByXPath} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementByXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rxElementByXPath(@NotNull ByXPath param) {
@@ -103,11 +113,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get all {@link BaseViewType} elements of a certain class.
      * @param param An {@link ClassParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsOfClass(@NotNull ClassParam param) {
+    default <P extends OfClassType & RetryType>
+    Flowable<WebElement> rxElementsOfClass(@NotNull P param) {
         XPath xPath = newXPathBuilder().ofClass(param).build();
 
         ByXPath query = ByXPath.builder()
@@ -123,6 +135,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link ClassParam}.
      * @param cls A {@link String} value.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsOfClass(OfClassType)
      */
     @NotNull
     default Flowable<WebElement> rxElementsOfClass(@NotNull String cls) {
@@ -144,10 +157,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get an element of a certain class.
      * @param param An {@link IdParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsOfClass(OfClassType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementOfClass(@NotNull ClassParam param) {
+    default <P extends OfClassType & RetryType>
+    Flowable<WebElement> rxElementOfClass(@NotNull P param) {
         return rxElementsOfClass(param).firstElement().toFlowable();
     }
 
@@ -155,6 +171,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link ClassParam}.
      * @param cls A {@link String} value.
      * @return A {@link Flowable} instance.
+     * @see #rxElementOfClass(OfClassType)
      */
     @NotNull
     default Flowable<WebElement> rxElementOfClass(@NotNull String cls) {
@@ -179,11 +196,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType} elements whose IDs contain a certain
      * {@link String}.
      * @param param An {@link IdParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsContainingID(@NotNull IdParam param) {
+    default <P extends ContainsIDType & RetryType>
+    Flowable<WebElement> rxElementsContainingID(@NotNull P param) {
         XPath xPath = newXPathBuilder().containsID(param).build();
 
         ByXPath query = ByXPath.builder()
@@ -199,6 +218,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link IdParam}.
      * @param id A {@link String} value.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingID(ContainsIDType)
      */
     @NotNull
     default Flowable<WebElement> rxElementsContainingID(@NotNull String id) {
@@ -209,10 +229,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get an element whose ID contains a certain {@link String}.
      * @param param An {@link IdParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingID(ContainsIDType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementContainingID(@NotNull IdParam param) {
+    default <P extends ContainsIDType & RetryType>
+    Flowable<WebElement> rxElementContainingID(@NotNull P param) {
         return rxElementsContainingID(param).firstElement().toFlowable();
     }
 
@@ -220,6 +243,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link IdParam}.
      * @param id A {@link String} value.
      * @return A {@link Flowable} instance.
+     * @see #rxElementContainingID(ContainsIDType)
      */
     @NotNull
     default Flowable<WebElement> rxElementContainingID(@NotNull String id) {
@@ -233,13 +257,21 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType#hasText()} {@link WebElement} that are
      * displaying a text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsWithText(@NotNull TextParam param) {
+    default <P extends StringType & RetryType>
+    Flowable<WebElement> rxElementsWithText(@NotNull P param) {
         String localized = localizer().localize(param.value());
-        TextParam newParam = param.withNewText(localized);
+
+        TextParam newParam = TextParam.builder()
+            .withText(localized)
+            .withRetryType(param)
+            .shouldIgnoreCase(param)
+            .build();
+
         XPath xPath = newXPathBuilder().hasText(newParam).build();
 
         ByXPath query = ByXPath.builder()
@@ -256,7 +288,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * text.
      * @param text A {@link String} value.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsWithText(TextParam)
+     * @see #rxElementsWithText(StringType)
      */
     @NotNull
     default Flowable<WebElement> rxElementsWithText(@NotNull String text) {
@@ -265,13 +297,16 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link BaseViewType#hasText()} {@link WebElement} that is displaying
-     * a text.
+     * Get a {@link BaseViewType#hasText()} {@link WebElement} that is
+     * displaying a text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsWithText(StringType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementWithText(@NotNull TextParam param) {
+    default <P extends StringType & RetryType>
+    Flowable<WebElement> rxElementWithText(@NotNull P param) {
         return rxElementsWithText(param).firstElement().toFlowable();
     }
 
@@ -279,7 +314,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link TextParam} instance.
      * @param text The {@link String} to be found.
      * @return A {@link Flowable} instance.
-     * @see #rxElementWithText(TextParam)
+     * @see #rxElementWithText(StringType)
      */
     @NotNull
     default Flowable<WebElement> rxElementWithText(@NotNull String text) {
@@ -293,13 +328,21 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
      * contain another text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsContainingText(@NotNull TextParam param) {
+    default <P extends StringType & RetryType>
+    Flowable<WebElement> rxElementsContainingText(@NotNull P param) {
         String localized = localizer().localize(param.value());
-        TextParam newParam = param.withNewText(localized);
+
+        TextParam newParam = TextParam.builder()
+            .withText(localized)
+            .withRetryType(param)
+            .shouldIgnoreCase(param)
+            .build();
+
         XPath xPath = newXPathBuilder().containsText(newParam).build();
 
         ByXPath query = ByXPath.builder()
@@ -316,7 +359,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * text.
      * @param text A {@link String} value.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsContainingText(TextParam)
+     * @see #rxElementsContainingText(StringType)
      */
     @NotNull
     default Flowable<WebElement> rxElementsContainingText(@NotNull String text) {
@@ -328,11 +371,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text
      * contains another text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsContainingText(TextParam)
+     * @see #rxElementsContainingText(StringType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
+    default <P extends StringType & RetryType>
+    Flowable<WebElement> rxElementContainingText(@NotNull P param) {
         return rxElementsContainingText(param).firstElement().toFlowable();
     }
 
@@ -340,7 +385,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link TextParam}.
      * @param text The text to be found.
      * @return A {@link Flowable} instance.
-     * @see #rxElementWithText(TextParam)
+     * @see #rxElementContainingText(StringType)
      */
     @NotNull
     default Flowable<WebElement> rxElementContainingText(@NotNull String text) {
@@ -352,11 +397,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
      * contain another text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsContainingText(TextParam)
+     * @see #rxElementsContainingText(StringType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsContainingText(@NotNull TextFormatParam param) {
+    default <P extends FormatStringType & RetryType> Flowable<WebElement>
+    rxElementsContainingText(@NotNull P param) {
         String localized = localizer().localize(param.value());
 
         TextParam textParam = TextParam.builder()
@@ -372,7 +419,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses a default {@link TextFormatParam}.
      * @param format A {@link LocalizationFormat} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsContainingText(TextFormatParam)
+     * @see #rxElementsContainingText(FormatStringType)
      */
     @NotNull
     default Flowable<WebElement> rxElementsContainingText(@NotNull LocalizationFormat format) {
@@ -388,11 +435,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text
      * contains another text.
      * @param param A {@link TextParam} instance.
+     * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxElementsContainingText(TextFormatParam)
+     * @see #rxElementsContainingText(FormatStringType)
      */
     @NotNull
-    default Flowable<WebElement> rxElementContainingText(@NotNull TextFormatParam param) {
+    default <P extends FormatStringType & RetryType>
+    Flowable<WebElement> rxElementContainingText(@NotNull P param) {
         return rxElementsContainingText(param).firstElement().toFlowable();
     }
 

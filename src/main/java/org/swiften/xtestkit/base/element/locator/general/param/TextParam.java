@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.element.property.type.base.StringType;
  */
 
 /**
- * Parameter object for {@link BaseEngine#rxElementsWithText(TextParam)}.
+ * Parameter object for {@link BaseEngine#rxElementsWithText(StringType)}.
  */
 public class TextParam implements StringType, RetryType {
     /**
@@ -53,18 +53,6 @@ public class TextParam implements StringType, RetryType {
         return retries;
     }
     //endregion
-
-    /**
-     * Create a new {@link TextParam} that replicates all the current
-     * {@link TextParam} properties, except for the text. This is useful
-     * when we want to localize the text.
-     * @param text A {@link String} value.
-     * @return A new {@link TextParam} instance.
-     */
-    @NotNull
-    public TextParam withNewText(@NotNull String text) {
-        return builder().withText(text).shouldIgnoreCase(ignoreCase()).build();
-    }
 
     //region Builder.
     /**
@@ -130,6 +118,18 @@ public class TextParam implements StringType, RetryType {
         @NotNull
         public Builder shouldIgnoreCase(@NotNull IgnoreCaseType type) {
             return shouldIgnoreCase(type.ignoreCase());
+        }
+
+        /**
+         * Set {@link #text} and {@link #ignoreCase}.
+         * @param type A {@link StringType} instance.
+         * @return The current {@link Builder} instance.
+         * @see #withText(String)
+         * @see #shouldIgnoreCase(boolean)
+         */
+        @NotNull
+        public Builder withStringType(@NotNull StringType type) {
+            return withText(type.value()).shouldIgnoreCase(type.ignoreCase());
         }
 
         @NotNull
