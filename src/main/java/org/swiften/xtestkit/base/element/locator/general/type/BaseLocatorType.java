@@ -11,10 +11,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.localizer.LocalizationFormat;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.param.*;
+import org.swiften.xtestkit.base.element.locator.general.param.*;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.type.*;
 
@@ -229,8 +230,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With Text
     /**
-     * Get all {@link BaseViewType#hasText()} {@link WebElement} that are displaying
-     * a text.
+     * Get all {@link BaseViewType#hasText()} {@link WebElement} that are
+     * displaying a text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
@@ -289,10 +290,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Contains Text
     /**
-     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts contain
-     * another text.
+     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
+     * contain another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rxElementsContainingText(@NotNull TextParam param) {
@@ -323,10 +325,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text contains
-     * another text.
+     * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text
+     * contains another text.
      * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(TextParam)
      */
     @NotNull
     default Flowable<WebElement> rxElementContainingText(@NotNull TextParam param) {
@@ -344,73 +347,64 @@ public interface BaseLocatorType<D extends WebDriver> extends
         TextParam param = TextParam.builder().withText(text).build();
         return rxElementContainingText(param);
     }
-    //endregion
 
-    //region With Hint
     /**
-     * Get all {@link BaseViewType#isEditable()} {@link WebElement} that have a
-     * certain hint.
-     * @param param A {@link HintParam} instance.
+     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
+     * contain another text.
+     * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(TextParam)
      */
     @NotNull
-    default Flowable<WebElement> rxElementsWithHint(@NotNull HintParam param) {
+    default Flowable<WebElement> rxElementsContainingText(@NotNull TextFormatParam param) {
         String localized = localizer().localize(param.value());
-        HintParam newParam = param.withNewText(localized);
-        XPath xPath = newXPathBuilder().hasHint(newParam).build();
 
-        ByXPath query = ByXPath.builder()
-            .withXPath(xPath)
-            .withError(noElementsWithHint(localized))
+        TextParam textParam = TextParam.builder()
+            .withText(localized)
+            .shouldIgnoreCase(param)
             .withRetryType(param)
             .build();
 
-        return rxElementsByXPath(query);
+        return rxElementsContainingText(textParam);
     }
 
     /**
-     * Get a {@link BaseViewType#isEditable()} {@link WebElement} that has a certain
-     * hint.
-     * @param param A {@link HintParam} instance.
+     * Same as above, but uses a default {@link TextFormatParam}.
+     * @param format A {@link LocalizationFormat} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(TextFormatParam)
      */
     @NotNull
-    default Flowable<WebElement> rxElementWithHint(@NotNull HintParam param) {
-        return rxElementsWithHint(param).firstElement().toFlowable();
-    }
-    //endregion
-
-    //region Contains Hint
-    /**
-     * Get all {@link BaseViewType#isEditable()} {@link WebElement} whose hints
-     * contain another hint.
-     * @param param A {@link HintParam} instance.
-     * @return A {@link Flowable} instance.
-     */
-    @NotNull
-    default Flowable<WebElement> rxElementsContainingHint(@NotNull HintParam param) {
-        String localized = localizer().localize(param.value());
-        HintParam newParam = param.withNewText(localized);
-        XPath xPath = newXPathBuilder().containsHint(newParam).build();
-
-        ByXPath query = ByXPath.builder()
-            .withXPath(xPath)
-            .withError(noElementsContainingHint(localized))
-            .withRetryType(param)
+    default Flowable<WebElement> rxElementsContainingText(@NotNull LocalizationFormat format) {
+        TextFormatParam param = TextFormatParam.builder()
+            .withLocalizationFormat(format)
+            .shouldIgnoreCase(true)
             .build();
 
-        return rxElementsByXPath(query);
+        return rxElementsContainingText(param);
     }
 
     /**
-     * Get a {@link BaseViewType#isEditable()} {@link WebElement} whose hint contains
-     * another hint.
-     * @param param A {@link HintParam} instance.
+     * Get a {@link BaseViewType#hasText()} {@link WebElement} whose text
+     * contains another text.
+     * @param param A {@link TextParam} instance.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(TextFormatParam)
      */
     @NotNull
-    default Flowable<WebElement> rxElementContainingHint(@NotNull HintParam param) {
-        return rxElementsContainingHint(param).firstElement().toFlowable();
+    default Flowable<WebElement> rxElementContainingText(@NotNull TextFormatParam param) {
+        return rxElementsContainingText(param).firstElement().toFlowable();
+    }
+
+    /**
+     * Same as above, but uses a default {@link TextFormatParam}.
+     * @param format A {@link LocalizationFormat} instance.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsContainingText(LocalizationFormat)
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementContainingText(@NotNull LocalizationFormat format) {
+        return rxElementsContainingText(format).firstElement().toFlowable();
     }
     //endregion
 
@@ -418,6 +412,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
+     * @see #platformView()
+     * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rxAllEditableElements() {
@@ -429,6 +425,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
+     * @see #rxAllEditableElements()
+     * @see WebElement#clear()
      */
     @NotNull
     default Flowable<Boolean> rxClearAllEditableElements() {
@@ -443,6 +441,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get all {@link BaseViewType#isClickable()} {@link WebElement}.
      * @return A {@link Flowable} instance.
+     * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rxAllClickableElements() {

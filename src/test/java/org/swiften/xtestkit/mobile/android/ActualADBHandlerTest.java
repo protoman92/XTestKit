@@ -60,6 +60,6 @@ public final class ActualADBHandlerTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxTestUtil.<Long>getFirstNextEvent(subscriber).intValue(), totalPorts);
+        assertEquals(RxTestUtil.<Long>firstNextEvent(subscriber).intValue(), totalPorts);
     }
 }

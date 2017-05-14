@@ -111,6 +111,8 @@ repositories {
 sourceCompatibility = 1.8
 
 dependencies {
+    compile project(':JavaUtilities')
+
     compile "org.apache.commons:commons-exec:+"
     compile "commons-io:commons-io:+"
     compile "org.jetbrains:annotations-java5:+"
@@ -118,7 +120,6 @@ dependencies {
     compile "io.appium:java-client:+"
     compile "org.testng:testng:+"
     compile "org.mockito:mockito-core:+"
-    compile "org.swiften:JavaUtilities:1.0.6-SNAPSHOT"
 }
 
 /* Get Gradle home directory to set up Gradle project */

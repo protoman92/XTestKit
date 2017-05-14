@@ -15,9 +15,8 @@ import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.param.ByXPath;
-import org.swiften.xtestkit.base.param.HintParam;
-import org.swiften.xtestkit.base.param.TextParam;
+import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
+import org.swiften.xtestkit.base.element.locator.general.param.TextParam;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.testng.annotations.AfterMethod;
@@ -165,7 +164,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertComplete();
 
         assertEquals(
-            RxTestUtil.getNextEvents(subscriber).size(),
+            RxTestUtil.nextEvents(subscriber).size(),
             PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
 
         views.forEach(a -> verify(a).className());
@@ -234,7 +233,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
         verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
     }
     //endregion
@@ -298,135 +297,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    //region Element With Hint
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsWithHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-
-        // When
-        LOCATOR.rxElementsWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithHintWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        LOCATOR.rxElementWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithHint(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-
-        // When
-        LOCATOR.rxElementWithHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-    //endregion
-
-    //region Element Containing Hint
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsContainingHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-
-        // When
-        LOCATOR.rxElementsContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingHintWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        LOCATOR.rxElementContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingHint(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingHint_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        HintParam param = mock(HintParam.class);
-        doReturn("").when(param).value();
-        doReturn(param).when(param).withNewText(any());
-
-        // When
-        LOCATOR.rxElementContainingHint(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber) instanceof WebElement);
+        assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
         verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
     }
     //endregion

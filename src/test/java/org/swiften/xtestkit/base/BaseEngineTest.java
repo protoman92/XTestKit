@@ -271,7 +271,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxStartDriver(any());
         verify(ENGINE).serverAddress();
         verify(ENGINE).serverUri();
@@ -319,7 +319,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
     }
     //endregion
 

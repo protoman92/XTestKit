@@ -8,13 +8,4 @@ package org.swiften.xtestkit.base.element.property.type.base;
  * This interface is the base for {@link String}-related locator operations.
  */
 @FunctionalInterface
-public interface StringType extends AttributeType<String> {
-    /**
-     * Check whether the locator should ignore case while looking for a
-     * particular text.
-     * @return A {@link Boolean} value.
-     */
-    default boolean ignoreCase() {
-        return true;
-    }
-}
+public interface StringType extends AttributeType<String>, IgnoreCaseType {}

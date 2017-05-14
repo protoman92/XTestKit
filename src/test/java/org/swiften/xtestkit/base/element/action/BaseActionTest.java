@@ -81,7 +81,7 @@ public class BaseActionTest implements BaseActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).driver();
         verify(ENGINE).rxAcceptAlert();
         verify(ENGINE).rxDismissAlert(any(AlertParam.class));
@@ -111,7 +111,7 @@ public class BaseActionTest implements BaseActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxNavigateBack(any());
         verify(ENGINE).driver();
         verify(NAVIGATION, times(times)).back();

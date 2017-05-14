@@ -17,6 +17,7 @@ include 'services:webservice'
 */
 
 rootProject.name = 'xtestkit'
+include 'JavaUtilities'
 //gradle.ext.PROJECT_GROUP = 'org.swiften'
 //gradle.ext.PROJECT_NAME = 'XTestKit'
 //gradle.ext.PROJECT_VERSION = '1.0.0-SNAPSHOT'

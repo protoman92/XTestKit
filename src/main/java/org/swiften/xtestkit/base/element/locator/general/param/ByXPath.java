@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.param;
+package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.BaseViewType;

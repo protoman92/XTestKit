@@ -101,7 +101,7 @@ public final class MockTestKitTest {
         verify(TEST_KIT).rxDistinctEngines();
         verify(TEST_KIT).engines();
         verifyNoMoreInteractions(TEST_KIT);
-        assertEquals(RxTestUtil.getNextEvents(subscriber).size(), 2);
+        assertEquals(RxTestUtil.nextEvents(subscriber).size(), 2);
     }
 
     @Test
@@ -290,7 +290,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
         verify(TEST_KIT).rxBeforeClass(any());
         verify(ENGINE).rxBeforeClass(any());
@@ -313,7 +313,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
         verify(TEST_KIT).rxBeforeMethod(any());
         verify(ENGINE).rxBeforeMethod(any());
@@ -336,7 +336,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
         verify(TEST_KIT).rxAfterClass(any());
         verify(ENGINE).rxAfterClass(any());
@@ -359,7 +359,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
         verify(TEST_KIT).rxAfterMethod(any());
         verify(ENGINE).rxAfterMethod(any());

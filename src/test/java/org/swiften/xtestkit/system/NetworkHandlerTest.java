@@ -63,7 +63,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertEquals(RxTestUtil.getFirstNextEvent(subscriber), Integer.valueOf(tries));
+            assertEquals(RxTestUtil.firstNextEvent(subscriber), Integer.valueOf(tries));
             verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
@@ -92,7 +92,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertEquals(RxTestUtil.getFirstNextEvent(subscriber), Integer.valueOf(0));
+            assertEquals(RxTestUtil.firstNextEvent(subscriber), Integer.valueOf(0));
             verify(HANDLER).processRunner();
             verify(HANDLER).cmListAllPorts();
             verify(HANDLER).rxCheckPortAvailable(any());

@@ -96,7 +96,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -133,7 +133,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -150,7 +150,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -167,7 +167,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+        assertTrue(RxTestUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)

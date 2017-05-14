@@ -199,7 +199,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxTestUtil.<Integer>getFirstNextEvent(subscriber).intValue(), correctPort);
+        assertEquals(RxTestUtil.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxFindAvailablePort(any());
         verify(ADB_HANDLER).availablePorts();
@@ -632,7 +632,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertFalse(RxTestUtil.getFirstNextEvent(subscriber));
+            assertFalse(RxTestUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cmAndroidHome();
             verify(ADB_HANDLER).cmAdb();
@@ -667,7 +667,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+            assertTrue(RxTestUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cmAndroidHome();
             verify(ADB_HANDLER).cmAdb();

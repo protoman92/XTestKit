@@ -114,7 +114,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+            assertTrue(RxTestUtil.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxCheckSimulatorBooted(anyString());
             verify(XC_HANDLER).rxStartSimulator(any());
             verify(XC_HANDLER, times(2)).processRunner();
@@ -151,7 +151,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.getFirstNextEvent(subscriber));
+            assertTrue(RxTestUtil.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxStopSimulator(any());
             verify(XC_HANDLER).processRunner();
             verify(XC_HANDLER).cmStopSimulator();

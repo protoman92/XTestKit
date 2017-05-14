@@ -1,18 +1,17 @@
-package org.swiften.xtestkit.base.param;
+package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
 
 /**
- * Created by haipham on 5/8/17.
+ * Created by haipham on 5/9/17.
  */
-
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.base.BaseEngine#rxElementsContainingID(IdParam)}.
+ * {@link org.swiften.xtestkit.base.BaseEngine#rxElementsOfClass(ClassParam)}.
  */
-public class IdParam implements ContainsIDType, RetryType {
+public class ClassParam implements OfClassType, RetryType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -22,17 +21,17 @@ public class IdParam implements ContainsIDType, RetryType {
         return new Builder();
     }
 
-    @NotNull private String id;
+    @NotNull private String clsName;
 
-    IdParam() {
-        id = "";
+    ClassParam() {
+        clsName = "";
     }
 
     //region StringType.
     @NotNull
     @Override
     public String value() {
-        return id;
+        return clsName;
     }
     //endregion
 
@@ -41,25 +40,25 @@ public class IdParam implements ContainsIDType, RetryType {
      * Builder class for {@link IdParam}.
      */
     public static final class Builder {
-        @NotNull final IdParam PARAM;
+        @NotNull final ClassParam PARAM;
 
         Builder() {
-            PARAM = new IdParam();
+            PARAM = new ClassParam();
         }
 
         /**
-         * Set the {@link #id} value.
-         * @param id The id to be used to query elements.
+         * Set the {@link #clsName} value.
+         * @param clsName The clsName to be used to query elements.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withId(@NotNull String id) {
-            PARAM.id = id;
+        public Builder withClass(@NotNull String clsName) {
+            PARAM.clsName = clsName;
             return this;
         }
 
         @NotNull
-        public IdParam build() {
+        public ClassParam build() {
             return PARAM;
         }
     }

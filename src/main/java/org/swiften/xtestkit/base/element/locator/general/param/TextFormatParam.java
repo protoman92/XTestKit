@@ -1,18 +1,21 @@
-package org.swiften.xtestkit.base.param;
+package org.swiften.xtestkit.base.element.locator.general.param;
+
+/**
+ * Created by haipham on 5/14/17.
+ */
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.localizer.LocalizationFormat;
 import org.swiften.xtestkit.base.BaseEngine;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.base.element.property.type.base.FormatStringType;
 import org.swiften.xtestkit.base.element.property.type.base.StringType;
+import org.swiften.xtestkit.base.type.RetryType;
 
 /**
- * Created by haipham on 3/20/17.
+ * Parameter object for {@link BaseEngine#rxElementsContainingText(TextFormatParam)}.
  */
-
-/**
- * Parameter object for {@link BaseEngine#rxElementsWithText(TextParam)}.
- */
-public class TextParam implements StringType, RetryType {
+public class TextFormatParam implements FormatStringType, RetryType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -22,22 +25,22 @@ public class TextParam implements StringType, RetryType {
         return new Builder();
     }
 
-    @NotNull private String text;
+    @NotNull private LocalizationFormat format;
 
     private boolean ignoreCase;
     private int retries;
 
-    TextParam() {
-        text = "";
-        ignoreCase = StringType.super.ignoreCase();
+    TextFormatParam() {
+        format = LocalizationFormat.builder().build();
+        ignoreCase = FormatStringType.super.ignoreCase();
         retries = RetryType.super.retries();
     }
 
     //region StringType
     @NotNull
     @Override
-    public String value() {
-        return text;
+    public LocalizationFormat value() {
+        return format;
     }
 
     @Override
@@ -53,37 +56,25 @@ public class TextParam implements StringType, RetryType {
     }
     //endregion
 
-    /**
-     * Create a new {@link TextParam} that replicates all the current
-     * {@link TextParam} properties, except for the text. This is useful
-     * when we want to localize the text.
-     * @param text A {@link String} value.
-     * @return A new {@link TextParam} instance.
-     */
-    @NotNull
-    public TextParam withNewText(@NotNull String text) {
-        return builder().withText(text).shouldIgnoreCase(ignoreCase()).build();
-    }
-
     //region Builder.
     /**
-     * Builder class for {@link TextParam}.
+     * Builder class for {@link TextFormatParam}.
      */
     public static final class Builder {
-        @NotNull final TextParam PARAM;
+        @NotNull final TextFormatParam PARAM;
 
         Builder() {
-            PARAM = new TextParam();
+            PARAM = new TextFormatParam();
         }
 
         /**
-         * Set the {@link #text} value.
-         * @param text The text to be used to query elements.
+         * Set the {@link #format} value.
+         * @param format The text to be used to query elements.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withText(@NotNull String text) {
-            PARAM.text = text;
+        public Builder withLocalizationFormat(@NotNull LocalizationFormat format) {
+            PARAM.format = format;
             return this;
         }
 
@@ -110,7 +101,7 @@ public class TextParam implements StringType, RetryType {
         }
 
         @NotNull
-        public TextParam build() {
+        public TextFormatParam build() {
             return PARAM;
         }
     }
