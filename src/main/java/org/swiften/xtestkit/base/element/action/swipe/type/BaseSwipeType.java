@@ -10,7 +10,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.param.SwipeParam;
+import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
 import org.swiften.xtestkit.base.param.UnidirectionalSwipeParam;
 import org.swiften.xtestkit.base.type.*;
 
@@ -28,6 +28,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * @param param A {@link P} instance.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #rxSwipe(RepeatType)
      */
     @NotNull
     default <P extends DurationType & UnidirectionContainerType & RepeatType>
@@ -77,7 +78,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * Perform a generic horizontal swipe motion from left to right.
      * @param param A {@link P} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatType)
+     * @see #rxSwipeGenericUnidirectional(DurationType)
      */
     @NotNull
     default <P extends DurationType & RepeatType>
@@ -95,7 +96,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * Perform a generic horizontal swipe motion from right to left.
      * @param param A {@link RepeatType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatType)
+     * @see #rxSwipeGenericUnidirectional(DurationType)
      */
     @NotNull
     default <P extends DurationType & RepeatType>

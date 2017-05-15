@@ -24,6 +24,8 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * Implicitly wait before search for elements.
      * @param param A {@link DelayType} param.
      * @return A {@link Flowable} instance.
+     * @see WebDriver.Options#timeouts()
+     * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
      */
     @NotNull
     default Flowable<Boolean> rxImplicitlyWait(@NotNull DelayType param) {

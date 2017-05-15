@@ -9,10 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
-import org.swiften.xtestkit.base.param.SwipeParam;
+import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
 import java.util.concurrent.TimeUnit;

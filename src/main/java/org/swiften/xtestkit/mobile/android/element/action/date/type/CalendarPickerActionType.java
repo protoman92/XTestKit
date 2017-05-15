@@ -27,7 +27,7 @@ import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
-import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
+import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 
 import java.util.Date;
 

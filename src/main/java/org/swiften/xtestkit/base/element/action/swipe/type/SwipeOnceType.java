@@ -28,6 +28,7 @@ public interface SwipeOnceType {
      * @param param A {@link P} instance.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #rxSwipeOnce(SwipeType)
      */
     @NotNull
     default <P extends RepeatType & SwipeType> Flowable<Boolean> rxSwipe(@NotNull P param) {
@@ -43,12 +44,12 @@ public interface SwipeOnceType {
                     return SWIPE
                         .delay(DELAY, UNIT)
                         .flatMap(a -> new Swipe().swipe(ITERATION + 1));
+                } else {
+                    return Flowable.just(true);
                 }
-
-                return Flowable.empty();
             }
         }
 
-        return new Swipe().swipe(0).defaultIfEmpty(true);
+        return new Swipe().swipe(0);
     }
 }

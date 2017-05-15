@@ -9,7 +9,7 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
-import org.swiften.xtestkit.base.param.SwipeParam;
+import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

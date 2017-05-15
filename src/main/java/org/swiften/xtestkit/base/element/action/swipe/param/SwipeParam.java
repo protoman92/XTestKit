@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.param;
+package org.swiften.xtestkit.base.element.action.swipe.param;
 
 /**
  * Created by haipham on 5/8/17.
@@ -12,8 +12,7 @@ import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 /**
- * Parameter object for
- * {@link BaseEngine#rxSwipe(RepeatType)}
+ * Parameter object for {@link BaseEngine#rxSwipe(RepeatType)}
  */
 public class SwipeParam implements RepeatType, SwipeType {
     /**

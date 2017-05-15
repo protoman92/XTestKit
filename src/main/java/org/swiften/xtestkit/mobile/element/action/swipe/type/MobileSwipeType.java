@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.mobile.element.action.swipe;
+package org.swiften.xtestkit.mobile.element.action.swipe.type;
 
 import io.appium.java_client.MobileDriver;
 import io.reactivex.Completable;
@@ -12,13 +12,21 @@ import org.swiften.xtestkit.mobile.element.action.general.type.MobileTouchAction
 /**
  * Created by haipham on 5/11/17.
  */
+
+/**
+ * This interface provides methods to handle mobile swipe actions.
+ * @param <D> Generics parameter that extends {@link MobileDriver}.
+ */
 public interface MobileSwipeType<D extends MobileDriver> extends
     BaseSwipeType<D>, MobileActionType<D>
 {
     /**
      * @param PARAM A {@link SwipeType} instance.
      * @return A {@link Flowable} instance.
+     * @see #driver()
+     * @see #touchAction()
      * @see BaseSwipeType#rxSwipeOnce(SwipeType)
+     * @see MobileTouchActionType#swipe(MobileDriver, SwipeType)
      */
     @NotNull
     @Override

@@ -13,6 +13,10 @@ import org.swiften.xtestkit.base.type.RetryType;
  * {@link BaseEngine#rxDismissAlert(AlertParam)}
  */
 public class AlertParam implements RetryType {
+    /**
+     * Get a {@link Builder} instance.
+     * @return A {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -22,10 +26,19 @@ public class AlertParam implements RetryType {
 
     AlertParam() {}
 
+    /**
+     * Get {@link #accept}.
+     * @return A {@link Boolean} value.
+     * @see #accept
+     */
     public boolean shouldAccept() {
         return accept;
     }
 
+    //region Builder
+    /**
+     * Builder for {@link AlertParam}.
+     */
     public static final class Builder {
         @NotNull final AlertParam PARAM;
 
@@ -68,4 +81,5 @@ public class AlertParam implements RetryType {
             return PARAM;
         }
     }
+    //endregion
 }

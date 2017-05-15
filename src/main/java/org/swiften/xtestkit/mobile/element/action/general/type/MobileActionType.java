@@ -26,7 +26,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
     }
 
     /**
-     * Launch an app}.
+     * Launch an app.
      * @return A {@link Flowable} instance.
      * @see D#launchApp()
      */
@@ -41,7 +41,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
     /**
      * Reset an installed app.
      * @return A {@link Flowable} instance.
-     * @see D#resetApp()
+     * @see D#closeApp()
      */
     @NotNull
     default Flowable<Boolean> rxResetApp() {
