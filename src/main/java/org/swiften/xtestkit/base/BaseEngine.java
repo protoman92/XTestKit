@@ -9,6 +9,7 @@ import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.base.element.action.checkbox.BaseCheckBoxActionType;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
@@ -53,6 +54,7 @@ import java.util.function.Predicate;
 public abstract class BaseEngine<D extends WebDriver> implements
     BaseActionType<D>,
     BaseClickActionType,
+    BaseCheckBoxActionType,
     BaseDateActionType,
     BaseInputActionType<D>,
     BaseLocatorType<D>,

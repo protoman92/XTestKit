@@ -10,4 +10,5 @@ package org.swiften.xtestkit.mobile.android.element.action.input;
  */
 public interface AndroidKeyboardCodeType {
     int KEYCODE_ENTER = 66;
+    int KEYCODE_TAB = 61;
 }

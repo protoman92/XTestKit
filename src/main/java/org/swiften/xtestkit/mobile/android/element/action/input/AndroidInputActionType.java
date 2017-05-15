@@ -26,6 +26,6 @@ public interface AndroidInputActionType extends
      */
     @Override
     default void toggleNextInput() {
-        driver().pressKeyCode(KEYCODE_ENTER);
+        driver().pressKeyCode(KEYCODE_TAB);
     }
 }
