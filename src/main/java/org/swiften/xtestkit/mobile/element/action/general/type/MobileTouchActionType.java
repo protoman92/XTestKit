@@ -3,7 +3,7 @@ package org.swiften.xtestkit.mobile.element.action.general.type;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.password.type.TapType;
+import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 import java.time.Duration;
@@ -44,9 +44,6 @@ public interface MobileTouchActionType {
      * @see TouchAction#perform()
      */
     default void tap(@NotNull MobileDriver<?> driver, @NotNull TapType param) {
-        new TouchAction(driver)
-            .tap(param.x(), param.y())
-            .release()
-            .perform();
+        new TouchAction(driver).press(param.x(), param.y()).release().perform();
     }
 }

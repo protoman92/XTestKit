@@ -1,8 +1,7 @@
 package org.swiften.xtestkit.base.element.action.tap.param;
 
-import org.apache.regexp.RE;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.password.type.TapType;
+import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**
@@ -51,7 +50,7 @@ public class TapParam implements TapType, RetryType {
     /**
      * Builder for {@link TapParam}.
      */
-    public final class Builder {
+    public static final class Builder {
         @NotNull private final TapParam PARAM;
 
         Builder() {

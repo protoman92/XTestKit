@@ -24,37 +24,23 @@ public final class RepeatRunnerTest {
 
     @BeforeTest
     @BeforeSuite
-    public void beforeSuite() {
-        LogUtil.println("BeforeSuite");
-    }
+    public void beforeSuite() {}
 
     @BeforeClass
-    public void beforeClass() {
-        LogUtil.printf(">>>>> BeforeClass %1$d, thread %2$d <<<<<", INDEX, currentThread());
-    }
+    public void beforeClass() {}
 
     @AfterClass
-    public void afterClass() {
-        LogUtil.printf(">>>>> AfterClass %1$d, thread %2$d <<<<<", INDEX, currentThread());
-    }
+    public void afterClass() {}
 
     @BeforeMethod
-    public void beforeMethod() {
-        LogUtil.printf("<<<<< BeforeMethod %1$d, thread %2$d >>>>>", INDEX, currentThread());
-    }
+    public void beforeMethod() {}
 
     @AfterMethod
-    public void afterMethod() {
-        LogUtil.printf(">>>>> AfterMethod %1$d, thread %2$d <<<<<", INDEX, currentThread());
-    }
+    public void afterMethod() {}
 
     @Test
-    public void test_runTest1_shouldRepeat() {
-        LogUtil.printf("Mock 1, test %1$d, thread %2$d", INDEX, currentThread());
-    }
+    public void test_runTest1_shouldRepeat() {}
 
     @Test
-    public void test_runTest2_shouldRepeat() {
-        LogUtil.printf("Mock 2, test %1$d, thread %2$d", INDEX, currentThread());
-    }
+    public void test_runTest2_shouldRepeat() {}
 }

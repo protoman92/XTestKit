@@ -27,7 +27,7 @@ public final class Attribute {
     }
 
     @NotNull
-    public static Attribute withSingleAttribute(@NotNull String attribute) {
+    public static Attribute single(@NotNull String attribute) {
         return builder().addAttribute(attribute).build();
     }
 

@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.base;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.xtestkit.base.capability.BaseCap;
 import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.base.type.BaseEngineErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
@@ -324,27 +324,16 @@ public final class BaseEngineTest implements BaseEngineErrorType {
     //endregion
 
     static class MockEngine extends BaseEngine<WebDriver> {
-        @NotNull
         @Override
-        protected WebDriver driver(@NotNull String serverUrl,
-                                   @NotNull DesiredCapabilities capabilities) {
-            return mock(WebDriver.class);
-        }
+        public <P extends TapType & RetryType> void tap(@NotNull P param) {}
 
         @NotNull
         @Override
         public XPath.Builder newXPathBuilder() {
             PlatformType platform = mock(PlatformType.class);
-
-            when(platform.enabledAttribute())
-                .thenReturn(Attribute.withSingleAttribute("enabled"));
-
-            when(platform.hintAttribute())
-                .thenReturn(Attribute.withSingleAttribute("hint"));
-
-            when(platform.textAttribute())
-                .thenReturn(Attribute.withSingleAttribute("text"));
-
+            when(platform.enabledAttribute()).thenReturn(Attribute.single("enabled"));
+            when(platform.hintAttribute()).thenReturn(Attribute.single("hint"));
+            when(platform.textAttribute()).thenReturn(Attribute.single("text"));
             return XPath.builder(platform);
         }
 

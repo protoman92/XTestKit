@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.testng.annotations.*;
 
 import static org.mockito.Mockito.*;

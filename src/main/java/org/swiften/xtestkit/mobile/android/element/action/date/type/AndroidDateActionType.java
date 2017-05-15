@@ -8,6 +8,7 @@ import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
@@ -18,7 +19,7 @@ import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
-import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
+import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
@@ -37,10 +38,11 @@ import java.util.*;
 public interface AndroidDateActionType extends
     AndroidDateActionErrorType,
     CalendarPickerActionType,
+    BaseClickActionType,
     MobileActionType<AndroidDriver<AndroidElement>>,
     BaseActionType<AndroidDriver<AndroidElement>>,
     MobileSwipeType<AndroidDriver<AndroidElement>>,
-    AndroidElementInteractionType,
+    AndroidElementPropertyType,
     DatePickerContainerType
 {
     //region Validation
@@ -72,7 +74,7 @@ public interface AndroidDateActionType extends
      */
     @NotNull
     default Flowable<Boolean> rxOpenYearPicker() {
-        return rxDatePickerYear().flatMap(this::rxClick);
+        return rxDatePickerYear().flatMap(this::rxClick).map(a -> true);
     }
 
     /**
@@ -209,7 +211,8 @@ public interface AndroidDateActionType extends
                      * scroll low in order to catch potential oddities like
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
-                    .flatMap(THIS::rxClick);
+                    .flatMap(THIS::rxClick)
+                    .map(a -> true);
             }
 
             @NotNull
@@ -218,10 +221,9 @@ public interface AndroidDateActionType extends
                 return THIS.rxListView(ELEMENT);
             }
 
-            @NotNull
             @Override
-            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
-                return THIS.rxSwipeOnce(param);
+            public void swipeOnce(@NotNull SwipeType param) {
+                THIS.swipeOnce(param);
             }
         };
 

@@ -19,7 +19,7 @@ public interface PlatformType {
      */
     @NotNull
     default Attribute classAttribute() {
-        return Attribute.withSingleAttribute("class");
+        return Attribute.single("class");
     }
 
     /**
@@ -51,7 +51,7 @@ public interface PlatformType {
      */
     @NotNull
     default Attribute enabledAttribute() {
-        return Attribute.withSingleAttribute("enabled");
+        return Attribute.single("enabled");
     }
 
     /**
@@ -61,7 +61,7 @@ public interface PlatformType {
      */
     @NotNull
     default Attribute clickableAttribute() {
-        return Attribute.withSingleAttribute("clickable");
+        return Attribute.single("clickable");
     }
 
     /**
@@ -71,6 +71,6 @@ public interface PlatformType {
      */
     @NotNull
     default Attribute editableAttribute() {
-        return Attribute.withSingleAttribute("editable");
+        return Attribute.single("editable");
     }
 }

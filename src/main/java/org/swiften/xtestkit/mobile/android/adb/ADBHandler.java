@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.mobile.android;
+package org.swiften.xtestkit.mobile.android.adb;
 
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.AppPackageType;
@@ -7,8 +7,6 @@ import org.swiften.xtestkit.mobile.android.param.ConnectionParam;
 import org.swiften.xtestkit.mobile.android.param.DeviceSettingParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.mobile.android.type.ADBDelayType;
-import org.swiften.xtestkit.mobile.android.type.ADBErrorType;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.type.PortType;

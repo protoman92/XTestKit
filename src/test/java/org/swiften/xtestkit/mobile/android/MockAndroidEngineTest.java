@@ -5,6 +5,7 @@ import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
+import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
@@ -28,12 +29,9 @@ public final class MockAndroidEngineTest {
     @NotNull private final AndroidEngine ENGINE;
     @NotNull private final AndroidInstance ANDROID_INSTANCE;
     @NotNull private final ADBHandler ADB_HANDLER;
-    @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final RetryType RETRY;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
-    private final int RETRIES_ON_ERROR;
 
     {
         DEVICE_NAME = "Nexus_4_API_23";
@@ -52,36 +50,23 @@ public final class MockAndroidEngineTest {
 
         /* We return this networkHandler when calling ENGINE.networkHandler() */
         NETWORK_HANDLER = spy(NetworkHandler.builder().build());
-
-        /* We spy this class to check for method calls */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
-
-        /* Create a mock here to fake retries() */
-        RETRY = mock(RetryType.class);
-
-        RETRIES_ON_ERROR = 3;
     }
 
     @BeforeMethod
     public void beforeMethod() {
         doReturn(ANDROID_INSTANCE).when(ENGINE).androidInstance();
         doReturn(ADB_HANDLER).when(ENGINE).adbHandler();
-        doReturn(PROCESS_RUNNER).when(ENGINE).processRunner();
         doReturn(NETWORK_HANDLER).when(ENGINE).networkHandler();
         doReturn(DEVICE_NAME).when(ANDROID_INSTANCE).deviceName();
         doReturn(DEVICE_UID).when(ANDROID_INSTANCE).deviceUID();
 
         /* Shorten the delay for testing */
         doReturn(100L).when(ADB_HANDLER).emulatorBootRetryDelay();
-
-        /* We specifically mock this because starting emulator requires rather
-         * complicated behaviors */
-        when(RETRY.retries()).thenReturn(RETRIES_ON_ERROR);
     }
 
     @AfterMethod
     public void afterMethod() {
-        reset(ENGINE, ADB_HANDLER, PROCESS_RUNNER, NETWORK_HANDLER, RETRY);
+        reset(ENGINE, ADB_HANDLER, NETWORK_HANDLER);
     }
 
     //region BeforeClass
@@ -189,56 +174,6 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).rxResetApp();
         verify(ENGINE).rxAfterMethod(any());
         verify(ADB_HANDLER).rxClearCachedData(any());
-        verifyNoMoreInteractions(ENGINE);
-    }
-    //endregion
-
-    //region Dismiss Keyboard
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_dismissHiddenKeyboard_shouldDoNothing() {
-        // Setup
-        doReturn(Flowable.just(false)).when(ADB_HANDLER).rxCheckKeyboardOpen(any());
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxDismissKeyboard().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
-        verify(ENGINE).adbHandler();
-        verify(ENGINE).androidInstance();
-        verify(ENGINE).rxDismissKeyboard();
-        verify(ENGINE, never()).rxNavigateBack(any(NavigateBack.class));
-        verifyNoMoreInteractions(ENGINE);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_dismissKeyboard_shouldSucceed() {
-        // Setup
-        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxCheckKeyboardOpen(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxNavigateBack(any(NavigateBack.class));
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rxDismissKeyboard().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
-        verify(ENGINE).adbHandler();
-        verify(ENGINE).androidInstance();
-        verify(ENGINE).rxNavigateBack(any(NavigateBack.class));
-        verify(ENGINE).rxNavigateBackOnce();
-        verify(ENGINE).rxDismissKeyboard();
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

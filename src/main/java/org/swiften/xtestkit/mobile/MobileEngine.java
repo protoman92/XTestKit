@@ -5,6 +5,8 @@ import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.mobile.element.action.keyboard.type.MobileKeyboardActionType;
+import org.swiften.xtestkit.mobile.element.action.password.type.MobilePasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.type.MobileTapType;
 import org.swiften.xtestkit.mobile.element.locator.general.type.MobileLocatorType;
@@ -29,6 +31,8 @@ public abstract class MobileEngine<
     BaseEngine<D> implements
     MobileActionType<D>,
     MobileLocatorType<D>,
+    MobileKeyboardActionType<D>,
+    MobilePasswordActionType<D>,
     MobileTapType<D>,
     MobileSwipeType<D>
 {

@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ import java.util.Date;
  *
  * These methods assume that the user is in a calendar view.
  */
-public interface BaseDateActionType extends BaseDateActionErrorType {
+public interface BaseDateActionType extends BaseErrorType {
     //region Validation
     /**
      * Check if a {@link Date} is currently active. This assumes that the
@@ -31,7 +32,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion
 
@@ -44,7 +45,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxSelectDate(@NotNull DateType param) {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
 
     /**
@@ -54,7 +55,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxSelectYear(@NotNull DateType param) {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
 
     /**
@@ -64,7 +65,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxSelectMonth(@NotNull DateType param) {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
 
     /**
@@ -74,7 +75,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxSelectDay(@NotNull DateType param) {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion
 
@@ -86,7 +87,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<WebElement> rxAllCalendarElements() {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
 
     /**
@@ -96,7 +97,7 @@ public interface BaseDateActionType extends BaseDateActionErrorType {
      */
     @NotNull
     default Flowable<Date> rxDisplayedDate() {
-        return RxUtil.error(DATE_ACTION_NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion
 }

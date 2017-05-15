@@ -1,8 +1,10 @@
 package org.swiften.xtestkit.base.element.action.swipe.type;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.RepeatType;
 
 import java.util.concurrent.TimeUnit;
@@ -14,34 +16,48 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to perform a single swipe action.
  */
-public interface SwipeOnceType {
+public interface SwipeOnceType extends BaseErrorType {
     /**
      * Perform a swipe action.
      * @param param A {@link SwipeType} instance.
+     */
+    default void swipeOnce(@NotNull SwipeType param) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Perform a swipe action.
+     * @param PARAM A {@link SwipeType} instance.
      * @return A {@link Flowable} instance.
+     * @see #swipeOnce(SwipeType)
      */
     @NotNull
-    Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param);
+    default Flowable<Boolean> rxSwipeOnce(@NotNull final SwipeType PARAM) {
+        return Completable
+            .fromAction(() -> this.swipeOnce(PARAM))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
 
     /**
      * Perform a repeated swipe action.
-     * @param param A {@link P} instance.
+     * @param PARAM A {@link P} instance.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
      * @see #rxSwipeOnce(SwipeType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeType> Flowable<Boolean> rxSwipe(@NotNull P param) {
-        final Flowable<Boolean> SWIPE = rxSwipeOnce(param);
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = param.timeUnit();
+    default <P extends RepeatType & SwipeType>
+    Flowable<Boolean> rxSwipe(@NotNull final P PARAM) {
+        final int TIMES = PARAM.times();
+        final long DELAY = PARAM.delay();
+        final TimeUnit UNIT = PARAM.timeUnit();
 
         class Swipe {
             @NotNull
             private Flowable<Boolean> swipe(final int ITERATION) {
                 if (ITERATION < TIMES) {
-                    return SWIPE
+                    return rxSwipeOnce(PARAM)
                         .delay(DELAY, UNIT)
                         .flatMap(a -> new Swipe().swipe(ITERATION + 1));
                 } else {

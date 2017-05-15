@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.action.password.type;
+package org.swiften.xtestkit.base.element.action.tap.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.type.RetryType;

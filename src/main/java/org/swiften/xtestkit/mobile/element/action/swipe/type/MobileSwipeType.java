@@ -22,21 +22,15 @@ public interface MobileSwipeType<D extends MobileDriver> extends
 {
     /**
      * @param PARAM A {@link SwipeType} instance.
-     * @return A {@link Flowable} instance.
      * @see #driver()
      * @see #touchAction()
-     * @see BaseSwipeType#rxSwipeOnce(SwipeType)
+     * @see BaseSwipeType#swipeOnce(SwipeType)
      * @see MobileTouchActionType#swipe(MobileDriver, SwipeType)
      */
-    @NotNull
     @Override
-    default Flowable<Boolean> rxSwipeOnce(@NotNull final SwipeType PARAM) {
+    default void swipeOnce(@NotNull final SwipeType PARAM) {
         final MobileDriver<?> DRIVER = driver();
-        final MobileTouchActionType TOUCH_ACTION = touchAction();
-
-        return Completable
-            .fromAction(() -> TOUCH_ACTION.swipe(DRIVER, PARAM))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+        final MobileTouchActionType action = touchAction();
+        action.swipe(DRIVER, PARAM);
     }
 }

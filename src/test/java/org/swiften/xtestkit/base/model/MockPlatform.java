@@ -17,18 +17,18 @@ public class MockPlatform implements PlatformType {
     @NotNull
     @Override
     public Attribute idAttribute() {
-        return Attribute.withSingleAttribute("");
+        return Attribute.single("");
     }
 
     @NotNull
     @Override
     public Attribute textAttribute() {
-        return Attribute.withSingleAttribute("");
+        return Attribute.single("");
     }
 
     @NotNull
     @Override
     public Attribute hintAttribute() {
-        return Attribute.withSingleAttribute("");
+        return Attribute.single("");
     }
 }

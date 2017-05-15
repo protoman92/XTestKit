@@ -27,9 +27,8 @@ import java.util.Map;
 /**
  * Created by haipham on 3/31/17.
  */
-public class IOSEngine extends MobileEngine<
-    IOSElement,
-    IOSDriver<IOSElement>> implements
+public class IOSEngine extends
+    MobileEngine<IOSElement, IOSDriver<IOSElement>> implements
     IOSDelayType,
     IOSErrorType
 {

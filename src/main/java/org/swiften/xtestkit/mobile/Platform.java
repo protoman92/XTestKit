@@ -78,7 +78,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
     public Attribute idAttribute() {
         switch (this) {
             case ANDROID:
-                return Attribute.withSingleAttribute("resource-id");
+                return Attribute.single("resource-id");
 
             default:
                 return Attribute.BLANK;
@@ -90,10 +90,10 @@ public enum Platform implements PlatformType, AttributeType<String> {
     public Attribute hintAttribute() {
         switch (this) {
             case ANDROID:
-                return Attribute.withSingleAttribute("hint");
+                return Attribute.single("hint");
 
             case IOS:
-                return Attribute.withSingleAttribute("placeholder");
+                return Attribute.single("placeholder");
 
             default:
                 return Attribute.BLANK;
@@ -105,7 +105,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
     public Attribute textAttribute() {
         switch (this) {
             case ANDROID:
-                return Attribute.withSingleAttribute("text");
+                return Attribute.single("text");
 
             case IOS:
                 return Attribute.builder()

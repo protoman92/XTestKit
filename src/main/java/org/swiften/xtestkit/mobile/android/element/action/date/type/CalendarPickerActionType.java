@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
+import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
@@ -24,7 +25,7 @@ import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.type.ClassContainerType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
-import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
+import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
@@ -36,9 +37,10 @@ import java.util.Date;
  * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
  */
 public interface CalendarPickerActionType extends
+    BaseClickActionType,
     BaseDateActionType,
     BaseLocatorType<AndroidDriver<AndroidElement>>,
-    AndroidElementInteractionType,
+    AndroidElementPropertyType,
     MobileActionType<AndroidDriver<AndroidElement>>,
     BaseActionType<AndroidDriver<AndroidElement>>,
     MobileSwipeType<AndroidDriver<AndroidElement>>
@@ -77,7 +79,7 @@ public interface CalendarPickerActionType extends
 
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
-        Attribute contentDesc = Attribute.withSingleAttribute("content-desc");
+        Attribute contentDesc = Attribute.single("content-desc");
         String format = ((XPath.ContainsString) () -> DATE_STRING).stringFormat();
 
         XPath xPath = XPath.builder(platform())
@@ -147,10 +149,9 @@ public interface CalendarPickerActionType extends
                     .map(Unidirection::vertical);
             }
 
-            @NotNull
             @Override
-            public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
-                return THIS.rxSwipeOnce(param);
+            public void swipeOnce(@NotNull SwipeType param) {
+                THIS.swipeOnce(param);
             }
         };
 

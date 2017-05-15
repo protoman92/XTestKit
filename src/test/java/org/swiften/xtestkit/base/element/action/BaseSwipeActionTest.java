@@ -24,8 +24,7 @@ import static org.testng.Assert.assertTrue;
  * Created by haipham on 5/11/17.
  */
 public class BaseSwipeActionTest implements BaseSwipeType {
-    @NotNull
-    private final BaseSwipeType ENGINE;
+    @NotNull private final BaseSwipeType ENGINE;
     @NotNull private final WebDriver DRIVER;
 
     {
@@ -51,11 +50,8 @@ public class BaseSwipeActionTest implements BaseSwipeType {
         return DRIVER;
     }
 
-    @NotNull
     @Override
-    public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
-        return Flowable.just(true);
-    }
+    public void swipeOnce(@NotNull SwipeType param) {}
 
     //region Swipe
     @Test

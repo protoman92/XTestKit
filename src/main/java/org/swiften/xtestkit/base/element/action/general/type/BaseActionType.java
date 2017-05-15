@@ -116,8 +116,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      */
     @NotNull
     default Flowable<Boolean> rxAcceptAlert() {
-        AlertParam param = AlertParam.builder().accept().build();
-        return rxDismissAlert(param);
+        return rxDismissAlert(AlertParam.builder().accept().build());
     }
 
     /**
@@ -127,7 +126,6 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      */
     @NotNull
     default Flowable<Boolean> rxRejectAlert() {
-        AlertParam param = AlertParam.builder().reject().build();
-        return rxDismissAlert(param);
+        return rxDismissAlert(AlertParam.builder().reject().build());
     }
 }

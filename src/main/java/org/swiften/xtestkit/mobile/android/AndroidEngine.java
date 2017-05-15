@@ -9,13 +9,18 @@ import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.mobile.android.capability.AndroidCap;
-import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementInteractionType;
+import org.swiften.xtestkit.mobile.android.element.action.keyboard.AndroidKeyboardActionType;
+import org.swiften.xtestkit.mobile.android.element.action.password.type.AndroidPasswordActionType;
+import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
 import org.swiften.xtestkit.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
+import org.swiften.xtestkit.mobile.android.type.ADBHandlerContainerType;
 import org.swiften.xtestkit.mobile.android.type.AndroidErrorType;
+import org.swiften.xtestkit.mobile.android.type.AndroidInstanceContainerType;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
@@ -41,12 +46,15 @@ import org.swiften.javautilities.object.ObjectUtil;
 /**
  * Created by haipham on 3/22/17.
  */
-public class AndroidEngine extends MobileEngine<
-    AndroidElement,
-    AndroidDriver<AndroidElement>> implements
+public class AndroidEngine extends
+    MobileEngine<AndroidElement, AndroidDriver<AndroidElement>> implements
+    ADBHandlerContainerType,
+    AndroidInstanceContainerType,
     AndroidDateActionType,
-    AndroidElementInteractionType,
-    AndroidErrorType
+    AndroidElementPropertyType,
+    AndroidErrorType,
+    AndroidKeyboardActionType,
+    AndroidPasswordActionType<AndroidDriver<AndroidElement>>
 {
     @NotNull
     public static Builder builder() {
@@ -330,28 +338,6 @@ public class AndroidEngine extends MobileEngine<
             .switchIfEmpty(RxUtil.error(NO_SUCH_ELEMENT))
             .flatMapCompletable(a -> Completable.fromAction(a::click))
             .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-    //endregion
-
-    //region Dismiss Keyboard
-    /**
-     * Dismiss the keyboard if it is open. We first need to check whether the
-     * keyboard is present with
-     * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
-     * and then call
-     * {@link #rxNavigateBack(RepeatType)}.
-     * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatType)
-     * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
-     */
-    @NotNull
-    public Flowable<Boolean> rxDismissKeyboard() {
-        AndroidInstance instance = androidInstance();
-
-        return adbHandler().rxCheckKeyboardOpen(instance)
-            .filter(isOpen -> isOpen)
-            .flatMap(a -> rxNavigateBackOnce())
             .defaultIfEmpty(true);
     }
     //endregion

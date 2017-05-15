@@ -8,12 +8,16 @@ import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.element.action.input.type.BaseInputActionType;
+import org.swiften.xtestkit.base.element.action.keyboard.type.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.action.password.type.BasePasswordActionType;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.tap.type.BaseTapType;
-import org.swiften.xtestkit.base.element.property.type.BaseElementInteractionType;
+import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkit.mobile.*;
@@ -47,10 +51,14 @@ import java.util.function.Predicate;
  */
 public abstract class BaseEngine<D extends WebDriver> implements
     BaseActionType<D>,
+    BaseClickActionType,
     BaseDateActionType,
+    BaseInputActionType,
     BaseLocatorType<D>,
     BaseEngineErrorType,
-    BaseElementInteractionType,
+    BaseElementPropertyType,
+    BaseKeyboardActionType<D>,
+    BasePasswordActionType<D>,
     BaseTapType<D>,
     BaseSwipeType<D>,
     EngineDelayType,
@@ -460,8 +468,9 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * @return A {@link D} instance.
      */
     @NotNull
-    protected abstract D driver(@NotNull String serverUrl,
-                                @NotNull DesiredCapabilities caps);
+    protected D driver(@NotNull String serverUrl, @NotNull DesiredCapabilities caps) {
+        throw new RuntimeException(DRIVER_UNAVAILABLE);
+    }
 
     /**
      * Start the Appium driver. If {@link CapType#isComplete(Map)}

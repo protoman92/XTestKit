@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile.android.param;
 
 import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.mobile.android.ADBHandler;
+import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 
 /**

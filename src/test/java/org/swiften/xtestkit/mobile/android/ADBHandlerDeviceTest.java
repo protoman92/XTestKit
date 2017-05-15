@@ -1,11 +1,11 @@
 package org.swiften.xtestkit.mobile.android;
 
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
-import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 
