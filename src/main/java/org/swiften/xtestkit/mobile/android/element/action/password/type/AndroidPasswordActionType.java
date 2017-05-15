@@ -33,10 +33,6 @@ public interface AndroidPasswordActionType<D extends AndroidDriver<AndroidElemen
         int x = point.getX(), y = point.getY();
         int height = dimension.getHeight(), width = dimension.getWidth();
         int maxX = x + width, maxY = y + height;
-
-        /* It seems like a -5 offset works. Need more empirical testing */
-        int targetX = maxX, targetY = maxY - height / 2;
-        LogUtil.println(x, y, maxX, maxY, targetX, targetY);
-        tap(targetX, y);
+        tap(maxX - 5, maxY - height / 2);
     }
 }

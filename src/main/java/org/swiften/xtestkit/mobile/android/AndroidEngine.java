@@ -12,6 +12,7 @@ import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.mobile.android.capability.AndroidCap;
+import org.swiften.xtestkit.mobile.android.element.action.input.AndroidInputActionType;
 import org.swiften.xtestkit.mobile.android.element.action.keyboard.AndroidKeyboardActionType;
 import org.swiften.xtestkit.mobile.android.element.action.password.type.AndroidPasswordActionType;
 import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
@@ -53,6 +54,7 @@ public class AndroidEngine extends
     AndroidDateActionType,
     AndroidElementPropertyType,
     AndroidErrorType,
+    AndroidInputActionType,
     AndroidKeyboardActionType,
     AndroidPasswordActionType<AndroidDriver<AndroidElement>>
 {

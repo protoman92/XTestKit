@@ -5,6 +5,7 @@ package org.swiften.xtestkit.base.element.action.swipe.type;
  */
 
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -70,8 +71,10 @@ public interface SwipeRepeatType extends SwipeOnceType {
      */
     @NotNull
     default Flowable<Boolean> rxSwipeRecursively() {
+        long delay = delayEveryIteration();
+
         return rxShouldKeepSwiping()
-            .switchIfEmpty(RxUtil.error(""))
+            .switchIfEmpty(RxUtil.error())
             .onErrorResumeNext(Flowable.zip(
                 rxScrollableViewToSwipe(),
                 rxDirectionToSwipe(),
@@ -79,7 +82,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
                     element, direction, elementSwipeRatio()
                 ))
                 .flatMap(a -> a)
-                .delay(delayEveryIteration(), TimeUnit.MILLISECONDS)
+                .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
                 .flatMap(a -> rxSwipeRecursively())
             );
     }

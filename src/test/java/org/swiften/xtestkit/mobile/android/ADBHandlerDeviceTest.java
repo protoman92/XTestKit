@@ -87,7 +87,7 @@ public final class ADBHandlerDeviceTest {
             .filter(success -> success)
             .flatMap(a -> ADB_HANDLER.rxEnableInternetConnection(DUID_PARAM))
             .filter(success -> success)
-            .switchIfEmpty(RxUtil.error(""))
+            .switchIfEmpty(RxUtil.error())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -124,7 +124,7 @@ public final class ADBHandlerDeviceTest {
         // When
         ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM)
             .filter(success -> success)
-            .switchIfEmpty(RxUtil.error(""))
+            .switchIfEmpty(RxUtil.error())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();

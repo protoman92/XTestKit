@@ -61,7 +61,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
-            return RAND.nextBoolean() ? Flowable.empty() : RxUtil.error("");
+            return RAND.nextBoolean() ? Flowable.empty() : RxUtil.error();
         } else {
             return Flowable.just(true);
         }

@@ -2,6 +2,7 @@ package org.swiften.xtestkit.base.element.action.swipe.type;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.type.BaseErrorType;
@@ -58,7 +59,7 @@ public interface SwipeOnceType extends BaseErrorType {
             private Flowable<Boolean> swipe(final int ITERATION) {
                 if (ITERATION < TIMES) {
                     return rxSwipeOnce(PARAM)
-                        .delay(DELAY, UNIT)
+                        .delay(DELAY, UNIT, Schedulers.trampoline())
                         .flatMap(a -> new Swipe().swipe(ITERATION + 1));
                 } else {
                     return Flowable.just(true);

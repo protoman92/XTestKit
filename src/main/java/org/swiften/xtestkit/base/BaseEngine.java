@@ -4,6 +4,7 @@ package org.swiften.xtestkit.base;
  * Created by haipham on 3/19/17.
  */
 
+import io.reactivex.schedulers.Schedulers;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
@@ -53,7 +54,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     BaseActionType<D>,
     BaseClickActionType,
     BaseDateActionType,
-    BaseInputActionType,
+    BaseInputActionType<D>,
     BaseLocatorType<D>,
     BaseEngineErrorType,
     BaseElementPropertyType,
@@ -219,6 +220,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryType PARAM) {
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cmWhichAppium();
+        long delay = appiumStartDelay();
 
         return RUNNER.rxExecute(whichAppium)
             .filter(StringUtil::isNotNullOrEmpty)
@@ -227,7 +229,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
             .onErrorReturnItem(cmFallBackAppium())
             .doOnNext(this::startAppiumOnNewThread)
             .map(a -> true)
-            .delay(appiumStartDelay(), TimeUnit.MILLISECONDS)
+            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
             .retry(PARAM.retries());
     }
 

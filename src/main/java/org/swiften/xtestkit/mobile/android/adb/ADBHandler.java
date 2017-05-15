@@ -256,7 +256,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * Afterwards, when the emulator has booted up fully, a value
              * 'stopped' will be emitted */
             .filter(a -> a.equals("stopped"))
-            .switchIfEmpty(RxUtil.error(""))
+            .switchIfEmpty(RxUtil.error())
             .retryWhen(a -> a
                 /* We add one to the retry count, or else we won't be able
                  * to catch when the count is exceeded */
