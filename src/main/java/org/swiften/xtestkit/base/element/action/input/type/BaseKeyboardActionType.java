@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.action.keyboard.type;
+package org.swiften.xtestkit.base.element.action.input.type;
 
 /**
  * Created by haipham on 5/15/17.

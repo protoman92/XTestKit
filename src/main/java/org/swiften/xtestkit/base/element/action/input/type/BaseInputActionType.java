@@ -8,10 +8,14 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 import java.util.concurrent.TimeUnit;
@@ -21,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface BaseInputActionType<D extends WebDriver> extends
-    BaseErrorType, BaseInputActionDelayType
+    BaseErrorType, BaseInputActionDelayType, BaseLocatorType<D>
 {
     /**
      * Send {@link String} keys to a {@link WebElement}.
@@ -61,32 +65,56 @@ public interface BaseInputActionType<D extends WebDriver> extends
     }
 
     /**
-     * Toggle the next input, then delay by a certain duration to allow the
-     * views to adjust.
-     * @return A {@link Flowable} instance.
-     * @see #toggleNextInput()
-     * @see #consecutiveNextToggleDelay()
+     * Toggle the done button, if available, for e.g. by clicking the submit
+     * button on a soft keyboard. This should only be called when the current
+     * editable field is the last one.
      */
-    @NotNull
-    default Flowable<Boolean> rxToggleNextInput() {
-        final BaseInputActionType THIS = this;
-        long delay = consecutiveNextToggleDelay();
-
-        return Completable
-            .fromAction(THIS::toggleNextInput)
-            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+    default void toggleDoneInput() {
+        throw new RuntimeException(NOT_IMPLEMENTED);
     }
 
     /**
-     * Toggle next input until there is no more next input.
+     * Toggle the next/done input, then delay by a certain duration to allow
+     * the views to adjust. We need to check all editable elements to
+     * see whether the currently active editable field is the last one in
+     * the list.
+     * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxToggleNextInput()
+     * @see #rxAllEditableElements()
+     * @see #toggleNextInput()
+     * @see #toggleDoneInput()
+     * @see #consecutiveNextToggleDelay()
      */
     @NotNull
-    default Flowable<Boolean> rxToggleNextInputUntilDone() {
+    default Flowable<WebElement> rxToggleNextOrDoneInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType THIS = this;
-        return rxToggleNextInput().flatMap(a -> THIS.rxToggleNextInput());
+        long delay = consecutiveNextToggleDelay();
+
+        return rxAllEditableElements()
+            .lastElement()
+            .toFlowable()
+            .filter(ObjectUtil::nonNull)
+            .map(a -> {
+                Point ap = a.getLocation(), ep = ELEMENT.getLocation();
+                Dimension ad = a.getSize(), ed = ELEMENT.getSize();
+
+                /* Since we cannot directly compare two WebElement instances,
+                 * we can use a proxy method: by comparing their position
+                 * and dimension. Usually editable fields are discrete views
+                 * that do not overlap each other */
+                return ap.equals(ep) && ad.equals(ed);
+            })
+            .defaultIfEmpty(false)
+            .flatMapCompletable(a -> Completable.fromAction(() -> {
+                LogUtil.println(a);
+                if (a) {
+                    THIS.toggleDoneInput();
+                } else {
+                    THIS.toggleNextInput();
+                }
+            }))
+            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
+            .<WebElement>toFlowable()
+            .defaultIfEmpty(ELEMENT);
     }
 }

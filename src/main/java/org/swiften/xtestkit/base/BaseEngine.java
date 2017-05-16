@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.input.type.BaseInputActionType;
-import org.swiften.xtestkit.base.element.action.keyboard.type.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.action.input.type.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.action.password.type.BasePasswordActionType;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.tap.type.BaseTapType;

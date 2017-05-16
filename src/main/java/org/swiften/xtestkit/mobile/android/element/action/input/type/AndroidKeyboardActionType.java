@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.mobile.android.element.action.keyboard;
+package org.swiften.xtestkit.mobile.android.element.action.input.type;
 
 /**
  * Created by haipham on 5/15/17.
@@ -31,7 +31,6 @@ public interface AndroidKeyboardActionType extends
 {
     @Override
     default void hideKeyboard() {
-        LogUtil.println("Hidden");
         driver().getKeyboard().pressKey(Keys.RETURN);
     }
 

@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.mobile.android.element.action.input;
+package org.swiften.xtestkit.mobile.android.element.action.input.type;
 
 /**
  * Created by haipham on 5/15/17.
@@ -11,4 +11,5 @@ package org.swiften.xtestkit.mobile.android.element.action.input;
 public interface AndroidKeyboardCodeType {
     int KEYCODE_ENTER = 66;
     int KEYCODE_TAB = 61;
+    int KEYCODE_SEARCH = 84;
 }

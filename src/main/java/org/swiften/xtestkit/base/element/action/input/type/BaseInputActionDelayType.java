@@ -4,8 +4,6 @@ package org.swiften.xtestkit.base.element.action.input.type;
  * Created by haipham on 5/15/17.
  */
 
-import org.swiften.xtestkit.mobile.android.element.action.input.AndroidInputActionType;
-
 /**
  * This interface provides delay in
  * {@link java.util.concurrent.TimeUnit#MILLISECONDS} for
@@ -13,10 +11,10 @@ import org.swiften.xtestkit.mobile.android.element.action.input.AndroidInputActi
  */
 public interface BaseInputActionDelayType {
     /**
-     * Get the delay interval for {@link BaseInputActionType#rxToggleNextInput()}
+     * Get the delay interval for {@link BaseInputActionType#rxToggleNextOrDoneInput()}
      * so that the app has time to adjust its views.
      * @return A {@link Long} value.
-     * @see BaseInputActionType#rxToggleNextInput()
+     * @see BaseInputActionType#rxToggleNextOrDoneInput()
      */
     default long consecutiveNextToggleDelay() {
         return 1000;

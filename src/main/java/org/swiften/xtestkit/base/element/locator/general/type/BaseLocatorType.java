@@ -116,6 +116,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link ByXPath} instances.
      * @return A {@link Flowable} instance.
      * @see #rxElementsByXPath(ByXPath)
+     * @see #rxXPathQueryFailure(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -128,8 +129,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .toList()
             .toFlowable()
             .flatMap(Flowable::fromIterable)
-            .observeOn(Schedulers.trampoline())
-            .switchIfEmpty(rxXPathQueryFailure(param));
+            .switchIfEmpty(rxXPathQueryFailure(param))
+            .observeOn(Schedulers.trampoline());
     }
 
     /**

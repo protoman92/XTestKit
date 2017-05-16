@@ -1,8 +1,8 @@
-package org.swiften.xtestkit.mobile.android.element.action.input;
+package org.swiften.xtestkit.mobile.android.element.action.input.type;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
-import org.openqa.selenium.By;
+import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.input.type.BaseInputActionType;
 import org.swiften.xtestkit.base.type.DriverContainerType;
 
@@ -26,6 +26,16 @@ public interface AndroidInputActionType extends
      */
     @Override
     default void toggleNextInput() {
+        driver().pressKeyCode(KEYCODE_TAB);
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @see BaseInputActionType#toggleDoneInput()
+     * @see AndroidDriver#pressKeyCode(int)
+     */
+    @Override
+    default void toggleDoneInput() {
         driver().pressKeyCode(KEYCODE_TAB);
     }
 }
