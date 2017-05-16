@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.capability.type.CapErrorType;
 import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
 
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseCap implements CapType, CapErrorType {
+public abstract class BaseCap implements CapType, BaseErrorType {
     @Nullable PlatformType platform;
     @Nullable TestMode testMode;
 
@@ -30,7 +30,7 @@ public abstract class BaseCap implements CapType, CapErrorType {
         if (ObjectUtil.nonNull(platform)) {
             return platform;
         } else {
-            throw new RuntimeException(PLATFORM_UNAVAILABLE);
+            throw new RuntimeException(NOT_IMPLEMENTED);
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class BaseCap implements CapType, CapErrorType {
         if (ObjectUtil.nonNull(testMode)) {
             return testMode;
         } else {
-            throw new RuntimeException(TEST_MODE_UNAVAILABLE);
+            throw new RuntimeException(NOT_IMPLEMENTED);
         }
     }
 

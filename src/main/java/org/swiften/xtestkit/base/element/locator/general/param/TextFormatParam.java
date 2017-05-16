@@ -5,17 +5,15 @@ package org.swiften.xtestkit.base.element.locator.general.param;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.localizer.LocalizationFormat;
+import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.xtestkit.base.BaseEngine;
-import org.swiften.xtestkit.base.element.property.type.base.FormatStringType;
-import org.swiften.xtestkit.base.element.property.type.base.StringType;
+import org.swiften.xtestkit.base.element.property.type.base.FormatType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**
  * Parameter object for {@link BaseEngine#rxElementsContainingText(TextFormatParam)}.
  */
-public class TextFormatParam implements FormatStringType, RetryType {
+public class TextFormatParam implements FormatType, RetryType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -25,21 +23,21 @@ public class TextFormatParam implements FormatStringType, RetryType {
         return new Builder();
     }
 
-    @NotNull private LocalizationFormat format;
+    @NotNull private LCFormat format;
 
     private boolean ignoreCase;
     private int retries;
 
     TextFormatParam() {
-        format = LocalizationFormat.builder().build();
-        ignoreCase = FormatStringType.super.ignoreCase();
+        format = LCFormat.builder().build();
+        ignoreCase = FormatType.super.ignoreCase();
         retries = RetryType.super.retries();
     }
 
     //region StringType
     @NotNull
     @Override
-    public LocalizationFormat value() {
+    public LCFormat value() {
         return format;
     }
 
@@ -73,7 +71,7 @@ public class TextFormatParam implements FormatStringType, RetryType {
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withLocalizationFormat(@NotNull LocalizationFormat format) {
+        public Builder withLocalizationFormat(@NotNull LCFormat format) {
             PARAM.format = format;
             return this;
         }

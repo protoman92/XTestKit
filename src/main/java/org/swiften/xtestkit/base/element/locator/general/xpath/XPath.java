@@ -36,7 +36,7 @@ public class XPath {
     }
 
     @NotNull
-    public String getAttribute() {
+    public String attribute() {
         return attribute;
     }
 

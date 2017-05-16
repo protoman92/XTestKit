@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.capability.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.PlatformType;
@@ -17,7 +18,7 @@ import java.util.Map;
  * Implement this interface to selectively provide capabilities for
  * {@link BaseEngine}.
  */
-public interface CapType {
+public interface CapType extends BaseErrorType {
     /**
      * Get the {@link Platform} for which we are getting capabilities.
      * @return A {@link Platform} instance.

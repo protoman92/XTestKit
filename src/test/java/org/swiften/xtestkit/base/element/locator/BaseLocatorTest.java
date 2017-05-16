@@ -8,8 +8,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.PlatformView;
@@ -39,7 +41,7 @@ import static org.testng.Assert.assertTrue;
  * Created by haipham on 5/8/17.
  */
 public class BaseLocatorTest implements BaseLocatorType {
-    @NotNull private final BaseLocatorTest LOCATOR;
+    @NotNull private final BaseLocatorTest ENGINE;
     @NotNull private final WebDriver DRIVER;
     @NotNull private final Localizer LOCALIZER;
     @NotNull private final String LOCALIZED_TEXT;
@@ -47,7 +49,7 @@ public class BaseLocatorTest implements BaseLocatorType {
     private final int ELEMENT_COUNT;
 
     {
-        /* Return this localizer when we call LOCATOR.localizer() */
+        /* Return this localizer when we call ENGINE.localizer() */
         LOCALIZER = mock(Localizer.class);
         LOCALIZED_TEXT = "Localized Result";
 
@@ -56,7 +58,7 @@ public class BaseLocatorTest implements BaseLocatorType {
          * method to throw an Exception should stub the method themselves */
         DRIVER = mock(WebDriver.class);
 
-        /* This PlatformView object will be returned by LOCATOR. We return
+        /* This PlatformView object will be returned by ENGINE. We return
          * an implementation whose getViews() method returns a list of mock
          * WebElement, instead of a mock PlatformView. This way, we do not
          * have to rewrite view login for PlatformView */
@@ -65,16 +67,16 @@ public class BaseLocatorTest implements BaseLocatorType {
         /* The number of elements to return for a DRIVER.findElement request */
         ELEMENT_COUNT = 2;
 
-        LOCATOR = spy(this);
+        ENGINE = spy(this);
     }
 
     @BeforeMethod
     public void beforeMethod() {
-        doReturn(DRIVER).when(LOCATOR).driver();
-        doReturn(PLATFORM_VIEWS).when(LOCATOR).platformView();
+        doReturn(DRIVER).when(ENGINE).driver();
+        doReturn(PLATFORM_VIEWS).when(ENGINE).platformView();
         doReturn(LOCALIZED_TEXT).when(LOCALIZER).localize(anyString());
         doReturn(Flowable.just(LOCALIZED_TEXT)).when(LOCALIZER).rxLocalize(anyString());
-        doReturn(LOCALIZER).when(LOCATOR).localizer();
+        doReturn(LOCALIZER).when(ENGINE).localizer();
 
         when(DRIVER.findElements(any(By.class))).thenReturn(
             Arrays
@@ -86,7 +88,7 @@ public class BaseLocatorTest implements BaseLocatorType {
 
     @AfterMethod
     public void afterMethod() {
-        reset(DRIVER, LOCATOR, PLATFORM_VIEWS);
+        reset(DRIVER, ENGINE, PLATFORM_VIEWS);
     }
 
     @NotNull
@@ -115,6 +117,57 @@ public class BaseLocatorTest implements BaseLocatorType {
     //region Element By XPATH
     @Test
     @SuppressWarnings("unchecked")
+    public void test_elementsByXPathVarargs_shouldSucceed() {
+        // Setup
+        ByXPath query1 = mock(ByXPath.class);
+        ByXPath query2 = mock(ByXPath.class);
+        ByXPath query3 = mock(ByXPath.class);
+        WebElement element1 = mock(WebElement.class);
+        WebElement element2 = mock(WebElement.class);
+        doReturn(RxUtil.error()).when(ENGINE).rxElementsByXPath(eq(query1));
+        doReturn(Flowable.just(element1)).when(ENGINE).rxElementsByXPath(eq(query2));
+        doReturn(Flowable.just(element2)).when(ENGINE).rxElementsByXPath(eq(query3));
+        doReturn(RxUtil.error()).when(ENGINE).rxXPathQueryFailure(any());
+
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ENGINE.rxElementsByXPath(query1, query2, query3).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_elementsByXPathVarargsWithNoElement_shouldThrow() {
+        // Setup
+        ByXPath query1 = mock(ByXPath.class);
+        ByXPath query2 = mock(ByXPath.class);
+        ByXPath query3 = mock(ByXPath.class);
+        String error1 = "Error1", error2 = "Error2", error3 = "Error3";
+        String aggregatedError = String.join("\n", error1, error2, error3);
+        doReturn(error1).when(query1).error();
+        doReturn(error2).when(query2).error();
+        doReturn(error3).when(query3).error();
+
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        ENGINE.rxElementsByXPath(query1, query2, query3).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        subscriber.assertSubscribed();
+        subscriber.assertErrorMessage(aggregatedError);
+        subscriber.assertNotComplete();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void test_failToFindElements_shouldThrow() {
         // Setup
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
@@ -129,7 +182,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        LOCATOR.rxElementsByXPath(param).subscribe(subscriber);
+        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -154,7 +207,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        LOCATOR.rxElementsByXPath(param).subscribe(subscriber);
+        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -180,14 +233,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        LOCATOR.rxElementsWithText(param).subscribe(subscriber);
+        ENGINE.rxElementsWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -203,14 +256,14 @@ public class BaseLocatorTest implements BaseLocatorType {
             .thenReturn(Collections.emptyList());
 
         // When
-        LOCATOR.rxElementWithText(param).subscribe(subscriber);
+        ENGINE.rxElementWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -222,7 +275,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        LOCATOR.rxElementWithText(param).subscribe(subscriber);
+        ENGINE.rxElementWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -230,7 +283,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -244,14 +297,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        LOCATOR.rxElementsContainingText(param).subscribe(subscriber);
+        ENGINE.rxElementsContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -264,14 +317,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
-        LOCATOR.rxElementContainingText(param).subscribe(subscriber);
+        ENGINE.rxElementContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -283,7 +336,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        LOCATOR.rxElementContainingText(param).subscribe(subscriber);
+        ENGINE.rxElementContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -291,7 +344,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(LOCATOR).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
     }
     //endregion
 }

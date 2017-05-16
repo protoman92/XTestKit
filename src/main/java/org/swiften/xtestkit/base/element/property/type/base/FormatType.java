@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.base.element.property.type.base;
 
-import org.swiften.javautilities.localizer.LocalizationFormat;
+import org.swiften.javautilities.localizer.LCFormat;
 
 /**
  * Created by haipham on 5/14/17.
@@ -11,6 +11,6 @@ import org.swiften.javautilities.localizer.LocalizationFormat;
  * that involve {@link java.text.MessageFormat}.
  */
 @FunctionalInterface
-public interface FormatStringType extends
-    AttributeType<LocalizationFormat>,
+public interface FormatType extends
+    AttributeType<LCFormat>,
     IgnoreCaseType {}

@@ -53,7 +53,7 @@ public interface CalendarPickerActionType extends
      */
     @NotNull
     default Flowable<WebElement> rxCalendarListView() {
-        return rxElementOfClass(AndroidView.ViewType.LIST_VIEW);
+        return rxElementOfClass(AndroidView.ViewType.LIST_VIEW.className());
     }
 
     /**

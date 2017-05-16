@@ -1,7 +1,6 @@
 package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.capability.type.CapErrorType;
 
 /**
  * Created by haipham on 3/19/17.
@@ -11,7 +10,7 @@ import org.swiften.xtestkit.base.capability.type.CapErrorType;
  * This interface provides errors for
  * {@link org.swiften.xtestkit.base.BaseEngine}.
  */
-public interface BaseEngineErrorType extends CapErrorType {
+public interface BaseEngineErrorType extends BaseErrorType {
     @NotNull String APPIUM_NOT_INSTALLED = "Appium not installed";
     @NotNull String CAPABILITY_UNAVAILABLE = "Capability unavailable";
     @NotNull String DRIVER_UNAVAILABLE = "Driver unavailable";

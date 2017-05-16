@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.kit;
 
-import org.swiften.javautilities.localizer.LocalizationFormat;
+import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.mobile.Platform;
@@ -12,7 +12,6 @@ import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.kit.type.TestKitErrorType;
 import org.swiften.xtestkit.system.NetworkHandler;
 import org.swiften.xtestkit.system.ProcessRunner;
-import org.swiften.xtestkit.system.type.ProcessRunnableType;
 import org.swiften.xtestkit.test.RepeatRunner;
 import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Flowable;
@@ -27,7 +26,6 @@ import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.mobile.android.AndroidEngine;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -188,8 +186,8 @@ public class TestKit implements
      * @param text A {@link String} value.
      * @param locale A {@link Locale} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LocalizationFormat, Locale)
-     * @see Localizer#rxLocalize(LocalizationFormat, Locale)
+     * @see LocalizerType#rxLocalize(LCFormat, Locale)
+     * @see Localizer#rxLocalize(LCFormat, Locale)
      */
     @NotNull
     @Override
@@ -200,8 +198,8 @@ public class TestKit implements
     /**
      * @param text A {@link String} value.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LocalizationFormat)
-     * @see Localizer#rxLocalize(LocalizationFormat)
+     * @see LocalizerType#rxLocalize(LCFormat)
+     * @see Localizer#rxLocalize(LCFormat)
      */
     @Override
     public Flowable<String> rxLocalize(@NotNull String text) {
@@ -212,8 +210,8 @@ public class TestKit implements
      * @param text A {@link String} value.
      * @param locale A {@link Locale} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#localize(LocalizationFormat, Locale)
-     * @see Localizer#localize(LocalizationFormat, Locale)
+     * @see LocalizerType#localize(LCFormat, Locale)
+     * @see Localizer#localize(LCFormat, Locale)
      */
     @NotNull
     @Override
@@ -224,8 +222,8 @@ public class TestKit implements
     /**
      * @param text A {@link String} value.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#localize(LocalizationFormat, Locale)
-     * @see Localizer#localize(LocalizationFormat, Locale)
+     * @see LocalizerType#localize(LCFormat, Locale)
+     * @see Localizer#localize(LCFormat, Locale)
      */
     @Override
     public String localize(@NotNull String text) {
@@ -233,54 +231,54 @@ public class TestKit implements
     }
 
     /**
-     * @param format A {@link LocalizationFormat} instance.
+     * @param format A {@link LCFormat} instance.
      * @param locale A {@link Locale} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LocalizationFormat, Locale)
-     * @see Localizer#rxLocalize(LocalizationFormat, Locale)
+     * @see LocalizerType#rxLocalize(LCFormat, Locale)
+     * @see Localizer#rxLocalize(LCFormat, Locale)
      */
     @NotNull
     @Override
-    public Flowable<String> rxLocalize(@NotNull LocalizationFormat format,
+    public Flowable<String> rxLocalize(@NotNull LCFormat format,
                                        @Nullable Locale locale) {
         return localizer().rxLocalize(format, locale);
     }
 
     /**
-     * @param format A {@link LocalizationFormat} instance.
+     * @param format A {@link LCFormat} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LocalizationFormat)
-     * @see Localizer#rxLocalize(LocalizationFormat)
+     * @see LocalizerType#rxLocalize(LCFormat)
+     * @see Localizer#rxLocalize(LCFormat)
      */
     @NotNull
     @Override
-    public Flowable<String> rxLocalize(@NotNull LocalizationFormat format) {
+    public Flowable<String> rxLocalize(@NotNull LCFormat format) {
         return localizer().rxLocalize(format);
     }
 
     /**
-     * @param format A {@link LocalizationFormat} instance.
+     * @param format A {@link LCFormat} instance.
      * @param locale A {@link Locale} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#localize(LocalizationFormat, Locale)
-     * @see Localizer#localize(LocalizationFormat, Locale)
+     * @see LocalizerType#localize(LCFormat, Locale)
+     * @see Localizer#localize(LCFormat, Locale)
      */
     @NotNull
     @Override
-    public String localize(@NotNull LocalizationFormat format,
+    public String localize(@NotNull LCFormat format,
                            @Nullable Locale locale) {
         return localizer().localize(format, locale);
     }
 
     /**
-     * @param format A {@link LocalizationFormat} instance.
+     * @param format A {@link LCFormat} instance.
      * @return A {@link Flowable} instance.
-     * @see LocalizerType#localize(LocalizationFormat, Locale)
-     * @see Localizer#localize(LocalizationFormat, Locale)
+     * @see LocalizerType#localize(LCFormat, Locale)
+     * @see Localizer#localize(LCFormat, Locale)
      */
     @NotNull
     @Override
-    public String localize(@NotNull LocalizationFormat format) {
+    public String localize(@NotNull LCFormat format) {
         return localizer().localize(format);
     }
     //endregion

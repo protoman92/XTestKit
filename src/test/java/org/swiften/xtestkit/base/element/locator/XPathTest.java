@@ -29,7 +29,7 @@ public final class XPathTest {
             .build();
 
         // When
-        String attribute = xPath.getAttribute();
+        String attribute = xPath.attribute();
         String trimmed = attribute.substring(1, attribute.length() - 1);
         List<String> groups = Arrays.asList(trimmed.split("\\]\\["));
 

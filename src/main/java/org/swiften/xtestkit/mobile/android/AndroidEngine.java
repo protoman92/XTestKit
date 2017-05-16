@@ -170,7 +170,7 @@ public class AndroidEngine extends
                 break;
 
             default:
-                source = RxUtil.error(PLATFORM_UNAVAILABLE);
+                source = RxUtil.error(NOT_IMPLEMENTED);
                 break;
         }
 
@@ -231,7 +231,7 @@ public class AndroidEngine extends
                 break;
 
             default:
-                SOURCE = RxUtil.error(PLATFORM_UNAVAILABLE);
+                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
                 break;
         }
 

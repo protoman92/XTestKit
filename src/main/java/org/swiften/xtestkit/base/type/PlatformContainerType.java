@@ -10,11 +10,13 @@ import org.jetbrains.annotations.NotNull;
  * This interface provides a {@link PlatformType} for platform-specific
  * operations.
  */
-@FunctionalInterface
-public interface PlatformContainerType {
+public interface PlatformContainerType extends BaseErrorType {
     /**
      * Get the associated {@link PlatformType} instance.
      * @return A {@link PlatformType} instance.
      */
-    @NotNull PlatformType platform();
+    @NotNull
+    default PlatformType platform() {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
 }

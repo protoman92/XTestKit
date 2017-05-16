@@ -107,7 +107,7 @@ public class ByXPath implements RetryType {
          * @return The current {@link Builder} instance.
          */
         public Builder withXPath(@NotNull XPath xPath) {
-            PARAM.xPath = xPath.getAttribute();
+            PARAM.xPath = xPath.attribute();
             return this;
         }
 
