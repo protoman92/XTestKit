@@ -207,7 +207,7 @@ public class RepeatRunner implements
             .flatMap(a -> a.rxOnBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
     }
 
@@ -219,7 +219,7 @@ public class RepeatRunner implements
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
     }
 
@@ -231,7 +231,7 @@ public class RepeatRunner implements
             .flatMap(TestListenerType::rxOnAllTestsFinished)
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
     }
     //endregion

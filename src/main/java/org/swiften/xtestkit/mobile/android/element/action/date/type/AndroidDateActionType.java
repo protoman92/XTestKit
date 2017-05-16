@@ -212,7 +212,7 @@ public interface AndroidDateActionType extends
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
                     .flatMap(THIS::rxClick)
-                    .map(a -> true);
+                    .map(BooleanUtil::toTrue);
             }
 
             @NotNull

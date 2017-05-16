@@ -19,6 +19,7 @@ import org.swiften.xtestkit.base.element.action.keyboard.type.BaseKeyboardAction
 import org.swiften.xtestkit.base.element.action.password.type.BasePasswordActionType;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.tap.type.BaseTapType;
+import org.swiften.xtestkit.base.element.action.visibility.BaseVisibilityActionType;
 import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.*;
@@ -64,6 +65,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     BasePasswordActionType<D>,
     BaseTapType<D>,
     BaseSwipeType<D>,
+    BaseVisibilityActionType<D>,
     EngineDelayType,
     DistinctiveType,
     TestListenerType
@@ -167,7 +169,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
         Flowable<Boolean> reusePort = Completable
             .fromAction(() -> HANDLER.markPortAsAvailable(ADDRESS.port()))
             .toFlowable()
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
 
         Flowable<Boolean> stopServer;
@@ -230,7 +232,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
             .switchIfEmpty(RxUtil.error(APPIUM_NOT_INSTALLED))
             .onErrorReturnItem(cmFallBackAppium())
             .doOnNext(this::startAppiumOnNewThread)
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
             .retry(PARAM.retries());
     }
@@ -262,7 +264,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
                     }
                 }).start();
             })
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .subscribe();
     }
 

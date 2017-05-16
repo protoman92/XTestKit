@@ -136,7 +136,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .onErrorResumeNext(Flowable.just(true))
             .map(a -> cmLaunchAdb())
             .flatMap(RUNNER::rxExecute)
-            .map(a -> true);
+            .map(BooleanUtil::toTrue);
     }
     //endregion
 
@@ -274,7 +274,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
                         return Flowable.<Long>error(e);
                     }
                 }))
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
 
             /* timeout is used here in case processRunner() fails to poll
              * for bootanim. The timeout will be a reasonable value so that,
@@ -297,7 +297,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
         return processRunner()
             .rxExecute(command)
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .retry(param.retries());
     }
 
@@ -337,7 +337,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .filter(a -> a.contains("Success"))
             .switchIfEmpty(RxUtil.error(unableToClearCache(APP)))
             .retry(param.retries())
-            .map(a -> true);
+            .map(BooleanUtil::toTrue);
     }
     //endregion
 
@@ -361,7 +361,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .rxExecute(listCommand)
             .filter(a -> a.contains(PKG))
             .retry(PARAM.retries())
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .switchIfEmpty(RxUtil.error(appNotInstalled(PKG)));
     }
     //endregion
@@ -381,7 +381,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         return processRunner().rxExecute(command)
             /* If successful, there should be no output */
             .filter(String::isEmpty)
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .switchIfEmpty(RxUtil.error(NO_OUTPUT_EXPECTED));
     }
 
@@ -470,7 +470,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         return RUNNER.rxExecute(cmPutSettings(PARAM))
             .flatMap(a -> RUNNER.rxExecute(cmGetSettings(PARAM)))
             .filter(a -> a.contains(PARAM.value()))
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .onErrorResumeNext(Flowable.empty())
 
             /* Throw error if the returned value does not match the new

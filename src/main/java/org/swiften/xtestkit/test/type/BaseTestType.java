@@ -19,12 +19,18 @@ public interface BaseTestType {
     @NotNull TestKit testKit();
 
     /**
-     * Get the current {@link BaseEngine}
-     * index.
+     * Get the current {@link BaseEngine} index.
      * @return An {@link Integer} value.
      */
     int currentIndex();
 
+    /**
+     * Get the currently active {@link BaseEngine}.
+     * @return A {@link BaseEngine} instance.
+     * @see #testKit()
+     * @see #currentIndex()
+     * @see TestKit#engine(int)
+     */
     @NotNull
     default BaseEngine<?> engine() {
         TestKit testKit = testKit();

@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.mobile.ios;
 
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.mobile.ios.type.XCRunDelayType;
@@ -246,7 +247,7 @@ public class XCRunHandler implements XCRunDelayType {
                 .retryWhen(e -> e.delay(DELAY, TimeUnit.MILLISECONDS))
                 .flatMap(Maybe::error)
                 .toFlowable()
-                .map(a -> true),
+                .map(BooleanUtil::toTrue),
 
             rxCheckSimulatorBooted(PARAM.deviceUID())
                 .retryWhen(e -> e.delay(DELAY, TimeUnit.MILLISECONDS))
@@ -268,7 +269,7 @@ public class XCRunHandler implements XCRunDelayType {
 
         return processRunner
             .rxExecute(command)
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .onErrorReturnItem(true);
     }
     //endregion

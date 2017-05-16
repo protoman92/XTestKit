@@ -148,7 +148,7 @@ public class TestKit implements
             .flatMap(a -> a.rxOnBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
     }
 

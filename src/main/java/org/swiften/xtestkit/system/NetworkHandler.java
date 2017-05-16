@@ -202,7 +202,7 @@ public class NetworkHandler implements NetworkHandlerErrorType {
 
                 return Flowable.error(t);
             })
-            .map(a -> true)
+            .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
     }
 
