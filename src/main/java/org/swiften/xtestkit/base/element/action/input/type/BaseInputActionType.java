@@ -59,18 +59,52 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * Toggle the next input, for e.g. by clicking the Next key in a Android
      * keyboard. This method must be individually implemented for each
      * {@link org.swiften.xtestkit.base.type.PlatformType}.
+     * @param element The currently active editable {@link WebElement}.
      */
-    default void toggleNextInput() {
+    default void toggleNextInput(@NotNull WebElement element) {
         throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Toggle the next input.
+     * @param ELEMENT The currently active editable {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     * @see #toggleNextInput(WebElement)
+     */
+    @NotNull
+    default Flowable<WebElement> rxToggleNextInput(@NotNull final WebElement ELEMENT) {
+        final BaseInputActionType<?> THIS = this;
+
+        return Completable
+            .fromAction(() -> THIS.toggleNextInput(ELEMENT))
+            .<WebElement>toFlowable()
+            .defaultIfEmpty(ELEMENT);
     }
 
     /**
      * Toggle the done button, if available, for e.g. by clicking the submit
      * button on a soft keyboard. This should only be called when the current
      * editable field is the last one.
+     * @param element The currently active editable {@link WebElement}.
      */
-    default void toggleDoneInput() {
+    default void toggleDoneInput(@NotNull WebElement element) {
         throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Toggle the done input.
+     * @param ELEMENT The currently active editable {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     * @see #toggleDoneInput(WebElement)
+     */
+    @NotNull
+    default Flowable<WebElement> rxToggleDoneInput(@NotNull final WebElement ELEMENT) {
+        final BaseInputActionType<?> THIS = this;
+
+        return Completable
+            .fromAction(() -> THIS.toggleDoneInput(ELEMENT))
+            .<WebElement>toFlowable()
+            .defaultIfEmpty(ELEMENT);
     }
 
     /**
@@ -81,20 +115,20 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
      * @see #rxAllEditableElements()
-     * @see #toggleNextInput()
-     * @see #toggleDoneInput()
+     * @see #rxToggleNextInput(WebElement)
+     * @see #rxToggleDoneInput(WebElement)
      * @see #consecutiveNextToggleDelay()
      */
     @NotNull
     default Flowable<WebElement> rxToggleNextOrDoneInput(@NotNull final WebElement ELEMENT) {
-        final BaseInputActionType THIS = this;
+        final BaseInputActionType<?> THIS = this;
         long delay = consecutiveNextToggleDelay();
 
         return rxAllEditableElements()
             .lastElement()
             .toFlowable()
             .filter(ObjectUtil::nonNull)
-            .map(a -> {
+            .filter(a -> {
                 Point ap = a.getLocation(), ep = ELEMENT.getLocation();
                 Dimension ad = a.getSize(), ed = ELEMENT.getSize();
 
@@ -104,17 +138,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
                  * that do not overlap each other */
                 return ap.equals(ep) && ad.equals(ed);
             })
-            .defaultIfEmpty(false)
-            .flatMapCompletable(a -> Completable.fromAction(() -> {
-                LogUtil.println(a);
-                if (a) {
-                    THIS.toggleDoneInput();
-                } else {
-                    THIS.toggleNextInput();
-                }
-            }))
-            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+            .flatMap(THIS::rxToggleDoneInput)
+            .switchIfEmpty(THIS.rxToggleNextInput(ELEMENT))
+            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline());
     }
 }

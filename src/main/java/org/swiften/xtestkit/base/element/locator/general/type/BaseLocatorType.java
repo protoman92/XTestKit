@@ -124,13 +124,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
+            .observeOn(Schedulers.trampoline())
             .subscribeOn(Schedulers.computation())
             .flatMap(a -> THIS.rxElementsByXPath(a).onErrorResumeNext(Flowable.empty()))
             .toList()
             .toFlowable()
             .flatMap(Flowable::fromIterable)
-            .switchIfEmpty(rxXPathQueryFailure(param))
-            .observeOn(Schedulers.trampoline());
+            .switchIfEmpty(rxXPathQueryFailure(param));
     }
 
     /**

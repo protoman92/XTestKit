@@ -9,6 +9,7 @@ package org.swiften.xtestkit.mobile.android.element.action.input.type;
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} soft keyboard.
  */
 public interface AndroidKeyboardCodeType {
+    int KEYCODE_DPAD_DOWN = 20;
     int KEYCODE_ENTER = 66;
     int KEYCODE_TAB = 61;
     int KEYCODE_SEARCH = 84;

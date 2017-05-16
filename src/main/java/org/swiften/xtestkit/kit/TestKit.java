@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.kit;
 
+import org.intellij.lang.annotations.Flow;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.BaseEngine;
@@ -86,23 +87,25 @@ public class TestKit implements
      * the engine's {@link Class}. This is useful for one-time setup, such
      * as {@link #rxOnFreshStart()} and {@link #rxOnAllTestsFinished()}.
      * @return A {@link Flowable} instance.
+     * @see #engines()
+     * @see BaseEngine#getClass()
      */
     @NotNull
     public Flowable<BaseEngine> rxDistinctEngines() {
-        return Flowable
-            .fromIterable(engines())
-            .distinct(BaseEngine::getClass);
+        return Flowable.fromIterable(engines()).distinct(BaseEngine::getClass);
     }
 
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnFreshStart() {
+        Flowable<Boolean> killAppium = rxKillAllAppiumInstances();
+
+        Flowable<Boolean> freshStart = rxDistinctEngines()
+            .flatMap(BaseEngine::rxOnFreshStart);
+
         return Flowable
-            .concatArray(
-                rxKillAllAppiumInstances(),
-                rxDistinctEngines().flatMap(BaseEngine::rxOnFreshStart)
-            )
+            .concatArray(killAppium, freshStart)
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
@@ -154,11 +157,13 @@ public class TestKit implements
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnAllTestsFinished() {
+        Flowable<Boolean> killAppium = rxKillAllAppiumInstances();
+
+        Flowable<Boolean> testFinish = rxDistinctEngines()
+            .flatMap(BaseEngine::rxOnAllTestsFinished);
+
         return Flowable
-            .concatArray(
-                rxKillAllAppiumInstances(),
-                rxDistinctEngines().flatMap(BaseEngine::rxOnAllTestsFinished)
-            )
+            .concatArray(killAppium, testFinish)
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);

@@ -50,19 +50,18 @@ public interface AndroidDateActionType extends
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
      * @see BaseDateActionType#rxHasDate(DateType)
+     * @see #rxElementContainingText(String...)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
-        return Flowable
-            .concatArray(
-                rxElementContainingText(dayString(param)),
-                rxElementContainingText(monthString(param)),
-                rxElementContainingText(yearString(param))
-            )
-            .all(ObjectUtil::nonNull)
-            .toFlowable();
+        final AndroidDateActionType THIS = this;
+
+        return rxElementContainingText(dayString(param))
+            .flatMap(a -> THIS.rxElementContainingText(monthString(param)))
+            .flatMap(a -> THIS.rxElementContainingText(yearString(param)))
+            .map(BooleanUtil::toTrue);
     }
     //endregion
 
@@ -363,7 +362,7 @@ public interface AndroidDateActionType extends
     /**
      * Get the date picker header.
      * @return A {@link Flowable} instance.
-     * @see #rxElementContainingID(String)
+     * @see #rxElementContainingID(String...)
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerHeader() {
