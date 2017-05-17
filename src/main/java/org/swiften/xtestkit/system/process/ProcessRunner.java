@@ -29,7 +29,11 @@ public class ProcessRunner {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-        LogUtil.printf("---------- Executing '%s' ----------", args);
+        LogUtil.printf(
+            "---------- Executing '%s' on thread %d ----------",
+            args, Thread.currentThread().getId()
+        );
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();

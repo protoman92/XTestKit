@@ -1,5 +1,7 @@
 package org.swiften.xtestkit.base;
 
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.capability.BaseCap;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.tap.type.TapType;
@@ -28,6 +30,8 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collection;
 
 /**
  * Created by haipham on 3/20/17.
@@ -169,15 +173,19 @@ public final class BaseEngineTest implements BaseEngineErrorType {
         // When
         Flowable.range(1, tries)
             .flatMap(a -> ENGINE.rxStartLocalAppium(RETRY))
-            .compose(RxUtil.withCommonSchedulers())
+            .all(BooleanUtil::isTrue)
+            .toFlowable()
+            .flatMap(a -> ENGINE.networkHandler().rxKillAll("node appium"))
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         // Then
+        Collection<Integer> usedPorts = ENGINE.networkHandler().usedPorts();
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
+        assertEquals(usedPorts.size(), tries);
     }
 
     @Test

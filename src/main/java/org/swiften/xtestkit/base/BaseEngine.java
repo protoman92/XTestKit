@@ -30,6 +30,7 @@ import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Completable;
@@ -46,6 +47,7 @@ import org.swiften.javautilities.string.StringUtil;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 /**
@@ -83,7 +85,15 @@ public abstract class BaseEngine<D extends WebDriver> implements
     @NotNull ServerAddress serverAddress;
     @NotNull TestMode testMode;
 
+    /**
+     * This {@link AtomicBoolean} should be used with
+     * {@link #startAppiumOnNewThread(String)} to sequentially start new
+     * Appium servers.
+     */
+    @NotNull private final AtomicBoolean ATOMIC_START_APPIUM;
+
     public BaseEngine() {
+        ATOMIC_START_APPIUM = new AtomicBoolean(false);
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
         browserName = "";
@@ -232,6 +242,8 @@ public abstract class BaseEngine<D extends WebDriver> implements
         long delay = appiumStartDelay();
 
         return RUNNER.rxExecute(whichAppium)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(RxUtil.error(APPIUM_NOT_INSTALLED))
@@ -247,6 +259,8 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * thread.
      * @param CLI The path to Appium CLI. A {@link String} value.
      * @see #cmStartLocalAppiumInstance(String, int)
+     * @see NetworkHandler#rxCheckUntilPortAvailable(PortType)
+     * @see ServerAddress#setPort(int)
      */
     @SuppressWarnings("unchecked")
     public void startAppiumOnNewThread(@NotNull final String CLI) {
@@ -259,12 +273,33 @@ public abstract class BaseEngine<D extends WebDriver> implements
             .doOnNext(a -> {
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
 
-                /* Need to start on a new Thread, or else it will block */
                 new Thread(() -> {
-                    try {
-                        RUNNER.execute(COMMAND);
-                    } catch (Exception e) {
-                        LogUtil.println(e);
+                    for (;;) {
+                        if (!ATOMIC_START_APPIUM.get()) {
+                            ATOMIC_START_APPIUM.getAndSet(true);
+
+                            /* Need to start on a new Thread, or else it will
+                             * block */
+                            new Thread(() -> {
+                                try {
+                                    RUNNER.execute(COMMAND);
+                                } catch (Exception e) {
+                                    LogUtil.println(e);
+                                }
+                            }).start();
+
+                            /* Sleep for a while to straddle the initialization
+                             * of Appium servers */
+                            try {
+                                TimeUnit.MILLISECONDS.sleep(2000);
+                            } catch (InterruptedException e) {
+                                LogUtil.println(e);
+                            } finally {
+                                ATOMIC_START_APPIUM.getAndSet(false);
+                            }
+
+                            break;
+                        }
                     }
                 }).start();
             })
