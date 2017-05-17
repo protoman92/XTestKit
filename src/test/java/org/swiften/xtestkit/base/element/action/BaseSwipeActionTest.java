@@ -77,7 +77,8 @@ public class BaseSwipeActionTest implements BaseSwipeType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxSwipe(any());
-        verify(ENGINE).rxSwipeOnce(any());
+        verify(ENGINE, times(times)).swipeOnce(any());
+        verify(ENGINE, times(times)).rxSwipeOnce(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

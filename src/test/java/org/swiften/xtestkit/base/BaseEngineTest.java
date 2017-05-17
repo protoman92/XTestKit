@@ -261,6 +261,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
     public void test_startDriver_shouldSucceed() {
         // Setup
         doReturn(true).when(CAPABILITY).isComplete(any());
+        doReturn(mock(WebDriver.class)).when(ENGINE).driver(any(), any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -275,7 +276,6 @@ public final class BaseEngineTest implements BaseEngineErrorType {
         verify(ENGINE).rxStartDriver(any());
         verify(ENGINE).serverAddress();
         verify(ENGINE).serverUri();
-        verify(ENGINE).driver(any(), any());
         verify(ENGINE).driver(any(), any());
         verify(ENGINE).capabilities();
         verify(ENGINE).capabilityType();

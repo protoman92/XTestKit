@@ -71,7 +71,7 @@ public class TextFormatParam implements FormatType, RetryType {
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withLocalizationFormat(@NotNull LCFormat format) {
+        public Builder withLCFormat(@NotNull LCFormat format) {
             PARAM.format = format;
             return this;
         }

@@ -25,7 +25,6 @@ import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +56,14 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A {@link ByXPath} instance.
      * @return A {@link Flowable} instance.
      * @see #driver()
+     * @see ByXPath#classes()
+     * @see ByXPath#xPath()
+     * @see ByXPath#retries()
+     * @see BaseViewType#className()
+     * @see ObjectUtil#nonNull(Object)
      * @see D#findElements(By)
      * @see CollectionUtil#unify(Collection[])
+     * @see RxUtil#error(String)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -70,7 +75,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
         return Flowable.fromIterable(classes)
             .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
             .doOnNext(LogUtil::println)
-            .map(path -> {
+            .flatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */
                     return DRIVER.findElements(By.xpath(path));
@@ -79,7 +84,6 @@ public interface BaseLocatorType<D extends WebDriver> extends
                 }
             })
             .filter(ObjectUtil::nonNull)
-            .flatMap(Flowable::fromIterable)
             .switchIfEmpty(RxUtil.error(param.error()))
             .retry(param.retries());
     }
@@ -152,9 +156,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return A {@link ByXPath} instance.
      * @see #newXPathBuilder()
+     * @see XPath.Builder#ofClass(XPath.OfClass)
+     * @see P#value()
+     * @see #noElementsWithClass(String)
      */
     @NotNull
-    default <P extends OfClassType & RetryType> ByXPath ofClassQuery(@NotNull P param) {
+    default <P extends OfClassType & RetryType>
+    ByXPath ofClassQuery(@NotNull P param) {
         XPath xPath = newXPathBuilder().ofClass(param).build();
 
         return ByXPath.builder()
@@ -169,6 +177,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A vararg of {@link ClassParam} instances.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #ofClassQuery(OfClassType)
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
@@ -176,6 +185,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     default <P extends OfClassType & RetryType>
     Flowable<WebElement> rxElementsOfClass(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
+
         return Flowable.fromArray(param)
             .map(THIS::ofClassQuery)
             .toList()
@@ -188,11 +198,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses default {@link ClassParam}.
      * @param cls A varargs of {@link String} values.
      * @return A {@link Flowable} instance.
+     * @see ClassParam.Builder#withClass(String)
      * @see #rxElementsOfClass(OfClassType[])
      */
     @NotNull
     default Flowable<WebElement> rxElementsOfClass(@NotNull String...cls) {
         final BaseLocatorType THIS = this;
+
         return Flowable
             .fromArray(cls)
             .map(a -> ClassParam.builder().withClass(a).build())
@@ -235,9 +247,12 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return A {@link ByXPath} instance.
      * @see #newXPathBuilder()
+     * @see XPath.Builder#containsID(XPath.ContainsID)
+     * @see #noElementsWithId(String)
      */
     @NotNull
-    default <P extends ContainsIDType & RetryType> ByXPath containsIDQuery(@NotNull P param) {
+    default <P extends ContainsIDType & RetryType>
+    ByXPath containsIDQuery(@NotNull P param) {
         XPath xPath = newXPathBuilder().containsID(param).build();
 
         return ByXPath.builder()
@@ -322,9 +337,15 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return A {@link ByXPath} instance.
      * @see #newXPathBuilder()
+     * @see #localizer()
+     * @see org.swiften.javautilities.localizer.LocalizerType#localize(String)
+     * @see P#value()
+     * @see XPath.Builder#hasText(String)
+     * @see #noElementsWithText(String)
      */
     @NotNull
-    default <P extends StringType & RetryType> ByXPath hasTextQuery(@NotNull P param) {
+    default <P extends StringType & RetryType>
+    ByXPath hasTextQuery(@NotNull P param) {
         String localized = localizer().localize(param.value());
 
         TextParam newParam = TextParam.builder()
@@ -348,6 +369,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #hasTextQuery(StringType)
      * @see #rxElementsByXPath(ByXPath)
      */
     @NotNull
@@ -369,6 +391,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses default {@link TextParam} with specified texts.
      * @param text A varargs of {@link String} values.
      * @return A {@link Flowable} instance.
+     * @see TextParam.Builder#withText(String)
      * @see #rxElementsWithText(StringType[])
      */
     @NotNull
@@ -418,9 +441,16 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return A {@link ByXPath} instance.
      * @see #newXPathBuilder()
+     * @see P#value()
+     * @see #localizer()
+     * @see org.swiften.javautilities.localizer.LocalizerType#localize(String)
+     * @see TextParam.Builder#withText(String)
+     * @see XPath.Builder#containsText(StringType)
+     * @see #noElementsContainingText(String)
      */
     @NotNull
-    default <P extends StringType & RetryType> ByXPath containsTextQuery(@NotNull P param) {
+    default <P extends StringType & RetryType> ByXPath
+    containsTextQuery(@NotNull P param) {
         String localized = localizer().localize(param.value());
 
         TextParam newParam = TextParam.builder()
@@ -444,6 +474,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #containsTextQuery(StringType)
      * @see #rxElementsByXPath(ByXPath...)
      */
     @NotNull
@@ -466,6 +497,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * texts.
      * @param text A vararg of {@link String} values.
      * @return A {@link Flowable} instance.
+     * @see TextParam.Builder#withText(String)
      * @see #rxElementsContainingText(StringType[])
      */
     @NotNull
@@ -512,6 +544,9 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return A {@link TextParam} instance.
      * @see #newXPathBuilder()
+     * @see P#value()
+     * @see #localizer()
+     * @see org.swiften.javautilities.localizer.LocalizerType#localize(LCFormat)
      */
     @NotNull
     default <P extends FormatType & RetryType> TextParam containsTextQuery(@NotNull P param) {
@@ -530,6 +565,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
+     * @see #containsTextQuery(FormatType)
      * @see #rxElementsContainingText(StringType[])
      */
     @NotNull
@@ -550,6 +586,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses default {@link TextFormatParam}.
      * @param format A vararg of {@link LCFormat} instances.
      * @return A {@link Flowable} instance.
+     * @see TextFormatParam.Builder#withLCFormat(LCFormat)
      * @see #rxElementsContainingText(FormatType[])
      */
     @NotNull
@@ -558,7 +595,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
         return Flowable
             .fromArray(format)
-            .map(a -> TextFormatParam.builder().withLocalizationFormat(a).build())
+            .map(a -> TextFormatParam.builder().withLCFormat(a).build())
             .toList()
             .map(a -> a.toArray(new TextFormatParam[a.size()]))
             .toFlowable()
@@ -598,6 +635,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @return A {@link Flowable} instance.
      * @see #platformView()
      * @see PlatformView#isEditable()
+     * @see ByXPath.Builder#withClasses(Collection)
      * @see #rxElementsByXPath(ByXPath...)
      */
     @NotNull
