@@ -4,8 +4,11 @@ package org.swiften.xtestkit.base.element.action.tap.type;
  * Created by haipham on 5/15/17.
  */
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.tap.param.TapParam;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.RetryType;
@@ -16,7 +19,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
     /**
      * Perform a tap action.
-     * @param param A {@link TapType} instance.
+     * @param param A {@link P} instance.
      * @param <P> Generics parameter.
      */
     default <P extends TapType & RetryType> void tap(@NotNull P param) {
@@ -31,5 +34,41 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      */
     default void tap(int x, int y) {
         tap(TapParam.builder().withX(x).withY(y).build());
+    }
+
+    /**
+     * Perform a tap action.
+     * @param PARAM A {@link P} instance.
+     * @param <P> Generics parameter.
+     * @return A {@link Flowable} instance.
+     * @see #tap(TapType)
+     */
+    @NotNull
+    default <P extends TapType & RetryType> Flowable<Boolean> rxTap(@NotNull final P PARAM) {
+        final BaseTapType<?> THIS = this;
+
+        return Completable
+            .fromAction(() -> THIS.tap(PARAM))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
+    }
+
+    /**
+     * Same as above, but uses a default {@link TapParam}.
+     * @param X The tap's x coordinate, an {@link Integer} value.
+     * @param Y The tap's y coordinate, an {@link Integer} value.
+     * @return A {@link Flowable} instance.
+     * @see #tap(int, int)
+     */
+    @NotNull
+    default Flowable<Boolean> rxTap(final int X, final int Y) {
+        LogUtil.printf("Tapping at x: %d, y: %d, for %s", X, Y, this);
+
+        final BaseTapType<?> THIS = this;
+
+        return Completable
+            .fromAction(() -> THIS.tap(X, Y))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 }

@@ -24,16 +24,15 @@ public interface ValueRangeConverterType<V extends Number> extends ValueRangeTyp
     Converter<V> converter();
 
     /**
-     * Get a range of {@link V}, based on a min {@link V} and max {@link V}.
+     * Get a range of {@link V}, based on inclusive min {@link V} and
+     * exclusive max {@link V}.
      * @param min A {@link V} instance.
      * @param max A {@link V} instance.
      * @param step A {@link V} instance.
      * @return A {@link List} of {@link V}.
      */
     @NotNull
-    default List<V> valueRange(@NotNull V max,
-                               @NotNull V min,
-                               @NotNull V step) {
+    default List<V> valueRange(@NotNull V max, @NotNull V min, @NotNull V step) {
         return valueRange(max, min, step, converter());
     }
 }

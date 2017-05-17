@@ -9,6 +9,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
@@ -31,6 +32,8 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
      */
     @NotNull
     default Flowable<Boolean> rxHideKeyboard() {
+        LogUtil.printf("Hiding keyboard for %s", this);
+
         return Completable.fromAction(this::hideKeyboard)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
