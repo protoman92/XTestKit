@@ -13,5 +13,5 @@ import org.jetbrains.annotations.NotNull;
  */
 @FunctionalInterface
 public interface DistinctiveType {
-    @NotNull Object getComparisonObject();
+    @NotNull Object comparisonObject();
 }

@@ -4,7 +4,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.mobile.ios.type.XCRunDelayType;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile.ios;
 
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.param.StartSimulatorParam;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;

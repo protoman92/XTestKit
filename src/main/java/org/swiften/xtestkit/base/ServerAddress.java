@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base;
 
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.type.ServerAddressErrorType;
-import org.swiften.xtestkit.system.type.PortType;
+import org.swiften.xtestkit.system.network.type.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,11 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * This class shall take care of Appium's server address. It provides some
  * convenience methods for when {@link Mode#LOCAL} is used.
  */
-public class ServerAddress implements
-    PortType,
-    RetryType,
-    ServerAddressErrorType
-{
+public class ServerAddress implements PortType, RetryType, ServerAddressErrorType {
     public enum Mode {
         LOCAL;
 

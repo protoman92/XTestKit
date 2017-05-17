@@ -8,10 +8,9 @@ import org.swiften.xtestkit.mobile.android.param.DeviceSettingParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.type.PortType;
-import org.swiften.xtestkit.system.type.ProcessRunnableType;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.type.PortType;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
@@ -128,11 +127,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      */
     @NotNull
     public Flowable<Boolean> rxRestartAdb() {
-        final ProcessRunnableType RUNNER = processRunner();
+        final ProcessRunner RUNNER = processRunner();
         NetworkHandler handler = networkHandler();
 
         return handler
-            .rxKillProcessWithName("adb")
+            .rxKillWithName("adb")
             .onErrorResumeNext(Flowable.just(true))
             .map(a -> cmLaunchAdb())
             .flatMap(RUNNER::rxExecute)
@@ -305,11 +304,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Kill a specific emulator instance, based on its port number.
      * @param param A {@link StopEmulatorParam} instance.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryType, Predicate)
+     * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopEmulator(@NotNull StopEmulatorParam param) {
-        return networkHandler().rxKillProcessWithPort(param, a -> true);
+        return networkHandler().rxKillWithPort(param, a -> true);
     }
     //endregion
 

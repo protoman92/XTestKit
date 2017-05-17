@@ -1,6 +1,5 @@
 package org.swiften.xtestkit.kit;
 
-import org.intellij.lang.annotations.Flow;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.BaseEngine;
@@ -11,8 +10,8 @@ import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.kit.type.TestKitErrorType;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.RepeatRunner;
 import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Flowable;
@@ -72,7 +71,7 @@ public class TestKit implements
         Flowable
             .fromArray(BoxUtil.box(indexes))
             .map(this::engine)
-            .distinct(BaseEngine::getComparisonObject)
+            .distinct(BaseEngine::comparisonObject)
             .count()
             .toFlowable()
             .subscribe(subscriber);
@@ -99,16 +98,11 @@ public class TestKit implements
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnFreshStart() {
-        Flowable<Boolean> killAppium = rxKillAllAppiumInstances();
+        final TestKit THIS = this;
 
-        Flowable<Boolean> freshStart = rxDistinctEngines()
-            .flatMap(BaseEngine::rxOnFreshStart);
-
-        return Flowable
-            .concatArray(killAppium, freshStart)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
-            .defaultIfEmpty(true);
+        return rxKillAllAppiumInstances()
+            .flatMap(a -> THIS.rxDistinctEngines())
+            .concatMap(BaseEngine::rxOnFreshStart);
     }
 
     /**
@@ -157,16 +151,11 @@ public class TestKit implements
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxOnAllTestsFinished() {
-        Flowable<Boolean> killAppium = rxKillAllAppiumInstances();
+        final TestKit THIS = this;
 
-        Flowable<Boolean> testFinish = rxDistinctEngines()
-            .flatMap(BaseEngine::rxOnAllTestsFinished);
-
-        return Flowable
-            .concatArray(killAppium, testFinish)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
-            .defaultIfEmpty(true);
+        return rxKillAllAppiumInstances()
+            .flatMap(a -> THIS.rxDistinctEngines())
+            .concatMap(BaseEngine::rxOnAllTestsFinished);
     }
     //endregion
 

@@ -29,8 +29,8 @@ import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.type.TestListenerType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -100,7 +100,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      */
     @NotNull
     @Override
-    public Object getComparisonObject() {
+    public Object comparisonObject() {
         return getClass();
     }
     //endregion
@@ -218,7 +218,12 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
      * @see #cmWhichAppium()
+     * @see #cmFallBackAppium()
+     * @see #appiumStartDelay()
+     * @see #startAppiumOnNewThread(String)
      * @see #processRunner()
+     * @see BooleanUtil#toTrue(Object)
+     * @see RetryType#retries()
      */
     @NotNull
     public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryType PARAM) {
@@ -250,7 +255,6 @@ public abstract class BaseEngine<D extends WebDriver> implements
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
         NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
-            .doOnNext(NETWORK_HANDLER::markPortAsUsed)
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
                 final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
@@ -271,13 +275,13 @@ public abstract class BaseEngine<D extends WebDriver> implements
     /**
      * Stop all local appium instances.
      * @return A {@link Flowable} instance.
-     * @see NetworkHandler#rxKillProcessWithPort(RetryType, Predicate)
+     * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
      */
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
         NetworkHandler handler = networkHandler();
         ServerAddress address = serverAddress();
-        return handler.rxKillProcessWithPort(address, this::isAppiumProcess);
+        return handler.rxKillWithPort(address, this::isAppiumProcess);
     }
 
     /**

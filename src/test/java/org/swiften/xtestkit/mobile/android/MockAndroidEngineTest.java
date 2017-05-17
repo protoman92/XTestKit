@@ -1,14 +1,11 @@
 package org.swiften.xtestkit.mobile.android;
 
-import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.base.param.NavigateBack;
 import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.network.NetworkHandler;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

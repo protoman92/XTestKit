@@ -7,8 +7,8 @@ import org.swiften.xtestkit.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.mobile.android.adb.ADBErrorType;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -125,8 +125,8 @@ public final class MockADBHandlerTest implements ADBErrorType {
             verify(ADB_HANDLER).rxRestartAdb();
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).networkHandler();
-            verify(NETWORK_HANDLER).rxKillProcessWithName(anyString());
-            verify(NETWORK_HANDLER).rxKillProcessWithPid(anyString());
+            verify(NETWORK_HANDLER).rxKillWithName(anyString());
+            verify(NETWORK_HANDLER).rxKillWithPID(anyString());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -408,7 +408,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     public void test_stopEmulator_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true))
-            .when(NETWORK_HANDLER).rxKillProcessWithPort(any(), any());
+            .when(NETWORK_HANDLER).rxKillWithPort(any(), any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
@@ -422,7 +422,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertComplete();
         verify(ADB_HANDLER).rxStopEmulator(any());
         verify(ADB_HANDLER).networkHandler();
-        verify(NETWORK_HANDLER).rxKillProcessWithPort(any(), any());
+        verify(NETWORK_HANDLER).rxKillWithPort(any(), any());
         verifyNoMoreInteractions(ADB_HANDLER);
     }
     //endregion

@@ -25,7 +25,7 @@ import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.system.NetworkHandler;
+import org.swiften.xtestkit.system.network.NetworkHandler;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -76,14 +76,14 @@ public class AndroidEngine extends
     /**
      * Since we can control multiple emulators/devices at once, there is no
      * need to have only one {@link AndroidEngine} active at a time. Therefore,
-     * we override {@link BaseEngine#getComparisonObject()} to disable
+     * we override {@link BaseEngine#comparisonObject()} to disable
      * this comparison filter.
      * @return An {@link Object} instance.
-     * @see BaseEngine#getComparisonObject()
+     * @see BaseEngine#comparisonObject()
      */
     @NotNull
     @Override
-    public Object getComparisonObject() {
+    public Object comparisonObject() {
         return deviceName();
     }
     //endregion

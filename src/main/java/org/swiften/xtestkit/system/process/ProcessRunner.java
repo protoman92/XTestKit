@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.system;
+package org.swiften.xtestkit.system.process;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -7,7 +7,6 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.system.type.ProcessRunnableType;
 
 import java.io.*;
 import java.util.Objects;
@@ -15,7 +14,7 @@ import java.util.Objects;
 /**
  * Created by haipham on 3/22/17.
  */
-public class ProcessRunner implements ProcessRunnableType {
+public class ProcessRunner {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -62,7 +61,6 @@ public class ProcessRunner implements ProcessRunnableType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    @Override
     public Flowable<String> rxExecute(@NotNull final String ARGS) {
         return Flowable.create(observer -> {
             try {

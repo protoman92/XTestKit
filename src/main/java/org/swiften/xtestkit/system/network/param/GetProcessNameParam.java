@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.system.param;
+package org.swiften.xtestkit.system.network.param;
 
 /**
  * Created by haipham on 4/10/17.
@@ -6,8 +6,8 @@ package org.swiften.xtestkit.system.param;
 
 import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.system.NetworkHandler;
-import org.swiften.xtestkit.system.type.PIDIdentifiableType;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.type.PIDIdentifiableType;
 
 /**
  * Parameter object for

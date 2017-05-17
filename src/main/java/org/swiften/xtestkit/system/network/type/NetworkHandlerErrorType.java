@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.system.type;
+package org.swiften.xtestkit.system.network.type;
 
 /**
  * Created by haipham on 4/7/17.

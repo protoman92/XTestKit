@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.xtestkit.system.ProcessRunner;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;

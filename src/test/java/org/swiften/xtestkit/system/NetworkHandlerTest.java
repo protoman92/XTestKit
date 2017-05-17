@@ -1,15 +1,23 @@
 package org.swiften.xtestkit.system;
 
+import io.reactivex.Flowable;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.system.type.NetworkHandlerErrorType;
-import org.swiften.xtestkit.system.type.PortType;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.type.NetworkHandlerErrorType;
+import org.swiften.xtestkit.system.network.type.PortType;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -18,6 +26,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 /**
@@ -52,7 +61,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             int tries = 10;
             doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
             doReturn(true).when(HANDLER).isPortAvailable(anyString(), eq(tries));
-            CheckPortParam param = new CheckPortParam(1);
+            CheckPort param = new CheckPort(1);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -68,7 +77,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
             verify(HANDLER, times(tries)).rxCheckPortAvailable(any());
-            verify(HANDLER, times(tries)).rxCheckUntilPortAvailable(any());
+            verify(HANDLER).rxCheckUntilPortAvailable(any());
             verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -81,7 +90,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
         try {
             // Setup
             doReturn("").when(PROCESS_RUNNER).execute(anyString());
-            CheckPortParam param = new CheckPortParam(0);
+            CheckPort param = new CheckPort(0);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -98,19 +107,44 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             verify(HANDLER).rxCheckPortAvailable(any());
             verify(HANDLER).rxCheckUntilPortAvailable(any());
             verify(HANDLER).isPortAvailable(anyString(), anyInt());
-            verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
-    private static final class CheckPortParam implements
-        PortType,
-        RetryType
-    {
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test_checkPortUntilAvailable_shouldSucceed() {
+        // Setup
+        int minPort = 4723, tries = 10;
+        TestSubscriber subscriber = CustomTestSubscriber.create();
+
+        // When
+        Flowable.range(minPort, tries)
+            .doOnNext(LogUtil::println)
+            .map(CheckPort::new)
+            .concatMap(HANDLER::rxCheckUntilPortAvailable)
+            .doOnNext(a -> LogUtil.printf(
+                "Current thread %d, with port %d",
+                Thread.currentThread().getId(), a)
+            )
+            .subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        // Then
+        List<Integer> usedPorts = new LinkedList<>(HANDLER.usedPorts());
+        LogUtil.println(usedPorts);
+        subscriber.assertSubscribed();
+        subscriber.assertNoErrors();
+        subscriber.assertComplete();
+        assertEquals(usedPorts.size(), tries);
+    }
+
+    private static final class CheckPort implements PortType, RetryType {
         private final int PORT;
 
-        CheckPortParam(int port) {
+        CheckPort(int port) {
             PORT = port;
         }
 
