@@ -103,10 +103,36 @@ public class XPath {
         }
 
         /**
+         * Append a @index attribute.
+         * @param atIndex An {@link AtIndex} instance.
+         * @return The current {@link Builder} instance.
+         * @see AtIndex#stringFormat()
+         * @see #appendAttribute(Attribute, String)
+         */
+        @NotNull
+        public Builder atIndex(@NotNull AtIndex atIndex) {
+            Attribute attribute = Attribute.single("index");
+            String format = atIndex.stringFormat();
+            return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses a default {@link AtIndex} instance.
+         * @param INDEX An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         * @see #atIndex(AtIndex)
+         */
+        @NotNull
+        public Builder atIndex(final int INDEX) {
+            return atIndex(() -> INDEX);
+        }
+
+        /**
          * Append a contains(@class) attribute.
          * @param ofClass A {@link OfClass} instance.
          * @return The current {@link Builder} instance.
          * @see OfClass#stringFormat()
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder ofClass(@NotNull OfClass ofClass) {
@@ -155,6 +181,7 @@ public class XPath {
          * @param containsID A {@link ContainsID} instance.
          * @return The current {@link Builder} instance.
          * @see ContainsID#stringFormat()
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder containsID(@NotNull ContainsID containsID) {
@@ -203,6 +230,7 @@ public class XPath {
          * @param hasText A {@link HasText} instance.
          * @return The current {@link Builder} instance.
          * @see HasText#stringFormat()
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder hasText(@NotNull HasText hasText) {
@@ -252,6 +280,7 @@ public class XPath {
          * @param containsText A {@link ContainsText} instance.
          * @return The current {@link Builder} instance.
          * @see ContainsText#stringFormat()
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder containsText(@NotNull ContainsText containsText) {
@@ -302,6 +331,7 @@ public class XPath {
          * @param hasHint A {@link HasHint} instance.
          * @return The current {@link Builder} instance.
          * @see HasHint#stringFormat()
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder hasHint(@NotNull HasHint hasHint) {
@@ -351,6 +381,7 @@ public class XPath {
          * implications since on iOS this may be called a placeholder.
          * @param containsHint A {@link ContainsHint} instance.
          * @return The current {@link Builder} instance.
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder containsHint(@NotNull ContainsHint containsHint) {
@@ -397,6 +428,7 @@ public class XPath {
          * Appends an @enabled attribute.
          * @param enabled A {@link Enabled} instance.
          * @return The current {@link Builder} instance.
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder isEnabled(@NotNull Enabled enabled) {
@@ -419,6 +451,7 @@ public class XPath {
          * Appends a @clickable attribute.
          * @param clickable A {@link Clickable} instance.
          * @return The current {@link Builder} instance.
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder isClickable(@NonNull Clickable clickable) {
@@ -441,6 +474,7 @@ public class XPath {
          * Appends a @editable attribute.
          * @param editable A {@link Editable} instance.
          * @return The current {@link Builder} instance.
+         * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder isEditable(@NonNull Editable editable) {
@@ -605,6 +639,10 @@ public class XPath {
             }
         }
     }
+
+    @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
+    public interface AtIndex extends Formattable<Integer> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")

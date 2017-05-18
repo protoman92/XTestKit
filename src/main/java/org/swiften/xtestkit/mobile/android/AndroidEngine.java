@@ -15,7 +15,6 @@ import org.swiften.xtestkit.mobile.android.element.action.general.type.AndroidAc
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidInputActionType;
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidKeyboardActionType;
 import org.swiften.xtestkit.mobile.android.element.action.password.type.AndroidPasswordActionType;
-import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
 import org.swiften.xtestkit.mobile.android.param.ClearCacheParam;
 import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
@@ -53,7 +52,6 @@ public class AndroidEngine extends
     AndroidActionType,
     AndroidInstanceContainerType,
     AndroidDateActionType,
-    AndroidElementPropertyType,
     AndroidErrorType,
     AndroidInputActionType,
     AndroidKeyboardActionType,

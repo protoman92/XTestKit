@@ -26,7 +26,6 @@ import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.ClassContainerType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
-import org.swiften.xtestkit.mobile.android.element.property.type.AndroidElementPropertyType;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
@@ -41,7 +40,6 @@ public interface CalendarPickerActionType extends
     BaseClickActionType,
     BaseDateActionType,
     BaseLocatorType<AndroidDriver<AndroidElement>>,
-    AndroidElementPropertyType,
     MobileActionType<AndroidDriver<AndroidElement>>,
     BaseActionType<AndroidDriver<AndroidElement>>,
     MobileSwipeType<AndroidDriver<AndroidElement>>

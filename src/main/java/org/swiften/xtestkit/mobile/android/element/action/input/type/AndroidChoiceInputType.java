@@ -6,6 +6,7 @@ package org.swiften.xtestkit.mobile.android.element.action.input.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.input.type.ChoiceInputType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 
 /**
  * This interface provides methods to work with
@@ -14,10 +15,20 @@ import org.swiften.xtestkit.base.element.action.input.type.ChoiceInputType;
  */
 public interface AndroidChoiceInputType extends AndroidInputType, ChoiceInputType {
     /**
-     * Get the scroll view picker id for
+     * Get the scroll view picker {@link XPath} for
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
-     * @return A {@link String} value.
+     * @return A {@link XPath} value.
      */
     @NotNull
-    String androidScrollViewPickerId();
+    XPath androidScrollViewPickerXPath();
+
+    /**
+     * Get the item {@link XPath} for each item found in the
+     * {@link org.openqa.selenium.WebElement} whose {@link XPath} is the
+     * {@link #androidScrollViewPickerXPath()}.
+     * @return A {@link String} value.
+     * @see #androidScrollViewPickerXPath()
+     */
+    @NotNull
+    String androidScrollViewItemXPath();
 }

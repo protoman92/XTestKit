@@ -2,6 +2,9 @@ package org.swiften.xtestkit.mobile.android.element.action.input.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.input.type.InputType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.locator.general.xpath.type.NewXPathBuilderType;
+import org.swiften.xtestkit.mobile.Platform;
 
 /**
  * Created by haipham on 18/5/17.
@@ -12,11 +15,23 @@ import org.swiften.xtestkit.base.element.action.input.type.InputType;
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} input-related
  * {@link org.openqa.selenium.WebElement}.
  */
-public interface AndroidInputType extends InputType {
+public interface AndroidInputType extends InputType, NewXPathBuilderType {
     /**
-     * Get the view id for {@link org.swiften.xtestkit.mobile.Platform#ANDROID}
-     * locator.
-     * @return A {@link String} value.
+     * Override this method to provide a default {@link XPath.Builder} instance
+     * with {@link Platform#ANDROID}.
+     * @return A {@link XPath.Builder} instance.
+     * @see Platform#ANDROID
      */
-    @NotNull String androidViewId();
+    @NotNull
+    @Override
+    default XPath.Builder newXPathBuilder() {
+        return XPath.builder(Platform.ANDROID);
+    }
+
+    /**
+     * Get the {@link XPath} instance for
+     * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} locator.
+     * @return A {@link XPath} value.
+     */
+    @NotNull XPath androidViewXPath();
 }

@@ -17,15 +17,16 @@ public final class XPathTest {
     public void test_buildXPath_shouldSucceed() {
         // Setup
         XPath xPath = XPath.builder(Platform.ANDROID)
-//            .ofClass("class1")
-//            .containsID("id1")
-//            .hasText("\"2'11\"")
+            .atIndex(1)
+            .ofClass("class1")
+            .containsID("id1")
+            .hasText("\"2'11\"")
             .containsText("Register")
-//            .containsText("Te'xt2")
-//            .hasHint("Hint1")
-//            .containsHint("Hint2")
-//            .isEnabled(true)
-//            .isClickable(true)
+            .containsText("Te'xt2")
+            .hasHint("Hint1")
+            .containsHint("Hint2")
+            .isEnabled(true)
+            .isClickable(true)
             .build();
 
         // When

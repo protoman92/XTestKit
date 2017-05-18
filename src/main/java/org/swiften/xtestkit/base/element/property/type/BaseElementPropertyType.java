@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.element.property.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
@@ -23,6 +24,8 @@ public interface BaseElementPropertyType extends BaseErrorType {
      */
     @NotNull
     default String getText(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        String text = element.getText();
+        LogUtil.printfThread("Text '%s' for element %s", text, element);
+        return text;
     }
 }

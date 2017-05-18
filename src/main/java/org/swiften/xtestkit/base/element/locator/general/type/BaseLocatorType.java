@@ -19,6 +19,7 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.general.param.*;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.locator.general.xpath.type.NewXPathBuilderType;
 import org.swiften.xtestkit.base.element.property.type.base.FormatType;
 import org.swiften.xtestkit.base.element.property.type.base.StringType;
 import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
@@ -37,6 +38,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     DriverContainerType<D>,
     LocalizerContainerType,
     BaseLocatorErrorType,
+    NewXPathBuilderType,
     PlatformContainerType,
     PlatformViewContainerType
 {
@@ -47,6 +49,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @see XPath#builder(PlatformType)
      */
     @NotNull
+    @Override
     default XPath.Builder newXPathBuilder() {
         return XPath.builder(platform());
     }
@@ -146,6 +149,54 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @NotNull
     default Flowable<WebElement> rxElementByXPath(@NotNull ByXPath...param) {
         return rxElementsByXPath(param).firstElement().toFlowable();
+    }
+    //endregion
+
+    //region With XPath
+
+    /**
+     * Get a {@link ByXPath} from a {@link XPath}.
+     * @param xPath A {@link XPath} instance.
+     * @return A {@link ByXPath} instance.
+     * @see #NO_SUCH_ELEMENT
+     */
+    @NotNull
+    default ByXPath withXPathQuery(@NotNull XPath xPath) {
+        return ByXPath.builder()
+            .withXPath(xPath)
+            .withError(NO_SUCH_ELEMENT)
+            .build();
+    }
+
+    /**
+     * Find all {@link WebElement} that satisfy some {@link XPath} queries.
+     * @param param A varargs of {@link XPath}.
+     * @return A {@link Flowable} instance.
+     * @see #withXPathQuery(XPath)
+     * @see #rxElementByXPath(ByXPath...)
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementsWithXPath(@NotNull XPath...param) {
+        final BaseLocatorType<?> THIS = this;
+
+        return Flowable.fromArray(param)
+            .map(THIS::withXPathQuery)
+            .toList()
+            .map(a -> a.toArray(new ByXPath[a.size()]))
+            .toFlowable()
+            .flatMap(THIS::rxElementsByXPath);
+    }
+
+    /**
+     * Get the first {@link WebElement} that satisfies some {@link XPath}
+     * queries.
+     * @param param A varargs of {@link XPath}.
+     * @return A {@link Flowable} instance.
+     * @see #rxElementsWithXPath(XPath...)
+     */
+    @NotNull
+    default Flowable<WebElement> rxElementWithXPath(@NotNull XPath...param) {
+        return rxElementsWithXPath(param).firstElement().toFlowable();
     }
     //endregion
 

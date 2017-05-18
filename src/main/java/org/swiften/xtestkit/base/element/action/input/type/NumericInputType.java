@@ -109,7 +109,7 @@ public interface NumericInputType extends InputType, ValueRangeConverterType<Dou
      * @return A {@link Double} value.
      * @see #selectableNumericRange()
      */
-    default double randomNumericValue() {
+    default double randomValue() {
         List<Double> selectableRange = selectableNumericRange();
         return CollectionTestUtil.randomElement(selectableRange);
     }
