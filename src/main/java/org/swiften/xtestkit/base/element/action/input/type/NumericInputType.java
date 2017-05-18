@@ -2,6 +2,8 @@ package org.swiften.xtestkit.base.element.action.input.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.collection.CollectionTestUtil;
+import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.util.type.ValueRangeConverterType;
 
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.Optional;
  * This interface provides methods to convert between numeric input values
  * and their {@link String} equivalents.
  */
-public interface NumericSelectableType extends InputType, ValueRangeConverterType<Double> {
+public interface NumericInputType extends InputType, ValueRangeConverterType<Double> {
     @NotNull
     @Override
     default Converter<Double> converter() {
@@ -27,7 +29,9 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
      * @param value A {@link Double} value.
      * @return A {@link Double} value.
      */
-    double numericValue(@NotNull String value);
+    default double numericValue(@NotNull String value) {
+        return Double.valueOf(value);
+    }
 
     /**
      * Get the numeric value's {@link String} representation.
@@ -35,7 +39,9 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
      * @return A {@link String} value.
      */
     @NotNull
-    String stringValue(double value);
+    default String stringValue(double value) {
+        return String.valueOf(value);
+    }
 
     /**
      * Get the minimum numeric value that can be selected.
@@ -53,7 +59,9 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
      * Get the difference between two consecutive numeric values.
      * @return A {@link Double} value.
      */
-    double selectableNumericValueStep();
+    default double selectableNumericValueStep() {
+        return 1;
+    }
 
     /**
      * Limit the number of elements within a {@link List} of numeric range
@@ -62,7 +70,7 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
      */
     @NotNull
     default Optional<Integer> numericRangeLimit() {
-        return Optional.of(50);
+        return Optional.of(20);
     }
 
     /**
@@ -84,7 +92,7 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
 
         Optional<Integer> optional = numericRangeLimit();
         int limit = optional.orElseGet(values::size);
-        return values.subList(0, limit);
+        return CollectionUtil.subList(values, 0, limit);
     }
 
     /**
@@ -101,7 +109,7 @@ public interface NumericSelectableType extends InputType, ValueRangeConverterTyp
      * @return A {@link Double} value.
      * @see #selectableNumericRange()
      */
-    default double randomSelectableNumericValue() {
+    default double randomNumericValue() {
         List<Double> selectableRange = selectableNumericRange();
         return CollectionTestUtil.randomElement(selectableRange);
     }
