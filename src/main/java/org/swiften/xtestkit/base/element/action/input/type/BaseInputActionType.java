@@ -17,6 +17,7 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,7 +34,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see WebElement#sendKeys(CharSequence...)
      */
     default void sendKeys(@NotNull WebElement element, @NotNull String...text) {
-        LogUtil.printfThread("Sending keys '%s' to %s", text, element);
+        LogUtil.printfThread("Sending '%s' to %s", Arrays.toString(text), element);
         element.sendKeys(text);
     }
 

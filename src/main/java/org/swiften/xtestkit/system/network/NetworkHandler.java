@@ -239,7 +239,8 @@ public class NetworkHandler implements NetworkHandlerType {
         }
 
         return Flowable.just(ATOMIC_PORT_FLAG)
-            .observeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
             .map(AtomicBoolean::get)
             .filter(BooleanUtil::isFalse)
             .switchIfEmpty(RxUtil.error())

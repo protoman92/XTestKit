@@ -2,6 +2,7 @@ package org.swiften.xtestkit.system.process;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -62,15 +63,18 @@ public class ProcessRunner {
      */
     @NotNull
     public Flowable<String> rxExecute(@NotNull final String ARGS) {
-        return Flowable.create(observer -> {
-            try {
-                String output = execute(ARGS);
-                observer.onNext(output);
-                observer.onComplete();
-            } catch (IOException e) {
-                observer.onError(e);
-            }
-        }, BackpressureStrategy.BUFFER);
+        return Flowable
+            .<String>create(observer -> {
+                try {
+                    String output = execute(ARGS);
+                    observer.onNext(output);
+                    observer.onComplete();
+                } catch (IOException e) {
+                    observer.onError(e);
+                }
+            }, BackpressureStrategy.BUFFER)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io());
     }
 
     public static final class Builder {

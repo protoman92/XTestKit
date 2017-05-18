@@ -11,6 +11,7 @@ import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.mobile.android.capability.AndroidCap;
+import org.swiften.xtestkit.mobile.android.element.action.general.type.AndroidActionType;
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidInputActionType;
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidKeyboardActionType;
 import org.swiften.xtestkit.mobile.android.element.action.password.type.AndroidPasswordActionType;
@@ -49,6 +50,7 @@ import org.swiften.javautilities.object.ObjectUtil;
 public class AndroidEngine extends
     MobileEngine<AndroidElement, AndroidDriver<AndroidElement>> implements
     ADBHandlerContainerType,
+    AndroidActionType,
     AndroidInstanceContainerType,
     AndroidDateActionType,
     AndroidElementPropertyType,
@@ -148,11 +150,11 @@ public class AndroidEngine extends
         final ADBHandler HANDLER = adbHandler();
         final AndroidInstance ANDROID_INSTANCE = androidInstance();
         final Flowable<Boolean> START_APP;
-        Flowable<Boolean> source;
+        final Flowable<Boolean> SOURCE;
 
         switch (testMode()) {
             case SIMULATED:
-                source = HANDLER.rxFindAvailablePort(PARAM)
+                SOURCE = HANDLER.rxFindAvailablePort(PARAM)
                     .doOnNext(ANDROID_INSTANCE::setPort)
                     .map(a -> StartEmulatorParam.builder()
                         .withDeviceName(deviceName())
@@ -165,11 +167,11 @@ public class AndroidEngine extends
 
             case ACTUAL:
                 /* Assuming the device is already started up */
-                source = Flowable.just(true);
+                SOURCE = Flowable.just(true);
                 break;
 
             default:
-                source = RxUtil.error(NOT_IMPLEMENTED);
+                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
                 break;
         }
 
@@ -179,10 +181,8 @@ public class AndroidEngine extends
             START_APP = Flowable.just(true);
         }
 
-        return Flowable
-            .concat(super.rxBeforeClass(PARAM), source)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
+        return super.rxBeforeClass(PARAM)
+            .flatMap(a -> SOURCE)
 
             /* Disable animations to avoid erratic behaviors */
             .flatMap(a -> HANDLER
@@ -211,7 +211,7 @@ public class AndroidEngine extends
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
         final Flowable<Boolean> SOURCE;
-        Flowable<Boolean> quitApp;
+        final Flowable<Boolean> QUIT_APP;
 
         switch (testMode()) {
             case ACTUAL:
@@ -235,21 +235,15 @@ public class AndroidEngine extends
         }
 
         if (startDriverOnlyOnce()) {
-            quitApp = rxStopDriver();
+            QUIT_APP = rxStopDriver();
         } else {
-            quitApp = Flowable.just(true);
+            QUIT_APP = Flowable.just(true);
         }
 
-        return Flowable
-            .concat(super.rxAfterClass(param), quitApp)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
+        return super.rxAfterClass(param)
+            .flatMap(a -> QUIT_APP)
             .flatMap(a -> SOURCE)
-            .flatMapCompletable(a -> Completable.fromAction(
-                () -> HANDLER.markPortAsAvailable(PORT)
-            ))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+            .doOnNext(a -> HANDLER.markPortAsAvailable(PORT));
     }
 
     /**
@@ -318,32 +312,10 @@ public class AndroidEngine extends
     }
     //endregion
 
-    //region Device Methods
-    /**
-     * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
-     * on {@link Platform#ANDROID}, we need a custom solution by using
-     * {@link AndroidDriver#findElementById(String)}.
-     * @param param An {@link AlertParam} instance.
-     * @return A {@link Flowable} instance.
-     * @see #driver()
-     * @see BaseEngine#rxDismissAlert(AlertParam)
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxDismissAlert(@NotNull AlertParam param) {
-        return Flowable.just(param.shouldAccept())
-            .map(a -> a ? "permission_allow_button" : "permission_deny_button")
-            .map(id -> String.format("com.android.packageinstaller:id/%s", id))
-            .map(id -> driver().findElement(By.id(id)))
-            .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(RxUtil.error(NO_SUCH_ELEMENT))
-            .flatMapCompletable(a -> Completable.fromAction(a::click))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-    //endregion
-
     //region Builder
+    /**
+     * Builder for {@link AndroidEngine}.
+     */
     public static final class Builder extends MobileEngine.Builder<AndroidEngine> {
         @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
 

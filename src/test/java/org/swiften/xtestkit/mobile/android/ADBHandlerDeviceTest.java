@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.mobile.android;
 
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
@@ -45,7 +46,7 @@ public final class ADBHandlerDeviceTest {
 
         /* Return this when calling SE_PARAM#deviceName() */
         APP_PACKAGE = "com.android.development";
-        DEVICE_NAME = "Nexus_4_API_23";
+        DEVICE_NAME = "Nexus_4_API_22";
         DEVICE_UID = String.format("emulator-%d", PORT);
     }
 
@@ -65,6 +66,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
         ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
     }
 
     @AfterClass
@@ -74,6 +76,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
         ADB_HANDLER.rxStopEmulator(ST_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
     }
 
     @Test(enabled = true)
@@ -178,7 +181,7 @@ public final class ADBHandlerDeviceTest {
         String uid = String.format("emulator-%d", NEW_PORT);
 
         final StartEmulatorParam SEP = StartEmulatorParam.builder()
-            .withDeviceName("Nexus_4_API_22")
+            .withDeviceName("Nexus_4_API_23")
             .withPort(NEW_PORT)
             .withDeviceUID(uid)
             .withRetries(100)
