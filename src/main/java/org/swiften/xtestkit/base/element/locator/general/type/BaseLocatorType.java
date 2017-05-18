@@ -73,9 +73,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
         List<BaseViewType> classes = param.classes();
 
         return Flowable.fromIterable(classes)
+            .subscribeOn(Schedulers.computation())
+            .observeOn(Schedulers.computation())
             .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
-            .doOnNext(LogUtil::println)
-            .flatMapIterable(path -> {
+            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
+            .concatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */
                     return DRIVER.findElements(By.xpath(path));
@@ -128,8 +130,6 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
-            .observeOn(Schedulers.trampoline())
-            .subscribeOn(Schedulers.computation())
             .flatMap(a -> THIS.rxElementsByXPath(a).onErrorResumeNext(Flowable.empty()))
             .toList()
             .toFlowable()

@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.system.network;
 
 import io.reactivex.schedulers.Schedulers;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.Flowable;
@@ -8,12 +9,9 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.string.StringUtil;
-import org.swiften.xtestkit.system.network.type.NetworkHandlerType;
+import org.swiften.xtestkit.system.network.type.*;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.system.network.param.GetProcessNameParam;
-import org.swiften.xtestkit.system.network.type.NetworkHandlerErrorType;
-import org.swiften.xtestkit.system.network.type.PIDIdentifiableType;
-import org.swiften.xtestkit.system.network.type.PortType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -76,6 +74,14 @@ public class NetworkHandler implements NetworkHandlerType {
     @NotNull
     public synchronized Collection<Integer> usedPorts() {
         return Collections.unmodifiableCollection(USED_PORTS);
+    }
+
+    /**
+     * Clear all used ports.
+     * @see #USED_PORTS
+     */
+    public synchronized void clearUsedPorts() {
+        USED_PORTS.clear();
     }
 
     /**
@@ -176,11 +182,12 @@ public class NetworkHandler implements NetworkHandlerType {
      * @see P#retries()
      */
     @NotNull
-    public <P extends PortType & RetryType>
+    public <P extends PortType & MaxPortType & PortStepType & RetryType>
     Flowable<Integer> rxCheckUntilPortAvailable(@NonNull final P PARAM) {
         final NetworkHandler THIS = this;
 
-        class CheckPort implements PortType, RetryType {
+        /* Temporary param that handles both port values and checks */
+        class CheckPort implements PortType, MaxPortType, PortStepType, RetryType {
             private final int PORT;
 
             @SuppressWarnings("WeakerAccess")
@@ -194,6 +201,16 @@ public class NetworkHandler implements NetworkHandlerType {
             }
 
             @Override
+            public int maxPort() {
+                return PARAM.maxPort();
+            }
+
+            @Override
+            public int portStep() {
+                return PARAM.portStep();
+            }
+
+            @Override
             public int retries() {
                 return PARAM.retries();
             }
@@ -201,15 +218,23 @@ public class NetworkHandler implements NetworkHandlerType {
             @NotNull
             @SuppressWarnings("WeakerAccess")
             Flowable<Integer> check() {
-                return THIS.rxCheckPortAvailable(this)
-                    .flatMap(a -> {
-                        if (BooleanUtil.isTrue(a)) {
-                            return Flowable.just(PORT);
-                        } else {
-                            CheckPort newParam = new CheckPort(PORT + 1);
-                            return newParam.check();
-                        }
-                    });
+                final int PORT = this.PORT;
+                final int STEP = portStep();
+
+                if (PORT < maxPort()) {
+                    return THIS.rxCheckPortAvailable(this)
+                        .flatMap(a -> {
+                            if (BooleanUtil.isTrue(a)) {
+                                return Flowable.just(PORT);
+                            } else {
+                                int newPort = PORT + STEP;
+                                CheckPort newParam = new CheckPort(newPort);
+                                return newParam.check();
+                            }
+                        });
+                } else {
+                    return RxUtil.error(NO_PORT_AVAILABLE);
+                }
             }
         }
 
@@ -221,8 +246,8 @@ public class NetworkHandler implements NetworkHandlerType {
             .retry()
             .doOnNext(a -> ATOMIC_PORT_FLAG.getAndSet(true))
             .flatMap(a -> new CheckPort(PARAM.port()).check())
-            .doOnNext(a -> ATOMIC_PORT_FLAG.getAndSet(false))
-            .doOnNext(THIS::markPortAsUsed);
+            .doOnNext(THIS::markPortAsUsed)
+            .doFinally(() -> ATOMIC_PORT_FLAG.getAndSet(false));
     }
 
     //region Builder

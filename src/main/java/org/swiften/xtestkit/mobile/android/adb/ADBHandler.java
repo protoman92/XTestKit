@@ -9,6 +9,7 @@ import org.swiften.xtestkit.mobile.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.mobile.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.param.PortCheckParam;
 import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
@@ -141,18 +142,6 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     //region Start Emulator
     /**
-     * Same as {@link #isAcceptablePort(int)}, but returns a {@link Flowable}
-     * instance.
-     * @param port An {@link Integer} value.
-     * @return A {@link Flowable} instance.
-     * @see #isAcceptablePort(int)
-     */
-    @NotNull
-    public Flowable<Boolean> rxIsAcceptablePort(int port) {
-        return Flowable.just(isAcceptablePort(port));
-    }
-
-    /**
      * Recursively find an available port and emit and error if none is found.
      * @param PARAM A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
@@ -162,48 +151,21 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      */
     @NotNull
     public Flowable<Integer> rxFindAvailablePort(@NotNull final RetryType PARAM) {
-        final NetworkHandler NETWORK_HANDLER = networkHandler();
+        NetworkHandler networkHandler = networkHandler();
         Collection<Integer> availablePorts = availablePorts();
 
-        if (NETWORK_HANDLER.checkPortsMarkedAsUsed(availablePorts)) {
+        if (networkHandler.checkPortsMarkedAsUsed(availablePorts)) {
             return RxUtil.error(NO_PORT_AVAILABLE);
+        } else {
+            PortCheckParam param = PortCheckParam.builder()
+                .withPort(MIN_PORT)
+                .withMaxPort(MAX_PORT)
+                .withPortStep(2)
+                .withRetryType(PARAM)
+                .build();
+
+            return networkHandler.rxCheckUntilPortAvailable(param);
         }
-
-        class CheckPort {
-            @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Integer> check(final int PORT) {
-                if (PORT >= MIN_PORT && PORT <= MAX_PORT) {
-                    class Param implements PortType, RetryType {
-                        @Override
-                        public int port() {
-                            return PORT;
-                        }
-
-                        @Override
-                        public int retries() {
-                            return PARAM.retries();
-                        }
-                    }
-
-                    return Flowable
-                        .concat(
-                            rxIsAcceptablePort(PORT),
-                            NETWORK_HANDLER.rxCheckPortAvailable(new Param())
-                        )
-                        .all(BooleanUtil::isTrue)
-                        .filter(BooleanUtil::isTrue)
-                        .toFlowable()
-                        .map(a -> PORT)
-                        .doOnNext(NETWORK_HANDLER::markPortAsUsed)
-                        .switchIfEmpty(new CheckPort().check(PORT + 1));
-                }
-
-                return RxUtil.error(NO_PORT_AVAILABLE);
-            }
-        }
-
-        return new CheckPort().check(MIN_PORT);
     }
 
     /**

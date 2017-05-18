@@ -82,7 +82,8 @@ public abstract class BaseEngine<D extends WebDriver> implements
 
     @NotNull String browserName;
     @NotNull String platformName;
-    @NotNull ServerAddress serverAddress;
+    @NotNull
+    Address serverAddress;
     @NotNull TestMode testMode;
 
     /**
@@ -99,7 +100,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
         browserName = "";
         platformName = "";
         testMode = TestMode.SIMULATED;
-        serverAddress = ServerAddress.defaultInstance();
+        serverAddress = Address.defaultInstance();
     }
 
     //region DistinctiveType
@@ -174,7 +175,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
         NetworkHandler HANDLER = networkHandler();
-        ServerAddress ADDRESS = serverAddress();
+        Address ADDRESS = serverAddress();
 
         Flowable<Boolean> reusePort = Completable
             .fromAction(() -> HANDLER.markPortAsAvailable(ADDRESS.port()))
@@ -260,12 +261,12 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * @param CLI The path to Appium CLI. A {@link String} value.
      * @see #cmStartLocalAppiumInstance(String, int)
      * @see NetworkHandler#rxCheckUntilPortAvailable(PortType)
-     * @see ServerAddress#setPort(int)
+     * @see Address#setPort(int)
      */
     @SuppressWarnings("unchecked")
     public void startAppiumOnNewThread(@NotNull final String CLI) {
         final ProcessRunner RUNNER = processRunner();
-        final ServerAddress ADDRESS = serverAddress();
+        final Address ADDRESS = serverAddress();
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
         NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
@@ -315,7 +316,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxStopLocalAppiumInstance() {
         NetworkHandler handler = networkHandler();
-        ServerAddress address = serverAddress();
+        Address address = serverAddress();
         return handler.rxKillWithPort(address, this::isAppiumProcess);
     }
 
@@ -382,7 +383,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * @return A {@link String} value.
      */
     @NotNull
-    public ServerAddress serverAddress() {
+    public Address serverAddress() {
         return serverAddress;
     }
 
@@ -601,11 +602,11 @@ public abstract class BaseEngine<D extends WebDriver> implements
         /**
          * Set the {@link #ENGINE#serverAddress}. This {@link String} represents
          * the Appium server address.
-         * @param address A {@link ServerAddress} instance.
+         * @param address A {@link Address} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder<T> withServerUrl(@NotNull ServerAddress address) {
+        public Builder<T> withServerUrl(@NotNull Address address) {
             ENGINE.serverAddress = address;
             return this;
         }

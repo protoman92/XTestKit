@@ -51,17 +51,20 @@ public interface AndroidDateActionType extends
      * @return A {@link Flowable} instance.
      * @see BaseDateActionType#rxHasDate(DateType)
      * @see #rxElementContainingText(String...)
+     * @see ObjectUtil#nonNull(Object)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
-        final AndroidDateActionType THIS = this;
-
-        return rxElementContainingText(dayString(param))
-            .flatMap(a -> THIS.rxElementContainingText(monthString(param)))
-            .flatMap(a -> THIS.rxElementContainingText(yearString(param)))
-            .map(BooleanUtil::toTrue);
+        return Flowable
+            .concatArray(
+                rxElementContainingText(dayString(param)),
+                rxElementContainingText(monthString(param)),
+                rxElementContainingText(yearString(param))
+            )
+            .all(ObjectUtil::nonNull)
+            .toFlowable();
     }
     //endregion
 

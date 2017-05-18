@@ -14,12 +14,8 @@ public final class RepeatRunnerTest {
         dataProvider = "dataProvider"
     )
     public RepeatRunnerTest(int index) {
-        LogUtil.printf("Starting test %1$d on thread %2$d", index, currentThread());
+        LogUtil.printfThread("Starting test %d", index);
         INDEX = index;
-    }
-
-    private long currentThread() {
-        return Thread.currentThread().getId();
     }
 
     @BeforeTest

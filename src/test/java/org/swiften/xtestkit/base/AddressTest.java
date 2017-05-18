@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by haipham on 4/5/17.
  */
-public class ServerAddressTest {
-    @NotNull private final ServerAddress SERVER_ADDRESS;
+public class AddressTest {
+    @NotNull private final Address SERVER_ADDRESS;
 
     {
-        SERVER_ADDRESS = spy(ServerAddress.defaultInstance());
+        SERVER_ADDRESS = spy(Address.defaultInstance());
     }
 
     @AfterMethod

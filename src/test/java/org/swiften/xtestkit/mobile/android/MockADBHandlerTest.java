@@ -139,7 +139,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     @SuppressWarnings("unchecked")
     public void test_findPortWithNoneAvailable_shouldThrow() {
         // Setup
-        doReturn(false).when(ADB_HANDLER).isAcceptablePort(anyInt());
+        doReturn(false).when(NETWORK_HANDLER).isPortAvailable(any(), anyInt());
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -153,8 +153,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxFindAvailablePort(any());
         verify(ADB_HANDLER).availablePorts();
-        verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
-        verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
+        verify(NETWORK_HANDLER).rxCheckUntilPortAvailable(any());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(any());
         verify(NETWORK_HANDLER, never()).markPortAsUsed(anyInt());
         verifyNoMoreInteractions(ADB_HANDLER);
@@ -187,9 +186,8 @@ public final class MockADBHandlerTest implements ADBErrorType {
     public void test_findPort_shouldSucceed() {
         // Setup
         int correctPort = ADBHandler.MAX_PORT - 1;
-        doReturn(false).when(ADB_HANDLER).isAcceptablePort(anyInt());
-        doReturn(true).when(ADB_HANDLER).isAcceptablePort(correctPort);
-        doReturn(true).when(NETWORK_HANDLER).isPortAvailable(anyString(), eq(correctPort));
+        doReturn(false).when(NETWORK_HANDLER).isPortAvailable(any(), anyInt());
+        doReturn(true).when(NETWORK_HANDLER).isPortAvailable(any(), eq(correctPort));
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
@@ -204,8 +202,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxFindAvailablePort(any());
         verify(ADB_HANDLER).availablePorts();
-        verify(ADB_HANDLER, atLeastOnce()).isAcceptablePort(anyInt());
-        verify(ADB_HANDLER, atLeastOnce()).rxIsAcceptablePort(anyInt());
+        verify(NETWORK_HANDLER).rxCheckUntilPortAvailable(any());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(any());
         verify(NETWORK_HANDLER).markPortAsUsed(correctPort);
         verifyNoMoreInteractions(ADB_HANDLER);

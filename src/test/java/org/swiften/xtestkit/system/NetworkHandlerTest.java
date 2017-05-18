@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.network.type.MaxPortType;
 import org.swiften.xtestkit.system.network.type.NetworkHandlerErrorType;
+import org.swiften.xtestkit.system.network.type.PortStepType;
 import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
@@ -51,6 +53,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
     @AfterMethod
     public void afterMethod() {
         reset(PROCESS_RUNNER, HANDLER);
+        HANDLER.clearUsedPorts();
     }
 
     @Test
@@ -78,7 +81,6 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             verify(HANDLER, times(tries)).cmListAllPorts();
             verify(HANDLER, times(tries)).rxCheckPortAvailable(any());
             verify(HANDLER).rxCheckUntilPortAvailable(any());
-            verifyNoMoreInteractions(HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -124,10 +126,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             .doOnNext(LogUtil::println)
             .map(CheckPort::new)
             .concatMap(HANDLER::rxCheckUntilPortAvailable)
-            .doOnNext(a -> LogUtil.printf(
-                "Current thread %d, with port %d",
-                Thread.currentThread().getId(), a)
-            )
+            .doOnNext(a -> LogUtil.printfThread("Port %d", a))
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -141,7 +140,7 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
         assertEquals(usedPorts.size(), tries);
     }
 
-    private static final class CheckPort implements PortType, RetryType {
+    private static final class CheckPort implements PortType, MaxPortType, PortStepType, RetryType {
         private final int PORT;
 
         CheckPort(int port) {

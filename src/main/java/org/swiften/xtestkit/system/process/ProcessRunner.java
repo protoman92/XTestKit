@@ -29,11 +29,7 @@ public class ProcessRunner {
      */
     @NotNull
     public String execute(@NotNull String args) throws IOException {
-        LogUtil.printf(
-            "---------- Executing '%s' on thread %d ----------",
-            args, Thread.currentThread().getId()
-        );
-
+        LogUtil.printfThread("Executing '%s'", args);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CommandLine commandLine = CommandLine.parse(args);
         DefaultExecutor executor = new DefaultExecutor();
@@ -50,7 +46,7 @@ public class ProcessRunner {
         } catch (IOException e) {
             String error = outputStream.toString();
 
-            LogUtil.printf(
+            LogUtil.printfThread(
                 "Execution error while running '%1$s': '%2$s', output: %3$s",
                 args, e.getMessage(), error);
 

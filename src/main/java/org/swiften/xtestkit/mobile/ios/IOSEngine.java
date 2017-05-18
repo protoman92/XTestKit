@@ -33,6 +33,10 @@ public class IOSEngine extends
     IOSDelayType,
     IOSErrorType
 {
+    /**
+     * Get a new {@link Builder} instance.
+     * @return A {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -87,18 +91,15 @@ public class IOSEngine extends
     @NotNull
     @Override
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        Flowable<Boolean> startApp;
+        final Flowable<Boolean> START_APP;
 
         if (startDriverOnlyOnce()) {
-            startApp = rxStartDriver(param);
+            START_APP = rxStartDriver(param);
         } else {
-            startApp = Flowable.just(true);
+            START_APP = Flowable.just(true);
         }
 
-        return Flowable
-            .concat(super.rxBeforeClass(param), startApp)
-            .all(BooleanUtil::isTrue)
-            .toFlowable();
+        return super.rxBeforeClass(param).flatMap(a -> START_APP);
     }
 
     /**
@@ -113,15 +114,15 @@ public class IOSEngine extends
     @Override
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
         final Flowable<Boolean> QUIT_APP;
-        Flowable<Boolean> source;
+        final Flowable<Boolean> SOURCE;
 
         switch (testMode()) {
             case SIMULATED:
-                source = XC_HANDLER.rxStopSimulator(param);
+                SOURCE = XC_HANDLER.rxStopSimulator(param);
                 break;
 
             default:
-                source = RxUtil.error(NOT_IMPLEMENTED);
+                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
                 break;
         }
 
@@ -131,10 +132,8 @@ public class IOSEngine extends
             QUIT_APP = Flowable.just(true);
         }
 
-        return Flowable
-            .concat(super.rxAfterClass(param), source)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
+        return super.rxAfterClass(param)
+            .flatMap(a -> SOURCE)
             .flatMap(a -> QUIT_APP);
     }
     //endregion

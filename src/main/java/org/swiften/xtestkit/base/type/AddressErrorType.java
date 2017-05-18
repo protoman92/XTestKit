@@ -5,11 +5,12 @@ package org.swiften.xtestkit.base.type;
  */
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.Address;
 
 /**
  * This interface provide errors for
- * {@link org.swiften.xtestkit.base.ServerAddress}.
+ * {@link Address}.
  */
-public interface ServerAddressErrorType {
+public interface AddressErrorType {
     @NotNull String SERVER_RUNNER_UNAVAILABLE = "Server runner not set";
 }

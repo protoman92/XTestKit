@@ -12,7 +12,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
@@ -34,6 +33,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see WebElement#sendKeys(CharSequence...)
      */
     default void sendKeys(@NotNull WebElement element, @NotNull String...text) {
+        LogUtil.printfThread("Sending keys '%s' to %s", text, element);
         element.sendKeys(text);
     }
 

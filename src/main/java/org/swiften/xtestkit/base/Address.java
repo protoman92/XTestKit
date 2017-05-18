@@ -1,7 +1,9 @@
 package org.swiften.xtestkit.base;
 
 import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.base.type.ServerAddressErrorType;
+import org.swiften.xtestkit.base.type.AddressErrorType;
+import org.swiften.xtestkit.system.network.type.MaxPortType;
+import org.swiften.xtestkit.system.network.type.PortStepType;
 import org.swiften.xtestkit.system.network.type.PortType;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * This class shall take care of Appium's server address. It provides some
  * convenience methods for when {@link Mode#LOCAL} is used.
  */
-public class ServerAddress implements PortType, RetryType, ServerAddressErrorType {
+public class Address implements PortType, MaxPortType, PortStepType, RetryType, AddressErrorType {
     public enum Mode {
         LOCAL;
 
@@ -33,8 +35,8 @@ public class ServerAddress implements PortType, RetryType, ServerAddressErrorTyp
         return new Builder();
     }
 
-    public static ServerAddress localInstanceWithPort(int port) {
-        return ServerAddress.builder().withMode(Mode.LOCAL).build();
+    public static Address localInstanceWithPort(int port) {
+        return Address.builder().withMode(Mode.LOCAL).build();
     }
 
     @NotNull private static final String LOCAL_URI_FORMAT;
@@ -48,20 +50,20 @@ public class ServerAddress implements PortType, RetryType, ServerAddressErrorTyp
 
     /**
      * We should not have a static DEFAULT instance, because we will be
-     * changing {@link ServerAddress#port} quite often. A singleton instance
+     * changing {@link Address#port} quite often. A singleton instance
      * will override necessary changes and produce bugs.
-     * @return A {@link ServerAddress} instance.
+     * @return A {@link Address} instance.
      */
     @NotNull
-    public static ServerAddress defaultInstance() {
-        return new ServerAddress();
+    public static Address defaultInstance() {
+        return new Address();
     }
 
     @NotNull private Mode mode;
     @NotNull private String uri;
     private int port;
 
-    ServerAddress() {
+    Address() {
         mode = Mode.LOCAL;
         uri = "";
         port = BASE_PORT;
@@ -129,10 +131,10 @@ public class ServerAddress implements PortType, RetryType, ServerAddressErrorTyp
     }
 
     public static final class Builder {
-        @NotNull private final ServerAddress SERVER;
+        @NotNull private final Address SERVER;
 
         Builder() {
-            SERVER = new ServerAddress();
+            SERVER = new Address();
         }
 
         /**
@@ -169,7 +171,7 @@ public class ServerAddress implements PortType, RetryType, ServerAddressErrorTyp
         }
 
         @NotNull
-        public ServerAddress build() {
+        public Address build() {
             return SERVER;
         }
     }

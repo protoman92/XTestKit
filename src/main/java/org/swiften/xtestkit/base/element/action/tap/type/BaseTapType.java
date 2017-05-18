@@ -62,7 +62,10 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxTap(final int X, final int Y) {
-        LogUtil.printf("Tapping at x: %d, y: %d, for %s", X, Y, this);
+        LogUtil.printfThread(
+            "Tapping at x: %d, y: %d, for %s",
+            X, Y, this
+        );
 
         final BaseTapType<?> THIS = this;
 
