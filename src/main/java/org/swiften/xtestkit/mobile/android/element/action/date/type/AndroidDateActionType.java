@@ -6,6 +6,8 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.date.DateUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
@@ -157,7 +159,7 @@ public interface AndroidDateActionType extends
          * forever. With this method, even if the correct {@link WebElement}
          * is scrolled past, it will again come into focus (even several times
          * if needed), and eventually the element will be detected. */
-        SwipeRepeatComparisonType repeater = new SwipeRepeatComparisonType() {
+        SwipeRepeatType repeater = new SwipeRepeatComparisonType() {
             @NotNull
             @Override
             public Flowable<Integer> rxInitialDifference(@NotNull WebElement element) {
@@ -312,6 +314,8 @@ public interface AndroidDateActionType extends
     @NotNull
     @Override
     default Flowable<Boolean> rxSelectDate(@NotNull final DateType PARAM) {
+        LogUtil.printfThread("Selecting date %s", dateString(PARAM));
+
         return rxOpenYearPicker()
             .flatMap(a -> rxSelectYear(PARAM))
             .flatMap(a -> rxOpenMonthPicker())
@@ -448,6 +452,7 @@ public interface AndroidDateActionType extends
      * @see #string(DateType, CalendarElement)
      */
     @NotNull
+    @Override
     default String dayString(@NotNull DateType param) {
         return string(param, CalendarElement.DAY);
     }
@@ -459,6 +464,7 @@ public interface AndroidDateActionType extends
      * @see #string(DateType, CalendarElement)
      */
     @NotNull
+    @Override
     default String monthString(@NotNull DateType param) {
         return string(param, CalendarElement.MONTH);
     }
@@ -470,6 +476,7 @@ public interface AndroidDateActionType extends
      * @see #string(DateType, CalendarElement)
      */
     @NotNull
+    @Override
     default String yearString(@NotNull DateType param) {
         return string(param, CalendarElement.YEAR);
     }

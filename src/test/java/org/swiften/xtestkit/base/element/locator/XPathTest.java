@@ -18,6 +18,7 @@ public final class XPathTest {
         // Setup
         XPath xPath = XPath.builder(Platform.ANDROID)
             .atIndex(1)
+            .ofInstance(1)
             .ofClass("class1")
             .containsID("id1")
             .hasText("\"2'11\"")

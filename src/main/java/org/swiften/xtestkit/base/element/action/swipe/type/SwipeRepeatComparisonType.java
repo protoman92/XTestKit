@@ -7,7 +7,6 @@ package org.swiften.xtestkit.base.element.action.swipe.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 
@@ -106,15 +105,29 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return A {@link Flowable} instance.
      * @see #rxScrollViewChildItems()
      */
+    @NotNull
     default Flowable<WebElement> rxLastVisibleChildElement() {
         return rxScrollViewChildItems().lastElement().toFlowable();
+    }
+
+    /**
+     * Get the number of child items currently visible on the screen. Override
+     * this method to provide custom values for when the number of child
+     * items returned by {@link #rxScrollViewChildItems()} does not correctly
+     * reflect the actual number of visible {@link WebElement}.
+     * @return A {@link Flowable} instance.
+     * @see #rxScrollViewChildItems()
+     */
+    @NotNull
+    default Flowable<Long> rxScrollViewChildCount() {
+        return rxScrollViewChildItems().count().toFlowable();
     }
 
     /**
      * Get the number of initial swipes to perform to get as close to the
      * target value as possible.
      * @return A {@link Flowable} instance.
-     * @see #rxScrollViewChildItems()
+     * @see #rxScrollViewChildCount()
      * @see #rxFirstVisibleChildElement()
      */
     @NotNull
@@ -123,18 +136,20 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final double RATIO = elementSwipeRatio();
 
         return Flowable.zip(
-            THIS.rxScrollViewChildItems()
-                .count()
-                .toFlowable()
+            THIS.rxScrollViewChildCount()
+                .doOnNext(a -> LogUtil.printfThread("%d child items", a))
                 .map(Long::doubleValue),
 
             THIS.rxFirstVisibleChildElement()
                 .flatMap(THIS::rxInitialDifference)
+                .doOnNext(a -> LogUtil.printfThread(
+                    "%d initial difference in elements", a)
+                )
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
-            (visible, diff) -> (int)(Math.round(diff / visible) / RATIO)
-        );
+            (visible, diff) -> (int)(Math.round(diff / visible / RATIO))
+        ).doOnNext(a -> LogUtil.printfThread("%d initial swipes", a));
     }
 
     /**
@@ -232,13 +247,12 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return A {@link Flowable} instance.
      * @see SwipeRepeatType#rxRepeatSwipe()
      * @see #rxPerformInitialSwipes()
+     * @see #rxSwipeRecursively()
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxRepeatSwipe() {
-        return Flowable
-            .concat(rxPerformInitialSwipes(), rxSwipeRecursively())
-            .all(BooleanUtil::isTrue)
-            .toFlowable();
+        final SwipeRepeatComparisonType THIS = this;
+        return rxPerformInitialSwipes().flatMap(a -> THIS.rxSwipeRecursively());
     }
 }

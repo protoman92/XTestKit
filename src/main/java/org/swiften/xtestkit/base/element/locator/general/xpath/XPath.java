@@ -1,7 +1,6 @@
 package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
@@ -90,28 +89,29 @@ public class XPath {
 
         /**
          * Same as above, but get a format {@link String} from a
-         * {@link Formattable} instance.
+         * {@link Formatible} instance.
          * @param attribute An {@link Attribute} instance.
-         * @param formattable A {@link Formattable} instance.
+         * @param formatible A {@link Formatible} instance.
          * @return The current {@link Builder} instance.
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder appendAttribute(@NotNull Attribute attribute,
-                                       @NotNull Formattable<?> formattable) {
-            return appendAttribute(attribute, formattable.stringFormat());
+                                       @NotNull Formatible<?> formatible) {
+            return appendAttribute(attribute, formatible.stringFormat());
         }
 
         /**
          * Append a @index attribute.
          * @param atIndex An {@link AtIndex} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#indexAttribute()
          * @see AtIndex#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
         public Builder atIndex(@NotNull AtIndex atIndex) {
-            Attribute attribute = Attribute.single("index");
+            Attribute attribute = PLATFORM.indexAttribute();
             String format = atIndex.stringFormat();
             return appendAttribute(attribute, format);
         }
@@ -128,9 +128,36 @@ public class XPath {
         }
 
         /**
+         * Append a @instance attribute.
+         * @param ofInstance An {@link OfInstance} instance.
+         * @return The current {@link Builder} instance.
+         * @see PlatformType#instanceAttribute()
+         * @see OfInstance#stringFormat()
+         * @see #appendAttribute(String)
+         */
+        @NotNull
+        public Builder ofInstance(@NotNull OfInstance ofInstance) {
+            Attribute attribute = PLATFORM.instanceAttribute();
+            String format = ofInstance.stringFormat();
+            return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses a default {@link OfInstance} instance.
+         * @param INSTANCE An {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         * @see #ofInstance(int)
+         */
+        @NotNull
+        public Builder ofInstance(final int INSTANCE) {
+            return ofInstance(() -> INSTANCE);
+        }
+
+        /**
          * Append a contains(@class) attribute.
          * @param ofClass A {@link OfClass} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#classAttribute()
          * @see OfClass#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
@@ -180,6 +207,7 @@ public class XPath {
          * Append a contains(@id) attribute.
          * @param containsID A {@link ContainsID} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#idAttribute()
          * @see ContainsID#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
@@ -229,6 +257,7 @@ public class XPath {
          * Appends a @text attribute.
          * @param hasText A {@link HasText} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#textAttribute()
          * @see HasText#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
@@ -279,6 +308,7 @@ public class XPath {
          * Appends a contains(@text) attribute.
          * @param containsText A {@link ContainsText} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#textAttribute()
          * @see ContainsText#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
@@ -330,6 +360,7 @@ public class XPath {
          * since on iOS this may be called a placeholder.
          * @param hasHint A {@link HasHint} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#hintAttribute()
          * @see HasHint#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
@@ -381,6 +412,8 @@ public class XPath {
          * implications since on iOS this may be called a placeholder.
          * @param containsHint A {@link ContainsHint} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#hintAttribute()
+         * @see ContainsHint#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
@@ -428,6 +461,8 @@ public class XPath {
          * Appends an @enabled attribute.
          * @param enabled A {@link Enabled} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#enabledAttribute()
+         * @see Enabled#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
@@ -441,6 +476,7 @@ public class XPath {
          * Same as above, but uses a default {@link Enabled} instance.
          * @param ENABLED A {@link Boolean} value.
          * @return The current {@link Builder} instance.
+         * @see #isEnabled(Enabled)
          */
         @NotNull
         public Builder isEnabled(final boolean ENABLED) {
@@ -451,6 +487,8 @@ public class XPath {
          * Appends a @clickable attribute.
          * @param clickable A {@link Clickable} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#clickableAttribute()
+         * @see Clickable#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
@@ -464,6 +502,7 @@ public class XPath {
          * Same as above, but uses a default {@link Clickable} instance.
          * @param CLICKABLE A {@link Boolean} value.
          * @return The current {@link Builder} instance.
+         * @see #isClickable(Clickable)
          */
         @NotNull
         public Builder isClickable(final boolean CLICKABLE) {
@@ -474,6 +513,8 @@ public class XPath {
          * Appends a @editable attribute.
          * @param editable A {@link Editable} instance.
          * @return The current {@link Builder} instance.
+         * @see PlatformType#editableAttribute()
+         * @see Editable#stringFormat()
          * @see #appendAttribute(Attribute, String)
          */
         @NotNull
@@ -487,6 +528,7 @@ public class XPath {
          * Same as above, but uses a default {@link Editable}.
          * @param EDITABLE A {@link Boolean} value.
          * @return The current {@link Builder} instance.
+         * @see #isEditable(Editable)
          */
         @NotNull
         public Builder isEditable(final boolean EDITABLE) {
@@ -506,7 +548,7 @@ public class XPath {
      * format that can be used to construct {@link Attribute}.
      */
     @FunctionalInterface
-    public interface Formattable<T> extends AttributeType<T> {
+    public interface Formatible<T> extends AttributeType<T> {
         /**
          * Get the value to be formatted. Override this to provide custom
          * values.
@@ -536,7 +578,7 @@ public class XPath {
      * comparison queries and @contain(@translate) - however, we must not
      * use concat() when there are no quotation marks.
      */
-    public interface QuotationFree extends Formattable<String> {
+    public interface QuotationFree extends Formatible<String> {
         /**
          * Strip the {@link String} to be formatted of single and double
          * quotes by separating and concatenating.
@@ -642,11 +684,15 @@ public class XPath {
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
-    public interface AtIndex extends Formattable<Integer> {}
+    public interface AtIndex extends Formatible<Integer> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
-    public interface Clickable extends ClickableType, Formattable<Boolean> {}
+    public interface OfInstance extends Formatible<Integer> {}
+
+    @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
+    public interface Clickable extends ClickableType, Formatible<Boolean> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
@@ -661,11 +707,11 @@ public class XPath {
     public interface ContainsText extends ContainsTextType, ContainsString {}
 
     @FunctionalInterface
-    public interface Editable extends EditableType, Formattable<Boolean> {}
+    public interface Editable extends EditableType, Formatible<Boolean> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
-    public interface Enabled extends EnabledType, Formattable<Boolean> {}
+    public interface Enabled extends EnabledType, Formatible<Boolean> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")

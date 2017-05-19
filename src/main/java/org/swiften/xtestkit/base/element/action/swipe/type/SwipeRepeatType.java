@@ -27,7 +27,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @return A {@link Long} value.
      */
     default long delayEveryIteration() {
-        return 1000;
+        return 0;
     }
 
     /**
@@ -109,11 +109,9 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rxSwipeOnce(SwipeType)
      */
     @NotNull
-    default Flowable<Boolean> rxSwipeElement(
-        @NotNull WebElement element,
-        @NotNull Unidirection direction,
-        double scrollRatio
-    ) {
+    default Flowable<Boolean> rxSwipeElement(@NotNull WebElement element,
+                                             @NotNull Unidirection direction,
+                                             double scrollRatio) {
         Dimension dimension = element.getSize();
         Point location = element.getLocation();
         double height = dimension.getHeight();

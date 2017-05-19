@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.base.type;
 
+import org.apache.tools.ant.taskdefs.optional.windows.Attrib;
 import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +15,30 @@ public interface PlatformType {
     @NotNull String value();
 
     /**
+     * Specify the name of an index attribute. Generally should be 'index'.
+     * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
+     */
+    @NotNull
+    default Attribute indexAttribute() {
+        return Attribute.single("index");
+    }
+
+    /**
+     * Specify the name of an instance attribute. Generally should be
+     * 'instance'.
+     * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
+     */
+    @NotNull
+    default Attribute instanceAttribute() {
+        return Attribute.single("instance");
+    }
+
+    /**
      * Specify the name of a class attribute. Generally should be 'class'.
      * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
      */
     @NotNull
     default Attribute classAttribute() {
@@ -47,7 +70,8 @@ public interface PlatformType {
     /**
      * Specify the name for an enabled attribute. Generally should be
      * 'enabled'.
-     * @return An {@link String} instance.
+     * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
      */
     @NotNull
     default Attribute enabledAttribute() {
@@ -58,6 +82,7 @@ public interface PlatformType {
      * Specify the name for a clickable attribute. Generally should be
      * 'clickable'.
      * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
      */
     @NotNull
     default Attribute clickableAttribute() {
@@ -68,6 +93,7 @@ public interface PlatformType {
      * Specify the name for a editable attribute. Generally should be
      * 'editable'.
      * @return An {@link Attribute} instance.
+     * @see Attribute#single(String)
      */
     @NotNull
     default Attribute editableAttribute() {

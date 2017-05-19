@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.base.element.action.date.CalendarElement;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
 import java.util.Date;
 
@@ -100,4 +102,55 @@ public interface BaseDateActionType extends BaseErrorType {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion
+
+    /**
+     * Get the day formatted as a {@link String}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see #NOT_IMPLEMENTED
+     */
+    @NotNull
+    default String dayString(@NotNull DateType param) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Get the month formatted as a {@link String}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see #NOT_IMPLEMENTED
+     */
+    @NotNull
+    default String monthString(@NotNull DateType param) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Get the year formatted as a {@link String}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see #NOT_IMPLEMENTED
+     */
+    @NotNull
+    default String yearString(@NotNull DateType param) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
+
+    /**
+     * Get a {@link String} representation of a {@link DateType#value()}.
+     * @param param A {@link DateType} instance.
+     * @return A {@link String} value.
+     * @see #dateString(DateType)
+     * @see #monthString(DateType)
+     * @see #yearString(DateType)
+     */
+    @NotNull
+    default String dateString(@NotNull DateType param) {
+        return String.format(
+            "Day: %s, Month: %s, Year: %s",
+            dayString(param),
+            monthString(param),
+            yearString(param)
+        );
+    }
 }
