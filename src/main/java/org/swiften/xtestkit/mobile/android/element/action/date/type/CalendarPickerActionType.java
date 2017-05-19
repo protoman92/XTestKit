@@ -24,7 +24,6 @@ import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
-import org.swiften.xtestkit.base.type.ClassContainerType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
@@ -63,7 +62,7 @@ public interface CalendarPickerActionType extends
      * if the day is found, Appium could still select the wrong element -
      * so in this case an additional iteration is required.
      * This is called the calibration phase because
-     * {@link #rxSelectYear(DateType)} should have brought the picker close
+     * {@link #rx_selectYear(DateType)} should have brought the picker close
      * to the date we want.
      * @param PARAM A {@link DateType} instance.
      * @return A {@link Flowable} instance.
@@ -116,23 +115,23 @@ public interface CalendarPickerActionType extends
 
             @NotNull
             @Override
-            public Flowable<Boolean> rxShouldKeepSwiping() {
+            public Flowable<Boolean> rx_shouldKeepSwiping() {
                 /* Since there is no way to check the current month in focus,
                  * we need to use a crude workaround. Every time the list view
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rxDisplayedDate to check */
                 return THIS.rxElementByXPath(DEFAULT_BY_XPATH)
-                    .flatMap(THIS::rxClick)
+                    .flatMap(THIS::rx_click)
                     .flatMap(a -> THIS.rxElementsByXPath(BY_XPATH))
-                    .flatMap(THIS::rxClick)
-                    .flatMap(a -> rxHasDate(PARAM))
+                    .flatMap(THIS::rx_click)
+                    .flatMap(a -> rx_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
             }
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxScrollableViewToSwipe() {
+            public Flowable<WebElement> rx_scrollableViewToSwipe() {
                 return rxCalendarListView();
             }
 
@@ -154,6 +153,6 @@ public interface CalendarPickerActionType extends
             }
         };
 
-        return repeater.rxRepeatSwipe();
+        return repeater.rx_repeatSwipe();
     }
 }

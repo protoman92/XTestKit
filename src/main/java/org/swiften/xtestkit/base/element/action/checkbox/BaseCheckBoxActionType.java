@@ -54,7 +54,7 @@ public interface BaseCheckBoxActionType extends BaseClickActionType {
      * @see #setCheckBoxState(WebElement, boolean)
      */
     @NotNull
-    default Flowable<WebElement> rxSetCheckBoxState(
+    default Flowable<WebElement> rx_setCheckBoxState(
         @NotNull final WebElement ELEMENT, final boolean CHECKED)
     {
         final BaseCheckBoxActionType THIS = this;

@@ -347,7 +347,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
 
         @NotNull
         @Override
-        public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
+        public Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
             return Flowable.empty();
         }
 

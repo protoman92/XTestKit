@@ -4,7 +4,6 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.RepeatType;
 
@@ -33,7 +32,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see #swipeOnce(SwipeType)
      */
     @NotNull
-    default Flowable<Boolean> rxSwipeOnce(@NotNull final SwipeType PARAM) {
+    default Flowable<Boolean> rx_swipeOnce(@NotNull final SwipeType PARAM) {
         return Completable
             .fromAction(() -> this.swipeOnce(PARAM))
             .<Boolean>toFlowable()
@@ -45,7 +44,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * @param PARAM A {@link P} instance.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeOnce(SwipeType)
+     * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull
     default <P extends RepeatType & SwipeType>
@@ -58,7 +57,7 @@ public interface SwipeOnceType extends BaseErrorType {
             @NotNull
             private Flowable<Boolean> swipe(final int ITERATION) {
                 if (ITERATION < TIMES) {
-                    return rxSwipeOnce(PARAM)
+                    return rx_swipeOnce(PARAM)
                         .delay(DELAY, UNIT, Schedulers.trampoline())
                         .flatMap(a -> new Swipe().swipe(ITERATION + 1));
                 } else {

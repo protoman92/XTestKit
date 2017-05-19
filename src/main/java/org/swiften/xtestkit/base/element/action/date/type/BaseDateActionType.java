@@ -33,7 +33,7 @@ public interface BaseDateActionType extends BaseErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
+    default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion
@@ -46,7 +46,7 @@ public interface BaseDateActionType extends BaseErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxSelectDate(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectDate(@NotNull DateType param) {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
 
@@ -56,7 +56,7 @@ public interface BaseDateActionType extends BaseErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxSelectYear(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
 
@@ -66,7 +66,7 @@ public interface BaseDateActionType extends BaseErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxSelectMonth(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
 
@@ -76,7 +76,7 @@ public interface BaseDateActionType extends BaseErrorType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxSelectDay(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
         return RxUtil.error(NOT_IMPLEMENTED);
     }
     //endregion

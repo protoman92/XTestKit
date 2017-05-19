@@ -1,6 +1,5 @@
 package org.swiften.xtestkit.base.element.action;
 
-import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
@@ -78,7 +77,7 @@ public class BaseSwipeActionTest implements BaseSwipeType {
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxSwipe(any());
         verify(ENGINE, times(times)).swipeOnce(any());
-        verify(ENGINE, times(times)).rxSwipeOnce(any());
+        verify(ENGINE, times(times)).rx_swipeOnce(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

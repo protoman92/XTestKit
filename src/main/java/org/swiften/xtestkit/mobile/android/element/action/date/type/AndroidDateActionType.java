@@ -6,7 +6,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.date.DateUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
@@ -51,14 +50,14 @@ public interface AndroidDateActionType extends
     /**
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseDateActionType#rxHasDate(DateType)
+     * @see BaseDateActionType#rx_hasDate(DateType)
      * @see #rxElementContainingText(String...)
      * @see ObjectUtil#nonNull(Object)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    default Flowable<Boolean> rxHasDate(@NotNull DateType param) {
+    default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
         return Flowable
             .concatArray(
                 rxElementContainingText(dayString(param)),
@@ -78,7 +77,7 @@ public interface AndroidDateActionType extends
      */
     @NotNull
     default Flowable<Boolean> rxOpenYearPicker() {
-        return rxDatePickerYear().flatMap(this::rxClick).map(a -> true);
+        return rxDatePickerYear().flatMap(this::rx_click).map(a -> true);
     }
 
     /**
@@ -128,7 +127,7 @@ public interface AndroidDateActionType extends
      * @param SCROLL_RATIO A dampening ratio for vertical scroll.
      * @return A {@link Flowable} instance.
      * @see #rxListView(CalendarElement)
-     * @see SwipeRepeatType#rxRepeatSwipe()
+     * @see SwipeRepeatType#rx_repeatSwipe()
      */
     @NotNull
     default Flowable<Boolean> rxScrollAndSelectComponent(
@@ -162,7 +161,7 @@ public interface AndroidDateActionType extends
         SwipeRepeatType repeater = new SwipeRepeatComparisonType() {
             @NotNull
             @Override
-            public Flowable<Integer> rxInitialDifference(@NotNull WebElement element) {
+            public Flowable<Integer> rx_initialDifference(@NotNull WebElement element) {
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
@@ -173,7 +172,7 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<?> rxCompareFirst(@NotNull WebElement element) {
+            public Flowable<?> rx_compareFirst(@NotNull WebElement element) {
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
@@ -184,7 +183,7 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<?> rxCompareLast(@NotNull WebElement element) {
+            public Flowable<?> rx_compareLast(@NotNull WebElement element) {
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
@@ -195,7 +194,7 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxScrollViewChildItems() {
+            public Flowable<WebElement> rx_scrollViewChildItems() {
                 return THIS.rxListViewItems(ELEMENT);
             }
 
@@ -206,7 +205,7 @@ public interface AndroidDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<Boolean> rxShouldKeepSwiping() {
+            public Flowable<Boolean> rx_shouldKeepSwiping() {
                 return THIS.rxElementsByXPath(BY_XPATH)
                     /* Sometimes the driver will get the wrong element. In
                      * this case, keep scrolling so that in the next scroll,
@@ -215,13 +214,13 @@ public interface AndroidDateActionType extends
                      * scroll low in order to catch potential oddities like
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
-                    .flatMap(THIS::rxClick)
+                    .flatMap(THIS::rx_click)
                     .map(BooleanUtil::toTrue);
             }
 
             @NotNull
             @Override
-            public Flowable<WebElement> rxScrollableViewToSwipe() {
+            public Flowable<WebElement> rx_scrollableViewToSwipe() {
                 return THIS.rxListView(ELEMENT);
             }
 
@@ -231,7 +230,7 @@ public interface AndroidDateActionType extends
             }
         };
 
-        return repeater.rxRepeatSwipe();
+        return repeater.rx_repeatSwipe();
     }
 
     /**
@@ -259,12 +258,12 @@ public interface AndroidDateActionType extends
      * Select a year {@link String} by scrolling until it becomes visible.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseDateActionType#rxSelectDate(DateType)
+     * @see BaseDateActionType#rx_selectDate(DateType)
      * @see #rxScrollAndSelectComponent(DateType, CalendarElement)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxSelectYear(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
         return rxScrollAndSelectComponent(param, CalendarElement.YEAR);
     }
 
@@ -272,11 +271,11 @@ public interface AndroidDateActionType extends
      * Select a month {@link String}. To be implemented when necessary.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseDateActionType#rxSelectMonth(DateType)
+     * @see BaseDateActionType#rx_selectMonth(DateType)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxSelectMonth(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
         return Flowable.just(true);
     }
 
@@ -284,12 +283,12 @@ public interface AndroidDateActionType extends
      * Select a day.
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseDateActionType#rxSelectDay(DateType)
+     * @see BaseDateActionType#rx_selectDay(DateType)
      * @see #rxCalibrateDate(DateType)
      * @see #rxScrollAndSelectComponent(DateType, CalendarElement)
      */
     @NotNull
-    default Flowable<Boolean> rxSelectDay(@NotNull DateType param) {
+    default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
         switch (datePickerViewType()) {
             case CALENDAR:
                 /* In this case, the day selection is a bit different. We
@@ -309,20 +308,20 @@ public interface AndroidDateActionType extends
     /**
      * @param PARAM A {@link DateType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseDateActionType#rxSelectDate(DateType)
+     * @see BaseDateActionType#rx_selectDate(DateType)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxSelectDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rx_selectDate(@NotNull final DateType PARAM) {
         LogUtil.printfThread("Selecting date %s", dateString(PARAM));
 
         return rxOpenYearPicker()
-            .flatMap(a -> rxSelectYear(PARAM))
+            .flatMap(a -> rx_selectYear(PARAM))
             .flatMap(a -> rxOpenMonthPicker())
-            .flatMap(a -> rxSelectMonth(PARAM))
+            .flatMap(a -> rx_selectMonth(PARAM))
             .flatMap(a -> rxOpenDayPicker())
-            .flatMap(a -> rxSelectDay(PARAM))
-            .flatMap(a -> rxHasDate(PARAM))
+            .flatMap(a -> rx_selectDay(PARAM))
+            .flatMap(a -> rx_hasDate(PARAM))
             .filter(BooleanUtil::isTrue)
             .switchIfEmpty(RxUtil.error(DATES_NOT_MATCHED));
     }

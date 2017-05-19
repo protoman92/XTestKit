@@ -5,7 +5,6 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.number.NumberTestUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
@@ -39,25 +38,25 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Integer> rxInitialDifference(@NotNull WebElement element) {
+    public Flowable<Integer> rx_initialDifference(@NotNull WebElement element) {
         return Flowable.just(INITIAL_SWIPE);
     }
 
     @NotNull
     @Override
-    public Flowable<WebElement> rxScrollableViewToSwipe() {
+    public Flowable<WebElement> rx_scrollableViewToSwipe() {
         return Flowable.just(ELEMENT);
     }
 
     @NotNull
     @Override
-    public Flowable<WebElement> rxScrollViewChildItems() {
+    public Flowable<WebElement> rx_scrollViewChildItems() {
         return Flowable.just(ELEMENT);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxShouldKeepSwiping() {
+    public Flowable<Boolean> rx_shouldKeepSwiping() {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
@@ -69,19 +68,19 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxCompareLast(@NotNull WebElement element) {
+    public Flowable<Boolean> rx_compareLast(@NotNull WebElement element) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxCompareFirst(@NotNull WebElement element) {
+    public Flowable<Boolean> rx_compareFirst(@NotNull WebElement element) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
+    public Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
         return Flowable.just(true);
     }
 
@@ -102,7 +101,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxRepeatSwipe().subscribe(subscriber);
+        ENGINE.rx_repeatSwipe().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -114,19 +113,19 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         verify(ENGINE, times(TOTAL_SWIPE + 1)).defaultDirection();
         verify(ENGINE, times(TOTAL_SWIPE)).firstElementDirection();
 //        verify(ENGINE, times(TOTAL_SWIPE)).lastElementDirection();
-        verify(ENGINE).rxRepeatSwipe();
+        verify(ENGINE).rx_repeatSwipe();
         verify(ENGINE).rxPerformInitialSwipes();
         verify(ENGINE).rxPerformInitialSwipes(any(), any(), anyDouble(), anyInt());
         verify(ENGINE).rxInitialSwipesCount();
         verify(ENGINE, times(TOTAL_SWIPE)).rxSwipeRecursively();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxShouldKeepSwiping();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxScrollableViewToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rxDirectionToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE + 2)).rxFirstVisibleChildElement();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rxLastVisibleChildElement();
 
         verify(ENGINE, times(TOTAL_SWIPE * 2 + INITIAL_SWIPE - 1))
-            .rxScrollViewChildItems();
+            .rx_scrollViewChildItems();
 
         verify(ENGINE, times(TOTAL_SWIPE + INITIAL_SWIPE - 1))
             .rxSwipeElement(any(), any(), anyDouble());

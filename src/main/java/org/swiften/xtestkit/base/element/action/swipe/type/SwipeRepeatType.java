@@ -44,14 +44,14 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxShouldKeepSwiping();
+    Flowable<Boolean> rx_shouldKeepSwiping();
 
     /**
      * Get the {@link WebElement} to swipe.
      * @return A {@link Flowable} instance.
      */
     @NotNull
-    Flowable<WebElement> rxScrollableViewToSwipe();
+    Flowable<WebElement> rx_scrollableViewToSwipe();
 
     /**
      * Get the {@link Unidirection} to swipe towards.
@@ -63,20 +63,20 @@ public interface SwipeRepeatType extends SwipeOnceType {
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return A {@link Flowable} instance.
-     * @see #rxShouldKeepSwiping()
-     * @see #rxScrollableViewToSwipe()
+     * @see #rx_shouldKeepSwiping()
+     * @see #rx_scrollableViewToSwipe()
      * @see #rxDirectionToSwipe()
      * @see #rxSwipeElement(WebElement, Unidirection, double)
-     * @see #rxRepeatSwipe()
+     * @see #rx_repeatSwipe()
      */
     @NotNull
     default Flowable<Boolean> rxSwipeRecursively() {
         long delay = delayEveryIteration();
 
-        return rxShouldKeepSwiping()
+        return rx_shouldKeepSwiping()
             .switchIfEmpty(RxUtil.error())
             .onErrorResumeNext(Flowable.zip(
-                rxScrollableViewToSwipe(),
+                rx_scrollableViewToSwipe(),
                 rxDirectionToSwipe(),
                 (element, direction) -> rxSwipeElement(
                     element, direction, elementSwipeRatio()
@@ -93,7 +93,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rxSwipeRecursively()
      */
     @NotNull
-    default Flowable<Boolean> rxRepeatSwipe() {
+    default Flowable<Boolean> rx_repeatSwipe() {
         return rxSwipeRecursively();
     }
 
@@ -106,7 +106,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @param direction A {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeOnce(SwipeType)
+     * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull
     default Flowable<Boolean> rxSwipeElement(@NotNull WebElement element,
@@ -143,6 +143,6 @@ public interface SwipeRepeatType extends SwipeOnceType {
             .withEndY(endY)
             .build();
 
-        return rxSwipeOnce(param);
+        return rx_swipeOnce(param);
     }
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * This interface provides parameter properties for
- * {@link BaseDateActionType#rxSelectDate(DateType)}
+ * {@link BaseDateActionType#rx_selectDate(DateType)}
  */
 public interface DateType extends AttributeType<Date>, RetryType {
     /**

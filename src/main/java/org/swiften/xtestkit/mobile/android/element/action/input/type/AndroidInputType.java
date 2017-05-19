@@ -33,5 +33,6 @@ public interface AndroidInputType extends InputType, NewXPathBuilderType {
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} locator.
      * @return A {@link XPath} value.
      */
-    @NotNull XPath androidViewXPath();
+    @NotNull
+    XPath androidViewXPath();
 }

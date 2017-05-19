@@ -49,7 +49,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxShouldKeepSwiping() {
+    public Flowable<Boolean> rx_shouldKeepSwiping() {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
@@ -61,13 +61,13 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<WebElement> rxScrollableViewToSwipe() {
+    public Flowable<WebElement> rx_scrollableViewToSwipe() {
         return Flowable.just(ELEMENT);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxSwipeOnce(@NotNull SwipeType param) {
+    public Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
         return Flowable.just(true);
     }
 
@@ -88,17 +88,17 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxRepeatSwipe().subscribe(subscriber);
+        ENGINE.rx_repeatSwipe().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rxRepeatSwipe();
+        verify(ENGINE).rx_repeatSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rxSwipeRecursively();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxShouldKeepSwiping();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxScrollableViewToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rxDirectionToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).delayEveryIteration();
         verify(ENGINE, times(TOTAL_SWIPE - 1)).elementSwipeRatio();

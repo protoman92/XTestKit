@@ -31,7 +31,7 @@ public interface BaseClickActionType {
      * @see #click(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxClick(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_click(@NotNull final WebElement ELEMENT) {
         return Completable
             .fromAction(() -> this.click(ELEMENT))
             .<WebElement>toFlowable()
