@@ -18,9 +18,7 @@ import org.swiften.xtestkit.base.type.*;
  * This interface provides methods to perform swipe gestures.
  */
 public interface BaseSwipeType<D extends WebDriver> extends
-    BaseSwipeErrorType,
-    DriverContainerType<D>,
-    SwipeOnceType
+    BaseSwipeErrorType, DriverContainerType<D>, SwipeOnceType
 {
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
@@ -28,11 +26,14 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * @param param A {@link P} instance.
      * @param <P> Generics parameter.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipe(RepeatType)
+     * @see #rx_swipe(RepeatType)
+     * @see WebDriver#manage()
+     * @see WebDriver.Options#window()
+     * @see WebDriver.Window#getSize()
      */
     @NotNull
     default <P extends DurationType & UnidirectionContainerType & RepeatType>
-    Flowable<Boolean> rxSwipeGenericUnidirectional(@NotNull P param) {
+    Flowable<Boolean> rx_swipeGenericUnidirectional(@NotNull P param) {
         Dimension size = driver().manage().window().getSize();
         double height = size.height, width = size.width;
         int startX, endX, startY, endY;
@@ -71,32 +72,34 @@ public interface BaseSwipeType<D extends WebDriver> extends
             .withDurationType(param)
             .build();
 
-        return rxSwipe(swipeParam);
+        return rx_swipe(swipeParam);
     }
 
     /**
      * Perform a generic horizontal swipe motion from left to right.
      * @param param A {@link P} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeGenericUnidirectional(DurationType)
+     * @see #rx_swipeGenericUnidirectional(DurationType)
+     * @see Unidirection#LEFT_RIGHT
      */
     @NotNull
     default <P extends DurationType & RepeatType>
-    Flowable<Boolean> rxSwipeGenericLR(@NotNull P param) {
+    Flowable<Boolean> rx_swipeGenericLR(@NotNull P param) {
         UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
             .withDirection(Unidirection.LEFT_RIGHT)
             .withRepeatableType(param)
             .withDurationType(param)
             .build();
 
-        return rxSwipeGenericUnidirectional(uniParam);
+        return rx_swipeGenericUnidirectional(uniParam);
     }
 
     /**
      * Perform a generic horizontal swipe motion from right to left.
      * @param param A {@link RepeatType} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeGenericUnidirectional(DurationType)
+     * @see #rx_swipeGenericUnidirectional(DurationType)
+     * @see Unidirection#RIGHT_LEFT
      */
     @NotNull
     default <P extends DurationType & RepeatType>
@@ -107,6 +110,6 @@ public interface BaseSwipeType<D extends WebDriver> extends
             .withDurationType(param)
             .build();
 
-        return rxSwipeGenericUnidirectional(uniParam);
+        return rx_swipeGenericUnidirectional(uniParam);
     }
 }

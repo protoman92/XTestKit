@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.type.UnidirectionContainerType;
 
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.base.BaseEngine#rxSwipeGenericUnidirectional(DurationType)}.
+ * {@link org.swiften.xtestkit.base.BaseEngine#rx_swipeGenericUnidirectional(DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
 public class UnidirectionalSwipeParam implements

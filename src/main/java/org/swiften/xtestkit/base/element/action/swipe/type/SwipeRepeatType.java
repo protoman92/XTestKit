@@ -23,19 +23,12 @@ import java.util.concurrent.TimeUnit;
  */
 public interface SwipeRepeatType extends SwipeOnceType {
     /**
-     * Get the delay for each iteration.
-     * @return A {@link Long} value.
-     */
-    default long delayEveryIteration() {
-        return 0;
-    }
-
-    /**
      * Get the swipe ratio that is used to dampen the swipe gesture in order
      * to avoid a full unidirectional swipe.
-     * @return A {@link Double} value.
+     * @return A {@link Flowable} instance.
      */
-    double elementSwipeRatio();
+    @NotNull
+    Flowable<Double> rx_elementSwipeRatio();
 
     /**
      * Check whether the swipe action should be repeated, e.g. when we are
@@ -66,24 +59,24 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rx_shouldKeepSwiping()
      * @see #rx_scrollableViewToSwipe()
      * @see #rxDirectionToSwipe()
-     * @see #rxSwipeElement(WebElement, Unidirection, double)
+     * @see #rx_swipeElement(WebElement, Unidirection, double)
      * @see #rx_repeatSwipe()
      */
     @NotNull
     default Flowable<Boolean> rxSwipeRecursively() {
-        long delay = delayEveryIteration();
+        final SwipeRepeatType THIS = this;
 
         return rx_shouldKeepSwiping()
             .switchIfEmpty(RxUtil.error())
-            .onErrorResumeNext(Flowable.zip(
-                rx_scrollableViewToSwipe(),
-                rxDirectionToSwipe(),
-                (element, direction) -> rxSwipeElement(
-                    element, direction, elementSwipeRatio()
-                ))
+            .onErrorResumeNext(Flowable
+                .zip(
+                    rx_scrollableViewToSwipe(),
+                    rxDirectionToSwipe(),
+                    rx_elementSwipeRatio(),
+                    THIS::rx_swipeElement
+                )
                 .flatMap(a -> a)
-                .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
-                .flatMap(a -> rxSwipeRecursively())
+                .flatMap(a -> THIS.rxSwipeRecursively())
             );
     }
 
@@ -109,9 +102,9 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull
-    default Flowable<Boolean> rxSwipeElement(@NotNull WebElement element,
-                                             @NotNull Unidirection direction,
-                                             double scrollRatio) {
+    default Flowable<Boolean> rx_swipeElement(@NotNull WebElement element,
+                                              @NotNull Unidirection direction,
+                                              double scrollRatio) {
         Dimension dimension = element.getSize();
         Point location = element.getLocation();
         double height = dimension.getHeight();

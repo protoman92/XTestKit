@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
-import org.swiften.xtestkit.base.element.action.date.CalendarElement;
+import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
@@ -47,11 +47,11 @@ public interface CalendarPickerActionType extends
      * Get the calendar list view. Applicable to
      * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
      * @return A {@link Flowable} instance.
-     * @see #rxElementOfClass(OfClassType[])
+     * @see #rx_elementOfClass(OfClassType[])
      */
     @NotNull
     default Flowable<WebElement> rxCalendarListView() {
-        return rxElementOfClass(AndroidView.ViewType.LIST_VIEW.className());
+        return rx_elementOfClass(AndroidView.ViewType.LIST_VIEW.className());
     }
 
     /**
@@ -101,8 +101,9 @@ public interface CalendarPickerActionType extends
             .build();
 
         SwipeRepeatType repeater = new SwipeRepeatType() {
+            @NotNull
             @Override
-            public double elementSwipeRatio() {
+            public Flowable<Double> rx_elementSwipeRatio() {
                 /* We need the scroll ratio to be higher because the calendar
                  * day view tends to snap into place if the scroll/swipe motion
                  * is not strong enough, which, sometimes, may lead to wrong
@@ -110,7 +111,7 @@ public interface CalendarPickerActionType extends
                  *
                  * Based on empirical tests, it seems 0.7-0.8 are a good
                  * ratios. Amend if necessary */
-                return 0.7d;
+                return Flowable.just(0.7d);
             }
 
             @NotNull
@@ -121,9 +122,9 @@ public interface CalendarPickerActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rxDisplayedDate to check */
-                return THIS.rxElementByXPath(DEFAULT_BY_XPATH)
+                return THIS.rx_elementByXPath(DEFAULT_BY_XPATH)
                     .flatMap(THIS::rx_click)
-                    .flatMap(a -> THIS.rxElementsByXPath(BY_XPATH))
+                    .flatMap(a -> THIS.rx_elementsByXPath(BY_XPATH))
                     .flatMap(THIS::rx_click)
                     .flatMap(a -> rx_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
@@ -141,9 +142,7 @@ public interface CalendarPickerActionType extends
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rxDisplayedDate()
-                    .map(a -> DateUtil.notEarlierThan(
-                        a, DATE, CalendarElement.DAY.value()
-                    ))
+                    .map(a -> DateUtil.notEarlierThan(a, DATE, CalendarUnit.DAY.value()))
                     .map(Unidirection::vertical);
             }
 

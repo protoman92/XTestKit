@@ -35,9 +35,10 @@ public interface BasePasswordActionType<D extends WebDriver> extends
      * Toggle password mask to show/hide password.
      * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
+     * @see #togglePasswordMask(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxTogglePasswordMask(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_togglePasswordMask(@NotNull final WebElement ELEMENT) {
         final BasePasswordActionType THIS = this;
 
         return Completable

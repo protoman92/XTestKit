@@ -22,7 +22,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
     @NotNull private final SwipeRepeatType ENGINE;
     @NotNull private final WebElement ELEMENT;
     @NotNull private final Random RAND;
-    private final int TOTAL_SWIPE = 10;
+    private final int TOTAL_SWIPE = 20;
     private int currentSwipeCount;
 
     {
@@ -36,9 +36,10 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         currentSwipeCount = 0;
     }
 
+    @NotNull
     @Override
-    public double elementSwipeRatio() {
-        return 0.9d;
+    public Flowable<Double> rx_elementSwipeRatio() {
+        return Flowable.just(0.9d);
     }
 
     @NotNull
@@ -73,7 +74,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxSwipeElement(
+    public Flowable<Boolean> rx_swipeElement(
         @NotNull WebElement element,
         @NotNull Unidirection direction,
         double scrollRatio
@@ -100,9 +101,8 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rxDirectionToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE)).delayEveryIteration();
-        verify(ENGINE, times(TOTAL_SWIPE - 1)).elementSwipeRatio();
-        verify(ENGINE, times(TOTAL_SWIPE - 1)).rxSwipeElement(any(), any(), anyDouble());
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_elementSwipeRatio();
+        verify(ENGINE, times(TOTAL_SWIPE - 1)).rx_swipeElement(any(), any(), anyDouble());
         verifyNoMoreInteractions(ENGINE);
     }
 }

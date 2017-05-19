@@ -5,7 +5,7 @@ package org.swiften.xtestkit.mobile.android.type;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.date.CalendarElement;
+import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 
 /**
  * This interface provides date view properties for
@@ -50,12 +50,12 @@ public interface DatePickerContainerType {
         }
 
         /**
-         * Get the {@link String} format for a particular {@link CalendarElement}.
-         * @param element A {@link CalendarElement} instance.
+         * Get the {@link String} format for a particular {@link CalendarUnit}.
+         * @param element A {@link CalendarUnit} instance.
          * @return A {@link String} value.
          */
         @NotNull
-        public String stringFormat(@NotNull CalendarElement element) {
+        public String stringFormat(@NotNull CalendarUnit element) {
             switch (element) {
                 case DAY:
                     return dayFormat();
@@ -72,12 +72,12 @@ public interface DatePickerContainerType {
         }
 
         /**
-         * Get the display view id that corresponds to a {@link CalendarElement}.
-         * @param element A {@link CalendarElement} instance.
+         * Get the display view id that corresponds to a {@link CalendarUnit}.
+         * @param element A {@link CalendarUnit} instance.
          * @return A {@link String} value.
          */
         @NotNull
-        public String displayViewId(@NotNull CalendarElement element) {
+        public String displayViewId(@NotNull CalendarUnit element) {
             switch (element) {
                 case DAY:
                     return "date_picker_day";
@@ -94,12 +94,12 @@ public interface DatePickerContainerType {
         }
 
         /**
-         * Get the picker view id that corresponds to a {@link CalendarElement}.
-         * @param element A {@link CalendarElement} instance.
+         * Get the picker view id that corresponds to a {@link CalendarUnit}.
+         * @param element A {@link CalendarUnit} instance.
          * @return A {@link String} value.
          */
         @NotNull
-        public String pickerViewId(@NotNull CalendarElement element) {
+        public String pickerViewId(@NotNull CalendarUnit element) {
             switch (element) {
                 case YEAR:
                     return "month_text_view";
@@ -111,12 +111,12 @@ public interface DatePickerContainerType {
 
         /**
          * Get the list view's item id that corresponds to a
-         * {@link CalendarElement}.
-         * @param element A {@link CalendarElement} instance.
+         * {@link CalendarUnit}.
+         * @param element A {@link CalendarUnit} instance.
          * @return A {@link String} value.
          */
         @NotNull
-        public String listViewItemId(@NotNull CalendarElement element) {
+        public String listViewItemId(@NotNull CalendarUnit element) {
             switch (element) {
                 case YEAR:
                     return "month_text_view";

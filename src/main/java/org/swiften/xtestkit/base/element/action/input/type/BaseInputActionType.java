@@ -73,7 +73,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #toggleNextInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxToggleNextInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_toggleNextInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return Completable
@@ -99,7 +99,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #toggleDoneInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxToggleDoneInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_toggleDoneInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return Completable
@@ -115,17 +115,17 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * the list.
      * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxAllEditableElements()
-     * @see #rxToggleNextInput(WebElement)
-     * @see #rxToggleDoneInput(WebElement)
+     * @see #rx_allEditableElements()
+     * @see #rx_toggleNextInput(WebElement)
+     * @see #rx_toggleDoneInput(WebElement)
      * @see #consecutiveNextToggleDelay()
      */
     @NotNull
-    default Flowable<WebElement> rxToggleNextOrDoneInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_toggleNextOrDoneInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
         long delay = consecutiveNextToggleDelay();
 
-        return rxAllEditableElements()
+        return rx_allEditableElements()
             .lastElement()
             .toFlowable()
             .filter(ObjectUtil::nonNull)
@@ -139,8 +139,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
                  * that do not overlap each other */
                 return ap.equals(ep) && ad.equals(ed);
             })
-            .flatMap(THIS::rxToggleDoneInput)
-            .switchIfEmpty(THIS.rxToggleNextInput(ELEMENT))
+            .flatMap(THIS::rx_toggleDoneInput)
+            .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT))
             .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline());
     }
 }

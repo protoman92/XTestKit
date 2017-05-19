@@ -10,7 +10,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Keys;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
 import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.mobile.android.AndroidInstance;
@@ -38,18 +37,18 @@ public interface AndroidKeyboardActionType extends
      * Dismiss the keyboard if it is open. We first need to check whether the
      * keyboard is present with
      * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
-     * and then call {@link #rxNavigateBack(RepeatType)}.
+     * and then call {@link #rx_navigateBack(RepeatType)}.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatType)
+     * @see #rx_navigateBack(RepeatType)
      * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull
-    default Flowable<Boolean> rxHideKeyboard() {
+    default Flowable<Boolean> rx_hideKeyboard() {
         AndroidInstance instance = androidInstance();
 
         return adbHandler().rxCheckKeyboardOpen(instance)
             .filter(BooleanUtil::isTrue)
-            .flatMap(a -> rxNavigateBackOnce())
+            .flatMap(a -> rx_navigateBackOnce())
             .defaultIfEmpty(true);
     }
 }

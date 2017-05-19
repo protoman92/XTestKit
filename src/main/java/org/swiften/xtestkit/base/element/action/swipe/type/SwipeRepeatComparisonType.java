@@ -133,7 +133,6 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     @NotNull
     default Flowable<Integer> rxInitialSwipesCount() {
         final SwipeRepeatComparisonType THIS = this;
-        final double RATIO = elementSwipeRatio();
 
         return Flowable.zip(
             THIS.rx_scrollViewChildCount()
@@ -148,7 +147,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
-            (visible, diff) -> (int)(Math.round(diff / visible / RATIO))
+            (visible, diff) -> (int)(Math.round(diff / visible))
         ).doOnNext(a -> LogUtil.printfThread("%d initial swipes", a));
     }
 
@@ -156,16 +155,14 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * Perform initial swipes a number of times.
      * @param ELEMENT The scrollable {@link WebElement}.
      * @param DIRECTION A {@link Unidirection} instance.
-     * @param RATIO A {@link Double} value to be used as the scroll ratio.
      * @param TIMES The number of times to swipe. An {@link Integer} value.
      * @return A {@link Flowable} instance.
-     * @see #rxSwipeElement(WebElement, Unidirection, double)
+     * @see #rx_swipeElement(WebElement, Unidirection, double)
      */
     @NotNull
     default Flowable<Boolean> rxPerformInitialSwipes(
         @NotNull final WebElement ELEMENT,
         @NotNull final Unidirection DIRECTION,
-        final double RATIO,
         final int TIMES
     ) {
         final SwipeRepeatComparisonType THIS = this;
@@ -176,7 +173,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
             Flowable<Boolean> repeat(final int INDEX) {
                 if (INDEX < TIMES) {
                     return THIS
-                        .rxSwipeElement(ELEMENT, DIRECTION, RATIO)
+                        .rx_swipeElement(ELEMENT, DIRECTION, 1)
                         .flatMap(a -> new InitialSwipe().repeat(INDEX + 1));
                 } else {
                     return Flowable.just(true);
@@ -195,20 +192,18 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rxDirectionToSwipe()
      * @see #rxFirstVisibleChildElement()
      * @see #rx_initialDifference(WebElement)
-     * @see #rxPerformInitialSwipes(WebElement, Unidirection, double, int)
+     * @see #rxPerformInitialSwipes(WebElement, Unidirection, int)
      */
     @NotNull
     default Flowable<Boolean> rxPerformInitialSwipes() {
         final SwipeRepeatComparisonType THIS = this;
 
         return Flowable.zip(
-            THIS.rx_scrollableViewToSwipe(),
-            THIS.rxDirectionToSwipe(),
-            THIS.rxInitialSwipesCount(),
-            (element, direction, times) -> THIS.rxPerformInitialSwipes(
-                element, direction, elementSwipeRatio(), times
-            ))
-            .flatMap(a -> a);
+            rx_scrollableViewToSwipe(),
+            rxDirectionToSwipe(),
+            rxInitialSwipesCount(),
+            this::rxPerformInitialSwipes
+        ).flatMap(a -> a);
     }
 
     /**

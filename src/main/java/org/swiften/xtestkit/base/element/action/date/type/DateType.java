@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.action.date.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.date.CalendarElement;
+import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
 import org.swiften.xtestkit.base.type.RetryType;
 
@@ -64,12 +64,12 @@ public interface DateType extends AttributeType<Date>, RetryType {
 
     /**
      * Get the {@link Calendar} component that corresponds to a
-     * {@link CalendarElement}.
-     * @param element A {@link CalendarElement} instance.
+     * {@link CalendarUnit}.
+     * @param element A {@link CalendarUnit} instance.
      * @return An {@link Integer} value.
      */
     @SuppressWarnings("MagicConstant")
-    default int component(@NotNull CalendarElement element) {
+    default int component(@NotNull CalendarUnit element) {
         return calendar().get(element.value());
     }
 

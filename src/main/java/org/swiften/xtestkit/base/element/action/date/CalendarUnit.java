@@ -14,14 +14,14 @@ import java.util.Calendar;
  * {@link org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType}
  * for better code reuse.
  */
-public enum CalendarElement implements AttributeType<Integer> {
+public enum CalendarUnit implements AttributeType<Integer> {
     DAY,
     MONTH,
     YEAR;
 
     /**
      * Get the {@link Calendar} constant that corresponds to this
-     * {@link CalendarElement}.
+     * {@link CalendarUnit}.
      * @return An {@link Integer} instance.
      */
     @NotNull

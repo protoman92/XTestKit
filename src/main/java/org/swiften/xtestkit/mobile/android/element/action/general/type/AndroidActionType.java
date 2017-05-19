@@ -37,7 +37,7 @@ public interface AndroidActionType extends
      * {@link AndroidDriver#findElementById(String)}.
      * @param param An {@link AlertParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseActionType#rxDismissAlert(AlertParam)
+     * @see BaseActionType#rx_dismissAlert(AlertParam)
      * @see #driver()
      * @see WebDriver#findElement(By)
      * @see ObjectUtil#nonNull(Object)
@@ -48,7 +48,7 @@ public interface AndroidActionType extends
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxDismissAlert(@NotNull AlertParam param) {
+    default Flowable<Boolean> rx_dismissAlert(@NotNull AlertParam param) {
         final AndroidActionType THIS = this;
 
         return Flowable.just(param.shouldAccept())

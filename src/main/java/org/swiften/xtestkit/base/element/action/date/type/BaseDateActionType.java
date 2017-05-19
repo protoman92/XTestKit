@@ -6,14 +6,9 @@ package org.swiften.xtestkit.base.element.action.date.type;
 
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.action.date.CalendarElement;
-import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
-import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
-import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 
 import java.util.Date;
 

@@ -44,7 +44,8 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      * @see #tap(TapType)
      */
     @NotNull
-    default <P extends TapType & RetryType> Flowable<Boolean> rxTap(@NotNull final P PARAM) {
+    default <P extends TapType & RetryType>
+    Flowable<Boolean> rx_tap(@NotNull final P PARAM) {
         final BaseTapType<?> THIS = this;
 
         return Completable
@@ -61,7 +62,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      * @see #tap(int, int)
      */
     @NotNull
-    default Flowable<Boolean> rxTap(final int X, final int Y) {
+    default Flowable<Boolean> rx_tap(final int X, final int Y) {
         LogUtil.printfThread(
             "Tapping at x: %d, y: %d, for %s",
             X, Y, this

@@ -31,9 +31,10 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         ENGINE = spy(this);
     }
 
+    @NotNull
     @Override
-    public double elementSwipeRatio() {
-        return 0.9d;
+    public Flowable<Double> rx_elementSwipeRatio() {
+        return Flowable.just(0.9d);
     }
 
     @NotNull
@@ -86,7 +87,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxSwipeElement(
+    public Flowable<Boolean> rx_swipeElement(
         @NotNull WebElement element,
         @NotNull Unidirection direction,
         double scrollRatio
@@ -108,14 +109,13 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE, times(TOTAL_SWIPE)).delayEveryIteration();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).elementSwipeRatio();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_elementSwipeRatio();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).defaultDirection();
         verify(ENGINE, times(TOTAL_SWIPE)).firstElementDirection();
 //        verify(ENGINE, times(TOTAL_SWIPE)).lastElementDirection();
         verify(ENGINE).rx_repeatSwipe();
         verify(ENGINE).rxPerformInitialSwipes();
-        verify(ENGINE).rxPerformInitialSwipes(any(), any(), anyDouble(), anyInt());
+        verify(ENGINE).rxPerformInitialSwipes(any(), any(), anyInt());
         verify(ENGINE).rxInitialSwipesCount();
         verify(ENGINE, times(TOTAL_SWIPE)).rxSwipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
@@ -128,6 +128,6 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
             .rx_scrollViewChildItems();
 
         verify(ENGINE, times(TOTAL_SWIPE + INITIAL_SWIPE - 1))
-            .rxSwipeElement(any(), any(), anyDouble());
+            .rx_swipeElement(any(), any(), anyDouble());
     }
 }

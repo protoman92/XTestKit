@@ -28,7 +28,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
      */
     @NotNull
-    default Flowable<Boolean> rxImplicitlyWait(@NotNull DelayType param) {
+    default Flowable<Boolean> rx_implicitlyWait(@NotNull DelayType param) {
         final WebDriver.Timeouts TIMEOUTS = driver().manage().timeouts();
         final long DELAY = param.delay();
         final TimeUnit UNIT = param.timeUnit();
@@ -43,11 +43,12 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * Navigate backwards for certain number of times.
      * @param param A {@link RepeatType} object.
      * @return A {@link Flowable} instance.
+     * @see #driver()
      * @see WebDriver#navigate()
      * @see WebDriver.Navigation#back()
      */
     @NotNull
-    default Flowable<Boolean> rxNavigateBack(@NotNull RepeatType param) {
+    default Flowable<Boolean> rx_navigateBack(@NotNull RepeatType param) {
         final WebDriver DRIVER = driver();
         final int TIMES = param.times();
         final long DELAY = param.delay();
@@ -71,17 +72,19 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
             }
         }
 
-        return new PerformBack().back(0).<Boolean>toFlowable().defaultIfEmpty(true);
+        return new PerformBack().back(0)
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 
     /**
      * Same as above, but uses a default {@link NavigateBack} instance.
      * @return A {@link Flowable} instance.
-     * @see #rxNavigateBack(RepeatType)
+     * @see #rx_navigateBack(RepeatType)
      */
     @NotNull
-    default Flowable<Boolean> rxNavigateBackOnce() {
-        return rxNavigateBack(() -> 1);
+    default Flowable<Boolean> rx_navigateBackOnce() {
+        return rx_navigateBack(() -> 1);
     }
 
     /**
@@ -94,7 +97,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * @see Alert#dismiss()
      */
     @NotNull
-    default Flowable<Boolean> rxDismissAlert(@NotNull final AlertParam PARAM) {
+    default Flowable<Boolean> rx_dismissAlert(@NotNull final AlertParam PARAM) {
         final Alert ALERT = driver().switchTo().alert();
 
         return Completable
@@ -112,20 +115,20 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
     /**
      * Same as avove, but uses a default {@link AlertParam}.
      * @return A {@link Flowable} instance.
-     * @see #rxDismissAlert(AlertParam)
+     * @see #rx_dismissAlert(AlertParam)
      */
     @NotNull
-    default Flowable<Boolean> rxAcceptAlert() {
-        return rxDismissAlert(AlertParam.builder().accept().build());
+    default Flowable<Boolean> rx_acceptAlert() {
+        return rx_dismissAlert(AlertParam.builder().accept().build());
     }
 
     /**
      * Same as above, but uses a default {@link AlertParam}.
      * @return A {@link Flowable} instance.
-     * @see #rxDismissAlert(AlertParam)
+     * @see #rx_dismissAlert(AlertParam)
      */
     @NotNull
-    default Flowable<Boolean> rxRejectAlert() {
-        return rxDismissAlert(AlertParam.builder().reject().build());
+    default Flowable<Boolean> rx_rejectAlert() {
+        return rx_dismissAlert(AlertParam.builder().reject().build());
     }
 }

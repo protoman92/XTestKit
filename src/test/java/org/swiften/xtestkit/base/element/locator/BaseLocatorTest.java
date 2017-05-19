@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
@@ -124,15 +123,15 @@ public class BaseLocatorTest implements BaseLocatorType {
         ByXPath query3 = mock(ByXPath.class);
         WebElement element1 = mock(WebElement.class);
         WebElement element2 = mock(WebElement.class);
-        doReturn(RxUtil.error()).when(ENGINE).rxElementsByXPath(eq(query1));
-        doReturn(Flowable.just(element1)).when(ENGINE).rxElementsByXPath(eq(query2));
-        doReturn(Flowable.just(element2)).when(ENGINE).rxElementsByXPath(eq(query3));
-        doReturn(RxUtil.error()).when(ENGINE).rxXPathQueryFailure(any());
+        doReturn(RxUtil.error()).when(ENGINE).rx_elementsByXPath(eq(query1));
+        doReturn(Flowable.just(element1)).when(ENGINE).rx_elementsByXPath(eq(query2));
+        doReturn(Flowable.just(element2)).when(ENGINE).rx_elementsByXPath(eq(query3));
+        doReturn(RxUtil.error()).when(ENGINE).rx_xPathQueryFailure(any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxElementsByXPath(query1, query2, query3).subscribe(subscriber);
+        ENGINE.rx_elementsByXPath(query1, query2, query3).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -157,7 +156,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxElementsByXPath(query1, query2, query3).subscribe(subscriber);
+        ENGINE.rx_elementsByXPath(query1, query2, query3).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -182,7 +181,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
+        ENGINE.rx_elementsByXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -207,7 +206,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxElementsByXPath(param).subscribe(subscriber);
+        ENGINE.rx_elementsByXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -233,14 +232,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rxElementsWithText(param).subscribe(subscriber);
+        ENGINE.rx_elementsWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -256,14 +255,14 @@ public class BaseLocatorTest implements BaseLocatorType {
             .thenReturn(Collections.emptyList());
 
         // When
-        ENGINE.rxElementWithText(param).subscribe(subscriber);
+        ENGINE.rx_elementWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -275,7 +274,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rxElementWithText(param).subscribe(subscriber);
+        ENGINE.rx_elementWithText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -283,7 +282,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -297,14 +296,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rxElementsContainingText(param).subscribe(subscriber);
+        ENGINE.rx_elementsContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -317,14 +316,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
 
         // When
-        ENGINE.rxElementContainingText(param).subscribe(subscriber);
+        ENGINE.rx_elementContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
         subscriber.assertNotComplete();
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
 
     @Test
@@ -336,7 +335,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rxElementContainingText(param).subscribe(subscriber);
+        ENGINE.rx_elementContainingText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -344,7 +343,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rxElementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
     }
     //endregion
 }

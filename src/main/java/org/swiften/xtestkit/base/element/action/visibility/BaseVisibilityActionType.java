@@ -6,12 +6,9 @@ package org.swiften.xtestkit.base.element.action.visibility;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 
 /**
@@ -27,9 +24,9 @@ public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocat
      * @param element A {@link WebElement} instance.
      * @see WebElement#isDisplayed()
      */
-    default void watchUntilNoLongerVisible(@NotNull WebElement element) {
+    default void watchUntilHidden(@NotNull WebElement element) {
         if (element.isDisplayed()) {
-            watchUntilNoLongerVisible(element);
+            watchUntilHidden(element);
         }
     }
 
@@ -38,14 +35,14 @@ public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocat
      * repeatedly checking its visibility.
      * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
-     * @see #watchUntilNoLongerVisible(WebElement)
+     * @see #watchUntilHidden(WebElement)
      */
     @NotNull
-    default Flowable<Boolean> rxWatchUntilHidden(@NotNull final WebElement ELEMENT) {
+    default Flowable<Boolean> rx_watchUntilHidden(@NotNull final WebElement ELEMENT) {
         final BaseVisibilityActionType THIS = this;
 
         return Completable
-            .fromAction(() -> THIS.watchUntilNoLongerVisible(ELEMENT))
+            .fromAction(() -> THIS.watchUntilHidden(ELEMENT))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
