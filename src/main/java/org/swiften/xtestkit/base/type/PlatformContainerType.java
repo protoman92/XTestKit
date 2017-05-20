@@ -17,6 +17,6 @@ public interface PlatformContainerType extends BaseErrorType {
      */
     @NotNull
     default PlatformType platform() {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 }

@@ -29,7 +29,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
     //endregion
 
@@ -42,7 +42,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_selectDate(@NotNull DateType param) {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
 
     /**
@@ -52,7 +52,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
 
     /**
@@ -62,7 +62,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
 
     /**
@@ -72,7 +72,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
     //endregion
 
@@ -84,7 +84,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<WebElement> rxAllCalendarElements() {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
 
     /**
@@ -94,7 +94,7 @@ public interface BaseDateActionType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Date> rxDisplayedDate() {
-        return RxUtil.error(NOT_IMPLEMENTED);
+        return RxUtil.error(NOT_AVAILABLE);
     }
     //endregion
 
@@ -102,33 +102,33 @@ public interface BaseDateActionType extends BaseErrorType {
      * Get the day formatted as a {@link String}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
-     * @see #NOT_IMPLEMENTED
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     default String dayString(@NotNull DateType param) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the month formatted as a {@link String}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
-     * @see #NOT_IMPLEMENTED
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     default String monthString(@NotNull DateType param) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the year formatted as a {@link String}.
      * @param param A {@link DateType} instance.
      * @return A {@link String} value.
-     * @see #NOT_IMPLEMENTED
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     default String yearString(@NotNull DateType param) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**

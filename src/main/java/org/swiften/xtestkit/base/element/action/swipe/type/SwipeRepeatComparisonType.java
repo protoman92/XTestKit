@@ -223,7 +223,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final SwipeRepeatComparisonType THIS = this;
 
         return Flowable
-            .concatArray(
+            .mergeArray(
                 THIS.rxFirstVisibleChildElement()
                     .flatMap(THIS::rx_compareFirst)
                     .map(a -> THIS.firstElementDirection()),

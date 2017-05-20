@@ -2,7 +2,6 @@ package org.swiften.xtestkit.mobile.android;
 
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.*;
-import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.MobileEngine;
@@ -29,12 +28,9 @@ import org.swiften.xtestkit.system.network.NetworkHandler;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 
@@ -169,7 +165,7 @@ public class AndroidEngine extends
                 break;
 
             default:
-                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
+                SOURCE = RxUtil.error(NOT_AVAILABLE);
                 break;
         }
 
@@ -228,7 +224,7 @@ public class AndroidEngine extends
                 break;
 
             default:
-                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
+                SOURCE = RxUtil.error(NOT_AVAILABLE);
                 break;
         }
 

@@ -22,7 +22,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * @param param A {@link SwipeType} instance.
      */
     default void swipeOnce(@NotNull SwipeType param) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**

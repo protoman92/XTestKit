@@ -123,15 +123,15 @@ public class BaseLocatorTest implements BaseLocatorType {
         ByXPath query3 = mock(ByXPath.class);
         WebElement element1 = mock(WebElement.class);
         WebElement element2 = mock(WebElement.class);
-        doReturn(RxUtil.error()).when(ENGINE).rx_elementsByXPath(eq(query1));
-        doReturn(Flowable.just(element1)).when(ENGINE).rx_elementsByXPath(eq(query2));
-        doReturn(Flowable.just(element2)).when(ENGINE).rx_elementsByXPath(eq(query3));
+        doReturn(RxUtil.error()).when(ENGINE).rx_byXPath(eq(query1));
+        doReturn(Flowable.just(element1)).when(ENGINE).rx_byXPath(eq(query2));
+        doReturn(Flowable.just(element2)).when(ENGINE).rx_byXPath(eq(query3));
         doReturn(RxUtil.error()).when(ENGINE).rx_xPathQueryFailure(any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_elementsByXPath(query1, query2, query3).subscribe(subscriber);
+        ENGINE.rx_byXPath(query1, query2, query3).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -156,7 +156,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_elementsByXPath(query1, query2, query3).subscribe(subscriber);
+        ENGINE.rx_byXPath(query1, query2, query3).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -181,7 +181,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_elementsByXPath(param).subscribe(subscriber);
+        ENGINE.rx_byXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -206,7 +206,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_elementsByXPath(param).subscribe(subscriber);
+        ENGINE.rx_byXPath(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -232,57 +232,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rx_elementsWithText(param).subscribe(subscriber);
+        ENGINE.rx_withText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithTextWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        when(DRIVER.findElements(any(By.ByXPath.class)))
-            .thenReturn(Collections.emptyList());
-
-        // When
-        ENGINE.rx_elementWithText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsWithText(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementWithText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rx_elementWithText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_byXPath(any(ByXPath.class));
     }
     //endregion
 
@@ -296,54 +253,14 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rx_elementsContainingText(param).subscribe(subscriber);
+        ENGINE.rx_containsText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingTextWithNoElement_shouldThrow() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn("").when(param).value();
-        doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-
-        // When
-        ENGINE.rx_elementContainingText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(noElementsContainingText(LOCALIZED_TEXT));
-        subscriber.assertNotComplete();
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementContainingText_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-        TextParam param = mock(TextParam.class);
-        doReturn("").when(param).value();
-
-        // When
-        ENGINE.rx_elementContainingText(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber) instanceof WebElement);
-        verify(ENGINE).rx_elementsByXPath(any(ByXPath.class));
+        verify(ENGINE).rx_byXPath(any(ByXPath.class));
     }
     //endregion
 }

@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
-import org.swiften.xtestkit.base.param.UnidirectionalSwipeParam;
+import org.swiften.xtestkit.base.param.UnidirectionParam;
 import org.swiften.xtestkit.base.type.*;
 
 /**
@@ -85,7 +85,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends DurationType & RepeatType>
     Flowable<Boolean> rx_swipeGenericLR(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
+        UnidirectionParam uniParam = UnidirectionParam.builder()
             .withDirection(Unidirection.LEFT_RIGHT)
             .withRepeatableType(param)
             .withDurationType(param)
@@ -104,7 +104,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends DurationType & RepeatType>
     Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
-        UnidirectionalSwipeParam uniParam = UnidirectionalSwipeParam.builder()
+        UnidirectionParam uniParam = UnidirectionParam.builder()
             .withDirection(Unidirection.RIGHT_LEFT)
             .withRepeatableType(param)
             .withDurationType(param)

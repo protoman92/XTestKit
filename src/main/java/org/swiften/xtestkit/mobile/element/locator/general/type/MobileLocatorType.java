@@ -33,7 +33,7 @@ public interface MobileLocatorType<D extends MobileDriver> extends
         if (platform.isPresent()) {
             return platform.get();
         } else {
-            throw new RuntimeException(NOT_IMPLEMENTED);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 }

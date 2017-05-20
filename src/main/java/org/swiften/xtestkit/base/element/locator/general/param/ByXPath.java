@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 /**
- * Parameter object for {@link BaseEngine#rx_elementsByXPath(ByXPath)}.
+ * Parameter object for {@link BaseEngine#rx_byXPath(ByXPath)}.
  */
 public class ByXPath implements RetryType {
     @NotNull
