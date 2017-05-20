@@ -63,7 +63,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param element The currently active editable {@link WebElement}.
      */
     default void toggleNextInput(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
@@ -89,7 +89,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param element The currently active editable {@link WebElement}.
      */
     default void toggleDoneInput(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
@@ -115,7 +115,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * the list.
      * @param ELEMENT A {@link WebElement} instance.
      * @return A {@link Flowable} instance.
-     * @see #rx_allEditableElements()
+     * @see #rx_editable()
      * @see #rx_toggleNextInput(WebElement)
      * @see #rx_toggleDoneInput(WebElement)
      * @see #consecutiveNextToggleDelay()
@@ -125,7 +125,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
         final BaseInputActionType<?> THIS = this;
         long delay = consecutiveNextToggleDelay();
 
-        return rx_allEditableElements()
+        return rx_editable()
             .lastElement()
             .toFlowable()
             .filter(ObjectUtil::nonNull)

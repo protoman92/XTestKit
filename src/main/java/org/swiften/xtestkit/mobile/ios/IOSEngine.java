@@ -18,8 +18,6 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.type.BaseEngineErrorType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -122,7 +120,7 @@ public class IOSEngine extends
                 break;
 
             default:
-                SOURCE = RxUtil.error(NOT_IMPLEMENTED);
+                SOURCE = RxUtil.error(NOT_AVAILABLE);
                 break;
         }
 

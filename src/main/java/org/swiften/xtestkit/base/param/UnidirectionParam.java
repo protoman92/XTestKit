@@ -16,11 +16,7 @@ import org.swiften.xtestkit.base.type.UnidirectionContainerType;
  * {@link org.swiften.xtestkit.base.BaseEngine#rx_swipeGenericUnidirectional(DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
-public class UnidirectionalSwipeParam implements
-    DurationType,
-    RepeatType,
-    UnidirectionContainerType
-{
+public class UnidirectionParam implements DurationType, RepeatType, UnidirectionContainerType {
     /**
      * Get a {@link Builder} instance.
      * @return A {@link Builder} instance.
@@ -35,7 +31,7 @@ public class UnidirectionalSwipeParam implements
     private int duration;
     private long delay;
 
-    UnidirectionalSwipeParam() {
+    UnidirectionParam() {
         direction = Unidirection.LEFT_RIGHT;
         delay = RepeatType.super.delay();
     }
@@ -64,14 +60,14 @@ public class UnidirectionalSwipeParam implements
 
     //region Builder
     /**
-     * Builder class for {@link UnidirectionalSwipeParam}.
+     * Builder class for {@link UnidirectionParam}.
      */
     public static final class Builder {
         @NotNull
-        private final UnidirectionalSwipeParam PARAM;
+        private final UnidirectionParam PARAM;
 
         Builder() {
-            PARAM = new UnidirectionalSwipeParam();
+            PARAM = new UnidirectionParam();
         }
 
         /**
@@ -139,7 +135,7 @@ public class UnidirectionalSwipeParam implements
         }
 
         @NonNull
-        public UnidirectionalSwipeParam build() {
+        public UnidirectionParam build() {
             return PARAM;
         }
     }

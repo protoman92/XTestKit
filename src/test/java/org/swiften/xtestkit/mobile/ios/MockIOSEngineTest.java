@@ -59,7 +59,7 @@ public final class MockIOSEngineTest implements BaseEngineErrorType, IOSErrorTyp
     public void test_addInvalidFileName_shouldThrow() {
         // Setup
         doReturn("").when(CAPABILITY).appPath(any());
-        doReturn(false).when(CAPABILITY).hasCorrectAppName(any());
+        doReturn(false).when(CAPABILITY).hasValidAppName(any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When

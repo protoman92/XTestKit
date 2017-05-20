@@ -47,11 +47,13 @@ public interface CalendarPickerActionType extends
      * Get the calendar list view. Applicable to
      * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
      * @return A {@link Flowable} instance.
-     * @see #rx_elementOfClass(OfClassType[])
+     * @see #rx_ofClass(OfClassType[])
+     * @see AndroidView.ViewType#LIST_VIEW
      */
     @NotNull
     default Flowable<WebElement> rxCalendarListView() {
-        return rx_elementOfClass(AndroidView.ViewType.LIST_VIEW.className());
+        String cls = AndroidView.ViewType.LIST_VIEW.className();
+        return rx_ofClass(cls).firstElement().toFlowable();
     }
 
     /**
@@ -122,9 +124,11 @@ public interface CalendarPickerActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rxDisplayedDate to check */
-                return THIS.rx_elementByXPath(DEFAULT_BY_XPATH)
+                return THIS.rx_byXPath(DEFAULT_BY_XPATH)
+                    .firstElement()
+                    .toFlowable()
                     .flatMap(THIS::rx_click)
-                    .flatMap(a -> THIS.rx_elementsByXPath(BY_XPATH))
+                    .flatMap(a -> THIS.rx_byXPath(BY_XPATH))
                     .flatMap(THIS::rx_click)
                     .flatMap(a -> rx_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);

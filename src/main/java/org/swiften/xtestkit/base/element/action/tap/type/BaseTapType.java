@@ -23,7 +23,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      * @param <P> Generics parameter.
      */
     default <P extends TapType & RetryType> void tap(@NotNull P param) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**

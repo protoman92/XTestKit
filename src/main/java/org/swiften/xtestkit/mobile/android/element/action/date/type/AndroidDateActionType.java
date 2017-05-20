@@ -3,6 +3,7 @@ package org.swiften.xtestkit.mobile.android.element.action.date.type;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.bool.BooleanUtil;
@@ -51,18 +52,18 @@ public interface AndroidDateActionType extends
      * @param param A {@link DateType} instance.
      * @return A {@link Flowable} instance.
      * @see BaseDateActionType#rx_hasDate(DateType)
-     * @see #rx_elementContainingText(String...)
+     * @see #rx_containsText(String...)
      * @see ObjectUtil#nonNull(Object)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
     default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
-        return Flowable
-            .concatArray(
-                rx_elementContainingText(dayString(param)),
-                rx_elementContainingText(monthString(param)),
-                rx_elementContainingText(yearString(param))
+        return Maybe
+            .mergeArray(
+                rx_containsText(dayString(param)).firstElement(),
+                rx_containsText(monthString(param)).firstElement(),
+                rx_containsText(yearString(param)).firstElement()
             )
             .all(ObjectUtil::nonNull)
             .toFlowable();
@@ -101,7 +102,7 @@ public interface AndroidDateActionType extends
      * This assumes the user is already in a picker view.
      * @param element A {@link CalendarUnit} instance.
      * @return A {@link Flowable} instance.
-     * @see #rx_elementsByXPath(ByXPath)
+     * @see #rx_byXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rxListViewItems(@NotNull CalendarUnit element) {
@@ -114,7 +115,7 @@ public interface AndroidDateActionType extends
             .withError(NO_SUCH_ELEMENT)
             .build();
 
-        return rx_elementsByXPath(byXPath);
+        return rx_byXPath(byXPath);
     }
 
     /**
@@ -207,7 +208,7 @@ public interface AndroidDateActionType extends
             @NotNull
             @Override
             public Flowable<Boolean> rx_shouldKeepSwiping() {
-                return THIS.rx_elementsByXPath(BY_XPATH)
+                return THIS.rx_byXPath(BY_XPATH)
                     /* Sometimes the driver will get the wrong element. In
                      * this case, keep scrolling so that in the next scroll,
                      * the element we are interested in gets more focus and
@@ -363,23 +364,24 @@ public interface AndroidDateActionType extends
             .withError(NO_SUCH_ELEMENT)
             .build();
 
-        return rx_elementByXPath(param);
+        return rx_byXPath(param).firstElement().toFlowable();
     }
 
     /**
      * Get the date picker header.
      * @return A {@link Flowable} instance.
-     * @see #rx_elementContainingID(String...)
+     * @see #rx_containsID(String...)
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerHeader() {
-        return rx_elementContainingID("date_picker_header");
+        return rx_containsID("date_picker_header").firstElement().toFlowable();
     }
 
     /**
      * Get the date picker day label.
      * @return A {@link Flowable} instance.
      * @see #rxDisplayElement(CalendarUnit)
+     * @see CalendarUnit#DAY
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerDay() {
@@ -390,16 +392,18 @@ public interface AndroidDateActionType extends
      * Get the date picker month label.
      * @return A {@link Flowable} instance.
      * @see #rxDisplayElement(CalendarUnit)
+     * @see CalendarUnit#MONTH
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerMonth() {
-        return rxDisplayElement(CalendarUnit.DAY);
+        return rxDisplayElement(CalendarUnit.MONTH);
     }
 
     /**
      * Get the date picker year label.
      * @return A {@link Flowable} instance.
      * @see #rxDisplayElement(CalendarUnit)
+     * @see CalendarUnit#YEAR
      */
     @NotNull
     default Flowable<WebElement> rxDatePickerYear() {

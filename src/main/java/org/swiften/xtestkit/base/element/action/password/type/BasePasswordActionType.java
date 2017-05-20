@@ -5,8 +5,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.element.action.tap.type.BaseTapType;
 import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
@@ -28,7 +26,7 @@ public interface BasePasswordActionType<D extends WebDriver> extends
      * @param element A {@link WebElement} instance.
      */
     default void togglePasswordMask(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**

@@ -3,6 +3,7 @@ package org.swiften.xtestkit.mobile.ios.capability;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.mobile.capability.MobileCap;
 
 import java.util.ArrayList;
@@ -31,10 +32,25 @@ public class IOSCap extends MobileCap {
         return parent;
     }
 
+    /**
+     * Override this method to provide a additional check for the app's name,
+     * since different {@link org.swiften.xtestkit.base.TestMode} requires
+     * different app extensions.
+     * @param capabilities A {@link Map} instance.
+     * @return A {@link Boolean} value.
+     * @see StringUtil#isNotNullOrEmpty(String)
+     * @see #hasValidAppName(String)
+     */
     @Override
+    @SuppressWarnings("SimplifiableIfStatement")
     public boolean isComplete(@NotNull Map<String,Object> capabilities) {
         String appPath = appPath(capabilities);
-        return hasCorrectAppName(appPath) && super.isComplete(capabilities);
+
+        if (StringUtil.isNotNullOrEmpty(appPath) && !hasValidAppName(appPath)) {
+            return false;
+        } else {
+            return super.isComplete(capabilities);
+        }
     }
 
     /**
@@ -43,7 +59,7 @@ public class IOSCap extends MobileCap {
      * @return A {@link Boolean} value.
      * @see #testMode()
      */
-    public boolean hasCorrectAppName(@NotNull String appName) {
+    public boolean hasValidAppName(@NotNull String appName) {
         String extension = FilenameUtils.getExtension(appName);
 
         switch (testMode()) {

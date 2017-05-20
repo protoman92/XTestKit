@@ -30,7 +30,7 @@ public abstract class BaseCap implements CapType, BaseErrorType {
         if (ObjectUtil.nonNull(platform)) {
             return platform;
         } else {
-            throw new RuntimeException(NOT_IMPLEMENTED);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class BaseCap implements CapType, BaseErrorType {
         if (ObjectUtil.nonNull(testMode)) {
             return testMode;
         } else {
-            throw new RuntimeException(NOT_IMPLEMENTED);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 

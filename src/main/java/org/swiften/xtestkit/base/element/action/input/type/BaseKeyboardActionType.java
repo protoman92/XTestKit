@@ -4,13 +4,11 @@ package org.swiften.xtestkit.base.element.action.input.type;
  * Created by haipham on 5/15/17.
  */
 
-import io.appium.java_client.MobileDriver;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.BaseEngine;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
@@ -22,7 +20,7 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
      * Hide the currently active keyboard.
      */
     default void hideKeyboard() {
-        throw new RuntimeException(NOT_IMPLEMENTED);
+        throw new RuntimeException(NOT_AVAILABLE);
     };
 
     /**

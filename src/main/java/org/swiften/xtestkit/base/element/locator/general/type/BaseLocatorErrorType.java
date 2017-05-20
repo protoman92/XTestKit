@@ -6,8 +6,6 @@ import org.jetbrains.annotations.NotNull;
  * Created by haipham on 5/8/17.
  */
 public interface BaseLocatorErrorType {
-    String NO_EDITABLE_ELEMENTS = "No editable elements";
-    String NO_CLICKABLE_ELEMENT = "No clickable elements";
     String NO_SUCH_ELEMENT = "No such element";
 
     @NotNull
