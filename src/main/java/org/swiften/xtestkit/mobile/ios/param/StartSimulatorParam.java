@@ -20,8 +20,8 @@ public class StartSimulatorParam implements RetryType, DeviceUIDType {
     }
 
     /**
-     * Return a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Return {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static StartSimulatorParam.Builder builder() {
@@ -63,7 +63,7 @@ public class StartSimulatorParam implements RetryType, DeviceUIDType {
 
         /**
          * Set the {@link #deviceUID} value.
-         * @param name A {@link String} value.
+         * @param name {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -74,7 +74,7 @@ public class StartSimulatorParam implements RetryType, DeviceUIDType {
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -85,8 +85,8 @@ public class StartSimulatorParam implements RetryType, DeviceUIDType {
 
         /**
          * Set {@link #retries} value.
-         * @param param A {@link RetryType} instance.
-         * @return A {@link Builder} instance.
+         * @param param {@link RetryType} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryType(@NotNull RetryType param) {

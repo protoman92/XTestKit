@@ -19,10 +19,10 @@ public enum Unidirection {
     /**
      * Get {@link Unidirection#UP_DOWN} or {@link Unidirection#DOWN_UP},
      * depending whether top-down is true.
-     * @param topDown A {@link Boolean} value. If this is true, return
+     * @param topDown {@link Boolean} value. If this is true, return
      *                {@link Unidirection#UP_DOWN}, and
      *                {@link Unidirection#DOWN_UP} otherwise.
-     * @return A {@link Unidirection} instance.
+     * @return {@link Unidirection} instance.
      */
     @NotNull
     public static Unidirection vertical(boolean topDown) {

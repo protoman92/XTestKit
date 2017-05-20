@@ -7,13 +7,13 @@ package org.swiften.xtestkit.base.type;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This interface provides a {@link PlatformType} for platform-specific
+ * This interface provides {@link PlatformType} for platform-specific
  * operations.
  */
 public interface PlatformContainerType extends BaseErrorType {
     /**
      * Get the associated {@link PlatformType} instance.
-     * @return A {@link PlatformType} instance.
+     * @return {@link PlatformType} instance.
      */
     @NotNull
     default PlatformType platform() {

@@ -19,7 +19,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
     /**
      * Perform a tap action.
-     * @param param A {@link P} instance.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
      */
     default <P extends TapType & RetryType> void tap(@NotNull P param) {
@@ -28,8 +28,8 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
 
     /**
      * Same as above, but uses a default {@link TapParam}.
-     * @param x The tap's x coordinate, an {@link Integer} value.
-     * @param y The tap's y coordinate, an {@link Integer} value.
+     * @param x The tap's x coordinate, {@link Integer} value.
+     * @param y The tap's y coordinate, {@link Integer} value.
      * @see #tap(TapType)
      */
     default void tap(int x, int y) {
@@ -38,9 +38,9 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
 
     /**
      * Perform a tap action.
-     * @param PARAM A {@link P} instance.
+     * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #tap(TapType)
      */
     @NotNull
@@ -56,9 +56,9 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
 
     /**
      * Same as above, but uses a default {@link TapParam}.
-     * @param X The tap's x coordinate, an {@link Integer} value.
-     * @param Y The tap's y coordinate, an {@link Integer} value.
-     * @return A {@link Flowable} instance.
+     * @param X The tap's x coordinate, {@link Integer} value.
+     * @param Y The tap's y coordinate, {@link Integer} value.
+     * @return {@link Flowable} instance.
      * @see #tap(int, int)
      */
     @NotNull

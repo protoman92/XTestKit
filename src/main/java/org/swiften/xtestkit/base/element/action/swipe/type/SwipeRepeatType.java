@@ -25,37 +25,37 @@ public interface SwipeRepeatType extends SwipeOnceType {
     /**
      * Get the swipe ratio that is used to dampen the swipe gesture in order
      * to avoid a full unidirectional swipe.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<Double> rx_elementSwipeRatio();
 
     /**
      * Check whether the swipe action should be repeated, e.g. when we are
-     * searching for an element in a list view, we can use a {@link Flowable}
+     * searching for an element in a list view, we can use {@link Flowable}
      * that emits true as long as the element is not found yet.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<Boolean> rx_shouldKeepSwiping();
 
     /**
      * Get the {@link WebElement} to swipe.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<WebElement> rx_scrollableViewToSwipe();
 
     /**
      * Get the {@link Unidirection} to swipe towards.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<Unidirection> rxDirectionToSwipe();
 
     /**
      * Repeat a scroll while a condition is satisfied.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_shouldKeepSwiping()
      * @see #rx_scrollableViewToSwipe()
      * @see #rxDirectionToSwipe()
@@ -82,7 +82,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
 
     /**
      * Repeat a scroll while a condition is satisfied.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rxSwipeRecursively()
      */
     @NotNull
@@ -96,9 +96,9 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * or individual spinners in
      * {@link DatePickerContainerType.DatePickerType#SPINNER} mode.
      * @param element The calendar list view {@link WebElement}.
-     * @param direction A {@link Unidirection} instance.
+     * @param direction {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull

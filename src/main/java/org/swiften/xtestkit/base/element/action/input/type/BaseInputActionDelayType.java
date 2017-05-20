@@ -16,7 +16,7 @@ public interface BaseInputActionDelayType {
      * Get the delay interval for
      * {@link BaseInputActionType#rx_toggleNextOrDoneInput(WebElement)}
      * so that the app has time to adjust its views.
-     * @return A {@link Long} value.
+     * @return {@link Long} value.
      * @see BaseInputActionType#rx_toggleNextOrDoneInput(WebElement)
      */
     default long consecutiveNextToggleDelay() {

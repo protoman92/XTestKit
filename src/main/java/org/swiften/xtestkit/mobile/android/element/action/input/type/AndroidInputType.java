@@ -19,7 +19,7 @@ public interface AndroidInputType extends InputType, NewXPathBuilderType {
     /**
      * Override this method to provide a default {@link XPath.Builder} instance
      * with {@link Platform#ANDROID}.
-     * @return A {@link XPath.Builder} instance.
+     * @return {@link XPath.Builder} instance.
      * @see Platform#ANDROID
      */
     @NotNull
@@ -31,7 +31,7 @@ public interface AndroidInputType extends InputType, NewXPathBuilderType {
     /**
      * Get the {@link XPath} instance for
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} locator.
-     * @return A {@link XPath} value.
+     * @return {@link XPath} value.
      */
     @NotNull
     XPath androidViewXPath();

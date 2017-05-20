@@ -73,7 +73,7 @@ public abstract class MobileEngine<
     //region Getters
     /**
      * Return {@link #startDriverOnlyOnce}.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean startDriverOnlyOnce() {
         return startDriverOnlyOnce;
@@ -81,7 +81,7 @@ public abstract class MobileEngine<
 
     /**
      * Return {@link #app}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String app() {
@@ -90,7 +90,7 @@ public abstract class MobileEngine<
 
     /**
      * Return {@link #appiumVersion}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String appiumVersion() {
@@ -99,7 +99,7 @@ public abstract class MobileEngine<
 
     /**
      * Return {@link #automationName}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String automationName() {
@@ -108,7 +108,7 @@ public abstract class MobileEngine<
 
     /**
      * Return {@link #appPackage}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String appPackage() {
@@ -118,7 +118,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #deviceName}. This can be stubbed out for custom
      * implementation.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String deviceName() {
@@ -127,7 +127,7 @@ public abstract class MobileEngine<
 
     /**
      * Return {@link #platformVersion}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String platformVersion() {
@@ -137,8 +137,8 @@ public abstract class MobileEngine<
 
     //region Test Setup
     /**
-     * @param param A {@link BeforeParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxBeforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
@@ -162,8 +162,8 @@ public abstract class MobileEngine<
     }
 
     /**
-     * @param param A {@link AfterParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterMethod(AfterParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
@@ -189,7 +189,7 @@ public abstract class MobileEngine<
 
     //region Appium Setup
     /**
-     * @return A {@link Map} of {@link String} and {@link Object}. Do not
+     * @return {@link Map} of {@link String} and {@link Object}. Do not
      * set {@link MobileCapabilityType#FULL_RESET} to be true because we
      * want to start a device and keep it open until all test for one
      * {@link MobileEngine} has finished. If necessary, we can clear the
@@ -277,8 +277,8 @@ public abstract class MobileEngine<
         }
 
         /**
-         * Same as above, but use a {@link Automation} instance instead.
-         * @param automation An {@link Automation} instance.
+         * Same as above, but use {@link Automation} instance instead.
+         * @param automation {@link Automation} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -300,7 +300,7 @@ public abstract class MobileEngine<
         /**
          * Set the {@link #ENGINE#platformVersion} value. Automatically
          * detect {@link #ENGINE#automationName} as well.
-         * @param version A {@link String} value.
+         * @param version {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -318,7 +318,7 @@ public abstract class MobileEngine<
 
         /**
          * Set the {@link #ENGINE#startDriverOnlyOnce} value.
-         * @param once A {@link Boolean} value.
+         * @param once {@link Boolean} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

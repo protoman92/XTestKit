@@ -24,8 +24,8 @@ public interface NetworkHandlerType extends
 {
     /**
      * Command to kill all instances of a process name.
-     * @param name A {@link String} value.
-     * @return A {@link String} value.
+     * @param name {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmKillAll(@NotNull String name) {
@@ -34,7 +34,7 @@ public interface NetworkHandlerType extends
 
     /**
      * Command to list all used ports.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmListAllPorts() {
@@ -43,8 +43,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Command to get a PID process that is listing to a port.
-     * @param port An {@link Integer} value.
-     * @return A {@link String} value.
+     * @param port {@link Integer} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmFindPID(int port) {
@@ -53,8 +53,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Command to stop a PID process.
-     * @param pid The PID the process. A {@link String} value.
-     * @return A {@link String} value.
+     * @param pid The PID the process. {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmKillPID(@NotNull String pid) {
@@ -63,8 +63,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Command to find a process PID using its name.
-     * @param name The name of the process. A {@link String} value.
-     * @return A {@link String} value.
+     * @param name The name of the process. {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmFindPID(@NotNull String name) {
@@ -73,8 +73,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Find process name using its PID.
-     * @param pid A {@link String} value.
-     * @return A {@link String} value.
+     * @param pid {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String cmFindProcessName(@NotNull String pid) {
@@ -83,9 +83,9 @@ public interface NetworkHandlerType extends
 
     /**
      * Get a process' name using its PID value.
-     * @param param A {@link T} instance.
+     * @param param {@link T} instance.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see #cmFindProcessName(String)
      * @see ProcessRunner#rxExecute(String)
@@ -102,8 +102,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Kill a process using its PID value.
-     * @param pid A {@link String} value.
-     * @return A {@link Flowable} instance.
+     * @param pid {@link String} value.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see #cmKillPID(String)
      * @see #NO_SUCH_PROCESS
@@ -128,12 +128,12 @@ public interface NetworkHandlerType extends
 
     /**
      * Kill a process that is listening to a port.
-     * @param PARAM A {@link T} instance.
-     * @param NP A {@link Predicate} instance that checks whether a process
-     *           should be terminated. It accepts a {@link String} that
+     * @param PARAM {@link T} instance.
+     * @param NP {@link Predicate} instance that checks whether a process
+     *           should be terminated. It accepts {@link String} that
      *           represents the process' name.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see ProcessRunner#rxExecute(String)
      * @see StringUtil#isNotNullOrEmpty(String)
@@ -171,8 +171,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Kill a process using its name.
-     * @param name A {@link String} value.
-     * @return A {@link Flowable} instance.
+     * @param name {@link String} value.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see ProcessRunner#rxExecute(String)
      * @see #cmFindPID(String)
@@ -195,8 +195,8 @@ public interface NetworkHandlerType extends
 
     /**
      * Kill all instances of a process.
-     * @param name The process' name. A {@link String} value.
-     * @return A {@link Flowable} instance.
+     * @param name The process' name. {@link String} value.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see ProcessRunner#rxExecute(String)
      * @see #cmKillAll(String)

@@ -12,8 +12,8 @@ import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
  */
 public interface ADBHandlerContainerType {
     /**
-     * Get A {@link ADBHandler} instance.
-     * @return A {@link ADBHandler} instance.
+     * Get {@link ADBHandler} instance.
+     * @return {@link ADBHandler} instance.
      */
     ADBHandler adbHandler();
 }

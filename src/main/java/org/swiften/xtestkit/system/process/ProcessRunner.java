@@ -25,7 +25,7 @@ public class ProcessRunner {
      * Execute a command using the command line.
      * @param args The command line arguments to run.
      * @return The output of the operation.
-     * @throws IOException If the operation fails, an {@link IOException} will
+     * @throws IOException If the operation fails, {@link IOException} will
      * be thrown.
      */
     @NotNull
@@ -59,7 +59,7 @@ public class ProcessRunner {
      * Execute a command using the command line and wrap the result in a
      * {@link Flowable}.
      * @param ARGS The command line arguments to run.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<String> rxExecute(@NotNull final String ARGS) {

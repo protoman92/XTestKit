@@ -38,7 +38,7 @@ public interface AndroidKeyboardActionType extends
      * keyboard is present with
      * {@link ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)},
      * and then call {@link #rx_navigateBack(RepeatType)}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_navigateBack(RepeatType)
      * @see ADBHandler#rxCheckKeyboardOpen(DeviceUIDType)
      */

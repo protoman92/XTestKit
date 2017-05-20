@@ -12,7 +12,7 @@ package org.swiften.xtestkit.base.type;
 public interface DurationType {
     /**
      * Get a duration in {@link java.util.concurrent.TimeUnit#MILLISECONDS}.
-     * @return A {@link Integer} value.
+     * @return {@link Integer} value.
      */
     int duration();
 }

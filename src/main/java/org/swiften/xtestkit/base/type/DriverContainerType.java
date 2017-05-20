@@ -8,14 +8,14 @@ import org.openqa.selenium.WebDriver;
  */
 
 /**
- * This interface provides a {@link D} driver instance.
+ * This interface provides {@link D} driver instance.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 @FunctionalInterface
 public interface DriverContainerType<D extends WebDriver> {
     /**
      * Get the associated {@link D} instance.
-     * @return A {@link D} instance.
+     * @return {@link D} instance.
      */
     @NotNull D driver();
 }

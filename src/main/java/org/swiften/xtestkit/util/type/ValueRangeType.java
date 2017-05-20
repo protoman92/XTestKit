@@ -12,18 +12,18 @@ import java.util.List;
  */
 
 /**
- * This interface provides methods to generate a {@link List} of values, based
+ * This interface provides methods to generate {@link List} of values, based
  * on min/max/step values.
  */
 public interface ValueRangeType {
     /**
      * Get a range of {@link V}, based on a min {@link V} and max {@link V}.
-     * @param min A {@link V} instance.
-     * @param max A {@link V} instance.
-     * @param step A {@link V} instance.
-     * @param converter A {@link Converter} instance.
+     * @param min {@link V} instance.
+     * @param max {@link V} instance.
+     * @param step {@link V} instance.
+     * @param converter {@link Converter} instance.
      * @param <V> Generics parameter that extends {@link Number}.
-     * @return A {@link List} of {@link V}.
+     * @return {@link List} of {@link V}.
      */
     @NotNull
     default <V extends Number> List<V> valueRange(@NotNull V min,
@@ -46,9 +46,9 @@ public interface ValueRangeType {
     @FunctionalInterface
     interface Converter<V extends Number> {
         /**
-         * Convert a {@link Double} value to {@link V}.
-         * @param value A {@link Double} value.
-         * @return A {@link V} instance.
+         * Convert {@link Double} value to {@link V}.
+         * @param value {@link Double} value.
+         * @return {@link V} instance.
          */
         @NotNull
         V convert(double value);

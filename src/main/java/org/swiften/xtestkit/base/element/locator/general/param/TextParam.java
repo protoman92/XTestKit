@@ -15,8 +15,8 @@ import org.swiften.xtestkit.base.element.property.type.base.StringType;
  */
 public class TextParam implements StringType, RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -78,7 +78,7 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -89,7 +89,7 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set {@link #retries} value.
-         * @param param A {@link RetryType} instance.
+         * @param param {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withRetries(int)
          */
@@ -100,7 +100,7 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set the {@link #ignoreCase} value.
-         * @param ignore A {@link Boolean} value.
+         * @param ignore {@link Boolean} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -111,8 +111,8 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set the {@link #ignoreCase} value.
-         * @param type A {@link IgnoreCaseType} instance.
-         * @return A {@link Builder} instance.
+         * @param type {@link IgnoreCaseType} instance.
+         * @return {@link Builder} instance.
          * @see #shouldIgnoreCase(boolean)
          */
         @NotNull
@@ -122,7 +122,7 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set {@link #text} and {@link #ignoreCase}.
-         * @param type A {@link StringType} instance.
+         * @param type {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see #withText(String)
          * @see #shouldIgnoreCase(boolean)

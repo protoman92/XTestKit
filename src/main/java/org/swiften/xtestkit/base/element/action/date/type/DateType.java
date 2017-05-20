@@ -19,8 +19,8 @@ import java.util.Date;
  */
 public interface DateType extends AttributeType<Date>, RetryType {
     /**
-     * Get a {@link Calendar} instance.
-     * @return A {@link Calendar} instance.
+     * Get {@link Calendar} instance.
+     * @return {@link Calendar} instance.
      * @see AttributeType#value()
      */
     @NotNull
@@ -32,7 +32,7 @@ public interface DateType extends AttributeType<Date>, RetryType {
 
     /**
      * Get {@link Calendar#DAY_OF_MONTH}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     default int dayOfMonth() {
         return calendar().get(Calendar.DAY_OF_MONTH);
@@ -40,7 +40,7 @@ public interface DateType extends AttributeType<Date>, RetryType {
 
     /**
      * Get {@link Calendar#DAY_OF_WEEK}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     default int dayOfWeek() {
         return calendar().get(Calendar.DAY_OF_WEEK);
@@ -48,7 +48,7 @@ public interface DateType extends AttributeType<Date>, RetryType {
 
     /**
      * Get {@link Calendar#MONTH}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     default int month() {
         return calendar().get(Calendar.MONTH);
@@ -56,7 +56,7 @@ public interface DateType extends AttributeType<Date>, RetryType {
 
     /**
      * Get {@link Calendar#YEAR}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     default int year() {
         return calendar().get(Calendar.YEAR);
@@ -65,8 +65,8 @@ public interface DateType extends AttributeType<Date>, RetryType {
     /**
      * Get the {@link Calendar} component that corresponds to a
      * {@link CalendarUnit}.
-     * @param element A {@link CalendarUnit} instance.
-     * @return An {@link Integer} value.
+     * @param element {@link CalendarUnit} instance.
+     * @return {@link Integer} value.
      */
     @SuppressWarnings("MagicConstant")
     default int component(@NotNull CalendarUnit element) {
@@ -74,9 +74,9 @@ public interface DateType extends AttributeType<Date>, RetryType {
     }
 
     /**
-     * Get a {@link String} representation of {@link #value()}.
-     * @param format A {@link String} format.
-     * @return A {@link String} value.
+     * Get {@link String} representation of {@link #value()}.
+     * @param format {@link String} format.
+     * @return {@link String} value.
      * @see #value()
      */
     @NotNull

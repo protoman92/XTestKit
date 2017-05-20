@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public interface SwipeOnceType extends BaseErrorType {
     /**
      * Perform a swipe action.
-     * @param param A {@link SwipeType} instance.
+     * @param param {@link SwipeType} instance.
      */
     default void swipeOnce(@NotNull SwipeType param) {
         throw new RuntimeException(NOT_AVAILABLE);
@@ -27,8 +27,8 @@ public interface SwipeOnceType extends BaseErrorType {
 
     /**
      * Perform a swipe action.
-     * @param PARAM A {@link SwipeType} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link SwipeType} instance.
+     * @return {@link Flowable} instance.
      * @see #swipeOnce(SwipeType)
      */
     @NotNull
@@ -41,9 +41,9 @@ public interface SwipeOnceType extends BaseErrorType {
 
     /**
      * Perform a repeated swipe action.
-     * @param PARAM A {@link P} instance.
+     * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull

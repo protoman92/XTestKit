@@ -61,7 +61,7 @@ public class TestKit implements
      * return immediately because usually each {@link Platform} CLI tools do
      * not allow two different instances running at the same time.
      * @param indexes An Array of {@link Integer}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -85,7 +85,7 @@ public class TestKit implements
      * Return a distinct stream of {@link Engine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
      * as {@link #rxOnFreshStart()} and {@link #rxOnAllTestsFinished()}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #engines()
      * @see Engine#getClass()
      */
@@ -109,7 +109,7 @@ public class TestKit implements
      * Convenient method to get {@link Engine} from {@link #ENGINES}
      * based on an Array of {@link Integer} indexes.
      * @param indexes An Array of {@link Integer}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rxOnBatchStarted(int[])
      * @see #rxOnBatchFinished(int[])
      */
@@ -162,7 +162,7 @@ public class TestKit implements
     //region Appium Setup
     /**
      * Kill all active Appium instances.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxKillAllAppiumInstances() {
@@ -177,9 +177,9 @@ public class TestKit implements
 
     //region LocalizerType
     /**
-     * @param text A {@link String} value.
-     * @param locale A {@link Locale} instance.
-     * @return A {@link Flowable} instance.
+     * @param text {@link String} value.
+     * @param locale {@link Locale} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#rxLocalize(LCFormat, Locale)
      * @see Localizer#rxLocalize(LCFormat, Locale)
      */
@@ -190,8 +190,8 @@ public class TestKit implements
     }
 
     /**
-     * @param text A {@link String} value.
-     * @return A {@link Flowable} instance.
+     * @param text {@link String} value.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#rxLocalize(LCFormat)
      * @see Localizer#rxLocalize(LCFormat)
      */
@@ -201,9 +201,9 @@ public class TestKit implements
     }
 
     /**
-     * @param text A {@link String} value.
-     * @param locale A {@link Locale} instance.
-     * @return A {@link Flowable} instance.
+     * @param text {@link String} value.
+     * @param locale {@link Locale} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#localize(LCFormat, Locale)
      * @see Localizer#localize(LCFormat, Locale)
      */
@@ -214,8 +214,8 @@ public class TestKit implements
     }
 
     /**
-     * @param text A {@link String} value.
-     * @return A {@link Flowable} instance.
+     * @param text {@link String} value.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#localize(LCFormat, Locale)
      * @see Localizer#localize(LCFormat, Locale)
      */
@@ -225,9 +225,9 @@ public class TestKit implements
     }
 
     /**
-     * @param format A {@link LCFormat} instance.
-     * @param locale A {@link Locale} instance.
-     * @return A {@link Flowable} instance.
+     * @param format {@link LCFormat} instance.
+     * @param locale {@link Locale} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#rxLocalize(LCFormat, Locale)
      * @see Localizer#rxLocalize(LCFormat, Locale)
      */
@@ -239,8 +239,8 @@ public class TestKit implements
     }
 
     /**
-     * @param format A {@link LCFormat} instance.
-     * @return A {@link Flowable} instance.
+     * @param format {@link LCFormat} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#rxLocalize(LCFormat)
      * @see Localizer#rxLocalize(LCFormat)
      */
@@ -251,9 +251,9 @@ public class TestKit implements
     }
 
     /**
-     * @param format A {@link LCFormat} instance.
-     * @param locale A {@link Locale} instance.
-     * @return A {@link Flowable} instance.
+     * @param format {@link LCFormat} instance.
+     * @param locale {@link Locale} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#localize(LCFormat, Locale)
      * @see Localizer#localize(LCFormat, Locale)
      */
@@ -265,8 +265,8 @@ public class TestKit implements
     }
 
     /**
-     * @param format A {@link LCFormat} instance.
-     * @return A {@link Flowable} instance.
+     * @param format {@link LCFormat} instance.
+     * @return {@link Flowable} instance.
      * @see LocalizerType#localize(LCFormat, Locale)
      * @see Localizer#localize(LCFormat, Locale)
      */
@@ -280,7 +280,7 @@ public class TestKit implements
     //region Getters
     /**
      * Return {@link #PROCESS_RUNNER}.
-     * @return A {@link ProcessRunner} instance.
+     * @return {@link ProcessRunner} instance.
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -289,7 +289,7 @@ public class TestKit implements
 
     /**
      * Return {@link #NETWORK_HANDLER}.
-     * @return A {@link NetworkHandler} instance.
+     * @return {@link NetworkHandler} instance.
      */
     @NotNull
     public NetworkHandler networkHandler() {
@@ -298,7 +298,7 @@ public class TestKit implements
 
     /**
      * Get an unmodifiable {@link #ENGINES} clone.
-     * @return A {@link List} of {@link Engine}.
+     * @return {@link List} of {@link Engine}.
      */
     @NotNull
     public List<Engine> engines() {
@@ -307,7 +307,7 @@ public class TestKit implements
 
     /**
      * Get {@link #localizer}.
-     * @return A {@link Localizer} instance.
+     * @return {@link Localizer} instance.
      */
     @NotNull
     public Localizer localizer() {
@@ -345,7 +345,7 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeSuite}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rxOnFreshStart()
      */
     @NotNull
@@ -355,7 +355,7 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterSuite}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rxOnAllTestsFinished()
      */
     @NotNull
@@ -365,8 +365,8 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
-     * @param param A {@link BeforeClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxBeforeClass(BeforeClassParam)
      */
     @NotNull
@@ -378,8 +378,8 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterClass}.
-     * @param param A {@link AfterClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterClass(AfterClassParam)
      */
     @NotNull
@@ -391,8 +391,8 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
-     * @param param A {@link BeforeParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxBeforeMethod(BeforeParam)
      */
     @NotNull
@@ -404,8 +404,8 @@ public class TestKit implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * @param param A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterMethod(AfterParam)
      */
     @NotNull
@@ -438,7 +438,7 @@ public class TestKit implements
     }
 
     /**
-     * @param param A {@link BeforeClassParam} instance.
+     * @param param {@link BeforeClassParam} instance.
      * @see #rxBeforeClass(BeforeClassParam)
      */
     public void beforeClass(@NotNull BeforeClassParam param) {
@@ -450,7 +450,7 @@ public class TestKit implements
     }
 
     /**
-     * @param param A {@link BeforeParam} instance.
+     * @param param {@link BeforeParam} instance.
      * @see #rxBeforeMethod(BeforeParam)
      */
     public void before(@NotNull BeforeParam param) {
@@ -462,7 +462,7 @@ public class TestKit implements
     }
 
     /**
-     * @param param An {@link AfterClassParam} instance.
+     * @param param {@link AfterClassParam} instance.
      * @see #rxAfterClass(AfterClassParam)
      */
     public void afterClass(@NotNull AfterClassParam param) {
@@ -474,7 +474,7 @@ public class TestKit implements
     }
 
     /**
-     * @param param An {@link AfterParam} instance.
+     * @param param {@link AfterParam} instance.
      * @see #rxAfterMethod(AfterParam)
      */
     public void after(@NotNull AfterParam param) {
@@ -489,7 +489,7 @@ public class TestKit implements
     //region CLI
     /**
      * Command to kill all existing Appium instances.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmKillAllAppiumInstances() {
@@ -509,7 +509,7 @@ public class TestKit implements
 
         /**
          * Set the {@link #TEST_KIT#ENGINES} {@link Engine}.
-         * @param engines A {@link Collection} of {@link Engine}.
+         * @param engines {@link Collection} of {@link Engine}.
          * @return The current {@link Builder} instance.
          */
         @NotNull

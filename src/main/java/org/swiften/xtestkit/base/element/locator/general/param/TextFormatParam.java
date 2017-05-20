@@ -15,8 +15,8 @@ import org.swiften.xtestkit.base.type.RetryType;
  */
 public class TextFormatParam implements FormatType, RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -78,7 +78,7 @@ public class TextFormatParam implements FormatType, RetryType {
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -89,7 +89,7 @@ public class TextFormatParam implements FormatType, RetryType {
 
         /**
          * Set the {@link #ignoreCase} value.
-         * @param ignore A {@link Boolean} value.
+         * @param ignore {@link Boolean} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

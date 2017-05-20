@@ -12,7 +12,7 @@ package org.swiften.xtestkit.base.type;
 public interface DelayType extends TimeUnitType {
     /**
      * Get the associated delay duration.
-     * @return A {@link Long} value.
+     * @return {@link Long} value.
      */
     long delay();
 }

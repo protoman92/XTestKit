@@ -63,7 +63,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #appPackage} value.
-         * @param appPackage A {@link String} value.
+         * @param appPackage {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -74,7 +74,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #appPackage} value.
-         * @param param A {@link AppPackageType} instance.
+         * @param param {@link AppPackageType} instance.
          * @return The current {@link Builder} instance.
          * @see #withAppPackage(String)
          */
@@ -85,7 +85,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #deviceUID} value.
-         * @param deviceUID A {@link String} value.
+         * @param deviceUID {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -96,7 +96,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #deviceUID} value.
-         * @param param A {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          * @see #withDeviceUID(String)
          */
@@ -107,7 +107,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -118,7 +118,7 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #retries} value.
-         * @param param A {@link RetryType} instance.
+         * @param param {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

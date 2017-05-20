@@ -16,8 +16,8 @@ import org.swiften.xtestkit.system.network.type.PortType;
  */
 public class PortCheckParam implements PortType, MaxPortType, PortStepType, RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -67,7 +67,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Set the {@link #port} value.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -78,7 +78,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Set the {@link #maxPort} value.
-         * @param maxPort An {@link Integer} value.
+         * @param maxPort {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -89,7 +89,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Set the {@link #portStep} value.
-         * @param step An {@link Integer} value.
+         * @param step {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -100,7 +100,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -111,7 +111,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Set the {@link #retries} value.
-         * @param type A {@link RetryType} instance.
+         * @param type {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withRetries(int)
          */
@@ -122,7 +122,7 @@ public class PortCheckParam implements PortType, MaxPortType, PortStepType, Retr
 
         /**
          * Get {@link #PARAM}.
-         * @return A {@link PortCheckParam} instance.
+         * @return {@link PortCheckParam} instance.
          * @see #PARAM
          */
         @NotNull

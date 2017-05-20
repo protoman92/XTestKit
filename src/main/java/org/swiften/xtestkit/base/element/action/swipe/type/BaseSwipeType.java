@@ -23,9 +23,9 @@ public interface BaseSwipeType<D extends WebDriver> extends
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
      * full swipe is required.
-     * @param param A {@link P} instance.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_swipe(RepeatType)
      * @see WebDriver#manage()
      * @see WebDriver.Options#window()
@@ -77,8 +77,8 @@ public interface BaseSwipeType<D extends WebDriver> extends
 
     /**
      * Perform a generic horizontal swipe motion from left to right.
-     * @param param A {@link P} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link P} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_swipeGenericUnidirectional(DurationType)
      * @see Unidirection#LEFT_RIGHT
      */
@@ -96,8 +96,8 @@ public interface BaseSwipeType<D extends WebDriver> extends
 
     /**
      * Perform a generic horizontal swipe motion from right to left.
-     * @param param A {@link RepeatType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link RepeatType} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_swipeGenericUnidirectional(DurationType)
      * @see Unidirection#RIGHT_LEFT
      */

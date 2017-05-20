@@ -11,7 +11,7 @@ package org.swiften.xtestkit.system.network.type;
 public interface MaxPortType {
     /**
      * Get the maximum port value to be used.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     default int maxPort() {
         return Integer.MAX_VALUE;

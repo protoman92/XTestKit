@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface AppPackageType {
     /**
      * Get an app package.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull String appPackage();
 }

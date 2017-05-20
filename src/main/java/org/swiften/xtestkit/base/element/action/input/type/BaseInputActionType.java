@@ -28,8 +28,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
     BaseErrorType, BaseInputActionDelayType, BaseLocatorType<D>
 {
     /**
-     * Send {@link String} keys to a {@link WebElement}.
-     * @param element A {@link WebElement} instance.
+     * Send {@link String} keys to {@link WebElement}.
+     * @param element {@link WebElement} instance.
      * @param text A varargs of {@link String} values.
      * @see WebElement#sendKeys(CharSequence...)
      */
@@ -39,10 +39,10 @@ public interface BaseInputActionType<D extends WebDriver> extends
     }
 
     /**
-     * Send a certain {@link String} key to a {@link WebElement}.
+     * Send a certain {@link String} key to {@link WebElement}.
      * @param ELEMENT The {@link WebElement} that will receive the key.
      * @param TEXT The {@link String} to be sent.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #sendKeys(WebElement, String...)
      */
     @NotNull
@@ -69,7 +69,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
     /**
      * Toggle the next input.
      * @param ELEMENT The currently active editable {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #toggleNextInput(WebElement)
      */
     @NotNull
@@ -95,7 +95,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
     /**
      * Toggle the done input.
      * @param ELEMENT The currently active editable {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #toggleDoneInput(WebElement)
      */
     @NotNull
@@ -113,8 +113,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * the views to adjust. We need to check all editable elements to
      * see whether the currently active editable field is the last one in
      * the list.
-     * @param ELEMENT A {@link WebElement} instance.
-     * @return A {@link Flowable} instance.
+     * @param ELEMENT {@link WebElement} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_editable()
      * @see #rx_toggleNextInput(WebElement)
      * @see #rx_toggleDoneInput(WebElement)

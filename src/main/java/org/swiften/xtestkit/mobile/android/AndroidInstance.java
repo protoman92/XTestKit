@@ -31,7 +31,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
     /**
      * Return {@link #deviceName}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String deviceName() {
@@ -40,7 +40,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
     /**
      * Return {@link #port}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     public synchronized int port() {
         return port;
@@ -49,7 +49,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
     /**
      * Return the device UID that will be used by adb to identify a device
      * instance.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String deviceUID() {
@@ -64,7 +64,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
     /**
      * Set {@link #port}.
-     * @param port An {@link Integer} value.
+     * @param port {@link Integer} value.
      */
     public synchronized void setPort(int port) {
         this.port = port;
@@ -79,7 +79,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
         /**
          * Set the {@link #deviceName} value.
-         * @param name A {@link String} value.
+         * @param name {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -90,7 +90,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
         /**
          * Set the {@link #uid} value.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -101,7 +101,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
         /**
          * Set the {@link #INSTANCE#port} value.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -112,7 +112,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
         /**
          * Set the {@link #mode} instance.
-         * @param mode A {@link TestMode} instance.
+         * @param mode {@link TestMode} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

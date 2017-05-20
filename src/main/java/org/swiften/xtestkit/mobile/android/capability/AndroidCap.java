@@ -12,8 +12,8 @@ import java.util.*;
  */
 public class AndroidCap extends MobileCap {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {

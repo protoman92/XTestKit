@@ -52,7 +52,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
      * We should not have a static DEFAULT instance, because we will be
      * changing {@link Address#port} quite often. A singleton instance
      * will override necessary changes and produce bugs.
-     * @return A {@link Address} instance.
+     * @return {@link Address} instance.
      */
     @NotNull
     public static Address defaultInstance() {
@@ -76,8 +76,8 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Get a default uri based on {@link #LOCAL_URI_FORMAT}.
-     * @param port An {@link Integer} value.
-     * @return A {@link String} value.
+     * @param port {@link Integer} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String defaultLocalUri(int port) {
@@ -86,7 +86,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Return {@link #mode}.
-     * @return A {@link Mode} instance.
+     * @return {@link Mode} instance.
      */
     @NotNull
     public Mode mode() {
@@ -95,7 +95,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Return {@link #uri}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String uri() {
@@ -108,7 +108,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Return {@link #port).
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     public synchronized int port() {
         return port;
@@ -116,7 +116,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Set {@link #port}.
-     * @param port An {@link Integer} value.
+     * @param port {@link Integer} value.
      */
     public synchronized void setPort(int port) {
         this.port = port;
@@ -124,7 +124,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
     /**
      * Check whether Appium should be started locally.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean isLocalInstance() {
         return mode().isLocalInstance();
@@ -139,7 +139,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
         /**
          * Set the {@link #SERVER#mode} instance.
-         * @param mode A {@link Mode} instance.
+         * @param mode {@link Mode} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -150,7 +150,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
         /**
          * Set the {@link #SERVER#uri} value.
-         * @param uri A {@link String} value.
+         * @param uri {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -161,7 +161,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType, 
 
         /**
          * Set the {@link #SERVER#port} value.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return THe current {@link Builder} instance.
          */
         @NotNull

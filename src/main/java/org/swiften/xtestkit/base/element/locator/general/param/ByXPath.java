@@ -77,7 +77,7 @@ public class ByXPath implements RetryType {
         }
 
         /**
-         * Add a {@link BaseViewType} instance to {@link #PARAM#classes}.
+         * Add {@link BaseViewType} instance to {@link #PARAM#classes}.
          * @param cls The {@link BaseViewType} to be added.
          * @return The current {@link Builder} instance.
          */
@@ -89,7 +89,7 @@ public class ByXPath implements RetryType {
 
         /**
          * Set the {@link #PARAM#error} value. This error will be used to
-         * construct an {@link Exception} when the Appium driver fails to
+         * construct {@link Exception} when the Appium driver fails to
          * find an element.
          * @param error The error {@link String} to be thrown when no elements
          *              are found.
@@ -103,7 +103,7 @@ public class ByXPath implements RetryType {
 
         /**
          * The {@link XPath} query that will be used to search for elements.
-         * @param xPath A {@link XPath} instance.
+         * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
          */
         public Builder withXPath(@NotNull XPath xPath) {
@@ -113,7 +113,7 @@ public class ByXPath implements RetryType {
 
         /**
          * Set {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -124,7 +124,7 @@ public class ByXPath implements RetryType {
 
         /**
          * Set {@link #retries} value.
-         * @param type A {@link RetryType} instance.
+         * @param type {@link RetryType} instance.
          * @return THe current {@link Builder} instance.
          */
         @NotNull

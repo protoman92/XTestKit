@@ -19,8 +19,8 @@ import org.swiften.xtestkit.base.type.UnidirectionContainerType;
  */
 public class UnidirectionParam implements DurationType, RepeatType, UnidirectionContainerType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NonNull
     public static Builder builder() {
@@ -73,7 +73,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set the {@link #direction} instance.
-         * @param direction A {@link Unidirection} instance.
+         * @param direction {@link Unidirection} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -84,7 +84,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set the {@link #times} value.
-         * @param times An {@link Integer} value.
+         * @param times {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NonNull
@@ -95,7 +95,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set the {@link #duration} value.
-         * @param duration An {@link Integer} value.
+         * @param duration {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -106,7 +106,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set the {@link #delay} value.
-         * @param delay An {@link Long} value.
+         * @param delay {@link Long} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -117,7 +117,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type A {@link RepeatType} instance.
+         * @param type {@link RepeatType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -127,7 +127,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
         /**
          * Set the {@link #duration} value.
-         * @param type A {@link DurationType} instance.
+         * @param type {@link DurationType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

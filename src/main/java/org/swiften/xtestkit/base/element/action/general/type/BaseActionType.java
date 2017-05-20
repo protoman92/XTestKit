@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 public interface BaseActionType<D extends WebDriver> extends DriverContainerType<D> {
     /**
      * Implicitly wait before search for elements.
-     * @param param A {@link DelayType} param.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DelayType} param.
+     * @return {@link Flowable} instance.
      * @see WebDriver.Options#timeouts()
      * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
      */
@@ -41,8 +41,8 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Navigate backwards for certain number of times.
-     * @param param A {@link RepeatType} object.
-     * @return A {@link Flowable} instance.
+     * @param param {@link RepeatType} object.
+     * @return {@link Flowable} instance.
      * @see #driver()
      * @see WebDriver#navigate()
      * @see WebDriver.Navigation#back()
@@ -79,7 +79,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Same as above, but uses a default {@link NavigateBack} instance.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_navigateBack(RepeatType)
      */
     @NotNull
@@ -89,8 +89,8 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Dismiss a currently active alert. Either accept or reject.
-     * @param PARAM An {@link AlertParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link AlertParam} instance.
+     * @return {@link Flowable} instance.
      * @see WebDriver#switchTo()
      * @see WebDriver.TargetLocator#alert()
      * @see Alert#accept()
@@ -114,7 +114,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Same as avove, but uses a default {@link AlertParam}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_dismissAlert(AlertParam)
      */
     @NotNull
@@ -124,7 +124,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Same as above, but uses a default {@link AlertParam}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_dismissAlert(AlertParam)
      */
     @NotNull

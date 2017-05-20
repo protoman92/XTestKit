@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PlatformNameContainerType {
     /**
      * Get the associated platform name.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull String platformName();
 }

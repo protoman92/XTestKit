@@ -8,13 +8,13 @@ import org.swiften.xtestkit.system.process.ProcessRunner;
  */
 
 /**
- * This interface provides a {@link ProcessRunner}.
+ * This interface provides {@link ProcessRunner}.
  */
 @FunctionalInterface
 public interface ProcessRunnerHolderType {
     /**
      * Get the associated {@link ProcessRunner} instance.
-     * @return A {@link ProcessRunner} instance.
+     * @return {@link ProcessRunner} instance.
      */
     @NotNull
     ProcessRunner processRunner();

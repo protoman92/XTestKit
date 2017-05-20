@@ -16,9 +16,9 @@ import java.util.List;
 @FunctionalInterface
 public interface ValueRangeConverterType<V extends Number> extends ValueRangeType {
     /**
-     * Get a {@link org.swiften.xtestkit.util.type.ValueRangeType.Converter}
+     * Get {@link org.swiften.xtestkit.util.type.ValueRangeType.Converter}
      * instance to convert {@link Double} to {@link V}.
-     * @return A {@link org.swiften.xtestkit.util.type.ValueRangeType.Converter}.
+     * @return {@link org.swiften.xtestkit.util.type.ValueRangeType.Converter}.
      */
     @NotNull
     Converter<V> converter();
@@ -26,10 +26,10 @@ public interface ValueRangeConverterType<V extends Number> extends ValueRangeTyp
     /**
      * Get a range of {@link V}, based on inclusive min {@link V} and
      * exclusive max {@link V}.
-     * @param min A {@link V} instance.
-     * @param max A {@link V} instance.
-     * @param step A {@link V} instance.
-     * @return A {@link List} of {@link V}.
+     * @param min {@link V} instance.
+     * @param max {@link V} instance.
+     * @param step {@link V} instance.
+     * @return {@link List} of {@link V}.
      */
     @NotNull
     default List<V> valueRange(@NotNull V max, @NotNull V min, @NotNull V step) {

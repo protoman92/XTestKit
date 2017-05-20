@@ -7,6 +7,7 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.Engine;
 
 import java.util.*;
@@ -25,9 +26,9 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
     Engine<?> engine();
 
     /**
-     * Register a {@link ScreenType} and store its related {@link Node}
+     * Register {@link ScreenType} and store its related {@link Node}
      * in an inner cache.
-     * @param screen A {@link ScreenType} instance.
+     * @param screen {@link ScreenType} instance.
      * @see #engine()
      * @see ScreenType#accessibleFromHere(Engine)
      */
@@ -53,8 +54,8 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
     }
 
     /**
-     * Register a {@link Collection} of {@link ScreenType}.
-     * @param screens A {@link Collection} of {@link ScreenType}.
+     * Register {@link Collection} of {@link ScreenType}.
+     * @param screens {@link Collection} of {@link ScreenType}.
      * @see #register(ScreenType)
      */
     default void register(@NotNull Collection<? extends ScreenType> screens) {
@@ -63,15 +64,15 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
     }
 
     /**
-     * Add a {@link Node} to an inner cache.
-     * @param node A {@link List} of {@link Node}.
+     * Add {@link Node} to an inner cache.
+     * @param nodes {@link List} of {@link Node}.
      */
-    void addNodes(@NotNull List<Node> node);
+    void addNodes(@NotNull List<Node> nodes);
 
     /**
-     * Check whether a {@link Node} has been added to an inner cache.
-     * @param node A {@link Node} instance.
-     * @return A {@link Boolean} value.
+     * Check whether {@link Node} has been added to an inner cache.
+     * @param node {@link Node} instance.
+     * @return {@link Boolean} value.
      * @see #register(ScreenType)
      */
     default boolean hasAddedNode(@NotNull Node node) {
@@ -80,16 +81,16 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
 
     /**
      * Return the inner {@link Node} cache.
-     * @return A {@link List} of {@link Node}.
+     * @return {@link List} of {@link Node}.
      */
     @NotNull
     List<Node> registeredNodes();
 
     /**
-     * Get a {@link List} of {@link Node} whose {@link Node#FIRST}
-     * equals to a {@link ScreenType} instance.
-     * @param SCREEN A {@link ScreenType} instance.
-     * @return A {@link List} of {@link Node}.
+     * Get {@link List} of {@link Node} whose {@link Node#FIRST}
+     * equals to {@link ScreenType} instance.
+     * @param SCREEN {@link ScreenType} instance.
+     * @return {@link List} of {@link Node}.
      * @see #registeredNodes()
      * @see Node#FIRST
      */
@@ -101,10 +102,10 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
     }
 
     /**
-     * Get a {@link List} of {@link Node} whose {@link Node#SECOND}
-     * equals to a {@link ScreenType} instance.
-     * @param SCREEN A {@link ScreenType} instance.
-     * @return A {@link List} of {@link Node}.
+     * Get {@link List} of {@link Node} whose {@link Node#SECOND}
+     * equals to {@link ScreenType} instance.
+     * @param SCREEN {@link ScreenType} instance.
+     * @return {@link List} of {@link Node}.
      * @see #registeredNodes()
      * @see Node#SECOND
      */
@@ -119,7 +120,7 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
      * and another.
      * @param FROM The origin {@link ScreenType} instance.
      * @param TO The destination {@link ScreenType} instance.
-     * @return A {@link Optional} instance.
+     * @return {@link Optional} instance.
      * @see #registeredNodes()
      * @see Node#connects(ScreenType, ScreenType)
      */
@@ -135,33 +136,37 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
      * Get the shortest route from one {@link ScreenType} to another.
      * @param from The origin {@link ScreenType} instance.
      * @param to The destination {@link ScreenType} instance.
-     * @return A {@link List} of {@link Node}.
-     * @throws Exception If the two {@link ScreenType} cannot be connected.
+     * @return {@link List} of {@link Node}.
      * @see #node(ScreenType, ScreenType)
      * @see #fromNodes(ScreenType)
-     * @see #NOT_REACHABLE
      */
     @NotNull
     default List<Node> nodes(@NotNull ScreenType from,
-                             @NotNull ScreenType to) throws Exception {
+                             @NotNull ScreenType to) {
         Optional<Node> nodeOps = node(from, to);
+        List<Node> navigations = Collections.emptyList();
 
         if (nodeOps.isPresent()) {
             return Collections.singletonList(nodeOps.get());
         } else if (!from.equals(to)) {
-            List<Node> navigations = Collections.emptyList();
             List<Node> nodes = fromNodes(from);
             int nodeCount = 0;
 
             for (Node node : nodes) {
                 ScreenType screen1 = node.SECOND;
                 List<Node> nav1 = new LinkedList<>(nodes(screen1, to));
+                nav1.add(0, node);
 
-                /* If nav1 is empty, that means we cannot access the second
-                 * screen from the first screen */
-                if (!nav1.isEmpty()) {
-                    /* Add the current node to complete the chain */
-                    nav1.add(0, node);
+                /* Including the originating node, if the node list has only
+                 * 2 elements, it should be the shortest since we have
+                 * already ruled out the 1-element case */
+                if (nav1.size() == 2) {
+                    navigations = nav1;
+                    break;
+                } else if (nav1.size() > 1) {
+                    /* If nav1 is empty (not including the originating node),
+                     * that means we cannot access the second screen from the
+                     * first screen */
 
                     if (nodeCount == 0 || nav1.size() < nodeCount) {
                         nodeCount = nav1.size();
@@ -169,28 +174,23 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
                     }
                 }
             }
-
-            if (!navigations.isEmpty()) {
-                return navigations;
-            }
         }
 
-        throw new RuntimeException(NOT_REACHABLE);
+        return navigations;
     }
 
     /**
-     * Get a {@link List} of {@link Node} to get from one
-     * {@link ScreenType} to another. If a {@link ScreenType} is not directly
+     * Get {@link List} of {@link Node} to get from one
+     * {@link ScreenType} to another. If {@link ScreenType} is not directly
      * accessible from a previous instance, attempt to calculate the shortest
      * route.
      * @param screens A varargs of {@link ScreenType}.
-     * @return A {@link List} of {@link Node}.
-     * @throws Exception If the two {@link ScreenType} cannot be connected.
+     * @return {@link List} of {@link Node}.
      * @see #engine()
      * @see #nodes(ScreenType, ScreenType)
      */
     @NotNull
-    default List<Node> nodes(@NotNull ScreenType...screens) throws Exception {
+    default List<Node> nodes(@NotNull ScreenType...screens) {
         List<Node> navigations = new LinkedList<>();
 
         for (int i = 0, length = screens.length; i < length; i++) {
@@ -209,32 +209,37 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
      * @param initial The initial argument to pass to
      *                {@link ScreenType.Navigation#navigator(Object)}
      * @param screens A varargs of {@link ScreenType}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
+     * @see #nodes(ScreenType...)
+     * @see #notReachable(ScreenType...)
+     * @see ScreenType.Direction#NAVIGATION
+     * @see ScreenType.Navigation#navigator(Object)
+     * @see RxUtil#error(String)
      */
     @NotNull
     default Flowable<?> rx_navigate(@NotNull Object initial,
                                     @NotNull ScreenType...screens) {
-        try {
-            final List<Node> NODES = nodes(screens);
+        final List<Node> NODES = nodes(screens);
+
+        if (NODES.isEmpty()) {
+            return RxUtil.error(notReachable(screens));
+        } else {
             final int LENGTH = NODES.size();
 
             class Repeater {
                 @NotNull
-                private Flowable<?> repeat(@NotNull Object previous,
-                                           final int INDEX) {
+                private Flowable<?> repeat(@NotNull Object init, final int INDEX) {
                     if (INDEX < LENGTH) {
                         return NODES.get(INDEX)
-                            .DIRECTION.NAVIGATION.navigator(previous)
+                            .DIRECTION.NAVIGATION.navigator(init)
                             .flatMap(a -> new Repeater().repeat(a, INDEX + 1));
                     } else {
-                        return Flowable.just(previous);
+                        return Flowable.just(init);
                     }
                 }
             }
 
             return new Repeater().repeat(initial, 0);
-        } catch (Exception e) {
-            return Flowable.error(e);
         }
     }
 
@@ -259,7 +264,7 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
         @NotNull
         @Override
         public String toString() {
-            return String.format("From %s, to %s", FIRST, SECOND);
+            return String.format("%s to %s", FIRST, SECOND);
         }
 
         @Override
@@ -277,7 +282,7 @@ public interface ScreenManagerType extends ScreenManagerErrorType {
          * {@link ScreenType}.
          * @param from The origin {@link ScreenType} instance.
          * @param to The destination {@link ScreenType} instance.
-         * @return A {@link Boolean} value.
+         * @return {@link Boolean} value.
          * @see #FIRST
          * @see #SECOND
          */

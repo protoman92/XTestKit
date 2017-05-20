@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface AttributeType<T> {
     /**
      * Get the associated {@link T} value.
-     * @return A {@link T} value.
+     * @return {@link T} value.
      */
     @NotNull T value();
 }

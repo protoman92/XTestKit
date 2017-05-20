@@ -16,8 +16,8 @@ import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
  */
 public class SwipeParam implements RepeatType, SwipeType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NonNull
     public static Builder builder() {
@@ -92,7 +92,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #startX} value.
-         * @param startX An {@link Integer} value.
+         * @param startX {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -103,7 +103,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #startY} value.
-         * @param startY An {@link Integer} value.
+         * @param startY {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -114,7 +114,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #endX} value.
-         * @param endX An {@link Integer} value.
+         * @param endX {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NonNull
@@ -125,7 +125,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #endY} value.
-         * @param endY An {@link Integer} value.
+         * @param endY {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NonNull
@@ -136,7 +136,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #duration} value.
-         * @param duration An {@link Integer} value.
+         * @param duration {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NonNull
@@ -147,7 +147,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #times} value.
-         * @param times An {@link Integer} value.
+         * @param times {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NonNull
@@ -158,7 +158,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set the {@link #delay} value.
-         * @param delay An {@link Long} value.
+         * @param delay {@link Long} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -169,7 +169,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type A {@link RepeatType} instance.
+         * @param type {@link RepeatType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -179,7 +179,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
         /**
          * Set {@link #duration}.
-         * @param type A {@link DurationType} instance.
+         * @param type {@link DurationType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

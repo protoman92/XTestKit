@@ -59,10 +59,10 @@ public class XPath {
         }
 
         /**
-         * With an {@link Attribute} instance, construct an attribute
+         * With {@link Attribute} instance, construct an attribute
          * {@link String} using the specified {@link Attribute.Mode}.
-         * @param attribute An {@link Attribute} instance.
-         * @param FORMAT A {@link String} value. This is the attribute format
+         * @param attribute {@link Attribute} instance.
+         * @param FORMAT {@link String} value. This is the attribute format
          *               that will be passed to
          *               {@link String#format(String, Object...)}, along with
          *               the attribute name and a specified value.
@@ -90,8 +90,8 @@ public class XPath {
         /**
          * Same as above, but get a format {@link String} from a
          * {@link Formatible} instance.
-         * @param attribute An {@link Attribute} instance.
-         * @param formatible A {@link Formatible} instance.
+         * @param attribute {@link Attribute} instance.
+         * @param formatible {@link Formatible} instance.
          * @return The current {@link Builder} instance.
          * @see #appendAttribute(Attribute, String)
          */
@@ -103,7 +103,7 @@ public class XPath {
 
         /**
          * Append a @index attribute.
-         * @param atIndex An {@link AtIndex} instance.
+         * @param atIndex {@link AtIndex} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#indexAttribute()
          * @see AtIndex#stringFormat()
@@ -118,7 +118,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link AtIndex} instance.
-         * @param INDEX An {@link Integer} value.
+         * @param INDEX {@link Integer} value.
          * @return The current {@link Builder} instance.
          * @see #atIndex(AtIndex)
          */
@@ -129,7 +129,7 @@ public class XPath {
 
         /**
          * Append a @instance attribute.
-         * @param ofInstance An {@link OfInstance} instance.
+         * @param ofInstance {@link OfInstance} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#instanceAttribute()
          * @see OfInstance#stringFormat()
@@ -144,7 +144,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link OfInstance} instance.
-         * @param INSTANCE An {@link Integer} value.
+         * @param INSTANCE {@link Integer} value.
          * @return The current {@link Builder} instance.
          * @see #ofInstance(int)
          */
@@ -155,7 +155,7 @@ public class XPath {
 
         /**
          * Append a contains(@class) attribute.
-         * @param ofClass A {@link OfClass} instance.
+         * @param ofClass {@link OfClass} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#classAttribute()
          * @see OfClass#stringFormat()
@@ -170,7 +170,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link OfClass}.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -194,7 +194,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link OfClass}.
-         * @param CLS A {@link String} value.
+         * @param CLS {@link String} value.
          * @return The current {@link Builder} instance.
          * @see #ofClass(OfClass)
          */
@@ -205,7 +205,7 @@ public class XPath {
 
         /**
          * Append a contains(@id) attribute.
-         * @param containsID A {@link ContainsID} instance.
+         * @param containsID {@link ContainsID} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#idAttribute()
          * @see ContainsID#stringFormat()
@@ -220,7 +220,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link ContainsID} instance.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -244,7 +244,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link ContainsID} instance.
-         * @param ID A {@link String} value.
+         * @param ID {@link String} value.
          * @return The current {@link Builder} instance.
          * @see #containsID(ContainsID)
          */
@@ -255,7 +255,7 @@ public class XPath {
 
         /**
          * Appends a @text attribute.
-         * @param hasText A {@link HasText} instance.
+         * @param hasText {@link HasText} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#textAttribute()
          * @see HasText#stringFormat()
@@ -270,8 +270,8 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link StringType} instance.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * based on properties from {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -294,7 +294,7 @@ public class XPath {
         }
 
         /**
-         * Same as above, but uses a {@link HasText} instance.
+         * Same as above, but uses {@link HasText} instance.
          * @param TEXT The text to be appended.
          * @return The current {@link Builder} instance.
          * @see #hasText(HasText)
@@ -306,7 +306,7 @@ public class XPath {
 
         /**
          * Appends a contains(@text) attribute.
-         * @param containsText A {@link ContainsText} instance.
+         * @param containsText {@link ContainsText} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#textAttribute()
          * @see ContainsText#stringFormat()
@@ -321,8 +321,8 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link StringType} instance.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * based on properties from {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -358,7 +358,7 @@ public class XPath {
         /**
          * Appends a @hint attribute. There are, however, platform implications
          * since on iOS this may be called a placeholder.
-         * @param hasHint A {@link HasHint} instance.
+         * @param hasHint {@link HasHint} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#hintAttribute()
          * @see HasHint#stringFormat()
@@ -373,8 +373,8 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link StringType} instance.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * based on properties from {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -410,7 +410,7 @@ public class XPath {
         /**
          * Appends a contains(@hint) attribute. There are, however, platform
          * implications since on iOS this may be called a placeholder.
-         * @param containsHint A {@link ContainsHint} instance.
+         * @param containsHint {@link ContainsHint} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#hintAttribute()
          * @see ContainsHint#stringFormat()
@@ -425,8 +425,8 @@ public class XPath {
 
         /**
          * Same as above, but uses an anonymously-created {@link HasText},
-         * based on properties from a {@link StringType} instance.
-         * @param STRING_TYPE A {@link StringType} instance.
+         * based on properties from {@link StringType} instance.
+         * @param STRING_TYPE {@link StringType} instance.
          * @return The current {@link Builder} instance.
          * @see StringType#value()
          * @see StringType#ignoreCase()
@@ -459,7 +459,7 @@ public class XPath {
 
         /**
          * Appends an @enabled attribute.
-         * @param enabled A {@link Enabled} instance.
+         * @param enabled {@link Enabled} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#enabledAttribute()
          * @see Enabled#stringFormat()
@@ -474,7 +474,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link Enabled} instance.
-         * @param ENABLED A {@link Boolean} value.
+         * @param ENABLED {@link Boolean} value.
          * @return The current {@link Builder} instance.
          * @see #isEnabled(Enabled)
          */
@@ -485,7 +485,7 @@ public class XPath {
 
         /**
          * Appends a @clickable attribute.
-         * @param clickable A {@link Clickable} instance.
+         * @param clickable {@link Clickable} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#clickableAttribute()
          * @see Clickable#stringFormat()
@@ -500,7 +500,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link Clickable} instance.
-         * @param CLICKABLE A {@link Boolean} value.
+         * @param CLICKABLE {@link Boolean} value.
          * @return The current {@link Builder} instance.
          * @see #isClickable(Clickable)
          */
@@ -511,7 +511,7 @@ public class XPath {
 
         /**
          * Appends a @editable attribute.
-         * @param editable A {@link Editable} instance.
+         * @param editable {@link Editable} instance.
          * @return The current {@link Builder} instance.
          * @see PlatformType#editableAttribute()
          * @see Editable#stringFormat()
@@ -526,7 +526,7 @@ public class XPath {
 
         /**
          * Same as above, but uses a default {@link Editable}.
-         * @param EDITABLE A {@link Boolean} value.
+         * @param EDITABLE {@link Boolean} value.
          * @return The current {@link Builder} instance.
          * @see #isEditable(Editable)
          */
@@ -544,7 +544,7 @@ public class XPath {
 
     //region Locator Types
     /**
-     * Classes that implement this interface must provide an {@link XPath}
+     * Classes that implement this interface must provide {@link XPath}
      * format that can be used to construct {@link Attribute}.
      */
     @FunctionalInterface
@@ -552,8 +552,8 @@ public class XPath {
         /**
          * Get the value to be formatted. Override this to provide custom
          * values.
-         * @param value A {@link T} instance.
-         * @return A {@link String} value.
+         * @param value {@link T} instance.
+         * @return {@link String} value.
          */
         @NotNull
         default String formatValue(@NotNull T value) {
@@ -563,7 +563,7 @@ public class XPath {
         /**
          * Get the format {@link String} with which we construct an XPath
          * query.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          */
         @NotNull
         default String stringFormat() {
@@ -573,7 +573,7 @@ public class XPath {
     }
 
     /**
-     * This interface provides methods to clean a {@link String} of double
+     * This interface provides methods to cle{@link String} of double
      * and single quote marks. Note that this is applicable both to direct
      * comparison queries and @contain(@translate) - however, we must not
      * use concat() when there are no quotation marks.
@@ -582,8 +582,8 @@ public class XPath {
         /**
          * Strip the {@link String} to be formatted of single and double
          * quotes by separating and concatenating.
-         * @param value A {@link String} value.
-         * @return A {@link String} value.
+         * @param value {@link String} value.
+         * @return {@link String} value.
          * @see XPathQuoteMark#wrapInQuotation(String)
          */
         @NotNull
@@ -658,7 +658,7 @@ public class XPath {
         /**
          * Override this method to provide custom format that can add ignore
          * case capability.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          * @see #value()
          */
         @NotNull

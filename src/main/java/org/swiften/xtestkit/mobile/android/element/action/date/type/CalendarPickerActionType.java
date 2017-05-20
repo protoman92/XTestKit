@@ -46,7 +46,7 @@ public interface CalendarPickerActionType extends
     /**
      * Get the calendar list view. Applicable to
      * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_ofClass(OfClassType[])
      * @see AndroidView.ViewType#LIST_VIEW
      */
@@ -59,15 +59,15 @@ public interface CalendarPickerActionType extends
     /**
      * Select a day if the app is using
      * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
-     * We need to define an {@link Attribute} with "content-desc", and
+     * We need to define {@link Attribute} with "content-desc", and
      * repeatedly search for the correct day until it is found. However, even
      * if the day is found, Appium could still select the wrong element -
      * so in this case an additional iteration is required.
      * This is called the calibration phase because
      * {@link #rx_selectYear(DateType)} should have brought the picker close
      * to the date we want.
-     * @param PARAM A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rxCalibrateDate(@NotNull final DateType PARAM) {

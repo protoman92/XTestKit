@@ -72,7 +72,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
         /**
          * Set the {@link #PARAM#nameSpace} value. Can be one of
          * 'system', 'secure', 'global'.
-         * @param nameSpace A {@link String} value.
+         * @param nameSpace {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -93,7 +93,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
         /**
          * Set {@link #PARAM#key} value. Specifies the argument (option) to be
          * changed
-         * @param key A {@link String} value.
+         * @param key {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -105,7 +105,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
         /**
          * Set {@link #PARAM#value} value. Specifies the new value for the
          * settings specified by {@link #PARAM#key}.
-         * @param value An {@link Object} that will be converted to a
+         * @param value {@link Object} that will be converted to a
          *              {@link String}.
          * @return The current {@link Builder} instance.
          */
@@ -117,7 +117,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
 
         /**
          * Set the {@link #PARAM#deviceUID} value.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link ConnectionParam.Builder} instance.
          */
         @NotNull
@@ -127,9 +127,9 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDType}
+         * Set {@link #PARAM#deviceUID} with {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDType} instance.
          * @return The current {@link ConnectionParam.Builder} instance.
          */
         @NotNull

@@ -38,7 +38,7 @@ public final class Attribute {
         /**
          * Get the joiner {@link String} that will be used to join attributes
          * in {@link Attribute#attributes}.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          */
         @NotNull
         public String joiner() {
@@ -95,7 +95,7 @@ public final class Attribute {
          * Set the {@link #ATTRIBUTE#mode} value. This will be used to
          * decide how elements are to be searched using the
          * {@link #ATTRIBUTE#attributes} {@link List}
-         * @param mode A {@link Mode} instance.
+         * @param mode {@link Mode} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

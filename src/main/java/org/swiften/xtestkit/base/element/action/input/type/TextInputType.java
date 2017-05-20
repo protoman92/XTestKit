@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public interface TextInputType extends InputType {
     /**
      * Get a random {@link String} input.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull String randomInput();
 }

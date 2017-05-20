@@ -31,7 +31,7 @@ public class XCRunHandler implements XCRunDelayType {
     //region Getters
     /**
      * Return {@link #PROCESS_RUNNER}.
-     * @return A {@link ProcessRunner} instance.
+     * @return {@link ProcessRunner} instance.
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -42,7 +42,7 @@ public class XCRunHandler implements XCRunDelayType {
     //region CLI commands
     /**
      * Get path to xcrun.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmXCRun() {
@@ -52,7 +52,7 @@ public class XCRunHandler implements XCRunDelayType {
     /**
      * Get path to XCode.app. We can use
      * XCode/Contents/Developer/Applications/Simulator to start a simulator.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmXCode() {
@@ -61,7 +61,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Get path to Simulator CLI.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmXCodeSimulator() {
@@ -80,7 +80,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Get path to xcrun instruments.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmXCRun()
      */
     @NotNull
@@ -90,7 +90,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Get path to simctl.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmXCRun()
      */
     @NotNull
@@ -102,9 +102,9 @@ public class XCRunHandler implements XCRunDelayType {
      * Get an environment variable specified by a key name. When this command
      * is executed, a value will only be emitted once the simulator has gone
      * into booted mode.
-     * @param key A {@link String} value specifying the variable name.
-     * @param deviceUID A {@link String} value specifying the device UID.
-     * @return A {@link String} value.
+     * @param key {@link String} value specifying the variable name.
+     * @param deviceUID {@link String} value specifying the device UID.
+     * @return {@link String} value.
      * @see #cmSimctl()
      */
     @NotNull
@@ -114,8 +114,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Get ${HOME} environment variable.
-     * @param deviceUID A {@link String} value specifying the device UID.
-     * @return A {@link String} value.
+     * @param deviceUID {@link String} value specifying the device UID.
+     * @return {@link String} value.
      * @see #cmGetEnv(String, String)
      */
     @NotNull
@@ -125,7 +125,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Command to get list of available instruments/simulators.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmSimctl()
      */
     @NotNull
@@ -135,8 +135,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Command to start a simulator.
-     * @param deviceUID A {@link String} value specifying the device UID.
-     * @return A {@link String} value.
+     * @param deviceUID {@link String} value specifying the device UID.
+     * @return {@link String} value.
      * @see #cmXCodeSimulator()
      */
     @NotNull
@@ -147,7 +147,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Command to stop the currently active simulator.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmStopSimulator() {
@@ -156,8 +156,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Command to check whether the simulator has booted up or not.
-     * @param deviceUID A {@link String} value specifying the device UID.
-     * @return A {@link String} value.
+     * @param deviceUID {@link String} value specifying the device UID.
+     * @return {@link String} value.
      * @see #cmGetHomeEnv(String)
      */
     @NotNull
@@ -167,8 +167,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Command to install app.
-     * @param app A {@link String} value specifying the app path.
-     * @return A {@link String} value.
+     * @param app {@link String} value specifying the app path.
+     * @return {@link String} value.
      * @see #cmSimctl()
      */
     @NotNull
@@ -179,7 +179,7 @@ public class XCRunHandler implements XCRunDelayType {
     /**
      * Command to launch app.
      * @param appPackage The app's package name.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmSimctl()
      */
     @NotNull
@@ -190,7 +190,7 @@ public class XCRunHandler implements XCRunDelayType {
     /**
      * Command to uninstall an application.
      * @param appPackage The app's package name.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmSimctl()
      */
     @NotNull
@@ -203,8 +203,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Check if the simulator has been booted yet.
-     * @param deviceUID A {@link String} value specifying the device UID.
-     * @return A {@link String} value.
+     * @param deviceUID {@link String} value specifying the device UID.
+     * @return {@link String} value.
      * @see #cmCheckSimulatorBooted(String)
      */
     @NotNull
@@ -216,8 +216,8 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Start a simulator.
-     * @param PARAM A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see #cmStartSimulator(String)
      * @see #rxCheckSimulatorBooted(String)
      */
@@ -258,8 +258,8 @@ public class XCRunHandler implements XCRunDelayType {
     //region Stop Simulator
     /**
      * Stop the currently active simulator.
-     * @param param A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see #cmStopSimulator()
      */
     @NotNull
@@ -277,8 +277,8 @@ public class XCRunHandler implements XCRunDelayType {
     //region Device Methods
     /**
      * Install an app.
-     * @param app A {@link String} value specifying the app path.
-     * @return A {@link Flowable} instance.
+     * @param app {@link String} value specifying the app path.
+     * @return {@link Flowable} instance.
      * @see #cmInstallApp(String)
      */
     @NotNull
@@ -291,7 +291,7 @@ public class XCRunHandler implements XCRunDelayType {
     /**
      * Uninstall an app.
      * @param appPackage The app's package name.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #cmUninstallApp(String)
      */
     @NotNull

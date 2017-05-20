@@ -17,9 +17,9 @@ public enum XPathQuoteMark implements AttributeType<String> {
     DOUBLE;
 
     /**
-     * Return a {@link XPathQuoteMark} from a quotation mark.
-     * @param quote A {@link String} value.
-     * @return A {@link XPathQuoteMark} instance wrapped in an {@link Optional}.
+     * Return {@link XPathQuoteMark} from a quotation mark.
+     * @param quote {@link String} value.
+     * @return {@link XPathQuoteMark} instance wrapped in {@link Optional}.
      */
     @NotNull
     public static Optional<XPathQuoteMark> from(@NotNull String quote) {
@@ -33,9 +33,9 @@ public enum XPathQuoteMark implements AttributeType<String> {
     }
 
     /**
-     * Check if a {@link String} is a quotation mark.
-     * @param value A {@link String} value.
-     * @return A {@link Boolean} value.
+     * Check if {@link String} is a quotation mark.
+     * @param value {@link String} value.
+     * @return {@link Boolean} value.
      * @see #from(String)
      */
     public static boolean isQuoteMarks(@NotNull String value) {
@@ -43,9 +43,9 @@ public enum XPathQuoteMark implements AttributeType<String> {
     }
 
     /**
-     * Wrap a {@link String} within appropriate quotation marks.
-     * @param value A {@link String} value.
-     * @return A {@link String} value.
+     * Wrap {@link String} within appropriate quotation marks.
+     * @param value {@link String} value.
+     * @return {@link String} value.
      * @see #from(String)
      * @see #wrappedInQuotation()
      */
@@ -63,7 +63,7 @@ public enum XPathQuoteMark implements AttributeType<String> {
     //region AttributeType
     /**
      * Get the quotation mark to be used.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see AttributeType#value()
      */
     @NotNull
@@ -84,7 +84,7 @@ public enum XPathQuoteMark implements AttributeType<String> {
     /**
      * Return a quotation mark that is wrapped in quotation marks of the
      * opposite kind.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String wrappedInQuotation() {

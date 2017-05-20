@@ -21,7 +21,7 @@ public interface MobileSwipeType<D extends MobileDriver> extends
     BaseSwipeType<D>, MobileActionType<D>
 {
     /**
-     * @param PARAM A {@link SwipeType} instance.
+     * @param PARAM {@link SwipeType} instance.
      * @see #driver()
      * @see #touchAction()
      * @see BaseSwipeType#swipeOnce(SwipeType)

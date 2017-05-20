@@ -22,7 +22,7 @@ public interface MobileLocatorType<D extends MobileDriver> extends
     BaseLocatorType<D>, PlatformNameContainerType
 {
     /**
-     * @return A {@link PlatformType} instance.
+     * @return {@link PlatformType} instance.
      * @see Engine#platform()
      */
     @NotNull

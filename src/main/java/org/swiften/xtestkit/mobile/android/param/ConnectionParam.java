@@ -29,7 +29,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
 
     /**
      * Return {@link #deviceUID}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     @Override
@@ -39,7 +39,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
 
     /**
      * Return {@link #enable}.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean enable() {
         return enable;
@@ -55,7 +55,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
         /**
          * Set the {@link #PARAM#enable} value. Specifies whether connection
          * should be enabled/disabled.
-         * @param enable A {@link Boolean} value.
+         * @param enable {@link Boolean} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -66,7 +66,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
 
         /**
          * Set the {@link #PARAM#deviceUID} value.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -76,9 +76,9 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} with a {@link DeviceUIDType}
+         * Set {@link #PARAM#deviceUID} with {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull

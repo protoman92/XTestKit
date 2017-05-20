@@ -40,7 +40,7 @@ public class StopEmulatorParam implements RetryType, PortType {
     //region PortType
     /**
      * Return {@link #port}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     @Override
     public int port() {
@@ -57,7 +57,7 @@ public class StopEmulatorParam implements RetryType, PortType {
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -68,7 +68,7 @@ public class StopEmulatorParam implements RetryType, PortType {
 
         /**
          * Set the {@link #port} value.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -79,7 +79,7 @@ public class StopEmulatorParam implements RetryType, PortType {
 
         /**
          * Set {@link #retries} value.
-         * @param param A {@link RetryType} instance.
+         * @param param {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withRetries(int)
          */
@@ -90,7 +90,7 @@ public class StopEmulatorParam implements RetryType, PortType {
 
         /**
          * Set {@link #port}.
-         * @param param A {@link PortType} instance.
+         * @param param {@link PortType} instance.
          * @return The current {@link Builder} instance.
          * @see #withPort(int)
          */

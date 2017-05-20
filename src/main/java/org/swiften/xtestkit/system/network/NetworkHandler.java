@@ -55,8 +55,8 @@ public class NetworkHandler implements NetworkHandlerType {
 
     //region Getters
     /**
-     * Return a {@link ProcessRunner} instance from {@link #PROCESS_RUNNER}.
-     * @return A {@link ProcessRunner} instance.
+     * Return {@link ProcessRunner} instance from {@link #PROCESS_RUNNER}.
+     * @return {@link ProcessRunner} instance.
      * @see #PROCESS_RUNNER
      */
     @NotNull
@@ -67,7 +67,7 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * Get all ports that are marked as used in {@link #USED_PORTS}.
-     * @return A {@link Collection} of {@link Integer}.
+     * @return {@link Collection} of {@link Integer}.
      * @see Collections#unmodifiableCollection(Collection)
      * @see #USED_PORTS
      */
@@ -86,8 +86,8 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * Check if a port has yet to be marked as used.
-     * @param port The port to be checked. An {@link Integer} value.
-     * @return A {@link Boolean} value.
+     * @param port The port to be checked. {@link Integer} value.
+     * @return {@link Boolean} value.
      * @see #USED_PORTS
      */
     public boolean isPortAvailable(int port) {
@@ -95,9 +95,9 @@ public class NetworkHandler implements NetworkHandlerType {
     }
 
     /**
-     * Check if all ports in a {@link Collection} has been marked as used.
-     * @param ports A {@link Collection} of {@link Integer}.
-     * @return A {@link Boolean} value.
+     * Check if all ports in {@link Collection} has been marked as used.
+     * @param ports {@link Collection} of {@link Integer}.
+     * @return {@link Boolean} value.
      * @see #USED_PORTS
      */
     public boolean checkPortsMarkedAsUsed(@NotNull Collection<Integer> ports) {
@@ -108,7 +108,7 @@ public class NetworkHandler implements NetworkHandlerType {
     //region Setters
     /**
      * Mark a port as used by adding it to {@link #USED_PORTS}.
-     * @param port The port to be marked as used. An {@link Integer} value.
+     * @param port The port to be marked as used. {@link Integer} value.
      */
     public synchronized void markPortAsUsed(int port) {
         USED_PORTS.add(port);
@@ -116,7 +116,7 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * Mark a port as available by removing it from {@link #USED_PORTS}.
-     * @param port The port to be marked as available. An {@link Integer}
+     * @param port The port to be marked as available. {@link Integer}
      *             value.
      * @see #USED_PORTS
      */
@@ -127,9 +127,9 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * Check if a port is available.
-     * @param PARAM A {@link T} instance.
+     * @param PARAM {@link T} instance.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see ProcessRunner#rxExecute(String)
      * @see #cmListAllPorts()
@@ -150,10 +150,10 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * Use regular expression to check the output of {@link #cmListAllPorts()}.
-     * @param output A {@link String} value. This shoudl be the output from
+     * @param output {@link String} value. This shoudl be the output from
      *               {@link #cmListAllPorts()}.
-     * @param port An {@link Integer} value.
-     * @return A {@link Boolean} value.
+     * @param port {@link Integer} value.
+     * @return {@link Boolean} value.
      * @see #USED_PORTS
      */
     public synchronized boolean isPortAvailable(@NotNull String output, int port) {
@@ -173,10 +173,10 @@ public class NetworkHandler implements NetworkHandlerType {
     /**
      * Recursively check ports until one is available. Everytime a port is
      * not available, we increment it by one and call this method again.
-     * @param PARAM A {@link P} instance. This {@link P} shall contain the
+     * @param PARAM {@link P} instance. This {@link P} shall contain the
      *              initial port to be checked.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rxCheckPortAvailable(PortType)
      * @see P#port()
      * @see P#retries()

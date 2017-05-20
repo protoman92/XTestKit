@@ -33,7 +33,7 @@ public class IOSEngine extends
 {
     /**
      * Get a new {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -54,7 +54,7 @@ public class IOSEngine extends
     //region Getters
     /**
      * Return {@link #XC_HANDLER}.
-     * @return A {@link XCRunHandler} instance.
+     * @return {@link XCRunHandler} instance.
      */
     @NotNull
     public XCRunHandler xcRunHandler() {
@@ -63,7 +63,7 @@ public class IOSEngine extends
 
     /**
      * Return {@link #deviceUID}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String deviceUID() {
@@ -72,7 +72,7 @@ public class IOSEngine extends
 
     /**
      * Return {@link #launchTimeout}.
-     * @return A {@link Long} value.
+     * @return {@link Long} value.
      */
     public long launchTimeout() {
         return launchTimeout;
@@ -80,8 +80,8 @@ public class IOSEngine extends
 
     //region Test Setup
     /**
-     * @param param A {@link BeforeClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxBeforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
@@ -101,8 +101,8 @@ public class IOSEngine extends
     }
 
     /**
-     * @param param A {@link AfterClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryType)
      * @see #startDriverOnlyOnce()
@@ -172,7 +172,7 @@ public class IOSEngine extends
         /**
          * Set the {@link #deviceUID} value. This value will be used to start
          * the correct simulator.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -183,7 +183,7 @@ public class IOSEngine extends
 
         /**
          * Set the {@link #launchTimeout} value.
-         * @param timeout A {@link Long} value.
+         * @param timeout {@link Long} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

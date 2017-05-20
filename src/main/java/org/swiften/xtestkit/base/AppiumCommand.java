@@ -19,7 +19,7 @@ public class AppiumCommand {
 
     /**
      * Return {@link #command}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String command() {
@@ -28,7 +28,7 @@ public class AppiumCommand {
 
     /**
      * Set the base command i.e. path to Appium CLI.
-     * @param base A {@link String} value.
+     * @param base {@link String} value.
      */
     void prependBase(@NotNull String base) {
         if (command.isEmpty()) {
@@ -62,7 +62,7 @@ public class AppiumCommand {
 
         /**
          * Append -p PORT to {@link #COMMAND#command}.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -73,7 +73,7 @@ public class AppiumCommand {
 
         /**
          * Prepend a base path to {@link #COMMAND#command}.
-         * @param base A {@link String} value.
+         * @param base {@link String} value.
          * @return The current {@link Builder} instance.
          */
         public Builder withBase(@NotNull String base) {

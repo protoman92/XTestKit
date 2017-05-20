@@ -8,13 +8,13 @@ import org.swiften.javautilities.localizer.LocalizerType;
  */
 
 /**
- * This interface provides a {@link LocalizerType} instance for text
+ * This interface provides {@link LocalizerType} instance for text
  * localization.
  */
 public interface LocalizerContainerType {
     /**
      * Get the associated {@link LocalizerType} instance.
-     * @return A {@link LocalizerType} instance.
+     * @return {@link LocalizerType} instance.
      */
     @NotNull
     LocalizerType localizer();

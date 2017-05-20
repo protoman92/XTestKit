@@ -19,8 +19,8 @@ import java.time.Duration;
 public interface MobileTouchActionType {
     /**
      * Perform a swipe action.
-     * @param driver A {@link MobileDriver} instance.
-     * @param param A {@link SwipeType} instance.
+     * @param driver {@link MobileDriver} instance.
+     * @param param {@link SwipeType} instance.
      * @see TouchAction#press(int, int)
      * @see TouchAction#waitAction(Duration)
      * @see TouchAction#moveTo(int, int)
@@ -38,8 +38,8 @@ public interface MobileTouchActionType {
 
     /**
      * Perform a tap action.
-     * @param driver A {@link MobileDriver} instance.
-     * @param param A {@link SwipeType} instance.
+     * @param driver {@link MobileDriver} instance.
+     * @param param {@link SwipeType} instance.
      * @see TouchAction#release()
      * @see TouchAction#perform()
      */

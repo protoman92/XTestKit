@@ -11,7 +11,7 @@ public interface IgnoreCaseType {
     /**
      * Check whether the locator should ignore case while looking for a
      * particular text.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     default boolean ignoreCase() {
         return true;

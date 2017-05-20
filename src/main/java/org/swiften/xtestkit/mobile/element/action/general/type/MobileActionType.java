@@ -16,9 +16,9 @@ import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
  */
 public interface MobileActionType<D extends MobileDriver> extends BaseActionType<D> {
     /**
-     * Get a {@link MobileTouchActionType} to perform touch actions on mobile
+     * Get {@link MobileTouchActionType} to perform touch actions on mobile
      * apps. Override this to provide custom subclasses.
-     * @return A {@link MobileTouchActionType} instance.
+     * @return {@link MobileTouchActionType} instance.
      */
     @NotNull
     default MobileTouchActionType touchAction() {
@@ -27,7 +27,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
 
     /**
      * Launch an app.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see D#launchApp()
      */
     @NotNull
@@ -40,7 +40,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
 
     /**
      * Reset an installed app.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see D#closeApp()
      */
     @NotNull

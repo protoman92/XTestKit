@@ -45,7 +45,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     //region By XPath
     /**
      * Convenience method to create a new {@link XPath.Builder} instance.
-     * @return A {@link XPath.Builder} instance.
+     * @return {@link XPath.Builder} instance.
      * @see XPath#builder(PlatformType)
      */
     @NotNull
@@ -55,9 +55,9 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Find all elements that satisfies an {@link XPath} request.
-     * @param param A {@link ByXPath} instance.
-     * @return A {@link Flowable} instance.
+     * Find all elements that satisfies {@link XPath} request.
+     * @param param {@link ByXPath} instance.
+     * @return {@link Flowable} instance.
      * @see #driver()
      * @see ByXPath#classes()
      * @see ByXPath#xPath()
@@ -100,7 +100,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * {@link ByXPath} varargs parameter.
      * @param param A varargs of {@link ByXPath} instances.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see ByXPath#error()
      * @see String#join(CharSequence, CharSequence...)
      * @see RxUtil#error()
@@ -123,7 +123,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * {@link WebElement}, e.g. in case it has different texts for different
      * platforms.
      * @param param A varargs of {@link ByXPath} instances.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_byXPath(ByXPath)
      * @see #rx_xPathQueryFailure(ByXPath...)
      */
@@ -144,9 +144,9 @@ public interface BaseLocatorType<D extends WebDriver> extends
     //region With XPath
 
     /**
-     * Get a {@link ByXPath} from a {@link XPath}.
-     * @param xPath A {@link XPath} instance.
-     * @return A {@link ByXPath} instance.
+     * Get {@link ByXPath} from {@link XPath}.
+     * @param xPath {@link XPath} instance.
+     * @return {@link ByXPath} instance.
      * @see #NO_SUCH_ELEMENT
      */
     @NotNull
@@ -160,7 +160,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Find all {@link WebElement} that satisfy some {@link XPath} queries.
      * @param param A varargs of {@link XPath}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #withXPathQuery(XPath)
      * @see #rx_byXPath(ByXPath...)
      */
@@ -178,10 +178,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With Class
     /**
-     * Get a {@link ByXPath} from a {@link P} param.
-     * @param param A {@link P} instance.
+     * Get {@link ByXPath} from {@link P} param.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link ByXPath} instance.
+     * @return {@link ByXPath} instance.
      * @see #newXPathBuilder()
      * @see XPath.Builder#ofClass(XPath.OfClass)
      * @see P#value()
@@ -202,7 +202,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType} elements of some classes.
      * @param param A vararg of {@link ClassParam} instances.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #ofClassQuery(OfClassType)
      * @see #rx_byXPath(ByXPath)
      */
@@ -221,7 +221,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Same as above, but uses default {@link ClassParam}.
      * @param cls A varargs of {@link String} values.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see ClassParam.Builder#withClass(String)
      * @see #rx_ofClass(OfClassType[])
      */
@@ -240,10 +240,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With ID
     /**
-     * Get a {@link ByXPath} from a {@link P} param.
-     * @param param A {@link P} instance.
+     * Get {@link ByXPath} from {@link P} param.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link ByXPath} instance.
+     * @return {@link ByXPath} instance.
      * @see #newXPathBuilder()
      * @see XPath.Builder#containsID(XPath.ContainsID)
      * @see #noElementsWithId(String)
@@ -264,7 +264,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * {@link String} values.
      * @param param A varargs of {@link IdParam} instances.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_byXPath(ByXPath)
      */
     @NotNull
@@ -283,7 +283,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Same as above, but uses default {@link IdParam}.
      * @param id A vararg of {@link String} values.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_containsID(ContainsIDType[])
      */
     @NotNull
@@ -301,10 +301,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region With Text
     /**
-     * Get a {@link ByXPath} from a {@link P} param.
-     * @param param A {@link P} instance.
+     * Get {@link ByXPath} from {@link P} param.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link ByXPath} instance.
+     * @return {@link ByXPath} instance.
      * @see #newXPathBuilder()
      * @see #localizer()
      * @see org.swiften.javautilities.localizer.LocalizerType#localize(String)
@@ -336,7 +336,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * displaying some texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #hasTextQuery(StringType)
      * @see #rx_byXPath(ByXPath)
      */
@@ -356,7 +356,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Same as above, but uses default {@link TextParam} with specified texts.
      * @param text A varargs of {@link String} values.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
      * @see #rx_withText(StringType[])
      */
@@ -375,10 +375,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     //region Contains Text
     /**
-     * Get a {@link ByXPath} from a {@link P} param.
-     * @param param A {@link P} instance.
+     * Get {@link ByXPath} from {@link P} param.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link ByXPath} instance.
+     * @return {@link ByXPath} instance.
      * @see #newXPathBuilder()
      * @see P#value()
      * @see #localizer()
@@ -411,7 +411,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * contain some another texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #containsTextQuery(StringType)
      * @see #rx_byXPath(ByXPath...)
      */
@@ -432,7 +432,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Same as above, but uses default {@link TextParam} with a specified
      * texts.
      * @param text A vararg of {@link String} values.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
      * @see #rx_containsText(StringType[])
      */
@@ -448,10 +448,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get a {@link TextParam} from a {@link P} param.
-     * @param param A {@link P} instance.
+     * Get {@link TextParam} from {@link P} param.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
-     * @return A {@link TextParam} instance.
+     * @return {@link TextParam} instance.
      * @see #newXPathBuilder()
      * @see P#value()
      * @see #localizer()
@@ -473,7 +473,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * contain some other texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #containsTextQuery(FormatType)
      * @see #rx_containsText(StringType[])
      */
@@ -492,7 +492,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Same as above, but uses default {@link TextFormatParam}.
      * @param format A vararg of {@link LCFormat} instances.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see TextFormatParam.Builder#withLCFormat(LCFormat)
      * @see #rx_containsText(FormatType[])
      */
@@ -512,7 +512,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     //region Editable Elements
     /**
      * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #platformView()
      * @see PlatformView#isEditable()
      * @see ByXPath.Builder#withClasses(Collection)
@@ -527,7 +527,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     /**
      * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_editable()
      * @see WebElement#clear()
      */
@@ -543,7 +543,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     //region Clickable Elements
     /**
      * Get all {@link BaseViewType#isClickable()} {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_byXPath(ByXPath...)
      */
     @NotNull

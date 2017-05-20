@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface ClassContainerType {
     /**
      * Get the associated class name.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull String className();
 }

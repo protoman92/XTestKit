@@ -16,7 +16,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 public class TapParam implements TapType, RetryType {
     /**
      * Get a new {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -59,7 +59,7 @@ public class TapParam implements TapType, RetryType {
 
         /**
          * Set the {@link #x} value.
-         * @param x An {@link Integer} value.
+         * @param x {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -70,7 +70,7 @@ public class TapParam implements TapType, RetryType {
 
         /**
          * Set the {@link #y} value.
-         * @param y An {@link Integer} value.
+         * @param y {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -81,7 +81,7 @@ public class TapParam implements TapType, RetryType {
 
         /**
          * Set the {@link #x} and {@link #y} values.
-         * @param type A {@link RetryType} instance.
+         * @param type {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withX(int)
          * @see #withY(int)
@@ -93,7 +93,7 @@ public class TapParam implements TapType, RetryType {
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -104,7 +104,7 @@ public class TapParam implements TapType, RetryType {
 
         /**
          * Set the {@link #retries} value.
-         * @param type A {@link RetryType} instance.
+         * @param type {@link RetryType} instance.
          * @return The current {@link Builder} instance.
          * @see #withRetries(int)
          */

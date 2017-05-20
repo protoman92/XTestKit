@@ -20,7 +20,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
      * Check whether the current {@link Platform} instance is {@link #ANDROID}.
      * This can be useful when we want to check for {@link #ANDROID} specific
      * features.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean isAndroidPlatform() {
         switch (this) {
@@ -36,7 +36,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
      * Check whether the current {@link Platform} instance is {@link #IOS}.
      * This can be useful when we want to check for {@link #IOS} specific
      * features.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean isIOSPlatform() {
         switch (this) {

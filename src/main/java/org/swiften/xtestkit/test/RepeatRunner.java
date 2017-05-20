@@ -119,7 +119,7 @@ public class RepeatRunner implements
     //region Getters
     /**
      * Return {@link #TEST_CLASSES}.
-     * @return A {@link List} of {@link Class}.
+     * @return {@link List} of {@link Class}.
      */
     @NotNull
     public List<Class<?>> testClasses() {
@@ -141,7 +141,7 @@ public class RepeatRunner implements
      * we use only one instance of {@link TestNG}, when we batch test some
      * will be repeated (probably due to each {@link TestNG} instance keeping
      * a record of test and replaying them every iteration.
-     * @return A {@link TestNG} instance.
+     * @return {@link TestNG} instance.
      */
     @NotNull
     public TestNG createRunner() {
@@ -156,7 +156,7 @@ public class RepeatRunner implements
 
     /**
      * Return {@link #PAGINATION#indexParameters()}.
-     * @return An {@link Integer} Array.
+     * @return {@link Integer} Array.
      */
     @NotNull
     public int[] indexParameters() {
@@ -165,7 +165,7 @@ public class RepeatRunner implements
 
     /**
      * Return {@link #PAGINATION#dataParameters()}.
-     * @return An {@link Iterator} of {@link Object} Array.
+     * @return {@link Iterator} of {@link Object} Array.
      */
     @NotNull
     public Iterator<Object[]> dataParameters() {
@@ -174,7 +174,7 @@ public class RepeatRunner implements
 
     /**
      * Return {@link #LISTENERS}.
-     * @return A {@link Collection} of {@link TestListenerType}.
+     * @return {@link Collection} of {@link TestListenerType}.
      * @throws RuntimeException If {@link #LISTENERS} is empty.
      */
     @NotNull
@@ -293,7 +293,7 @@ public class RepeatRunner implements
 
         /**
          * Add a test {@link Class} to be passed to {@link #RUNNER#TEST_RUNNER}.
-         * @param cls A {@link Class} instance.
+         * @param cls {@link Class} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -304,7 +304,7 @@ public class RepeatRunner implements
 
         /**
          * Set {@link TestNG#m_verbose} level to control the level of logging.
-         * @param level An {@link Integer} value.
+         * @param level {@link Integer} value.
          * @return THe current {@link Builder} instance.
          */
         @NotNull
@@ -315,7 +315,7 @@ public class RepeatRunner implements
 
         /**
          * Set the {@link Pagination#retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -327,7 +327,7 @@ public class RepeatRunner implements
         /**
          * Set the {@link Pagination#partitionSize} value. This batches the test
          * runners into sets of test.
-         * @param partition An {@link Integer} value.
+         * @param partition {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -338,7 +338,7 @@ public class RepeatRunner implements
 
         /**
          * Set the {@link #RUNNER#indexConsumer} instance.
-         * @param consumer A {@link IndexConsumer} instance.
+         * @param consumer {@link IndexConsumer} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -348,8 +348,8 @@ public class RepeatRunner implements
         }
 
         /**
-         * Add a {@link TestListenerType} instance to {@link #RUNNER#LISTENERS}.
-         * @param listener A {@link TestListenerType} instance.
+         * Add {@link TestListenerType} instance to {@link #RUNNER#LISTENERS}.
+         * @param listener {@link TestListenerType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -376,7 +376,7 @@ public class RepeatRunner implements
 
         /**
          * Return {@link #indexConsumer}.
-         * @return A {@link IndexConsumer} instance.
+         * @return {@link IndexConsumer} instance.
          */
         @NotNull
         public IndexConsumer indexConsumer() {
@@ -390,7 +390,7 @@ public class RepeatRunner implements
         //region RetryType
         /**
          * Override this method to provide custom retry count.
-         * @return An {@link Integer} value.
+         * @return {@link Integer} value.
          */
         @Override
         public int retries() {
@@ -400,7 +400,7 @@ public class RepeatRunner implements
 
         /**
          * Partition the retries to run test parallel test.
-         * @return An {@link Integer} value.
+         * @return {@link Integer} value.
          */
         public int partitionSize() {
             return partitionSize;
@@ -409,7 +409,7 @@ public class RepeatRunner implements
         /**
          * Set the {@link #consumed} value in order to provide the next
          * set of parameters when another round of test commences.
-         * @return A {@link Completable} instance.
+         * @return {@link Completable} instance.
          */
         @NotNull
         public Completable rxAppendConsumed(final int ADDITION) {
@@ -418,7 +418,7 @@ public class RepeatRunner implements
 
         /**
          * Get the appropriate index parameters after each batch run.
-         * @return An {@link Integer} array.
+         * @return {@link Integer} array.
          */
         @NotNull
         public int[] indexParameters() {
@@ -439,7 +439,7 @@ public class RepeatRunner implements
 
         /**
          * To be used with {@link DataProvider}.
-         * @return An {@link Iterator} of {@link Object} Array.
+         * @return {@link Iterator} of {@link Object} Array.
          */
         @NotNull
         public Iterator<Object[]> dataParameters() {
@@ -451,7 +451,7 @@ public class RepeatRunner implements
 
         /**
          * Reset {@link #consumed} to original value.
-         * @return A {@link Completable} instance.
+         * @return {@link Completable} instance.
          */
         @NotNull
         public Completable rxResetIndex() {
@@ -460,7 +460,7 @@ public class RepeatRunner implements
 
         /**
          * Check whether pagination has ended.
-         * @return A {@link Boolean} value.
+         * @return {@link Boolean} value.
          */
         public boolean isAvailable() {
             return consumed < retries();
@@ -485,7 +485,7 @@ public class RepeatRunner implements
          * be clashes that prevent two consumers from consuming their
          * respective indexes.
          * @param indexes An Array of {@link Integer}.
-         * @return An {@link Integer} value.
+         * @return {@link Integer} value.
          */
         default int consumptionCount(@NotNull int[] indexes) {
             return indexes.length;

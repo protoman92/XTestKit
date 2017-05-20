@@ -19,9 +19,9 @@ import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
  */
 public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocatorType<D> {
     /**
-     * Watch a {@link WebDriver} until it disappears from the screen, by
+     * Watch {@link WebDriver} until it disappears from the screen, by
      * repeatedly checking its visibility.
-     * @param element A {@link WebElement} instance.
+     * @param element {@link WebElement} instance.
      * @see WebElement#isDisplayed()
      */
     default void watchUntilHidden(@NotNull WebElement element) {
@@ -31,10 +31,10 @@ public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocat
     }
 
     /**
-     * Watch a {@link WebDriver} until it disappears from the screen, by
+     * Watch {@link WebDriver} until it disappears from the screen, by
      * repeatedly checking its visibility.
-     * @param ELEMENT A {@link WebElement} instance.
-     * @return A {@link Flowable} instance.
+     * @param ELEMENT {@link WebElement} instance.
+     * @return {@link Flowable} instance.
      * @see #watchUntilHidden(WebElement)
      */
     @NotNull

@@ -74,7 +74,7 @@ public class AndroidEngine extends
      * need to have only one {@link AndroidEngine} active at a time. Therefore,
      * we override {@link Engine#comparisonObject()} to disable
      * this comparison filter.
-     * @return An {@link Object} instance.
+     * @return {@link Object} instance.
      * @see Engine#comparisonObject()
      */
     @NotNull
@@ -97,7 +97,7 @@ public class AndroidEngine extends
     //region Getters
     /**
      * Return {@link #ADB_HANDLER}.
-     * @return An {@link ADBHandler} instance.
+     * @return {@link ADBHandler} instance.
      */
     @NotNull
     public ADBHandler adbHandler() {
@@ -107,7 +107,7 @@ public class AndroidEngine extends
     /**
      * Return {@link #appActivity}. This can be stubbed out for custom
      * implementation.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String appActivity() {
@@ -116,7 +116,7 @@ public class AndroidEngine extends
 
     /**
      * Return {@link #androidInstance}.
-     * @return An {@link AndroidInstance} instance.
+     * @return {@link AndroidInstance} instance.
      */
     @NotNull
     public AndroidInstance androidInstance() {
@@ -130,8 +130,8 @@ public class AndroidEngine extends
 
     //region Test Setup
     /**
-     * @param PARAM A {@link BeforeClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link BeforeClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
@@ -189,8 +189,8 @@ public class AndroidEngine extends
     }
 
     /**
-     * @param param A {@link AfterClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterClass(AfterClassParam)
      * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
      * @see #startDriverOnlyOnce()
@@ -241,8 +241,8 @@ public class AndroidEngine extends
     }
 
     /**
-     * @param param A {@link AfterParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterParam} instance.
+     * @return {@link Flowable} instance.
      * @see Engine#rxAfterMethod(AfterParam)
      * @see ADBHandler#rxClearCachedData(AppPackageType)
      */
@@ -273,7 +273,7 @@ public class AndroidEngine extends
 
     //region Appium Setup
     /**
-     * @return A {@link Map} of capabilities.
+     * @return {@link Map} of capabilities.
      * @see MobileEngine#capabilities()
      * @see #appPackage()
      * @see #appActivity()
@@ -290,7 +290,7 @@ public class AndroidEngine extends
     }
 
     /**
-     * @return An {@link AndroidDriver} instance.
+     * @return {@link AndroidDriver} instance.
      * @see Engine#driver(String, DesiredCapabilities)
      */
     @NotNull
@@ -320,7 +320,7 @@ public class AndroidEngine extends
 
         /**
          * Override to set {@link AndroidInstance#deviceName}.
-         * @param name A {@link String} value.
+         * @param name {@link String} value.
          * @return The current {@link Builder} instance.
          * @see MobileEngine.Builder#withDeviceName(String)
          */
@@ -333,7 +333,7 @@ public class AndroidEngine extends
 
         /**
          * Override to set {@link AndroidInstance#mode}.
-         * @param mode A {@link TestMode} instance.
+         * @param mode {@link TestMode} instance.
          * @return The current {@link Builder} instance.
          * @see MobileEngine.Builder#withTestMode(TestMode)
          */
@@ -346,7 +346,7 @@ public class AndroidEngine extends
 
         /**
          * Set {@link #appActivity}.
-         * @param appActivity A {@link String} value.
+         * @param appActivity {@link String} value.
          * @return The current {@link Builder} instance.
          */
         public Builder withAppActivity(@NotNull String appActivity) {
@@ -356,7 +356,7 @@ public class AndroidEngine extends
 
         /**
          * Set the {@link AndroidInstance#uid} value.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

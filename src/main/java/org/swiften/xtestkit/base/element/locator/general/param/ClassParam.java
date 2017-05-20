@@ -14,8 +14,8 @@ import org.swiften.xtestkit.base.type.RetryType;
  */
 public class ClassParam implements OfClassType, RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {

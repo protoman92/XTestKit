@@ -19,8 +19,8 @@ import org.swiften.xtestkit.base.element.property.type.base.BooleanType;
 public interface BaseCheckBoxActionType extends BaseClickActionType {
     /**
      * Check if a check box is checked.
-     * @param element A {@link WebElement} instance.
-     * @return A {@link Boolean} value.
+     * @param element {@link WebElement} instance.
+     * @return {@link Boolean} value.
      * @see WebElement#getAttribute(String)
      * @see Boolean#valueOf(String)
      */
@@ -35,8 +35,8 @@ public interface BaseCheckBoxActionType extends BaseClickActionType {
 
     /**
      * Toggle a checkbox to be checked/unchecked.
-     * @param element A {@link WebElement} instance.
-     * @param checked A {@link Boolean} value.
+     * @param element {@link WebElement} instance.
+     * @param checked {@link Boolean} value.
      * @see #isCheckBoxChecked(WebElement)
      * @see BaseClickActionType#click(WebElement)
      */
@@ -48,9 +48,9 @@ public interface BaseCheckBoxActionType extends BaseClickActionType {
 
     /**
      * Toggle a checkbox to be checked/unchecked.
-     * @param ELEMENT A {@link WebElement} instance.
-     * @param CHECKED A {@link Boolean} value.
-     * @return A {@link Flowable} instance.
+     * @param ELEMENT {@link WebElement} instance.
+     * @param CHECKED {@link Boolean} value.
+     * @return {@link Flowable} instance.
      * @see #setCheckBoxState(WebElement, boolean)
      */
     @NotNull

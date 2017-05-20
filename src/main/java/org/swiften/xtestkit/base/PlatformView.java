@@ -28,7 +28,7 @@ public abstract class PlatformView {
 
     /**
      * Get all {@link BaseViewType} that {@link BaseViewType#hasText()}.
-     * @return A {@link List} of {@link BaseViewType}.
+     * @return {@link List} of {@link BaseViewType}.
      */
     @NotNull
     public List<? extends BaseViewType> hasText() {
@@ -39,7 +39,7 @@ public abstract class PlatformView {
 
     /**
      * Get all {@link BaseViewType} that {@link BaseViewType#isClickable()}.
-     * @return A {@link List} of {@link BaseViewType}.
+     * @return {@link List} of {@link BaseViewType}.
      */
     public List<? extends BaseViewType> isClickable() {
         return allViews().stream()
@@ -49,7 +49,7 @@ public abstract class PlatformView {
 
     /**
      * Get all {@link BaseViewType} that {@link BaseViewType#isEditable()}.
-     * @return A {@link List} of {@link BaseViewType}.
+     * @return {@link List} of {@link BaseViewType}.
      */
     @NotNull
     public List<? extends BaseViewType> isEditable() {

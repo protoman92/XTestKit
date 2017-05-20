@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class IOSCap extends MobileCap {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -36,8 +36,8 @@ public class IOSCap extends MobileCap {
      * Override this method to provide a additional check for the app's name,
      * since different {@link org.swiften.xtestkit.base.TestMode} requires
      * different app extensions.
-     * @param capabilities A {@link Map} instance.
-     * @return A {@link Boolean} value.
+     * @param capabilities {@link Map} instance.
+     * @return {@link Boolean} value.
      * @see StringUtil#isNotNullOrEmpty(String)
      * @see #hasValidAppName(String)
      */
@@ -55,8 +55,8 @@ public class IOSCap extends MobileCap {
 
     /**
      * Check whether the app file extension matches {@link #testMode()}.
-     * @param appName A {@link String} value.
-     * @return A {@link Boolean} value.
+     * @param appName {@link String} value.
+     * @return {@link Boolean} value.
      * @see #testMode()
      */
     public boolean hasValidAppName(@NotNull String appName) {

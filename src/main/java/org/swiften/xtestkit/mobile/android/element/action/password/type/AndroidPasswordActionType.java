@@ -20,7 +20,7 @@ public interface AndroidPasswordActionType<D extends AndroidDriver<AndroidElemen
      * Override this method to provide a default
      * {@link TapType}
      * to locate the password mask toggle.
-     * @param element A {@link WebElement} instance.
+     * @param element {@link WebElement} instance.
      * @see MobilePasswordActionType#togglePasswordMask(WebElement)
      * @see WebElement#getLocation()
      * @see WebElement#getSize()

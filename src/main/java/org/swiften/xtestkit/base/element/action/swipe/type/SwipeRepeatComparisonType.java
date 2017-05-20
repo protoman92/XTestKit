@@ -21,7 +21,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the default {@link Unidirection} in case we cannot detect the
      * direction from the sub-elements.
-     * @return A {@link Unidirection} instance.
+     * @return {@link Unidirection} instance.
      */
     @NotNull
     default Unidirection defaultDirection() {
@@ -31,7 +31,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the {@link Unidirection} to be used after a successful comparison
      * with the first sub-element.
-     * @return A {@link Unidirection} instance.
+     * @return {@link Unidirection} instance.
      */
     @NotNull
     default Unidirection firstElementDirection() {
@@ -41,7 +41,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the {@link Unidirection} to be used after a successful comparison
      * with the last sub-element.
-     * @return A {@link Unidirection} instance.
+     * @return {@link Unidirection} instance.
      */
     @NotNull
     default Unidirection lastElementDirection() {
@@ -53,19 +53,19 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * emits a value (i.e. not empty), return {@link #firstElementDirection()}.
      * It does not matter what element this {@link Flowable} emits - as long
      * as it is not empty, it passes.
-     * @param element A {@link WebElement} instance.
-     * @return A {@link Flowable} instance.
+     * @param element {@link WebElement} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<?> rx_compareFirst(@NotNull WebElement element);
 
     /**
      * Get the result of the comparison with the last sub-element. If this
-     * emits a value (i.e. not empty), return a {@link #lastElementDirection()}.
+     * emits a value (i.e. not empty), return {@link #lastElementDirection()}.
      * It does not matter what element this {@link Flowable} emits - as long
      * as it is not empty, it passes.
-     * @param element A {@link WebElement} instance.
-     * @return A {@link Flowable} instance.
+     * @param element {@link WebElement} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<?> rx_compareLast(@NotNull WebElement element);
@@ -75,7 +75,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * {@link WebElement}'s value and the target value. We use this value
      * to calculate an approximate number of initial swipes to be performed.
      * @param first The first visible {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<Integer> rx_initialDifference(@NotNull WebElement first);
@@ -83,7 +83,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get all visible sub-elements in the current scrollable view emitted
      * by {@link #rx_scrollableViewToSwipe()}
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     Flowable<WebElement> rx_scrollViewChildItems();
@@ -91,7 +91,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the first visible {@link WebElement} in the scrollable view emitted
      * be {@link #rx_scrollableViewToSwipe()}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_scrollViewChildItems()
      */
     @NotNull
@@ -102,7 +102,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the last visible {@link WebElement} in the scrollable view emitted
      * be {@link #rx_scrollableViewToSwipe()}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_scrollViewChildItems()
      */
     @NotNull
@@ -115,7 +115,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * this method to provide custom values for when the number of child
      * items returned by {@link #rx_scrollViewChildItems()} does not correctly
      * reflect the actual number of visible {@link WebElement}.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_scrollViewChildItems()
      */
     @NotNull
@@ -126,7 +126,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Get the number of initial swipes to perform to get as close to the
      * target value as possible.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_scrollViewChildCount()
      * @see #rxFirstVisibleChildElement()
      */
@@ -154,9 +154,9 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Perform initial swipes a number of times.
      * @param ELEMENT The scrollable {@link WebElement}.
-     * @param DIRECTION A {@link Unidirection} instance.
-     * @param TIMES The number of times to swipe. An {@link Integer} value.
-     * @return A {@link Flowable} instance.
+     * @param DIRECTION {@link Unidirection} instance.
+     * @param TIMES The number of times to swipe. {@link Integer} value.
+     * @return {@link Flowable} instance.
      * @see #rx_swipeElement(WebElement, Unidirection, double)
      */
     @NotNull
@@ -187,7 +187,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Perform initial swipes to get us as close to the target value as
      * possible.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #rx_scrollableViewToSwipe()
      * @see #rxDirectionToSwipe()
      * @see #rxFirstVisibleChildElement()
@@ -207,7 +207,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     }
 
     /**
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see SwipeRepeatType#rxDirectionToSwipe()
      * @see #rx_scrollViewChildItems()
      * @see #rx_compareFirst(WebElement)
@@ -239,7 +239,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
 
     /**
      * Override this method to perform initial swipes.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see SwipeRepeatType#rx_repeatSwipe()
      * @see #rxPerformInitialSwipes()
      * @see #rxSwipeRecursively()

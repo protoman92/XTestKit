@@ -14,8 +14,8 @@ import org.swiften.xtestkit.base.type.RetryType;
  */
 public class AlertParam implements RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -28,7 +28,7 @@ public class AlertParam implements RetryType {
 
     /**
      * Get {@link #accept}.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      * @see #accept
      */
     public boolean shouldAccept() {
@@ -49,7 +49,7 @@ public class AlertParam implements RetryType {
         /**
          * Set the {@link #PARAM#accept} value. This specifies whether to
          * accept or reject to dialog message.
-         * @param accept A {@link Boolean} value.
+         * @param accept {@link Boolean} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

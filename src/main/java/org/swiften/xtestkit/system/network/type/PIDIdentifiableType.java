@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PIDIdentifiableType {
     /**
      * Get a PID value.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull String pid();
 }

@@ -35,8 +35,8 @@ public interface AndroidActionType extends
      * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
      * on {@link Platform#ANDROID}, we need a custom solution by using
      * {@link AndroidDriver#findElementById(String)}.
-     * @param param An {@link AlertParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AlertParam} instance.
+     * @return {@link Flowable} instance.
      * @see BaseActionType#rx_dismissAlert(AlertParam)
      * @see #driver()
      * @see WebDriver#findElement(By)

@@ -11,7 +11,7 @@ package org.swiften.xtestkit.system.network.type;
 public interface PortType {
     /**
      * Get the associated port value.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     int port();
 }

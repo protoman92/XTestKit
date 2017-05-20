@@ -15,8 +15,8 @@ public interface RetryType {
 
     /**
      * Use this retry count if we are running an operation that is not expected
-     * to throw an {@link Exception}.
-     * @return An {@link Integer} value.
+     * to throw {@link Exception}.
+     * @return {@link Integer} value.
      */
     default int retries() {
         return 3;

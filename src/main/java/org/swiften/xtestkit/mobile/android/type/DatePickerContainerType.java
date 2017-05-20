@@ -23,7 +23,7 @@ public interface DatePickerContainerType {
 
         /**
          * Check if the current {@link DatePickerType} is of type calendar.
-         * @return A {@link Boolean} value.
+         * @return {@link Boolean} value.
          */
         public boolean isCalendarType() {
             switch (this) {
@@ -37,7 +37,7 @@ public interface DatePickerContainerType {
 
         /**
          * Check if the current {@link DatePickerType} is of type spinner.
-         * @return A {@link Boolean} value.
+         * @return {@link Boolean} value.
          */
         public boolean isSpinnerType() {
             switch (this) {
@@ -51,8 +51,8 @@ public interface DatePickerContainerType {
 
         /**
          * Get the {@link String} format for a particular {@link CalendarUnit}.
-         * @param element A {@link CalendarUnit} instance.
-         * @return A {@link String} value.
+         * @param element {@link CalendarUnit} instance.
+         * @return {@link String} value.
          */
         @NotNull
         public String stringFormat(@NotNull CalendarUnit element) {
@@ -72,9 +72,9 @@ public interface DatePickerContainerType {
         }
 
         /**
-         * Get the display view id that corresponds to a {@link CalendarUnit}.
-         * @param element A {@link CalendarUnit} instance.
-         * @return A {@link String} value.
+         * Get the display view id that corresponds to {@link CalendarUnit}.
+         * @param element {@link CalendarUnit} instance.
+         * @return {@link String} value.
          */
         @NotNull
         public String displayViewId(@NotNull CalendarUnit element) {
@@ -94,9 +94,9 @@ public interface DatePickerContainerType {
         }
 
         /**
-         * Get the picker view id that corresponds to a {@link CalendarUnit}.
-         * @param element A {@link CalendarUnit} instance.
-         * @return A {@link String} value.
+         * Get the picker view id that corresponds to {@link CalendarUnit}.
+         * @param element {@link CalendarUnit} instance.
+         * @return {@link String} value.
          */
         @NotNull
         public String pickerViewId(@NotNull CalendarUnit element) {
@@ -112,8 +112,8 @@ public interface DatePickerContainerType {
         /**
          * Get the list view's item id that corresponds to a
          * {@link CalendarUnit}.
-         * @param element A {@link CalendarUnit} instance.
-         * @return A {@link String} value.
+         * @param element {@link CalendarUnit} instance.
+         * @return {@link String} value.
          */
         @NotNull
         public String listViewItemId(@NotNull CalendarUnit element) {
@@ -128,7 +128,7 @@ public interface DatePickerContainerType {
 
         /**
          * Get the format the day is formatted in.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          */
         @NotNull
         private String dayFormat() {
@@ -137,7 +137,7 @@ public interface DatePickerContainerType {
 
         /**
          * Get the format the month is formatted in.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          */
         @NotNull
         private String monthFormat() {
@@ -146,7 +146,7 @@ public interface DatePickerContainerType {
 
         /**
          * Get the format the year is formatted in.
-         * @return A {@link String} value.
+         * @return {@link String} value.
          */
         @NotNull
         private String yearFormat() {
@@ -156,7 +156,7 @@ public interface DatePickerContainerType {
 
     /**
      * Get the associated {@link DatePickerType} instance.
-     * @return A {@link DatePickerType} instance.
+     * @return {@link DatePickerType} instance.
      */
     @NotNull
     default DatePickerType datePickerViewType() {

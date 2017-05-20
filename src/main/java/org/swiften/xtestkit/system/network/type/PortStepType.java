@@ -12,7 +12,7 @@ package org.swiften.xtestkit.system.network.type;
 public interface PortStepType {
     /**
      * Get the associated stepp value.
-     * @return An {@link Integer} value;
+     * @return {@link Integer} value;
      */
     default int portStep() {
         return 1;

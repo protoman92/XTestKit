@@ -22,9 +22,9 @@ public interface BaseViewType extends ClassContainerType {
     };
 
     /**
-     * Check whether the current {@link BaseViewType} could display a {@link String}
+     * Check whether the current {@link BaseViewType} could display {@link String}
      * text.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     default boolean hasText() {
         return false;
@@ -33,7 +33,7 @@ public interface BaseViewType extends ClassContainerType {
     /**
      * Check whether the current {@link BaseViewType} is clickable. For e.g., Android's
      * Button and iOS's UIButton classes.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     default boolean isClickable() {
         return false;
@@ -41,7 +41,7 @@ public interface BaseViewType extends ClassContainerType {
 
     /**
      * Check whether the current {@link BaseViewType} is editable.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     default boolean isEditable() {
         return false;

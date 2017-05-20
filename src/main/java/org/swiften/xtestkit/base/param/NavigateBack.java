@@ -50,7 +50,7 @@ public final class NavigateBack implements RepeatType, RetryType {
 
         /**
          * Specifies how many times the Appium driver should navigate back.
-         * @param times An {@link Integer} value.
+         * @param times {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -61,7 +61,7 @@ public final class NavigateBack implements RepeatType, RetryType {
 
         /**
          * Set the {@link #delay} value.
-         * @param delay An {@link Long} value.
+         * @param delay {@link Long} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

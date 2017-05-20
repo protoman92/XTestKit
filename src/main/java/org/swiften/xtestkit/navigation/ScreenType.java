@@ -11,17 +11,17 @@ import org.swiften.xtestkit.base.Engine;
 import java.util.List;
 
 /**
- * This interface provides navigation via {@link io.reactivex.Flowable} in
+ * This interface provides navigation vi{@link io.reactivex.Flowable} in
  * order to automatically map out test best way to traverse the UI.
  */
 public interface ScreenType {
     /**
-     * Get a {@link List} of {@link Direction} that this {@link ScreenType}
+     * Get {@link List} of {@link Direction} that this {@link ScreenType}
      * can navigate to.
      * @param engine {@link Engine} instance. This is necessary because
      *               most of the time the navigation will rely on the
      *               {@link org.openqa.selenium.WebDriver}.
-     * @return A {@link List} of {@link Direction}.
+     * @return {@link List} of {@link Direction}.
      */
     @NotNull
     List<Direction> accessibleFromHere(@NotNull Engine<?> engine);
@@ -34,7 +34,8 @@ public interface ScreenType {
         @NotNull final ScreenType TARGET;
         @NotNull final Navigation NAVIGATION;
 
-        Direction(@NotNull ScreenType target, @NotNull Navigation navigator) {
+        public Direction(@NotNull ScreenType target,
+                         @NotNull Navigation navigator) {
             TARGET = target;
             NAVIGATION = navigator;
         }
@@ -45,8 +46,8 @@ public interface ScreenType {
         /**
          * Get a navigation {@link Flowable} based on the previous navigation
          * result.
-         * @param previousResult An {@link Object} instance.
-         * @return A {@link Flowable} instance.
+         * @param previousResult {@link Object} instance.
+         * @return {@link Flowable} instance.
          */
         @NotNull Flowable<?> navigator(@NotNull Object previousResult);
     }

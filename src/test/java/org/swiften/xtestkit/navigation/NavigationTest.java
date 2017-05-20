@@ -93,9 +93,7 @@ public class NavigationTest implements ScreenManagerType {
                                 assertEquals(node1.SECOND, node2.FIRST);
                             }
                         }
-                    } catch (Exception e) {
-                        LogUtil.println(e.getMessage(), current, screen);
-                    }
+                    } catch (Exception e) {}
                 }
             }
         }

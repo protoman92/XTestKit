@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 public interface UnidirectionContainerType {
     /**
      * Get the associated {@link Unidirection}.
-     * @return A {@link Unidirection} instance.
+     * @return {@link Unidirection} instance.
      */
     @NotNull
     Unidirection direction();

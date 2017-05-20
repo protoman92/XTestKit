@@ -41,7 +41,7 @@ public class AfterClassParam implements IndexType, RetryType {
 
         /**
          * Set the {@link #PARAM#index} value.
-         * @param index An {@link Integer} value.
+         * @param index {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull

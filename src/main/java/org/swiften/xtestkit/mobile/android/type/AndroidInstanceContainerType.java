@@ -13,8 +13,8 @@ import org.swiften.xtestkit.mobile.android.AndroidInstance;
  */
 public interface AndroidInstanceContainerType {
     /**
-     * Get a {@link AndroidInstance}.
-     * @return A {@link AndroidInstance}.
+     * Get {@link AndroidInstance}.
+     * @return {@link AndroidInstance}.
      */
     @NotNull
     AndroidInstance androidInstance();

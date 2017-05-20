@@ -17,7 +17,7 @@ public enum TestMode {
 
     /**
      * Check if tests are being run in an actual environment.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean isTestingOnActualEnvironment() {
         switch (this) {
@@ -31,7 +31,7 @@ public enum TestMode {
 
     /**
      * Check if tests are being run in a simulated environment.
-     * @return A {@link Boolean} value.
+     * @return {@link Boolean} value.
      */
     public boolean isTestingOnSimulatedEnvironment() {
         switch (this) {

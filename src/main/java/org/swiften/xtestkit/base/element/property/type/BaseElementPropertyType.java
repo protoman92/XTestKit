@@ -17,10 +17,10 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
  */
 public interface BaseElementPropertyType extends BaseErrorType {
     /**
-     * Get text from a {@link WebElement}, assuming that this {@link WebElement}
+     * Get text from {@link WebElement}, assuming that this {@link WebElement}
      * is capable of displaying a text.
      * @param element The {@link WebElement} to be inspected.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     default String getText(@NotNull WebElement element) {

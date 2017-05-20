@@ -11,12 +11,12 @@ import org.swiften.javautilities.log.LogUtil;
  */
 
 /**
- * This interface provides methods to click on a {@link WebElement}.
+ * This interface provides methods to click on {@link WebElement}.
  */
 public interface BaseClickActionType {
     /**
-     * Perform a click action for a {@link WebElement}.
-     * @param element A {@link WebElement} instance.
+     * Perform a click action for {@link WebElement}.
+     * @param element {@link WebElement} instance.
      * @see WebElement#click()
      */
     default void click(@NotNull WebElement element) {
@@ -24,10 +24,10 @@ public interface BaseClickActionType {
     }
 
     /**
-     * Send a click event to a {@link WebElement} with
+     * Send a click event to {@link WebElement} with
      * {@link WebElement#click()}.
      * @param ELEMENT The {@link WebElement} to be clicked.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #click(WebElement)
      */
     @NotNull

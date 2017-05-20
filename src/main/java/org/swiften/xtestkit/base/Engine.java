@@ -106,7 +106,7 @@ public abstract class Engine<D extends WebDriver> implements
     //region DistinctiveType
     /**
      * This should be used with {@link Flowable#distinct(Function)}.
-     * @return An {@link Object} instance.
+     * @return {@link Object} instance.
      * @see Flowable#distinct(Function)
      */
     @NotNull
@@ -149,8 +149,8 @@ public abstract class Engine<D extends WebDriver> implements
      * {@link TestKit#rxBeforeClass(BeforeClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
-     * @param param A {@link BeforeClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeClassParam} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
@@ -167,8 +167,8 @@ public abstract class Engine<D extends WebDriver> implements
      * {@link TestKit#rxAfterClass(AfterClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
-     * @param param An {@link AfterClassParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterClassParam} instance.
+     * @return {@link Flowable} instance.
      * @see NetworkHandler#markPortAsAvailable(int)
      */
     @NotNull
@@ -203,8 +203,8 @@ public abstract class Engine<D extends WebDriver> implements
      * called by {@link TestKit#rxBeforeMethod(BeforeParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
-     * @param param A {@link BeforeParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link BeforeParam} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
@@ -216,8 +216,8 @@ public abstract class Engine<D extends WebDriver> implements
      * This method will be called by {@link TestKit#rxAfterMethod(AfterParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
-     * @param param A {@link AfterParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link AfterParam} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
@@ -226,8 +226,8 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Start appium with a specified {@link #serverUri()}.
-     * @param PARAM A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see #cmWhichAppium()
      * @see #cmFallBackAppium()
      * @see #appiumStartDelay()
@@ -258,7 +258,7 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Start a new local Appium instance. This will be run in a different
      * thread.
-     * @param CLI The path to Appium CLI. A {@link String} value.
+     * @param CLI The path to Appium CLI. {@link String} value.
      * @see #cmStartLocalAppiumInstance(String, int)
      * @see NetworkHandler#rxCheckUntilPortAvailable(PortType)
      * @see Address#setPort(int)
@@ -310,7 +310,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Stop all local appium instances.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
      */
     @NotNull
@@ -324,8 +324,8 @@ public abstract class Engine<D extends WebDriver> implements
      * Check if a process is potentially an Appium instance. This is used to
      * detect whether it should be killed by
      * {@link #rxStopLocalAppiumInstance()}
-     * @param name The process' name. A {@link String} value.
-     * @return A {@link Boolean} instance.
+     * @param name The process' name. {@link String} value.
+     * @return {@link Boolean} instance.
      * @see #rxStopLocalAppiumInstance()
      */
     public boolean isAppiumProcess(@NotNull String name) {
@@ -336,7 +336,7 @@ public abstract class Engine<D extends WebDriver> implements
     //region CLI commands
     /**
      * Command to detect where appium is installed.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmWhichAppium() {
@@ -345,7 +345,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Fall back Appium path if {@link #cmWhichAppium()} fails.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmFallBackAppium() {
@@ -354,10 +354,10 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Command to start an Appium instance.
-     * @param cli The path to Appium CLI. A {@link String} value.
+     * @param cli The path to Appium CLI. {@link String} value.
      * @param port The port to be used to start a new Appium instance. An
      *             {@link Integer} value.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmStartLocalAppiumInstance(@NotNull String cli, int port) {
@@ -380,7 +380,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Return {@link #serverAddress}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public Address serverAddress() {
@@ -389,7 +389,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Get the {@link #serverAddress()} uri address.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String serverUri() {
@@ -398,7 +398,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Return {@link #browserName}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String browserName() {
@@ -407,7 +407,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Return {@link #platformName}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String platformName() {
@@ -426,7 +426,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Get the associated {@link LocalizerType} instance.
-     * @return A {@link LocalizerType} instance.
+     * @return {@link LocalizerType} instance.
      */
     @NotNull
     public LocalizerType localizer() {
@@ -475,9 +475,9 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Get the current {@link PlatformView}, or throw an {@link Exception} if
+     * Get the current {@link PlatformView}, or throw {@link Exception} if
      * it is not found.
-     * @return A {@link PlatformView} instance.
+     * @return {@link PlatformView} instance.
      */
     @NotNull
     public PlatformView platformView() {
@@ -497,8 +497,8 @@ public abstract class Engine<D extends WebDriver> implements
 
     //region Appium Setup
     /**
-     * Get a {@link Map} of capabilities to pass to Appium driver.
-     * @return A {@link Map} instance.
+     * Get {@link Map} of capabilities to pass to Appium driver.
+     * @return {@link Map} instance.
      */
     @NotNull
     public Map<String,Object> capabilities() {
@@ -510,8 +510,8 @@ public abstract class Engine<D extends WebDriver> implements
 
     //region Driver Methods
     /**
-     * Create a {@link D} instance in order to navigate UI test.
-     * @return A {@link D} instance.
+     * Create {@link D} instance in order to navigate UI test.
+     * @return {@link D} instance.
      */
     @NotNull
     protected D driver(@NotNull String serverUrl, @NotNull DesiredCapabilities caps) {
@@ -520,9 +520,9 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Start the Appium driver. If {@link CapType#isComplete(Map)}
-     * returns false, throw an {@link Exception}.
-     * @param PARAM A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * returns false, throw {@link Exception}.
+     * @param PARAM {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see CapType#isComplete(Map)
      * @see CapType#distill(Map)
      * @see #driver(String, DesiredCapabilities)
@@ -549,9 +549,9 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Quit the active Appium driver. If it is null, throw an {@link Exception}
+     * Quit the active Appium driver. If it is null, throw {@link Exception}
      * instead.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
@@ -579,7 +579,7 @@ public abstract class Engine<D extends WebDriver> implements
         /**
          * Set the {@link #ENGINE#browserName} value. This is useful for
          * Web app testing.
-         * @param name A {@link String} value.
+         * @param name {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -590,7 +590,7 @@ public abstract class Engine<D extends WebDriver> implements
 
         /**
          * Set the {@link #ENGINE#platformView} value.
-         * @param platformView A {@link PlatformView} instance.
+         * @param platformView {@link PlatformView} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -602,7 +602,7 @@ public abstract class Engine<D extends WebDriver> implements
         /**
          * Set the {@link #ENGINE#serverAddress}. This {@link String} represents
          * the Appium server address.
-         * @param address A {@link Address} instance.
+         * @param address {@link Address} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -612,8 +612,8 @@ public abstract class Engine<D extends WebDriver> implements
         }
 
         /**
-         * Same as above, but use a {@link org.swiften.xtestkit.mobile.Platform} instance.
-         * @param platform A {@link PlatformType} instance.
+         * Same as above, but use {@link org.swiften.xtestkit.mobile.Platform} instance.
+         * @param platform {@link PlatformType} instance.
          * @return The current {@link MobileEngine.Builder} instance.
          * @see CapType.Builder#withPlatform(PlatformType)
          */
@@ -627,7 +627,7 @@ public abstract class Engine<D extends WebDriver> implements
         /**
          * Set the {@link #ENGINE#testMode} value. This variable specifies
          * which test environment to be used.
-         * @param mode A {@link TestMode} instance.
+         * @param mode {@link TestMode} instance.
          * @return The current {@link Builder} instance.
          * @see CapType.Builder#withTestMode(TestMode)
          */

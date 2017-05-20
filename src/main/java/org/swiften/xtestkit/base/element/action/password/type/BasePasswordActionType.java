@@ -23,7 +23,7 @@ public interface BasePasswordActionType<D extends WebDriver> extends
 {
     /**
      * Toggle password mask to show/hide password.
-     * @param element A {@link WebElement} instance.
+     * @param element {@link WebElement} instance.
      */
     default void togglePasswordMask(@NotNull WebElement element) {
         throw new RuntimeException(NOT_AVAILABLE);
@@ -31,8 +31,8 @@ public interface BasePasswordActionType<D extends WebDriver> extends
 
     /**
      * Toggle password mask to show/hide password.
-     * @param ELEMENT A {@link WebElement} instance.
-     * @return A {@link Flowable} instance.
+     * @param ELEMENT {@link WebElement} instance.
+     * @return {@link Flowable} instance.
      * @see #togglePasswordMask(WebElement)
      */
     @NotNull
@@ -46,11 +46,11 @@ public interface BasePasswordActionType<D extends WebDriver> extends
     }
 
     /**
-     * Check if a {@link WebElement} is hiding a password. Usually if the
+     * Check if {@link WebElement} is hiding a password. Usually if the
      * password is hidden, {@link #getText(WebElement)} will return an
      * empty {@link String}.
-     * @param element A {@link WebElement} instance.
-     * @return A {@link Boolean} value.
+     * @param element {@link WebElement} instance.
+     * @return {@link Boolean} value.
      * @see #getText(WebElement)
      */
     default boolean isHidingPassword(@NotNull WebElement element) {
@@ -58,9 +58,9 @@ public interface BasePasswordActionType<D extends WebDriver> extends
     }
 
     /**
-     * Check if a {@link WebElement} is showing a password.
-     * @param element A {@link WebElement} instance.
-     * @return A {@link Boolean} value.
+     * Check if {@link WebElement} is showing a password.
+     * @param element {@link WebElement} instance.
+     * @return {@link Boolean} value.
      * @see #isHidingPassword(WebElement)
      */
     default boolean isShowingPassword(@NotNull WebElement element) {

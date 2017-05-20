@@ -59,7 +59,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Get a count of available ports between {@link #MIN_PORT} and
      * {@link #MAX_PORT}. Only even ports are counted.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     public static int availablePortsCount() {
         int total = MAX_PORT - MIN_PORT + 1;
@@ -84,7 +84,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Getters
     /**
      * Return {@link #PROCESS_RUNNER}.
-     * @return A {@link ProcessRunner} instance.
+     * @return {@link ProcessRunner} instance.
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -93,7 +93,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Get all available ports.
-     * @return A {@link Collection} of {@link Integer}.
+     * @return {@link Collection} of {@link Integer}.
      */
     @NotNull
     public Collection<Integer> availablePorts() {
@@ -102,7 +102,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Return {@link #NETWORK_HANDLER}.
-     * @return A {@link NetworkHandler} instance.
+     * @return {@link NetworkHandler} instance.
      */
     @NotNull
     public NetworkHandler networkHandler() {
@@ -112,8 +112,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Check if a port is acceptable; i.e. lies within {@link #MIN_PORT} and
      * {@link #MAX_PORT} and is an even number.
-     * @param port An {@link Integer} value.
-     * @return A {@link Boolean} value.
+     * @param port {@link Integer} value.
+     * @return {@link Boolean} value.
      */
     public boolean isAcceptablePort(int port) {
         return port >= MIN_PORT && port <= MAX_PORT && NumberUtil.isEven(port);
@@ -124,7 +124,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Restart adb server in order to avoid problem with adb not acknowledging
      * the first command at the start of a test batch.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean> rxRestartAdb() {
@@ -143,8 +143,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Start Emulator
     /**
      * Recursively find an available port and emit and error if none is found.
-     * @param PARAM A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * * @see #rxIsAcceptablePort(int)
      * @see NetworkHandler#checkPortsMarkedAsUsed(Collection)
      * @see NetworkHandler#rxCheckPortAvailable(PortType)
@@ -171,8 +171,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Start the emulator with the specified settings. Detect when bootanim is
      * 'closed' and then emit value.
-     * @param PARAM A {@link StartEmulatorParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link StartEmulatorParam} instance.
+     * @return {@link Flowable} instance.
      * @see #cmStartEmulator(StartEmulatorParam)
      * @see #cmBootAnim(DeviceUIDType)
      */
@@ -248,8 +248,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Stop Emulator
     /**
      * Shut down all emulators.
-     * @param param A {@link RetryType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link RetryType} instance.
+     * @return {@link Flowable} instance.
      * @see #cmStopAllEmulators()
      */
     @NotNull
@@ -264,8 +264,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Kill a specific emulator instance, based on its port number.
-     * @param param A {@link StopEmulatorParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link StopEmulatorParam} instance.
+     * @return {@link Flowable} instance.
      * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
      */
     @NotNull
@@ -277,9 +277,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Clear Cached Data
     /**
      * Clear cached data from a device/emulator.
-     * @param param A {@link T} instance.
+     * @param param {@link T} instance.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #cmClearCachedData(AppPackageType)
      */
     @NotNull
@@ -306,9 +306,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Check whether an app is installed on the currently active
      * device/emulator.
-     * @param PARAM An {@link AppPackageType} instance.
+     * @param PARAM {@link AppPackageType} instance.
      * @param <T> Generics parameter.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #cmListPackages(DeviceUIDType)
      */
     @NotNull
@@ -331,8 +331,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Disable internet connection for a rooted device. We should only use
      * this method for emulators since they are rooted by default.
-     * @param param A {@link ConnectionParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link ConnectionParam} instance.
+     * @return {@link Flowable} instance.
      * @see #cmToggleConnection(ConnectionParam)
      */
     @NotNull
@@ -348,8 +348,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Same as above, but uses a default {@link ConnectionParam}.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      * @see #rxToggleInternetConnection(ConnectionParam)
      */
     @NotNull
@@ -366,8 +366,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Same as above, but uses a default {@link ConnectionParam}.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      * @see #rxToggleInternetConnection(ConnectionParam)
      */
     @NotNull
@@ -386,8 +386,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Check Keyboard
     /**
      * Check whether the keyboard is open.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      * @see #cmCheckKeyboardOpen(DeviceUIDType)
      */
     @NotNull
@@ -419,8 +419,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Change emulator/device settings with
      * {@link #cmPutSettings(DeviceSettingParam)}, and then check that the
      * value is set with {@link #cmGetSettings(DeviceSettingParam)}.
-     * @param PARAM A {@link DeviceSettingParam} instance.
-     * @return A {@link Flowable} instance.
+     * @param PARAM {@link DeviceSettingParam} instance.
+     * @return {@link Flowable} instance.
      * @see #cmPutSettings(DeviceSettingParam)
      * @see #cmGetSettings(DeviceSettingParam)
      */
@@ -451,8 +451,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Disable Window Animation Scale
     /**
      * Disable window animation scale.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
@@ -471,8 +471,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Disable Transition Animation Scale
     /**
      * Disable transition animation scale.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
@@ -491,8 +491,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region Disable Animator Duration Scale
     /**
      * Disable animator duration scale.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     public Flowable<Boolean>
@@ -513,8 +513,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Disable emulator animations for UI test to prevent unexpected wait
      * times. Note that this is only applicable for rooted devices, and
      * emulators are rooted by default.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link Flowable} instance.
      * @see #rxDisableWindowAnimationScale(DeviceUIDType)
      * @see #rxDisableTransitionAnimationScale(DeviceUIDType)
      * @see #rxDisableAnimatorDurationScale(DeviceUIDType)
@@ -537,7 +537,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     //region CLI commands
     /**
      * Get ${ANDROID_HOME} from Environment variables.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmAndroidHome() {
@@ -552,7 +552,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Get path to adb.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAndroidHome()
      */
     @NotNull
@@ -562,7 +562,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to launch adb.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmLaunchAdb() {
@@ -571,7 +571,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Get path to adb shell CLI.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAdb()
      */
     @NotNull
@@ -581,8 +581,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Get path to adb shell CLI, with device UID.
-     * @param param A {@link DeviceUIDType} instance.
-     * @return A {@link String} value.
+     * @param param {@link DeviceUIDType} instance.
+     * @return {@link String} value.
      * @see #cmAdb()
      */
     @NotNull
@@ -593,7 +593,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Get path to Android emulator CLI.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAndroidHome()
      */
     @NotNull
@@ -603,7 +603,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to get a list of attached devices.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAdb()
      */
     @NotNull
@@ -613,8 +613,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to start an emulator whose name is specified in the parameters.
-     * @param param A {@link String} value.
-     * @return A {@link String} value.
+     * @param param {@link String} value.
+     * @return {@link String} value.
      * @see #cmEmulator()
      */
     @NotNull
@@ -629,8 +629,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * We can check whether the emulator is fully started by checking its
      * bootanim. If this value is 'stopped', the emulator has booted up
      * completely.
-     * @param param A {@link String} value.
-     * @return A {@link String} value.
+     * @param param {@link String} value.
+     * @return {@link String} value.
      * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
@@ -641,7 +641,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     /**
      * Command to shut down the emulator. Should not be used for actual
      * devices because this command will send a shutdown signal.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAdbShell()
      */
     @NotNull
@@ -651,8 +651,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to list all installed packages on an active device/emulator.
-     * @param param A {@link String} value.
-     * @return A {@link String} value.
+     * @param param {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String cmListPackages(@NotNull DeviceUIDType param) {
@@ -661,8 +661,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * The command to enable/disable internet connection.
-     * @param param A {@link ConnectionParam} instance.
-     * @return A {@link String} value.
+     * @param param {@link ConnectionParam} instance.
+     * @return {@link String} value.
      * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
@@ -673,7 +673,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to check whether keyboard is open.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
@@ -683,8 +683,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to change device settings.
-     * @param param a {@link DeviceSettingParam} instance.
-     * @return A {@link String} value.
+     * @param param {@link DeviceSettingParam} instance.
+     * @return {@link String} value.
      * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull
@@ -696,9 +696,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to clear cached data from a device/emulator.
-     * @param param A {@link T} instance.
+     * @param param {@link T} instance.
      * @param <T> Generics parameter.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public <T extends AppPackageType & DeviceUIDType>
@@ -710,8 +710,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
     /**
      * Command to get device settings.
-     * @param param a {@link DeviceSettingParam} instance.
-     * @return A {@link String} value.
+     * @param param {@link DeviceSettingParam} instance.
+     * @return {@link String} value.
      * @see #cmAdbShell(DeviceUIDType)
      */
     @NotNull

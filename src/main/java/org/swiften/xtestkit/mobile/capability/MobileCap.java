@@ -50,8 +50,8 @@ public class MobileCap extends BaseCap {
 
     /**
      * Get the app name as set in the capabilities {@link Map}.
-     * @param capabilities A {@link Map} of capabilities.
-     * @return A {@link String} value.
+     * @param capabilities {@link Map} of capabilities.
+     * @return {@link String} value.
      */
     @NotNull
     public String appPath(@NotNull Map<String,Object> capabilities) {

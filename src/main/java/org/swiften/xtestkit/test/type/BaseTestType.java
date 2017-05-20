@@ -14,13 +14,13 @@ import org.swiften.xtestkit.kit.TestKit;
 public interface BaseTestType {
     /**
      * Get the currently active {@link TestKit}.
-     * @return A {@link TestKit} instance.
+     * @return {@link TestKit} instance.
      */
     @NotNull TestKit testKit();
 
     /**
      * Get the current {@link Engine} index.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     int currentIndex();
 

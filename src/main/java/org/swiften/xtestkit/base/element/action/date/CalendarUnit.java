@@ -22,7 +22,7 @@ public enum CalendarUnit implements AttributeType<Integer> {
     /**
      * Get the {@link Calendar} constant that corresponds to this
      * {@link CalendarUnit}.
-     * @return An {@link Integer} instance.
+     * @return {@link Integer} instance.
      */
     @NotNull
     public Integer value() {

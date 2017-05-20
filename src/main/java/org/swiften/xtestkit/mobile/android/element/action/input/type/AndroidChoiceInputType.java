@@ -17,7 +17,7 @@ public interface AndroidChoiceInputType extends AndroidInputType, ChoiceInputTyp
     /**
      * Get the scroll view picker {@link XPath} for
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
-     * @return A {@link XPath} value.
+     * @return {@link XPath} value.
      */
     @NotNull
     XPath androidScrollViewPickerXPath();
@@ -26,7 +26,7 @@ public interface AndroidChoiceInputType extends AndroidInputType, ChoiceInputTyp
      * Get the item {@link XPath} for each item found in the
      * {@link org.openqa.selenium.WebElement} whose {@link XPath} is the
      * {@link #androidScrollViewPickerXPath()}.
-     * @return A {@link XPath} value.
+     * @return {@link XPath} value.
      * @see #androidScrollViewPickerXPath()
      */
     @NotNull

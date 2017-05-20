@@ -22,10 +22,10 @@ import java.util.Date;
 public interface BaseDateActionType extends BaseErrorType {
     //region Validation
     /**
-     * Check if a {@link Date} is currently active. This assumes that the
+     * Check if {@link Date} is currently active. This assumes that the
      * user is in a calendar view.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
@@ -35,10 +35,10 @@ public interface BaseDateActionType extends BaseErrorType {
 
     //region Actions
     /**
-     * Select a {@link Date}. This assumes that the user is in a calendar
+     * Select {@link Date}. This assumes that the user is in a calendar
      * view.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * @param param {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rx_selectDate(@NotNull DateType param) {
@@ -46,9 +46,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Select a year based on the {@link Date} from a {@link DateType} instance.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * Select a year based on the {@link Date} from {@link DateType} instance.
+     * @param param {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
@@ -56,9 +56,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Select a month based on the {@link Date} from a {@link DateType} instance.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * Select a month based on the {@link Date} from {@link DateType} instance.
+     * @param param {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
@@ -66,9 +66,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Select a day based on the {@link Date} from a {@link DateType} instance.
-     * @param param A {@link DateType} instance.
-     * @return A {@link Flowable} instance.
+     * Select a day based on the {@link Date} from {@link DateType} instance.
+     * @param param {@link DateType} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
@@ -80,7 +80,7 @@ public interface BaseDateActionType extends BaseErrorType {
     /**
      * Get all calendar {@link WebElement}. This assumes that the user is in a
      * calendar view.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<WebElement> rxAllCalendarElements() {
@@ -90,7 +90,7 @@ public interface BaseDateActionType extends BaseErrorType {
     /**
      * Get the currently displayed {@link Date}, assuming the user is in a
      * calendar view.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      */
     @NotNull
     default Flowable<Date> rxDisplayedDate() {
@@ -99,9 +99,9 @@ public interface BaseDateActionType extends BaseErrorType {
     //endregion
 
     /**
-     * Get the day formatted as a {@link String}.
-     * @param param A {@link DateType} instance.
-     * @return A {@link String} value.
+     * Get the day formatted as {@link String}.
+     * @param param {@link DateType} instance.
+     * @return {@link String} value.
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -110,9 +110,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Get the month formatted as a {@link String}.
-     * @param param A {@link DateType} instance.
-     * @return A {@link String} value.
+     * Get the month formatted as {@link String}.
+     * @param param {@link DateType} instance.
+     * @return {@link String} value.
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -121,9 +121,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Get the year formatted as a {@link String}.
-     * @param param A {@link DateType} instance.
-     * @return A {@link String} value.
+     * Get the year formatted as {@link String}.
+     * @param param {@link DateType} instance.
+     * @return {@link String} value.
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -132,9 +132,9 @@ public interface BaseDateActionType extends BaseErrorType {
     }
 
     /**
-     * Get a {@link String} representation of a {@link DateType#value()}.
-     * @param param A {@link DateType} instance.
-     * @return A {@link String} value.
+     * Get {@link String} representation of {@link DateType#value()}.
+     * @param param {@link DateType} instance.
+     * @return {@link String} value.
      * @see #dateString(DateType)
      * @see #monthString(DateType)
      * @see #yearString(DateType)

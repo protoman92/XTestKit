@@ -15,13 +15,13 @@ import java.awt.*;
 public interface TapType {
     /**
      * The tap's x position.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     int x();
 
     /**
      * The tap's y position.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     int y();
 }

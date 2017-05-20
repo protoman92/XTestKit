@@ -15,8 +15,8 @@ import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
  */
 public class IdParam implements ContainsIDType, RetryType {
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {

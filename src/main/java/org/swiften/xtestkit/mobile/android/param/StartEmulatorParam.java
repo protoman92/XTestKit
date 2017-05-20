@@ -27,8 +27,8 @@ public class StartEmulatorParam implements
     }
 
     /**
-     * Get a {@link Builder} instance.
-     * @return A {@link Builder} instance.
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
      */
     @NotNull
     public static Builder builder() {
@@ -48,7 +48,7 @@ public class StartEmulatorParam implements
 
     /**
      * Return {@link #deviceUID}.
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     @Override
@@ -63,7 +63,7 @@ public class StartEmulatorParam implements
 
     /**
      * Return {@link #deviceName).
-     * @return A {@link String} value.
+     * @return {@link String} value.
      */
     @NotNull
     public String deviceName() {
@@ -72,7 +72,7 @@ public class StartEmulatorParam implements
 
     /**
      * Return {@link #port}.
-     * @return An {@link Integer} value.
+     * @return {@link Integer} value.
      */
     public int port() {
         return port;
@@ -91,7 +91,7 @@ public class StartEmulatorParam implements
 
         /**
          * Set the {@link #deviceName} value.
-         * @param name A {@link String} value.
+         * @param name {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -102,7 +102,7 @@ public class StartEmulatorParam implements
 
         /**
          * Set the {@link #deviceUID} value.
-         * @param uid A {@link String} value.
+         * @param uid {@link String} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -113,7 +113,7 @@ public class StartEmulatorParam implements
 
         /**
          * Set the {@link #retries} value.
-         * @param retries An {@link Integer} value.
+         * @param retries {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -124,7 +124,7 @@ public class StartEmulatorParam implements
 
         /**
          * Set the {@link #port} value.
-         * @param port An {@link Integer} value.
+         * @param port {@link Integer} value.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -135,8 +135,8 @@ public class StartEmulatorParam implements
 
         /**
          * Set {@link #retries}.
-         * @param param A {@link RetryType} instance.
-         * @return A {@link Builder} instance.
+         * @param param {@link RetryType} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryType(@NotNull RetryType param) {
@@ -144,9 +144,9 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} from a {@link DeviceUIDType}
+         * Set {@link #PARAM#deviceUID} from {@link DeviceUIDType}
          * instance.
-         * @param param A {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDType} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
@@ -155,9 +155,9 @@ public class StartEmulatorParam implements
         }
 
         /**
-         * Set properties from an {@link AndroidInstance} instance.
-         * @param instance An {@link AndroidInstance} instance.
-         * @return A {@link Builder} instance.
+         * Set properties from {@link AndroidInstance} instance.
+         * @param instance {@link AndroidInstance} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withAndroidInstance(@NotNull AndroidInstance instance) {

@@ -25,7 +25,7 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
 
     /**
      * Hide the currently active keyboard.
-     * @return A {@link Flowable} instance.
+     * @return {@link Flowable} instance.
      * @see #hideKeyboard()
      */
     @NotNull

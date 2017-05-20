@@ -21,7 +21,7 @@ public interface MobileTapType<D extends MobileDriver> extends
 {
     /**
      * Override to use {@link MobileTouchActionType#tap(MobileDriver, TapType)}.
-     * @param param A {@link TapType} instance.
+     * @param param {@link TapType} instance.
      * @param <P> Generics parameter.
      * @see #driver()
      * @see #touchAction()
