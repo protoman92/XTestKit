@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.capability.type;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.TestMode;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Implement this interface to selectively provide capabilities for
- * {@link BaseEngine}.
+ * {@link Engine}.
  */
 public interface CapType extends BaseErrorType {
     /**

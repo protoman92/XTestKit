@@ -4,14 +4,14 @@ package org.swiften.xtestkit.kit.param;
  * Created by haipham on 4/1/17.
  */
 
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.IndexType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link BaseEngine#rxBeforeClass(BeforeClassParam)}
+ * {@link Engine#rxBeforeClass(BeforeClassParam)}
  */
 public class BeforeClassParam implements IndexType, RetryType {
     public static BeforeClassParam DEFAULT;

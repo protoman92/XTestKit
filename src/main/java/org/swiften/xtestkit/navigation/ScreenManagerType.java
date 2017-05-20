@@ -7,7 +7,7 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,20 +18,21 @@ import java.util.stream.Collectors;
  */
 public interface ScreenManagerType extends ScreenManagerErrorType {
     /**
-     * Get the associated {@link BaseEngine} instance.
-     * @return A {@link BaseEngine} instance.
+     * Get the associated {@link Engine} instance.
+     * @return {@link Engine} instance.
      */
-    @NotNull BaseEngine<?> engine();
+    @NotNull
+    Engine<?> engine();
 
     /**
      * Register a {@link ScreenType} and store its related {@link Node}
      * in an inner cache.
      * @param screen A {@link ScreenType} instance.
      * @see #engine()
-     * @see ScreenType#accessibleFromHere(BaseEngine)
+     * @see ScreenType#accessibleFromHere(Engine)
      */
     default void register(@NotNull ScreenType screen) {
-        BaseEngine<?> engine = engine();
+        Engine<?> engine = engine();
 
         List<Node> nodes = screen
             .accessibleFromHere(engine)

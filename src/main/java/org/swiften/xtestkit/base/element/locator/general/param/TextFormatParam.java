@@ -6,12 +6,12 @@ package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.LCFormat;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.property.type.base.FormatType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**
- * Parameter object for {@link BaseEngine#rxElementsContainingText(TextFormatParam)}.
+ * Parameter object for {@link Engine#rxElementsContainingText(TextFormatParam)}.
  */
 public class TextFormatParam implements FormatType, RetryType {
     /**

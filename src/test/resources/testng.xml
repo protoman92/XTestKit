@@ -12,7 +12,7 @@
 
     <test name="Base Engine Test">
         <classes>
-            <class name="org.swiften.xtestkit.base.BaseEngineTest"/>
+            <class name="org.swiften.xtestkit.base.EngineTest"/>
             <class name="org.swiften.xtestkit.base.AppiumCommandTest"/>
             <class name="org.swiften.xtestkit.base.ProcessRunnerTest"/>
             <class name="org.swiften.xtestkit.base.AddressTest"/>

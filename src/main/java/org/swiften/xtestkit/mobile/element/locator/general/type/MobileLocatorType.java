@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile.element.locator.general.type;
 
 import io.appium.java_client.MobileDriver;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.PlatformNameContainerType;
 import org.swiften.xtestkit.base.type.PlatformType;
@@ -23,7 +23,7 @@ public interface MobileLocatorType<D extends MobileDriver> extends
 {
     /**
      * @return A {@link PlatformType} instance.
-     * @see BaseEngine#platform()
+     * @see Engine#platform()
      */
     @NotNull
     @Override

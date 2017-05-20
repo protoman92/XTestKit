@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.property.type.base.IgnoreCaseType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.element.property.type.base.StringType;
@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.element.property.type.base.StringType;
  */
 
 /**
- * Parameter object for {@link BaseEngine#rxElementsWithText(StringType)}.
+ * Parameter object for {@link Engine#rxElementsWithText(StringType)}.
  */
 public class TextParam implements StringType, RetryType {
     /**

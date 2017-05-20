@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.test;
 
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 /**
  * We need to use this class to ensure {@link TestKit}
  * based test are repeated as long as there are more than 1
- * {@link BaseEngine} registered.
+ * {@link Engine} registered.
  * To use this class, we should ideally create a class that implements
  * {@link TestRunner}, with a static {@link RepeatRunner} instance so that
  * it is not recreated every time a new iteration is run (if it is not static,

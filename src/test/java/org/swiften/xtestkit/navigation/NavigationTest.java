@@ -6,8 +6,9 @@ import static org.mockito.Mockito.*;
 
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
+
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -21,14 +22,14 @@ import java.util.stream.IntStream;
  * Created by haipham on 5/20/17.
  */
 public class NavigationTest implements ScreenManagerType {
-    @NotNull final ScreenManagerType MANAGER;
-    @NotNull final List<Node> NODES;
-    @NotNull final BaseEngine<?> ENGINE;
+    @NotNull private final ScreenManagerType MANAGER;
+    @NotNull private final List<Node> NODES;
+    @NotNull private final Engine<?> ENGINE;
     private final int TRIES = 100;
 
     {
         NODES = new LinkedList<>();
-        ENGINE = mock(BaseEngine.class);
+        ENGINE = mock(Engine.class);
         MANAGER = spy(this);
     }
 
@@ -53,7 +54,7 @@ public class NavigationTest implements ScreenManagerType {
 
     @NotNull
     @Override
-    public BaseEngine<?> engine() {
+    public Engine<?> engine() {
         return ENGINE;
     }
 
@@ -117,7 +118,7 @@ public class NavigationTest implements ScreenManagerType {
         }
 
         @NotNull
-        public List<Direction> accessibleFromHere(@NotNull BaseEngine<?> engine) {
+        public List<Direction> accessibleFromHere(@NotNull Engine<?> engine) {
             final Screen THIS = this;
             List<Screen> screens = Arrays.asList(values());
             final Random RAND = new Random();

@@ -6,8 +6,7 @@ package org.swiften.xtestkit.navigation;
 
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 
 import java.util.List;
 
@@ -19,13 +18,13 @@ public interface ScreenType {
     /**
      * Get a {@link List} of {@link Direction} that this {@link ScreenType}
      * can navigate to.
-     * @param engine A {@link BaseEngine} instance. This is necessary because
+     * @param engine {@link Engine} instance. This is necessary because
      *               most of the time the navigation will rely on the
      *               {@link org.openqa.selenium.WebDriver}.
      * @return A {@link List} of {@link Direction}.
      */
     @NotNull
-    List<Direction> accessibleFromHere(@NotNull BaseEngine<?> engine);
+    List<Direction> accessibleFromHere(@NotNull Engine<?> engine);
 
     /**
      * Use this class to define to which {@link ScreenType} can a

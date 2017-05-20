@@ -2,6 +2,7 @@ package org.swiften.xtestkit.base.param;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
@@ -13,7 +14,7 @@ import org.swiften.xtestkit.base.type.UnidirectionContainerType;
 
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.base.BaseEngine#rx_swipeGenericUnidirectional(DurationType)}.
+ * {@link Engine#rx_swipeGenericUnidirectional(DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
 public class UnidirectionParam implements DurationType, RepeatType, UnidirectionContainerType {

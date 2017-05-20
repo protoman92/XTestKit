@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.mobile;
 
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
@@ -28,7 +28,7 @@ import java.util.*;
 public abstract class MobileEngine<
     E extends WebElement,
     D extends MobileDriver<E>> extends
-    BaseEngine<D> implements
+    Engine<D> implements
     MobileActionType<D>,
     MobileLocatorType<D>,
     MobileKeyboardActionType<D>,
@@ -139,7 +139,7 @@ public abstract class MobileEngine<
     /**
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxBeforeMethod(BeforeParam)
+     * @see Engine#rxBeforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
      * @see #rxLaunchApp()
@@ -164,7 +164,7 @@ public abstract class MobileEngine<
     /**
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxAfterMethod(AfterParam)
+     * @see Engine#rxAfterMethod(AfterParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
      * @see #rxStopDriver()
@@ -194,7 +194,7 @@ public abstract class MobileEngine<
      * want to start a device and keep it open until all test for one
      * {@link MobileEngine} has finished. If necessary, we can clear the
      * app's data and uninstall manually.
-     * @see BaseEngine#capabilities()
+     * @see Engine#capabilities()
      */
     @NotNull
     @Override
@@ -219,7 +219,7 @@ public abstract class MobileEngine<
      * Builder class for {@link MobileEngine}.
      * @param <T> Generics parameter that extends {@link MobileEngine}.
      */
-    public static class Builder<T extends MobileEngine> extends BaseEngine.Builder<T> {
+    public static class Builder<T extends MobileEngine> extends Engine.Builder<T> {
         protected Builder(@NotNull T engine,
                           @NotNull CapType.Builder capBuilder) {
             super(engine, capBuilder);

@@ -5,13 +5,13 @@ package org.swiften.xtestkit.kit.param;
  */
 
 import org.swiften.xtestkit.base.type.IndexType;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link BaseEngine#rxBeforeMethod(BeforeParam)}
+ * {@link Engine#rxBeforeMethod(BeforeParam)}
  */
 public class BeforeParam implements IndexType, RetryType {
     @NotNull public static BeforeParam DEFAULT;

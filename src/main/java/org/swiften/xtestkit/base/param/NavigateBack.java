@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.RetryType;
 
@@ -10,7 +10,7 @@ import org.swiften.xtestkit.base.type.RetryType;
  */
 
 /**
- * Parameter object for {@link BaseEngine#rxNavigateBack(NavigateBack)}.
+ * Parameter object for {@link Engine#rxNavigateBack(NavigateBack)}.
  */
 public final class NavigateBack implements RepeatType, RetryType {
     @NotNull

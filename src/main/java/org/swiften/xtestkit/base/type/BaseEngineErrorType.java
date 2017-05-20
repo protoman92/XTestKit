@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.Engine;
 
 /**
  * Created by haipham on 3/19/17.
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface provides errors for
- * {@link org.swiften.xtestkit.base.BaseEngine}.
+ * {@link Engine}.
  */
 public interface BaseEngineErrorType extends BaseErrorType {
     @NotNull String APPIUM_NOT_INSTALLED = "Appium not installed";

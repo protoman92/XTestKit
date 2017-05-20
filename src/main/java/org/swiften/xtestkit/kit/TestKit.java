@@ -2,7 +2,7 @@ package org.swiften.xtestkit.kit;
 
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -44,7 +44,7 @@ public class TestKit implements
 
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final List<BaseEngine> ENGINES;
+    @NotNull private final List<Engine> ENGINES;
     @Nullable private Localizer localizer;
 
     TestKit() {
@@ -55,7 +55,7 @@ public class TestKit implements
 
     //region RepeatRunner.ParameterConsumer
     /**
-     * If two consecutive {@link BaseEngine} are of the same {@link Class}
+     * If two consecutive {@link Engine} are of the same {@link Class}
      * (for e.g., two consecutive
      * {@link AndroidEngine}, we
      * return immediately because usually each {@link Platform} CLI tools do
@@ -71,7 +71,7 @@ public class TestKit implements
         Flowable
             .fromArray(BoxUtil.box(indexes))
             .map(this::engine)
-            .distinct(BaseEngine::comparisonObject)
+            .distinct(Engine::comparisonObject)
             .count()
             .toFlowable()
             .subscribe(subscriber);
@@ -82,16 +82,16 @@ public class TestKit implements
 
     //region TestListenerType
     /**
-     * Return a distinct stream of {@link BaseEngine} based on each of
+     * Return a distinct stream of {@link Engine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
      * as {@link #rxOnFreshStart()} and {@link #rxOnAllTestsFinished()}.
      * @return A {@link Flowable} instance.
      * @see #engines()
-     * @see BaseEngine#getClass()
+     * @see Engine#getClass()
      */
     @NotNull
-    public Flowable<BaseEngine> rxDistinctEngines() {
-        return Flowable.fromIterable(engines()).distinct(BaseEngine::getClass);
+    public Flowable<Engine> rxDistinctEngines() {
+        return Flowable.fromIterable(engines()).distinct(Engine::getClass);
     }
 
     @NotNull
@@ -102,11 +102,11 @@ public class TestKit implements
 
         return rxKillAllAppiumInstances()
             .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(BaseEngine::rxOnFreshStart);
+            .concatMap(Engine::rxOnFreshStart);
     }
 
     /**
-     * Convenient method to get {@link BaseEngine} from {@link #ENGINES}
+     * Convenient method to get {@link Engine} from {@link #ENGINES}
      * based on an Array of {@link Integer} indexes.
      * @param indexes An Array of {@link Integer}.
      * @return A {@link Flowable} instance.
@@ -114,8 +114,8 @@ public class TestKit implements
      * @see #rxOnBatchFinished(int[])
      */
     @NotNull
-    public Flowable<BaseEngine> rxEnginesFromIndexes(@NotNull int[] indexes) {
-        final List<BaseEngine> ENGINES = engines();
+    public Flowable<Engine> rxEnginesFromIndexes(@NotNull int[] indexes) {
+        final List<Engine> ENGINES = engines();
         final int SIZE = ENGINES.size();
 
         return Flowable
@@ -155,7 +155,7 @@ public class TestKit implements
 
         return rxKillAllAppiumInstances()
             .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(BaseEngine::rxOnAllTestsFinished);
+            .concatMap(Engine::rxOnAllTestsFinished);
     }
     //endregion
 
@@ -298,10 +298,10 @@ public class TestKit implements
 
     /**
      * Get an unmodifiable {@link #ENGINES} clone.
-     * @return A {@link List} of {@link BaseEngine}.
+     * @return A {@link List} of {@link Engine}.
      */
     @NotNull
-    public List<BaseEngine> engines() {
+    public List<Engine> engines() {
         return Collections.unmodifiableList(ENGINES);
     }
 
@@ -319,18 +319,18 @@ public class TestKit implements
     }
     //endregion
 
-    //region BaseEngine
+    //region Engine
     /**
-     * Get the current active {@link BaseEngine}.
-     * @return A {@link BaseEngine} instance.
-     * @throws RuntimeException If no non-null {@link BaseEngine} found.
+     * Get the current active {@link Engine}.
+     * @return {@link Engine} instance.
+     * @throws RuntimeException If no non-null {@link Engine} found.
      */
     @NotNull
-    public BaseEngine<?> engine(int current) {
-        List<BaseEngine> engines = engines();
+    public Engine<?> engine(int current) {
+        List<Engine> engines = engines();
 
         if (current > -1 && current < engines.size()) {
-            BaseEngine engine = engines.get(current);
+            Engine engine = engines.get(current);
 
             if (Objects.nonNull(engine)) {
                 return engine;
@@ -367,7 +367,7 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxBeforeClass(BeforeClassParam)
+     * @see Engine#rxBeforeClass(BeforeClassParam)
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
@@ -380,7 +380,7 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxAfterClass(AfterClassParam)
+     * @see Engine#rxAfterClass(AfterClassParam)
      */
     @NotNull
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
@@ -393,7 +393,7 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxBeforeMethod(BeforeParam)
+     * @see Engine#rxBeforeMethod(BeforeParam)
      */
     @NotNull
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
@@ -406,7 +406,7 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * @param param A {@link RetryType} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxAfterMethod(AfterParam)
+     * @see Engine#rxAfterMethod(AfterParam)
      */
     @NotNull
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
@@ -508,23 +508,23 @@ public class TestKit implements
         }
 
         /**
-         * Set the {@link #TEST_KIT#ENGINES} {@link BaseEngine}.
-         * @param engines A {@link Collection} of {@link BaseEngine}.
+         * Set the {@link #TEST_KIT#ENGINES} {@link Engine}.
+         * @param engines A {@link Collection} of {@link Engine}.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withEngines(@NotNull Collection<? extends BaseEngine> engines) {
+        public Builder withEngines(@NotNull Collection<? extends Engine> engines) {
             TEST_KIT.ENGINES.addAll(engines);
             return this;
         }
 
         /**
-         * Add a {@link BaseEngine} to {@link #TEST_KIT#ENGINES}.
-         * @param engine A {@link BaseEngine} instance.
+         * Add {@link Engine} to {@link #TEST_KIT#ENGINES}.
+         * @param engine {@link Engine} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder addEngine(@NotNull BaseEngine engine) {
+        public Builder addEngine(@NotNull Engine engine) {
             TEST_KIT.ENGINES.add(engine);
             return this;
         }
@@ -544,7 +544,7 @@ public class TestKit implements
         @NotNull
         public TestKit build() {
             final TestKit KIT = TEST_KIT;
-            List<BaseEngine> engines = KIT.engines();
+            List<Engine> engines = KIT.engines();
             engines.forEach(a -> a.setLocalizer(KIT));
             KIT.localizer = LOCALIZER_BUILDER.build();
             return KIT;

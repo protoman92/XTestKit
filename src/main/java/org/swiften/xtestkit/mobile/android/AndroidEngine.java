@@ -72,10 +72,10 @@ public class AndroidEngine extends
     /**
      * Since we can control multiple emulators/devices at once, there is no
      * need to have only one {@link AndroidEngine} active at a time. Therefore,
-     * we override {@link BaseEngine#comparisonObject()} to disable
+     * we override {@link Engine#comparisonObject()} to disable
      * this comparison filter.
      * @return An {@link Object} instance.
-     * @see BaseEngine#comparisonObject()
+     * @see Engine#comparisonObject()
      */
     @NotNull
     @Override
@@ -132,7 +132,7 @@ public class AndroidEngine extends
     /**
      * @param PARAM A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxBeforeClass(BeforeClassParam)
+     * @see Engine#rxBeforeClass(BeforeClassParam)
      * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
@@ -191,7 +191,7 @@ public class AndroidEngine extends
     /**
      * @param param A {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxAfterClass(AfterClassParam)
+     * @see Engine#rxAfterClass(AfterClassParam)
      * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
@@ -243,7 +243,7 @@ public class AndroidEngine extends
     /**
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
-     * @see BaseEngine#rxAfterMethod(AfterParam)
+     * @see Engine#rxAfterMethod(AfterParam)
      * @see ADBHandler#rxClearCachedData(AppPackageType)
      */
     @NotNull
@@ -291,7 +291,7 @@ public class AndroidEngine extends
 
     /**
      * @return An {@link AndroidDriver} instance.
-     * @see BaseEngine#driver(String, DesiredCapabilities)
+     * @see Engine#driver(String, DesiredCapabilities)
      */
     @NotNull
     @Override
@@ -339,7 +339,7 @@ public class AndroidEngine extends
          */
         @NotNull
         @Override
-        public BaseEngine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
+        public Engine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
             ANDROID_INSTANCE_BUILDER.withTestMode(mode);
             return super.withTestMode(mode);
         }

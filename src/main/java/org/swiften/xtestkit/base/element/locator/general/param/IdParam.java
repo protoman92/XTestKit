@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
 
@@ -10,7 +11,7 @@ import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
 
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.base.BaseEngine#rxElementsContainingID(IdParam)}.
+ * {@link Engine#rxElementsContainingID(IdParam)}.
  */
 public class IdParam implements ContainsIDType, RetryType {
     /**

@@ -54,7 +54,7 @@ import java.util.function.Predicate;
  * A base class for platform-specific implementations. Each Different platform
  * should extend this class and provide its own wrappers for Appium methods.
  */
-public abstract class BaseEngine<D extends WebDriver> implements
+public abstract class Engine<D extends WebDriver> implements
     BaseActionType<D>,
     BaseClickActionType,
     BaseCheckBoxActionType,
@@ -93,7 +93,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      */
     @NotNull private final AtomicBoolean ATOMIC_START_APPIUM;
 
-    public BaseEngine() {
+    public Engine() {
         ATOMIC_START_APPIUM = new AtomicBoolean(false);
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
@@ -147,7 +147,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * This method will be called by
      * {@link TestKit#rxBeforeClass(BeforeClassParam)}.
-     * Subclasses of {@link BaseEngine} should provide their own
+     * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param A {@link BeforeClassParam} instance.
      * @return A {@link Flowable} instance.
@@ -165,7 +165,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * This method will be called by
      * {@link TestKit#rxAfterClass(AfterClassParam)}.
-     * Subclasses of {@link BaseEngine} should provide their own
+     * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param An {@link AfterClassParam} instance.
      * @return A {@link Flowable} instance.
@@ -201,7 +201,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * This method will be
      * called by {@link TestKit#rxBeforeMethod(BeforeParam)}.
-     * Subclasses of {@link BaseEngine} should provide their own
+     * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param A {@link BeforeParam} instance.
      * @return A {@link Flowable} instance.
@@ -214,7 +214,7 @@ public abstract class BaseEngine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * This method will be called by {@link TestKit#rxAfterMethod(AfterParam)}.
-     * Subclasses of {@link BaseEngine} should provide their own
+     * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param A {@link AfterParam} instance.
      * @return A {@link Flowable} instance.
@@ -563,10 +563,10 @@ public abstract class BaseEngine<D extends WebDriver> implements
 
     //region Builder
     /**
-     * Builder class for {@link BaseEngine}.
-     * @param <T> Generics parameter that extends {@link BaseEngine}.
+     * Builder class for {@link Engine}.
+     * @param <T> Generics parameter that extends {@link Engine}.
      */
-    public static abstract class Builder<T extends BaseEngine> {
+    public static abstract class Builder<T extends Engine> {
         @NotNull final protected T ENGINE;
         @NotNull final protected CapType.Builder CAP_BUILDER;
 

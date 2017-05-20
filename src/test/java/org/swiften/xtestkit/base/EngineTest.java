@@ -1,7 +1,6 @@
 package org.swiften.xtestkit.base;
 
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.capability.BaseCap;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.tap.type.TapType;
@@ -26,7 +25,6 @@ import static org.testng.Assert.*;
 
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,7 +34,7 @@ import java.util.Collection;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class BaseEngineTest implements BaseEngineErrorType {
+public final class EngineTest implements BaseEngineErrorType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final CapType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
@@ -331,7 +329,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
     }
     //endregion
 
-    static class MockEngine extends BaseEngine<WebDriver> {
+    static class MockEngine extends Engine<WebDriver> {
         @Override
         public <P extends TapType & RetryType> void tap(@NotNull P param) {}
 
@@ -351,7 +349,7 @@ public final class BaseEngineTest implements BaseEngineErrorType {
             return Flowable.empty();
         }
 
-        static final class Builder extends BaseEngine.Builder<MockEngine> {
+        static final class Builder extends Engine.Builder<MockEngine> {
             Builder() {
                 super(new MockEngine(), new MockCap.Builder());
             }

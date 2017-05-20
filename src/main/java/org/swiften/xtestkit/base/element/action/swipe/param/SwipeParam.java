@@ -6,13 +6,13 @@ package org.swiften.xtestkit.base.element.action.swipe.param;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.BaseEngine;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 
 /**
- * Parameter object for {@link BaseEngine#rx_swipe(RepeatType)}
+ * Parameter object for {@link Engine#rx_swipe(RepeatType)}
  */
 public class SwipeParam implements RepeatType, SwipeType {
     /**
