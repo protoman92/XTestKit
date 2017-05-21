@@ -24,7 +24,18 @@ public interface ScreenType {
      * @return {@link List} of {@link Direction}.
      */
     @NotNull
-    List<Direction> accessibleFromHere(@NotNull Engine<?> engine);
+    List<Direction> forwardAccessible(@NotNull Engine<?> engine);
+
+    /**
+     * Get a {@link List} of {@link Direction} that this {@link ScreenType}
+     * can lead back to.
+     * @param engine {@link Engine} instance. This is necessary because
+     *               most of the time the navigation will rely on the
+     *               {@link org.openqa.selenium.WebDriver}.
+     * @return {@link List} of {@link Direction}.
+     */
+    @NotNull
+    List<Direction> backwardAccessible(@NotNull Engine<?> engine);
 
     /**
      * Use this class to define to which {@link ScreenType} can a

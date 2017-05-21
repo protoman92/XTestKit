@@ -23,12 +23,14 @@ import java.util.stream.IntStream;
  */
 public class NavigationTest implements ScreenManagerType {
     @NotNull private final ScreenManagerType MANAGER;
-    @NotNull private final List<Node> NODES;
+    @NotNull private final List<Node> FORWARD_NODES;
+    @NotNull private final List<Node> BACKWARD_NODES;
     @NotNull private final Engine<?> ENGINE;
     private final int TRIES = 100;
 
     {
-        NODES = new LinkedList<>();
+        FORWARD_NODES = new LinkedList<>();
+        BACKWARD_NODES = new LinkedList<>();
         ENGINE = mock(Engine.class);
         MANAGER = spy(this);
     }
@@ -49,7 +51,7 @@ public class NavigationTest implements ScreenManagerType {
 
     @AfterMethod
     public void afterMethod() {
-        NODES.clear();
+        FORWARD_NODES.clear();
     }
 
     @NotNull
@@ -59,13 +61,23 @@ public class NavigationTest implements ScreenManagerType {
     }
 
     @Override
-    public void addNodes(@NotNull List<Node> nodes) {
-        NODES.addAll(nodes);
+    public void addForwardNodes(@NotNull List<Node> nodes) {
+        FORWARD_NODES.addAll(nodes);
+    }
+
+    @Override
+    public void addBackwardNodes(@NotNull List<Node> nodes) {
+        BACKWARD_NODES.addAll(nodes);
     }
 
     @NotNull
-    public List<Node> registeredNodes() {
-        return NODES;
+    public List<Node> registeredForwardNodes() {
+        return FORWARD_NODES;
+    }
+
+    @NotNull
+    public List<Node> registeredBackwardNodes() {
+        return BACKWARD_NODES;
     }
 
     @SuppressWarnings("EmptyCatchBlock")
@@ -81,7 +93,7 @@ public class NavigationTest implements ScreenManagerType {
                 if (!current.equals(screen)) {
                     try {
                         // When
-                        List<Node> nodes = nodes(current, screen);
+                        List<Node> nodes = multipleShortest(current, screen);
                         Flowable<?> navigator = rx_navigate(true, current, screen);
                         LogUtil.println(nodes);
 
@@ -90,7 +102,7 @@ public class NavigationTest implements ScreenManagerType {
                             if (j < size - 1) {
                                 Node node1 = nodes.get(j);
                                 Node node2 = nodes.get(j + 1);
-                                assertEquals(node1.SECOND, node2.FIRST);
+                                assertEquals(node1.S2, node2.S1);
                             }
                         }
                     } catch (Exception e) {}
@@ -116,7 +128,8 @@ public class NavigationTest implements ScreenManagerType {
         }
 
         @NotNull
-        public List<Direction> accessibleFromHere(@NotNull Engine<?> engine) {
+        @Override
+        public List<Direction> forwardAccessible(@NotNull Engine<?> engine) {
             final Screen THIS = this;
             List<Screen> screens = Arrays.asList(values());
             final Random RAND = new Random();
@@ -125,6 +138,21 @@ public class NavigationTest implements ScreenManagerType {
             return CollectionUtil
                 .subList(screens, 0, size).stream()
                 .filter(a -> a.largerThan(THIS) && RAND.nextBoolean())
+                .map(a -> new Direction(a, Flowable::just))
+                .collect(Collectors.toList());
+        }
+
+        @NotNull
+        @Override
+        public List<Direction> backwardAccessible(@NotNull Engine<?>  engine) {
+            final Screen THIS = this;
+            List<Screen> screens = Arrays.asList(values());
+            final Random RAND = new Random();
+            int size = RAND.nextInt(screens.size());
+
+            return CollectionUtil
+                .subList(screens, 0, size).stream()
+                .filter(a -> THIS.largerThan(a) && RAND.nextBoolean())
                 .map(a -> new Direction(a, Flowable::just))
                 .collect(Collectors.toList());
         }

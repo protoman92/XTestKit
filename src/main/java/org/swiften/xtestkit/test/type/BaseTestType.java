@@ -7,11 +7,12 @@ package org.swiften.xtestkit.test.type;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.kit.TestKit;
+import org.swiften.xtestkit.util.type.EngineContainerType;
 
 /**
  * UI tests should implement this interface to access some convenient methods.
  */
-public interface BaseTestType {
+public interface BaseTestType extends EngineContainerType {
     /**
      * Get the currently active {@link TestKit}.
      * @return {@link TestKit} instance.
@@ -32,6 +33,7 @@ public interface BaseTestType {
      * @see TestKit#engine(int)
      */
     @NotNull
+    @Override
     default Engine<?> engine() {
         TestKit testKit = testKit();
         int index = currentIndex();
