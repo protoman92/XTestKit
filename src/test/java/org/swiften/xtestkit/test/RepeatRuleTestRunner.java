@@ -38,7 +38,7 @@ public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
         RUNNER = RepeatRunner.builder()
             .addTestClass(RepeatRunnerTest.class)
             .withVerboseLevel(0)
-            .withRetryCount(RETRY)
+            .withRetries(RETRY)
             .withPartitionSize(PARTITION_SIZE)
             .withParameterConsumer(PC)
             .addListener(LISTENER)

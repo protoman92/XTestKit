@@ -92,6 +92,18 @@ public final class Attribute {
         }
 
         /**
+         * Add add attributes from {@link Attribute} instance.
+         * @param attribute {@link Attribute} instance.
+         * @return The current {@link Builder} instance.
+         * @see Attribute#attributes()
+         */
+        @NotNull
+        public Builder addAttribute(@NotNull Attribute attribute) {
+            ATTRIBUTE.attributes.addAll(attribute.attributes());
+            return this;
+        }
+
+        /**
          * Set the {@link #ATTRIBUTE#mode} value. This will be used to
          * decide how elements are to be searched using the
          * {@link #ATTRIBUTE#attributes} {@link List}

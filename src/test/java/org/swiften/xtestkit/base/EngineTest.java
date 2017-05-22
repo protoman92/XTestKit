@@ -336,7 +336,7 @@ public final class EngineTest implements BaseEngineErrorType {
 
         @NotNull
         @Override
-        public XPath.Builder newXPathBuilder() {
+        public XPath.Builder xPathBuilder() {
             PlatformType platform = mock(PlatformType.class);
             when(platform.enabledAttribute()).thenReturn(Attribute.single("enabled"));
             when(platform.hintAttribute()).thenReturn(Attribute.single("hint"));

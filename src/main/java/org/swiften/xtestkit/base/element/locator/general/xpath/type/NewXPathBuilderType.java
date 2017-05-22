@@ -18,5 +18,5 @@ public interface NewXPathBuilderType {
      * Get the associated {@link XPath.Builder} instance.
      * @return {@link XPath.Builder} instance.
      */
-    @NotNull XPath.Builder newXPathBuilder();
+    @NotNull XPath.Builder xPathBuilder();
 }

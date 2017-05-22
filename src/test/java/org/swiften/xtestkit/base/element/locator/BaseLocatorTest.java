@@ -171,13 +171,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         // Setup
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
         List<BaseViewType> views = PLATFORM_VIEWS.allViews();
-
-        ByXPath param = ByXPath.builder()
-            .withClasses(views)
-            .withXPath(XPath.EMPTY)
-            .withError("")
-            .build();
-
+        ByXPath param = ByXPath.builder().withXPath(XPath.EMPTY).withError("").build();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -196,13 +190,7 @@ public class BaseLocatorTest implements BaseLocatorType {
     public void test_elementsByXPath_shouldSucceed() {
         // Setup
         List<BaseViewType> views = PLATFORM_VIEWS.allViews();
-
-        ByXPath param = ByXPath.builder()
-            .withClasses(views)
-            .withXPath(XPath.EMPTY)
-            .withError("")
-            .build();
-
+        ByXPath param = ByXPath.builder().withXPath(XPath.EMPTY).withError("").build();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When

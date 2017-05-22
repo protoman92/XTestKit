@@ -65,12 +65,12 @@ public interface DateType extends AttributeType<Date>, RetryType {
     /**
      * Get the {@link Calendar} component that corresponds to a
      * {@link CalendarUnit}.
-     * @param element {@link CalendarUnit} instance.
+     * @param unit {@link CalendarUnit} instance.
      * @return {@link Integer} value.
      */
     @SuppressWarnings("MagicConstant")
-    default int component(@NotNull CalendarUnit element) {
-        return calendar().get(element.value());
+    default int component(@NotNull CalendarUnit unit) {
+        return calendar().get(unit.value());
     }
 
     /**

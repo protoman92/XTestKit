@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
+import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
@@ -28,15 +29,33 @@ public class XPath {
         return new Builder(platform);
     }
 
+    @NotNull private String className;
     @NotNull private String attribute;
 
-    XPath() {
+    protected XPath() {
         attribute = "";
+        className = "*";
+    }
+
+    @NotNull
+    public String className() {
+        return className;
     }
 
     @NotNull
     public String attribute() {
-        return String.format("//*%s", attribute);
+        return attribute;
+    }
+
+    /**
+     * Get {@link #attribute} prefixed by path slashes.
+     * @return {@link String} value.
+     * @see #attribute()
+     * @see #className()
+     */
+    @NotNull
+    public String fullAttribute() {
+        return String.format("//%s%s", className(), attribute());
     }
 
     void appendAttribute(@NotNull String attr) {
@@ -52,10 +71,23 @@ public class XPath {
         @NotNull private final PlatformType PLATFORM;
         @NotNull private final String NO_ATTR_NAME_ERROR;
 
-        Builder(@NotNull PlatformType platform) {
+        protected Builder(@NotNull PlatformType platform) {
             PLATFORM = platform;
             XPATH = new XPath();
             NO_ATTR_NAME_ERROR = "Must specify attribute name";
+        }
+
+        /**
+         * Set the {@link #className} value to prefix the {@link XPath}
+         * {@link #attribute}.
+         * @param className {@link String} value.
+         * @return The current {@link Builder} instance.
+         * @see #className
+         */
+        @NotNull
+        public Builder setClass(@NotNull String className) {
+            XPATH.className = className;
+            return this;
         }
 
         /**
@@ -79,12 +111,12 @@ public class XPath {
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
          * @see #attribute
-         * @see XPath#attribute()
+         * @see XPath#fullAttribute()
          */
         @NotNull
         public Builder addChildXPath(@NotNull XPath xPath) {
             String attribute = XPATH.attribute;
-            String childAttribute = xPath.attribute();
+            String childAttribute = xPath.fullAttribute();
             XPATH.attribute = String.format("%s%s", attribute, childAttribute);
             return this;
         }

@@ -554,8 +554,6 @@ public abstract class Engine<D extends WebDriver> implements
             final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
 
-            LogUtil.println(distilled);
-
             return Completable
                 .fromAction(() -> driver = driver(SERVER_URL, CAPS))
                 .<Boolean>toFlowable()

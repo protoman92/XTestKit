@@ -23,38 +23,48 @@ public interface DatePickerContainerType {
     interface DatePickerType extends BaseErrorType, NewXPathBuilderType {
         /**
          * Get the {@link String} format for a particular {@link CalendarUnit}.
-         * @param element {@link CalendarUnit} instance.
+         * @param unit {@link CalendarUnit} instance.
          * @return {@link String} value.
          */
         @NotNull
-        String stringFormat(@NotNull CalendarUnit element);
+        String stringFormat(@NotNull CalendarUnit unit);
+
+        /**
+         * Get the picker list view {@link XPath} that corresponds to
+         * {@link CalendarUnit}.
+         * @param unit {@link CalendarUnit} instance.
+         * @return {@link XPath} instance.
+         */
+        @NotNull
+        XPath pickerListViewXPath(@NotNull CalendarUnit unit);
 
         /**
          * Get the display view {@link XPath} that corresponds to
          * {@link CalendarUnit}.
-         * @param element {@link CalendarUnit} instance.
+         * @param unit {@link CalendarUnit} instance.
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath displayViewXPath(@NotNull CalendarUnit element);
+        XPath componentDisplayViewXPath(@NotNull CalendarUnit unit);
 
         /**
-         * Get the picker view {@link XPath} that corresponds to
-         * {@link CalendarUnit}.
-         * @param element {@link CalendarUnit} instance.
+         * Get the target item view {@link XPath} that corresponds to
+         * {@link CalendarUnit}. This view should be the one displaying
+         * the component we are interested in.
+         * @param unit {@link CalendarUnit} instance.
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath pickerViewXPath(@NotNull CalendarUnit element);
+        XPath targetListViewItemXPath(@NotNull CalendarUnit unit);
 
         /**
          * Get the list view's item {@link XPath} that corresponds to a
          * {@link CalendarUnit}.
-         * @param element {@link CalendarUnit} instance.
+         * @param unit {@link CalendarUnit} instance.
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath listViewItemXPath(@NotNull CalendarUnit element);
+        XPath pickerListViewItemXPath(@NotNull CalendarUnit unit);
     }
 
     /**

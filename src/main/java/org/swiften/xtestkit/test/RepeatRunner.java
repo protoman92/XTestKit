@@ -319,7 +319,7 @@ public class RepeatRunner implements
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryCount(int retries) {
+        public Builder withRetries(int retries) {
             RUNNER.PAGINATION.retries = retries;
             return this;
         }

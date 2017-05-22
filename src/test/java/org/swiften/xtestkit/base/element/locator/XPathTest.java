@@ -19,15 +19,15 @@ public final class XPathTest {
         XPath xPath1 = XPath.builder(Platform.ANDROID)
             .atIndex(1)
             .ofInstance(1)
-            .ofClass("class1")
-            .containsID("id1")
-            .hasText("\"2'11\"")
-            .containsText("Register")
-            .containsText("Te'xt2")
-            .hasHint("Hint1")
-            .containsHint("Hint2")
-            .isEnabled(true)
-            .isClickable(true)
+//            .ofClass("class1")
+//            .containsID("id1")
+//            .hasText("\"2'11\"")
+//            .containsText("Register")
+//            .containsText("Te'xt2")
+//            .hasHint("Hint1")
+//            .containsHint("Hint2")
+//            .isEnabled(true)
+//            .isClickable(true)
             .build();
 
         XPath xPath2 = XPath.builder(Platform.ANDROID)
@@ -36,12 +36,15 @@ public final class XPathTest {
             .addChildXPath(xPath1)
             .build();
 
-        // When
-        String attr1 = xPath1.attribute();
-        String attr2 = xPath2.attribute();
+        XPath xPath3 = XPath.builder(Platform.ANDROID)
+            .withXPath(xPath2)
+            .withXPath(xPath1)
+            .isClickable(true)
+            .build();
 
-        // Then
-        LogUtil.println(attr1);
-        LogUtil.println(attr2);
+        // When & Then
+        LogUtil.println(xPath1.fullAttribute());
+        LogUtil.println(xPath2.fullAttribute());
+        LogUtil.println(xPath3.fullAttribute());
     }
 }

@@ -75,10 +75,29 @@ public enum Platform implements PlatformType, AttributeType<String> {
     //region PlatformType
     @NotNull
     @Override
+    public Attribute classAttribute() {
+        switch (this) {
+            case IOS:
+                return Attribute.builder()
+                    .addAttribute(PlatformType.super.classAttribute())
+                    .addAttribute("type")
+                    .withMode(Attribute.Mode.OR)
+                    .build();
+
+            default:
+                return PlatformType.super.classAttribute();
+        }
+    }
+
+    @NotNull
+    @Override
     public Attribute idAttribute() {
         switch (this) {
             case ANDROID:
                 return Attribute.single("resource-id");
+
+            case IOS:
+                return Attribute.single("accessibility");
 
             default:
                 return Attribute.BLANK;
@@ -112,7 +131,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
                     .addAttribute("title")
                     .addAttribute("text")
                     .addAttribute("value")
-                    .addAttribute("name")
+                    .addAttribute("label")
                     .withMode(Attribute.Mode.OR)
                     .build();
 

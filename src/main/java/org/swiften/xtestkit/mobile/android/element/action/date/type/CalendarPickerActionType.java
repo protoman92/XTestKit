@@ -24,6 +24,7 @@ import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
+import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
@@ -43,19 +44,6 @@ public interface CalendarPickerActionType extends
     MobileSwipeType<AndroidDriver<AndroidElement>>
 {
     /**
-     * Get the calendar list view. Applicable to
-     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
-     * @return {@link Flowable} instance.
-     * @see #rx_ofClass(OfClassType[])
-     * @see AndroidView.ViewType#LIST_VIEW
-     */
-    @NotNull
-    default Flowable<WebElement> rx_calendarListView() {
-        String cls = AndroidView.ViewType.LIST_VIEW.className();
-        return rx_ofClass(cls).firstElement().toFlowable();
-    }
-
-    /**
      * Select a day if the app is using
      * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
      * We need to define {@link Attribute} with "content-desc", and
@@ -67,37 +55,34 @@ public interface CalendarPickerActionType extends
      * to the date we want.
      * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
+     * @see DateType#value()
+     * @see DateType#dateString(String)
+     * @see #platform()
+     * @see Attribute#single(String)
+     * @see XPath.ContainsString#stringFormat()
+     * @see #xPathBuilder()
+     * @see XPath.Builder#appendAttribute(Attribute, String)
+     * @see SwipeRepeatType#rx_repeatSwipe()
+     * @see DateUtil#notEarlierThan(Date, Date)
      */
     @NotNull
     default Flowable<Boolean> rx_calibrateDate(@NotNull final DateType PARAM) {
         final CalendarPickerActionType THIS = this;
         final Date DATE = PARAM.value();
+        PlatformType platform = platform();
 
         /* dd MMMM YYYY is the format accepted by the content-desc property */
         final String DATE_STRING = PARAM.dateString("dd MMMM YYYY");
 
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
-        Attribute contentDesc = Attribute.single("content-desc");
+        Attribute attr = Attribute.single("content-desc");
         String format = ((XPath.ContainsString) () -> DATE_STRING).stringFormat();
-
-        XPath xPath = XPath.builder(platform())
-            .appendAttribute(contentDesc, format)
-            .build();
-
-        final ByXPath BY_XPATH = ByXPath.builder()
-            .withXPath(xPath)
-            .withRetryCount(0)
-            .build();
-
-        XPath defaultXP = XPath.builder(platform())
-            .appendAttribute(contentDesc, ((XPath.ContainsString) () -> "01"))
-            .build();
-
-        final ByXPath DEFAULT_BY_XPATH = ByXPath.builder()
-            .withXPath(defaultXP)
-            .withRetryCount(0)
-            .build();
+        XPath.ContainsString defFormat = () -> "01";
+        XPath xp = XPath.builder(platform).appendAttribute(attr, format).build();
+        XPath dxp = xPathBuilder().appendAttribute(attr, defFormat).build();
+        final ByXPath QUERY = ByXPath.builder().withXPath(xp).withRetries(0).build();
+        final ByXPath DEF_QUERY = ByXPath.builder().withXPath(dxp).withRetries(0).build();
 
         SwipeRepeatType repeater = new SwipeRepeatType() {
             @NotNull
@@ -121,11 +106,11 @@ public interface CalendarPickerActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rx_displayedDate to check */
-                return THIS.rx_byXPath(DEFAULT_BY_XPATH)
+                return THIS.rx_byXPath(DEF_QUERY)
                     .firstElement()
                     .toFlowable()
                     .flatMap(THIS::rx_click)
-                    .flatMap(a -> THIS.rx_byXPath(BY_XPATH))
+                    .flatMap(a -> THIS.rx_byXPath(QUERY))
                     .flatMap(THIS::rx_click)
                     .flatMap(a -> rx_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
@@ -134,7 +119,7 @@ public interface CalendarPickerActionType extends
             @NotNull
             @Override
             public Flowable<WebElement> rx_scrollableViewToSwipe() {
-                return rx_calendarListView();
+                return rx_listView(CalendarUnit.MONTH);
             }
 
             @NotNull

@@ -2,14 +2,9 @@ package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorErrorType;
-import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by haipham on 3/19/17.
@@ -76,9 +71,10 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          * The {@link XPath} query that will be used to search for elements.
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
+         * @see XPath#fullAttribute()
          */
         public Builder withXPath(@NotNull XPath xPath) {
-            PARAM.xPath = xPath.attribute();
+            PARAM.xPath = xPath.fullAttribute();
             return this;
         }
 
@@ -88,7 +84,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          * @return The current {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryCount(int retries) {
+        public Builder withRetries(int retries) {
             PARAM.retries = retries;
             return this;
         }
@@ -100,7 +96,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          */
         @NotNull
         public Builder withRetryType(@NotNull RetryType type) {
-            return withRetryCount(type.retries());
+            return withRetries(type.retries());
         }
 
         @NotNull

@@ -24,7 +24,7 @@ public interface AndroidInputType extends InputType, NewXPathBuilderType {
      */
     @NotNull
     @Override
-    default XPath.Builder newXPathBuilder() {
+    default XPath.Builder xPathBuilder() {
         return XPath.builder(Platform.ANDROID);
     }
 
