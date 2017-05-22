@@ -25,6 +25,7 @@ import org.swiften.xtestkit.base.element.property.type.base.StringType;
 import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.mobile.android.AndroidView;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +60,6 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link ByXPath} instance.
      * @return {@link Flowable} instance.
      * @see #driver()
-     * @see ByXPath#classes()
      * @see ByXPath#xPath()
      * @see ByXPath#retries()
      * @see BaseViewType#className()
@@ -73,12 +73,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
     default Flowable<WebElement> rx_byXPath(@NotNull ByXPath param) {
         final WebDriver DRIVER = driver();
         final String XPATH = param.xPath();
-        List<BaseViewType> classes = param.classes();
 
-        return Flowable.fromIterable(classes)
+        return Flowable.just(XPATH)
             .subscribeOn(Schedulers.computation())
             .observeOn(Schedulers.computation())
-            .map(cls -> String.format("//%1$s%2$s", cls.className(), XPATH))
             .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
             .concatMapIterable(path -> {
                 try {
@@ -151,10 +149,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default ByXPath withXPathQuery(@NotNull XPath xPath) {
-        return ByXPath.builder()
-            .withXPath(xPath)
-            .withError(NO_SUCH_ELEMENT)
-            .build();
+        return ByXPath.builder().withXPath(xPath).build();
     }
 
     /**
@@ -514,15 +509,23 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
      * @see #platformView()
-     * @see PlatformView#isEditable()
-     * @see ByXPath.Builder#withClasses(Collection)
+     * @see #newXPathBuilder()
      * @see #rx_byXPath(ByXPath...)
+     * @see PlatformView#isEditable()
+     * @see XPath.Builder#ofClass(String)
+     * @see ByXPath.Builder#withXPath(XPath)
      */
     @NotNull
     default Flowable<WebElement> rx_editable() {
         List<? extends BaseViewType> views = platformView().isEditable();
-        ByXPath query = ByXPath.builder().withClasses(views).build();
-        return rx_byXPath(query);
+
+        ByXPath[] queries = views.stream()
+            .map(BaseViewType::className)
+            .map(a -> newXPathBuilder().ofClass(a).build())
+            .map(a -> ByXPath.builder().withXPath(a).build())
+            .toArray(ByXPath[]::new);
+
+        return rx_byXPath(queries);
     }
 
     /**
@@ -537,25 +540,6 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .flatMapCompletable(a -> Completable.fromAction(a::clear))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
-    }
-    //endregion
-
-    //region Clickable Elements
-    /**
-     * Get all {@link BaseViewType#isClickable()} {@link WebElement}.
-     * @return {@link Flowable} instance.
-     * @see #rx_byXPath(ByXPath...)
-     */
-    @NotNull
-    default Flowable<WebElement> rx_clickable() {
-        XPath xPath = newXPathBuilder().isClickable(true).build();
-
-        ByXPath query = ByXPath.builder()
-            .withXPath(xPath)
-            .withError(NO_SUCH_ELEMENT)
-            .build();
-
-        return rx_byXPath(query);
     }
     //endregion
 }

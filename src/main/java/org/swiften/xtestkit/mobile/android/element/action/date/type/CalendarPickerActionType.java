@@ -25,7 +25,6 @@ import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.mobile.android.AndroidView;
-import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 
@@ -33,11 +32,11 @@ import java.util.Date;
 
 /**
  * This interface provides actions for
- * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
+ * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
  */
 public interface CalendarPickerActionType extends
     BaseClickActionType,
-    BaseDateActionType,
+    BaseDateActionType<AndroidDriver<AndroidElement>>,
     BaseLocatorType<AndroidDriver<AndroidElement>>,
     MobileActionType<AndroidDriver<AndroidElement>>,
     BaseActionType<AndroidDriver<AndroidElement>>,
@@ -45,20 +44,20 @@ public interface CalendarPickerActionType extends
 {
     /**
      * Get the calendar list view. Applicable to
-     * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
+     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
      * @return {@link Flowable} instance.
      * @see #rx_ofClass(OfClassType[])
      * @see AndroidView.ViewType#LIST_VIEW
      */
     @NotNull
-    default Flowable<WebElement> rxCalendarListView() {
+    default Flowable<WebElement> rx_calendarListView() {
         String cls = AndroidView.ViewType.LIST_VIEW.className();
         return rx_ofClass(cls).firstElement().toFlowable();
     }
 
     /**
      * Select a day if the app is using
-     * {@link DatePickerContainerType.DatePickerType#CALENDAR}.
+     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
      * We need to define {@link Attribute} with "content-desc", and
      * repeatedly search for the correct day until it is found. However, even
      * if the day is found, Appium could still select the wrong element -
@@ -70,7 +69,7 @@ public interface CalendarPickerActionType extends
      * @return {@link Flowable} instance.
      */
     @NotNull
-    default Flowable<Boolean> rxCalibrateDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rx_calibrateDate(@NotNull final DateType PARAM) {
         final CalendarPickerActionType THIS = this;
         final Date DATE = PARAM.value();
 
@@ -88,7 +87,6 @@ public interface CalendarPickerActionType extends
 
         final ByXPath BY_XPATH = ByXPath.builder()
             .withXPath(xPath)
-            .withError(NO_SUCH_ELEMENT)
             .withRetryCount(0)
             .build();
 
@@ -98,7 +96,6 @@ public interface CalendarPickerActionType extends
 
         final ByXPath DEFAULT_BY_XPATH = ByXPath.builder()
             .withXPath(defaultXP)
-            .withError(NO_SUCH_ELEMENT)
             .withRetryCount(0)
             .build();
 
@@ -123,7 +120,7 @@ public interface CalendarPickerActionType extends
                  * we need to use a crude workaround. Every time the list view
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
-                 * We can then use rxDisplayedDate to check */
+                 * We can then use rx_displayedDate to check */
                 return THIS.rx_byXPath(DEFAULT_BY_XPATH)
                     .firstElement()
                     .toFlowable()
@@ -137,7 +134,7 @@ public interface CalendarPickerActionType extends
             @NotNull
             @Override
             public Flowable<WebElement> rx_scrollableViewToSwipe() {
-                return rxCalendarListView();
+                return rx_calendarListView();
             }
 
             @NotNull
@@ -145,7 +142,7 @@ public interface CalendarPickerActionType extends
             public Flowable<Unidirection> rxDirectionToSwipe() {
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
-                return rxDisplayedDate()
+                return rx_displayedDate()
                     .map(a -> DateUtil.notEarlierThan(a, DATE, CalendarUnit.DAY.value()))
                     .map(Unidirection::vertical);
             }

@@ -16,7 +16,7 @@ public final class XPathTest {
     @Test
     public void test_buildXPath_shouldSucceed() {
         // Setup
-        XPath xPath = XPath.builder(Platform.ANDROID)
+        XPath xPath1 = XPath.builder(Platform.ANDROID)
             .atIndex(1)
             .ofInstance(1)
             .ofClass("class1")
@@ -30,12 +30,18 @@ public final class XPathTest {
             .isClickable(true)
             .build();
 
+        XPath xPath2 = XPath.builder(Platform.ANDROID)
+            .atIndex(0)
+            .ofInstance(2)
+            .addChildXPath(xPath1)
+            .build();
+
         // When
-        String attribute = xPath.attribute();
-        String trimmed = attribute.substring(1, attribute.length() - 1);
-        List<String> groups = Arrays.asList(trimmed.split("\\]\\["));
+        String attr1 = xPath1.attribute();
+        String attr2 = xPath2.attribute();
 
         // Then
-        LogUtil.println(attribute);
+        LogUtil.println(attr1);
+        LogUtil.println(attr2);
     }
 }

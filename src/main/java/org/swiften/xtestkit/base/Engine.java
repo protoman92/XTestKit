@@ -58,7 +58,7 @@ public abstract class Engine<D extends WebDriver> implements
     BaseActionType<D>,
     BaseClickActionType,
     BaseCheckBoxActionType,
-    BaseDateActionType,
+    BaseDateActionType<D>,
     BaseInputActionType<D>,
     BaseLocatorType<D>,
     BaseEngineErrorType,

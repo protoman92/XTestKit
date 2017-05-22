@@ -45,7 +45,7 @@ import org.swiften.javautilities.object.ObjectUtil;
  * Created by haipham on 3/22/17.
  */
 public class AndroidEngine extends
-    MobileEngine<AndroidElement, AndroidDriver<AndroidElement>> implements
+    MobileEngine<AndroidDriver<AndroidElement>> implements
     ADBHandlerContainerType,
     AndroidActionType,
     AndroidInstanceContainerType,

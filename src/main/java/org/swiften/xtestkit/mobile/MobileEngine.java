@@ -26,9 +26,7 @@ import java.util.*;
 /**
  * Created by haipham on 3/20/17.
  */
-public abstract class MobileEngine<
-    E extends WebElement,
-    D extends MobileDriver<E>> extends
+public abstract class MobileEngine<D extends MobileDriver> extends
     Engine<D> implements
     MobileActionType<D>,
     MobileLocatorType<D>,

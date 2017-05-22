@@ -36,7 +36,7 @@ public class XPath {
 
     @NotNull
     public String attribute() {
-        return attribute;
+        return String.format("//*%s", attribute);
     }
 
     void appendAttribute(@NotNull String attr) {
@@ -56,6 +56,37 @@ public class XPath {
             PLATFORM = platform;
             XPATH = new XPath();
             NO_ATTR_NAME_ERROR = "Must specify attribute name";
+        }
+
+        /**
+         * Set the {@link #attribute} value. Use this with caution because
+         * it will override all other elements.
+         * @param xPath {@link XPath} instance.
+         * @return The current {@link Builder} instance.
+         * @see #attribute
+         * @see XPath#attribute()
+         */
+        @NotNull
+        public Builder withXPath(@NotNull XPath xPath) {
+            XPATH.attribute = xPath.attribute();
+            return this;
+        }
+
+        /**
+         * Add a child {@link XPath} to the end of {@link #attribute}. Take
+         * case to use this method at the end of the chain, or else the
+         * element order will be messed up.
+         * @param xPath {@link XPath} instance.
+         * @return The current {@link Builder} instance.
+         * @see #attribute
+         * @see XPath#attribute()
+         */
+        @NotNull
+        public Builder addChildXPath(@NotNull XPath xPath) {
+            String attribute = XPATH.attribute;
+            String childAttribute = xPath.attribute();
+            XPATH.attribute = String.format("%s%s", attribute, childAttribute);
+            return this;
         }
 
         /**

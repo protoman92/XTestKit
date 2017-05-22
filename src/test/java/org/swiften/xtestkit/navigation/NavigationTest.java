@@ -127,9 +127,14 @@ public class NavigationTest implements ScreenManagerType {
             return screens.indexOf(this) > screens.indexOf(screen);
         }
 
+        @Override
+        public long animationDelay(@NotNull Engine<?> engine) {
+            return 0;
+        }
+
         @NotNull
         @Override
-        public List<Direction> forwardAccessible(@NotNull Engine<?> engine) {
+        public List<Direction> forwardAccessible(@NotNull final Engine<?> ENGINE) {
             final Screen THIS = this;
             List<Screen> screens = Arrays.asList(values());
             final Random RAND = new Random();
@@ -138,13 +143,13 @@ public class NavigationTest implements ScreenManagerType {
             return CollectionUtil
                 .subList(screens, 0, size).stream()
                 .filter(a -> a.largerThan(THIS) && RAND.nextBoolean())
-                .map(a -> new Direction(a, Flowable::just))
+                .map(a -> new Direction(ENGINE, a, Flowable::just))
                 .collect(Collectors.toList());
         }
 
         @NotNull
         @Override
-        public List<Direction> backwardAccessible(@NotNull Engine<?>  engine) {
+        public List<Direction> backwardAccessible(@NotNull final Engine<?>  ENGINE) {
             final Screen THIS = this;
             List<Screen> screens = Arrays.asList(values());
             final Random RAND = new Random();
@@ -153,7 +158,7 @@ public class NavigationTest implements ScreenManagerType {
             return CollectionUtil
                 .subList(screens, 0, size).stream()
                 .filter(a -> THIS.largerThan(a) && RAND.nextBoolean())
-                .map(a -> new Direction(a, Flowable::just))
+                .map(a -> new Direction(ENGINE, a, Flowable::just))
                 .collect(Collectors.toList());
         }
     }

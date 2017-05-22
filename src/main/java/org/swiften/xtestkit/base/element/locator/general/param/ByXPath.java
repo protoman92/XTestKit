@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorErrorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
@@ -17,21 +18,19 @@ import java.util.List;
 /**
  * Parameter object for {@link Engine#rx_byXPath(ByXPath)}.
  */
-public class ByXPath implements RetryType {
+public class ByXPath implements BaseLocatorErrorType, RetryType {
     @NotNull
     public static Builder builder() {
         return new Builder();
     }
 
-    @NotNull private List<BaseViewType> classes;
     @NotNull private String error;
     @NotNull private String xPath;
     private int retries;
 
     ByXPath() {
-        classes = new ArrayList<>();
         xPath = "";
-        error = "";
+        error = NO_SUCH_ELEMENT;
         retries = RetryType.super.retries();
     }
 
@@ -41,11 +40,6 @@ public class ByXPath implements RetryType {
         return retries;
     }
     //endregion
-
-    @NotNull
-    public List<BaseViewType> classes() {
-        return classes;
-    }
 
     @NotNull
     public String error() {
@@ -62,29 +56,6 @@ public class ByXPath implements RetryType {
 
         Builder() {
             PARAM = new ByXPath();
-        }
-
-        /**
-         * Add view classes to {@link #PARAM#classes}. These view classes
-         * are used to construct the {@link XPath} query.
-         * @param cls The {@link Collection} of {@link BaseViewType}.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder withClasses(@NotNull Collection<? extends BaseViewType> cls) {
-            PARAM.classes.addAll(cls);
-            return this;
-        }
-
-        /**
-         * Add {@link BaseViewType} instance to {@link #PARAM#classes}.
-         * @param cls The {@link BaseViewType} to be added.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder addClasses(@NotNull BaseViewType cls) {
-            PARAM.classes.add(cls);
-            return this;
         }
 
         /**
@@ -134,10 +105,6 @@ public class ByXPath implements RetryType {
 
         @NotNull
         public ByXPath build() {
-            if (PARAM.classes.isEmpty()) {
-                addClasses(BaseViewType.ANY_VIEW);
-            }
-
             return PARAM;
         }
     }

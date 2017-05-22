@@ -4,6 +4,7 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.capability.IOSCap;
+import org.swiften.xtestkit.mobile.ios.element.action.date.type.IOSDateActionType;
 import org.swiften.xtestkit.mobile.ios.type.IOSDelayType;
 import org.swiften.xtestkit.mobile.ios.type.IOSErrorType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -27,10 +28,8 @@ import java.util.Map;
 /**
  * Created by haipham on 3/31/17.
  */
-public class IOSEngine extends
-    MobileEngine<IOSElement, IOSDriver<IOSElement>> implements
-    IOSDelayType,
-    IOSErrorType
+public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
+    IOSDateActionType, IOSDelayType, IOSErrorType
 {
     /**
      * Get a new {@link Builder} instance.

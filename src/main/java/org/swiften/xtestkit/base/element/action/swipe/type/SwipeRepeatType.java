@@ -5,7 +5,6 @@ package org.swiften.xtestkit.base.element.action.swipe.type;
  */
 
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -13,9 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
-import org.swiften.xtestkit.mobile.android.type.DatePickerContainerType;
-
-import java.util.concurrent.TimeUnit;
+import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDatePickerContainerType;
 
 /**
  * This interface provides methods to repeatedly scroll a scrollable view so
@@ -92,9 +89,9 @@ public interface SwipeRepeatType extends SwipeOnceType {
 
     /**
      * Scroll the picker list view to a new page or the previous page.
-     * Applicable to {@link DatePickerContainerType.DatePickerType#CALENDAR},
+     * Applicable to {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR},
      * or individual spinners in
-     * {@link DatePickerContainerType.DatePickerType#SPINNER} mode.
+     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#SPINNER} mode.
      * @param element The calendar list view {@link WebElement}.
      * @param direction {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.

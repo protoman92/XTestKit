@@ -5,6 +5,7 @@ import org.swiften.xtestkit.base.capability.BaseCap;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
+import org.swiften.xtestkit.base.element.action.type.TestDateActionType;
 import org.swiften.xtestkit.base.type.BaseEngineErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.base.type.RetryType;
@@ -329,7 +330,7 @@ public final class EngineTest implements BaseEngineErrorType {
     }
     //endregion
 
-    static class MockEngine extends Engine<WebDriver> {
+    static class MockEngine extends Engine<WebDriver> implements TestDateActionType {
         @Override
         public <P extends TapType & RetryType> void tap(@NotNull P param) {}
 
