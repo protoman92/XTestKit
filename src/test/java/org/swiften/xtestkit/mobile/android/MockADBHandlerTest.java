@@ -112,17 +112,17 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxRestartAdb().subscribe(subscriber);
+            ADB_HANDLER.rx_restartAdb().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmLaunchAdb();
-            verify(ADB_HANDLER).rxRestartAdb();
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_launchAdb();
+            verify(ADB_HANDLER).rx_restartAdb();
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).networkHandler();
             verify(NETWORK_HANDLER).rxKillWithName(anyString());
@@ -143,7 +143,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxFindAvailablePort(RETRY).subscribe(subscriber);
+        ADB_HANDLER.rx_availablePort(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -151,7 +151,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
         subscriber.assertNotComplete();
         verify(ADB_HANDLER).networkHandler();
-        verify(ADB_HANDLER).rxFindAvailablePort(any());
+        verify(ADB_HANDLER).rx_availablePort(any());
         verify(ADB_HANDLER).availablePorts();
         verify(NETWORK_HANDLER).rxCheckUntilPortAvailable(any());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(any());
@@ -167,14 +167,14 @@ public final class MockADBHandlerTest implements ADBErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxFindAvailablePort(RETRY).subscribe(subscriber);
+        ADB_HANDLER.rx_availablePort(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
         subscriber.assertNotComplete();
-        verify(ADB_HANDLER).rxFindAvailablePort(any());
+        verify(ADB_HANDLER).rx_availablePort(any());
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).availablePorts();
         verify(NETWORK_HANDLER).checkPortsMarkedAsUsed(any());
@@ -191,7 +191,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         TestSubscriber subscriber = TestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxFindAvailablePort(RETRY).subscribe(subscriber);
+        ADB_HANDLER.rx_availablePort(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -200,7 +200,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertComplete();
         assertEquals(RxTestUtil.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
         verify(ADB_HANDLER).networkHandler();
-        verify(ADB_HANDLER).rxFindAvailablePort(any());
+        verify(ADB_HANDLER).rx_availablePort(any());
         verify(ADB_HANDLER).availablePorts();
         verify(NETWORK_HANDLER).rxCheckUntilPortAvailable(any());
         verify(NETWORK_HANDLER, atLeastOnce()).rxCheckPortAvailable(any());
@@ -219,14 +219,14 @@ public final class MockADBHandlerTest implements ADBErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rx_startEmulator(SE_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertError(Exception.class);
         subscriber.assertNotComplete();
-        verify(ADB_HANDLER).rxStartEmulator(any());
+        verify(ADB_HANDLER).rx_startEmulator(any());
         verify(ADB_HANDLER).unacceptablePort(anyInt());
         verify(ADB_HANDLER).isAcceptablePort(anyInt());
         verifyNoMoreInteractions(ADB_HANDLER);
@@ -246,24 +246,24 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_startEmulator(SE_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertError(RuntimeException.class);
             subscriber.assertNotComplete();
-            verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmBootAnim(any());
-            verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(any());
+            verify(ADB_HANDLER, atLeastOnce()).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_bootAnim(any());
+            verify(ADB_HANDLER).cm_emulator();
+            verify(ADB_HANDLER).cm_startEmulator(any());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
-            verify(ADB_HANDLER).rxStartEmulator(any());
+            verify(ADB_HANDLER).rx_startEmulator(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -282,7 +282,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_startEmulator(SE_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -290,17 +290,17 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertError(IOException.class);
             subscriber.assertNotComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmBootAnim(any());
-            verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(any());
+            verify(ADB_HANDLER, atLeastOnce()).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_bootAnim(any());
+            verify(ADB_HANDLER).cm_emulator();
+            verify(ADB_HANDLER).cm_startEmulator(any());
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
-            verify(ADB_HANDLER).rxStartEmulator(any());
+            verify(ADB_HANDLER).rx_startEmulator(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -317,7 +317,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStartEmulator(SE_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_startEmulator(SE_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -325,17 +325,17 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmBootAnim(any());
-            verify(ADB_HANDLER).cmEmulator();
-            verify(ADB_HANDLER).cmStartEmulator(any());
+            verify(ADB_HANDLER, atLeastOnce()).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_bootAnim(any());
+            verify(ADB_HANDLER).cm_emulator();
+            verify(ADB_HANDLER).cm_startEmulator(any());
             verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
-            verify(ADB_HANDLER).rxStartEmulator(any());
+            verify(ADB_HANDLER).rx_startEmulator(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -353,7 +353,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStopAllEmulators(RETRY).subscribe(subscriber);
+            ADB_HANDLER.rx_stopAllEmulators(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -361,11 +361,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNoValues();
             subscriber.assertNotComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER, atLeastOnce()).cmAndroidHome();
-            verify(ADB_HANDLER, atLeastOnce()).cmAdb();
-            verify(ADB_HANDLER, atLeastOnce()).cmAdbShell();
-            verify(ADB_HANDLER, atLeastOnce()).cmStopAllEmulators();
-            verify(ADB_HANDLER).rxStopAllEmulators(any());
+            verify(ADB_HANDLER, atLeastOnce()).cm_AndroidHome();
+            verify(ADB_HANDLER, atLeastOnce()).cm_adb();
+            verify(ADB_HANDLER, atLeastOnce()).cm_adbShell();
+            verify(ADB_HANDLER, atLeastOnce()).cm_stopAllEmulators();
+            verify(ADB_HANDLER).rx_stopAllEmulators(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -381,7 +381,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxStopAllEmulators(RETRY).subscribe(subscriber);
+            ADB_HANDLER.rx_stopAllEmulators(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -389,11 +389,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell();
-            verify(ADB_HANDLER).cmStopAllEmulators();
-            verify(ADB_HANDLER).rxStopAllEmulators(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell();
+            verify(ADB_HANDLER).cm_stopAllEmulators();
+            verify(ADB_HANDLER).rx_stopAllEmulators(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -410,14 +410,14 @@ public final class MockADBHandlerTest implements ADBErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxStopEmulator(StopEmulatorParam.DEFAULT).subscribe(subscriber);
+        ADB_HANDLER.rx_stopEmulator(StopEmulatorParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ADB_HANDLER).rxStopEmulator(any());
+        verify(ADB_HANDLER).rx_stopEmulator(any());
         verify(ADB_HANDLER).networkHandler();
         verify(NETWORK_HANDLER).rxKillWithPort(any(), any());
         verifyNoMoreInteractions(ADB_HANDLER);
@@ -434,7 +434,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckAppInstalled(CC_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_checkAppInstalled(CC_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -443,11 +443,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNotComplete();
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).appNotInstalled(anyString());
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmListPackages(any());
-            verify(ADB_HANDLER).rxCheckAppInstalled(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_listPackages(any());
+            verify(ADB_HANDLER).rx_checkAppInstalled(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -463,7 +463,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckAppInstalled(CC_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_checkAppInstalled(CC_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -472,11 +472,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertComplete();
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).appNotInstalled(anyString());
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmListPackages(any());
-            verify(ADB_HANDLER).rxCheckAppInstalled(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_listPackages(any());
+            verify(ADB_HANDLER).rx_checkAppInstalled(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -496,19 +496,19 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxClearCachedData(CC_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_clearCache(CC_PARAM).subscribe(subscriber);
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertError(RuntimeException.class);
             subscriber.assertNotComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmClearCachedData(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_clearCache(any());
             verify(ADB_HANDLER).unableToClearCache(anyString());
-            verify(ADB_HANDLER).rxClearCachedData(any());
+            verify(ADB_HANDLER).rx_clearCache(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -524,7 +524,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxClearCachedData(CC_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_clearCache(CC_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -532,12 +532,12 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmClearCachedData(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_clearCache(any());
             verify(ADB_HANDLER).unableToClearCache(anyString());
-            verify(ADB_HANDLER).rxClearCachedData(any());
+            verify(ADB_HANDLER).rx_clearCache(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -556,8 +556,8 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxEnableInternetConnection(DUID_PARAM)
-                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection(DUID_PARAM))
+            ADB_HANDLER.rx_enableInternet(DUID_PARAM)
+                .flatMap(a -> ADB_HANDLER.rx_disableInternet(DUID_PARAM))
                 .subscribe(subscriber);
 
             subscriber.awaitTerminalEvent();
@@ -567,12 +567,12 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertErrorMessage(NO_OUTPUT_EXPECTED);
             subscriber.assertNotComplete();
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmToggleConnection(any());
-            verify(ADB_HANDLER).rxToggleInternetConnection(any());
-            verify(ADB_HANDLER).rxEnableInternetConnection(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_toggleInternet(any());
+            verify(ADB_HANDLER).rx_toggleInternet(any());
+            verify(ADB_HANDLER).rx_enableInternet(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -589,8 +589,8 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxEnableInternetConnection(DUID_PARAM)
-                .flatMap(a -> ADB_HANDLER.rxDisableInternetConnection(DUID_PARAM))
+            ADB_HANDLER.rx_enableInternet(DUID_PARAM)
+                .flatMap(a -> ADB_HANDLER.rx_disableInternet(DUID_PARAM))
                 .subscribe(subscriber);
 
             subscriber.awaitTerminalEvent();
@@ -600,13 +600,13 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ADB_HANDLER, times(2)).processRunner();
-            verify(ADB_HANDLER, times(2)).cmAndroidHome();
-            verify(ADB_HANDLER, times(2)).cmAdb();
-            verify(ADB_HANDLER, times(2)).cmAdbShell(any());
-            verify(ADB_HANDLER, times(2)).cmToggleConnection(any());
-            verify(ADB_HANDLER, times(2)).rxToggleInternetConnection(any());
-            verify(ADB_HANDLER).rxEnableInternetConnection(any());
-            verify(ADB_HANDLER).rxDisableInternetConnection(any());
+            verify(ADB_HANDLER, times(2)).cm_AndroidHome();
+            verify(ADB_HANDLER, times(2)).cm_adb();
+            verify(ADB_HANDLER, times(2)).cm_adbShell(any());
+            verify(ADB_HANDLER, times(2)).cm_toggleInternet(any());
+            verify(ADB_HANDLER, times(2)).rx_toggleInternet(any());
+            verify(ADB_HANDLER).rx_enableInternet(any());
+            verify(ADB_HANDLER).rx_disableInternet(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -624,7 +624,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckKeyboardOpen(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_checkKeyboardOpen(DUID_PARAM).subscribe(subscriber);
 
             // Then
             subscriber.assertSubscribed();
@@ -632,11 +632,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertComplete();
             assertFalse(RxTestUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmCheckKeyboardOpen(any());
-            verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_checkKeyboardOpen(any());
+            verify(ADB_HANDLER).rx_checkKeyboardOpen(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -658,7 +658,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxCheckKeyboardOpen(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_checkKeyboardOpen(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -667,11 +667,11 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertComplete();
             assertTrue(RxTestUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).cmAndroidHome();
-            verify(ADB_HANDLER).cmAdb();
-            verify(ADB_HANDLER).cmAdbShell(any());
-            verify(ADB_HANDLER).cmCheckKeyboardOpen(any());
-            verify(ADB_HANDLER).rxCheckKeyboardOpen(any());
+            verify(ADB_HANDLER).cm_AndroidHome();
+            verify(ADB_HANDLER).cm_adb();
+            verify(ADB_HANDLER).cm_adbShell(any());
+            verify(ADB_HANDLER).cm_checkKeyboardOpen(any());
+            verify(ADB_HANDLER).rx_checkKeyboardOpen(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -690,7 +690,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -712,25 +712,25 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertError(Exception.class);
             subscriber.assertNotComplete();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAndroidHome();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAdb();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmAdbShell(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_AndroidHome();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_adb();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_adbShell(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).changeSettingsFailed(anyString());
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_putSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).emulatorSettingTimeout();
-            verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
-            verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
-            verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());
-            verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxChangeSettings(any());
+            verify(ADB_HANDLER).rx_disableWindowAnimationScale(any());
+            verify(ADB_HANDLER).rx_disableTransitionAnimationScale(any());
+            verify(ADB_HANDLER).rx_disableAnimatorDurationScale(any());
+            verify(ADB_HANDLER).rx_disableEmulatorAnimations(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rx_changeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -747,26 +747,26 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxDisableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rx_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAndroidHome();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAdb();
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cmAdbShell(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cm_AndroidHome();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cm_adb();
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT * 2)).cm_adbShell(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).changeSettingsFailed(anyString());
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmPutSettings(any());
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cmGetSettings(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_putSettings(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).cm_getSettings(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).processRunner();
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).emulatorSettingTimeout();
-            verify(ADB_HANDLER).rxDisableWindowAnimationScale(any());
-            verify(ADB_HANDLER).rxDisableTransitionAnimationScale(any());
-            verify(ADB_HANDLER).rxDisableAnimatorDurationScale(any());
-            verify(ADB_HANDLER).rxDisableEmulatorAnimations(any());
-            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxChangeSettings(any());
+            verify(ADB_HANDLER).rx_disableWindowAnimationScale(any());
+            verify(ADB_HANDLER).rx_disableTransitionAnimationScale(any());
+            verify(ADB_HANDLER).rx_disableAnimatorDurationScale(any());
+            verify(ADB_HANDLER).rx_disableEmulatorAnimations(any());
+            verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rx_changeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());

@@ -190,10 +190,10 @@ public class RepeatRunner implements
     //region TestListenerType
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnFreshStart() {
+    public Flowable<Boolean> rx_onFreshStart() {
         return Flowable
             .fromIterable(testListeners())
-            .flatMap(TestListenerType::rxOnFreshStart)
+            .flatMap(TestListenerType::rx_onFreshStart)
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
@@ -201,22 +201,10 @@ public class RepeatRunner implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rx_onBatchStarted(@NotNull final int[] INDEXES) {
         return Flowable
             .fromIterable(testListeners())
-            .flatMap(a -> a.rxOnBatchStarted(INDEXES))
-            .all(BooleanUtil::isTrue)
-            .<Boolean>toFlowable()
-            .map(BooleanUtil::toTrue)
-            .defaultIfEmpty(true);
-    }
-
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
-        return Flowable
-            .fromIterable(testListeners())
-            .flatMap(a -> a.rxOnBatchFinished(INDEXES))
+            .flatMap(a -> a.rx_onBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(BooleanUtil::toTrue)
@@ -225,10 +213,22 @@ public class RepeatRunner implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnAllTestsFinished() {
+    public Flowable<Boolean> rx_onBatchFinished(@NotNull final int[] INDEXES) {
         return Flowable
             .fromIterable(testListeners())
-            .flatMap(TestListenerType::rxOnAllTestsFinished)
+            .flatMap(a -> a.rx_onBatchFinished(INDEXES))
+            .all(BooleanUtil::isTrue)
+            .<Boolean>toFlowable()
+            .map(BooleanUtil::toTrue)
+            .defaultIfEmpty(true);
+    }
+
+    @NotNull
+    @Override
+    public Flowable<Boolean> rx_onAllTestsFinished() {
+        return Flowable
+            .fromIterable(testListeners())
+            .flatMap(TestListenerType::rx_onAllTestsFinished)
             .all(BooleanUtil::isTrue)
             .<Boolean>toFlowable()
             .map(BooleanUtil::toTrue)
@@ -256,14 +256,14 @@ public class RepeatRunner implements
                     final int[] INDEXES = PG.indexParameters();
                     final int CONSUMED = INDEXES.length;
 
-                    return rxOnBatchStarted(INDEXES)
+                    return rx_onBatchStarted(INDEXES)
                         .flatMapCompletable(a -> Completable.fromAction(RUNNER::run))
                         .toFlowable()
                         .defaultIfEmpty(true)
                         .flatMapCompletable(a -> PG.rxAppendConsumed(CONSUMED))
                         .toFlowable()
                         .defaultIfEmpty(true)
-                        .flatMap(a -> rxOnBatchFinished(INDEXES))
+                        .flatMap(a -> rx_onBatchFinished(INDEXES))
                         .flatMapCompletable(a -> new Run().run());
                 }
 
@@ -271,11 +271,11 @@ public class RepeatRunner implements
             }
         }
 
-        rxOnFreshStart()
+        rx_onFreshStart()
             .flatMapCompletable(a -> new Run().run())
             .toFlowable()
             .defaultIfEmpty(true)
-            .flatMap(a -> rxOnAllTestsFinished())
+            .flatMap(a -> rx_onAllTestsFinished())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();

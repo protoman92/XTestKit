@@ -4,6 +4,7 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.*;
 import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.mobile.Platform;
@@ -36,6 +37,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import org.swiften.javautilities.object.ObjectUtil;
 
@@ -87,10 +89,10 @@ public class AndroidEngine extends
 //    //region TestListenerType
 //    @NotNull
 //    @Override
-//    public Flowable<Boolean> rxOnFreshStart() {
+//    public Flowable<Boolean> rx_onFreshStart() {
 //        /* We restart adb server at the start of all test to avoid problems
 //         * with inactive adb instances */
-//        return super.rxOnFreshStart().flatMap(a -> ADB_HANDLER.rxRestartAdb());
+//        return super.rx_onFreshStart().flatMap(a -> ADB_HANDLER.rx_restartAdb());
 //    }
 //    //endregion
 
@@ -132,15 +134,15 @@ public class AndroidEngine extends
     /**
      * @param PARAM {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxBeforeClass(BeforeClassParam)
-     * @see ADBHandler#rxDisableEmulatorAnimations(DeviceUIDType)
+     * @see Engine#rx_beforeClass(BeforeClassParam)
+     * @see ADBHandler#rx_disableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxBeforeClass(@NotNull final BeforeClassParam PARAM) {
+    public Flowable<Boolean> rx_beforeClass(@NotNull final BeforeClassParam PARAM) {
         final ADBHandler HANDLER = adbHandler();
         final AndroidInstance ANDROID_INSTANCE = androidInstance();
         final Flowable<Boolean> START_APP;
@@ -148,14 +150,14 @@ public class AndroidEngine extends
 
         switch (testMode()) {
             case SIMULATED:
-                SOURCE = HANDLER.rxFindAvailablePort(PARAM)
+                SOURCE = HANDLER.rx_availablePort(PARAM)
                     .doOnNext(ANDROID_INSTANCE::setPort)
                     .map(a -> StartEmulatorParam.builder()
                         .withDeviceName(deviceName())
                         .withAndroidInstance(ANDROID_INSTANCE)
                         .withRetries(100)
                         .build())
-                    .flatMap(HANDLER::rxStartEmulator);
+                    .flatMap(HANDLER::rx_startEmulator);
 
                 break;
 
@@ -175,12 +177,12 @@ public class AndroidEngine extends
             START_APP = Flowable.just(true);
         }
 
-        return super.rxBeforeClass(PARAM)
+        return super.rx_beforeClass(PARAM)
             .flatMap(a -> SOURCE)
 
             /* Disable animations to avoid erratic behaviors */
             .flatMap(a -> HANDLER
-                .rxDisableEmulatorAnimations(ANDROID_INSTANCE)
+                .rx_disableEmulatorAnimations(ANDROID_INSTANCE)
 
                 /* This is not absolutely crucial, so even if
                  * there is an error, we proceed anyway */
@@ -191,8 +193,8 @@ public class AndroidEngine extends
     /**
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterClass(AfterClassParam)
-     * @see ADBHandler#rxStopEmulator(StopEmulatorParam)
+     * @see Engine#rx_afterClass(AfterClassParam)
+     * @see ADBHandler#rx_stopEmulator(StopEmulatorParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
      * @see #rxStopDriver()
@@ -200,7 +202,7 @@ public class AndroidEngine extends
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
         AndroidInstance androidInstance = androidInstance();
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
@@ -220,7 +222,7 @@ public class AndroidEngine extends
 //                    .withPortType(androidInstance)
 //                    .build();
 //
-//                SOURCE = adbHandler().rxStopEmulator(seParam);
+//                SOURCE = adbHandler().rx_stopEmulator(seParam);
                 break;
 
             default:
@@ -234,7 +236,7 @@ public class AndroidEngine extends
             QUIT_APP = Flowable.just(true);
         }
 
-        return super.rxAfterClass(param)
+        return super.rx_afterClass(param)
             .flatMap(a -> QUIT_APP)
             .flatMap(a -> SOURCE)
             .doOnNext(a -> HANDLER.markPortAsAvailable(PORT));
@@ -243,12 +245,12 @@ public class AndroidEngine extends
     /**
      * @param param {@link AfterParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterMethod(AfterParam)
-     * @see ADBHandler#rxClearCachedData(AppPackageType)
+     * @see Engine#rx_afterMethod(AfterParam)
+     * @see ADBHandler#rx_clearCache(AppPackageType)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
         final ADBHandler ADB_HANDLER = adbHandler();
 
         ClearCacheParam CC_PARAM = ClearCacheParam
@@ -261,11 +263,11 @@ public class AndroidEngine extends
         /* Clear cached data such as SharedPreferences. If the app is not
          * found in the active device/emulator, throw an error */
         Flowable<Boolean> clearCache = ADB_HANDLER
-            .rxCheckAppInstalled(CC_PARAM)
-            .flatMap(a -> ADB_HANDLER.rxClearCachedData(CC_PARAM));
+            .rx_checkAppInstalled(CC_PARAM)
+            .flatMap(a -> ADB_HANDLER.rx_clearCache(CC_PARAM));
 
         return Flowable
-            .concat(super.rxAfterMethod(param), clearCache)
+            .concat(super.rx_afterMethod(param), clearCache)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }
@@ -282,7 +284,7 @@ public class AndroidEngine extends
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = super.capabilities();
+        Map<String,Object> capabilities = new HashMap<>(super.capabilities());
         capabilities.put(AndroidMobileCapabilityType.APP_PACKAGE, appPackage());
         capabilities.put(AndroidMobileCapabilityType.APP_ACTIVITY, appActivity());
         capabilities.put(AndroidMobileCapabilityType.AVD, deviceName());
@@ -363,6 +365,26 @@ public class AndroidEngine extends
         public Builder withDeviceUID(@NotNull String uid) {
             ANDROID_INSTANCE_BUILDER.withDeviceUID(uid);
             return this;
+        }
+
+        /**
+         * Override this method to set {@link #automationName} as well.
+         * @param version {@link String} value.
+         * @return The current {@link MobileEngine.Builder} instance.
+         * @see MobileEngine.Builder#withPlatformVersion(String)
+         * @see Automation#SELENDROID
+         * @see Automation#APPIUM
+         */
+        @NotNull
+        @Override
+        public MobileEngine.Builder<AndroidEngine> withPlatformVersion(@NotNull String version) {
+            if (version.compareToIgnoreCase("4.2") < 0) {
+                withAutomation(Automation.SELENDROID);
+            } else {
+                withAutomation(Automation.APPIUM);
+            }
+
+            return super.withPlatformVersion(version);
         }
 
         @NotNull

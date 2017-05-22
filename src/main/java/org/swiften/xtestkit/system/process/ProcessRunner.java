@@ -43,6 +43,7 @@ public class ProcessRunner {
         try {
             executor.execute(commandLine);
             String output = outputStream.toString();
+            LogUtil.printfThread("Successfully executed '%s'", args);
             return Objects.nonNull(output) ? output : "";
         } catch (IOException e) {
             String error = outputStream.toString();

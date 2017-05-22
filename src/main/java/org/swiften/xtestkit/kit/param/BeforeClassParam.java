@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link Engine#rxBeforeClass(BeforeClassParam)}
+ * {@link Engine#rx_beforeClass(BeforeClassParam)}
  */
 public class BeforeClassParam implements IndexType, RetryType {
     public static BeforeClassParam DEFAULT;

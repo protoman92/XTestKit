@@ -6,6 +6,7 @@ import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.capability.BaseCap;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -39,9 +40,8 @@ public class MobileCap extends BaseCap {
             result.remove(MobileCapabilityType.PLATFORM_VERSION);
         }
 
-        /* Take out app path if it's empty, i.e. the app is already installed
-         * on an actual device */
-        if (!StringUtil.isNotNullOrEmpty(appPath(result))) {
+        /* Take out app path if it does not exist */
+        if (!new File(appPath(result)).exists()) {
             result.remove(MobileCapabilityType.APP);
         }
 

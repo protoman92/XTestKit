@@ -13,7 +13,7 @@ public interface TestListenerType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxOnFreshStart();
+    Flowable<Boolean> rx_onFreshStart();
 
     /**
      * Call this method when a batch of test is started.
@@ -21,7 +21,7 @@ public interface TestListenerType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxOnBatchStarted(@NotNull int[] indexes);
+    Flowable<Boolean> rx_onBatchStarted(@NotNull int[] indexes);
 
     /**
      * Call this method when a batch of test is finished.
@@ -29,7 +29,7 @@ public interface TestListenerType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxOnBatchFinished(@NotNull int[] indexes);
+    Flowable<Boolean> rx_onBatchFinished(@NotNull int[] indexes);
 
     /**
      * Call this method when all test have finished, typically at the
@@ -38,5 +38,5 @@ public interface TestListenerType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxOnAllTestsFinished();
+    Flowable<Boolean> rx_onAllTestsFinished();
 }

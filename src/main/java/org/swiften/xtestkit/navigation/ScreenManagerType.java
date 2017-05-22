@@ -11,6 +11,7 @@ import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.util.type.EngineContainerType;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -221,7 +222,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
      */
     @NotNull
     default List<Node> multipleShortest(@NotNull ScreenType...screens) {
-        List<Node> navigations = new LinkedList<>();
+        List<Node> nav = new LinkedList<>();
 
         for (int i = 0, length = screens.length; i < length; i++) {
             if (i < length - 1) {
@@ -234,12 +235,12 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
                 if (nodes.isEmpty()) {
                     break;
                 } else {
-                    navigations.addAll(nodes);
+                    nav.addAll(nodes);
                 }
             }
         }
 
-        return navigations;
+        return nav;
     }
 
     /**
@@ -262,8 +263,10 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
             @NotNull
             private Flowable<?> repeat(@NotNull Object init, final int INDEX) {
                 if (INDEX < LENGTH) {
-                    return NODES.get(INDEX)
-                        .DIRECTION.NAVIGATION.navigator(init)
+                    Node node = NODES.get(INDEX);
+
+                    return node.NAVIGATION.navigator(init)
+                        .delay(node.DELAY, node.TIME_UNIT)
                         .flatMap(a -> new Repeater().repeat(a, INDEX + 1));
                 } else {
                     return Flowable.just(init);
@@ -282,14 +285,16 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
         @NotNull final ScreenType S1;
         @NotNull final ScreenType S2;
         @NotNull final ScreenType.Navigation NAVIGATION;
-        @NotNull final ScreenType.Direction DIRECTION;
+        @NotNull final TimeUnit TIME_UNIT;
+        final long DELAY;
 
         Node(@NotNull ScreenType firstScreen,
              @NotNull ScreenType.Direction direction) {
             S1 = firstScreen;
             S2 = direction.TARGET;
             NAVIGATION = direction.NAVIGATION;
-            DIRECTION = direction;
+            DELAY = direction.DELAY;
+            TIME_UNIT = direction.TIME_UNIT;
         }
 
         @NotNull

@@ -11,7 +11,7 @@ import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 
 /**
  * Parameter object for
- * {@link ADBHandler#rxToggleInternetConnection(ConnectionParam)}
+ * {@link ADBHandler#rx_toggleInternet(ConnectionParam)}
  */
 public class ConnectionParam implements DeviceUIDType, RetryType {
     @NotNull

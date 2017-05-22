@@ -1,15 +1,15 @@
 package org.swiften.xtestkit.mobile.ios.capability;
 
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.collection.CollectionTestUtil;
 import org.swiften.javautilities.string.StringUtil;
+import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.capability.MobileCap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by haipham on 5/7/17.
@@ -28,8 +28,23 @@ public class IOSCap extends MobileCap {
     @Override
     public List<String> requiredCapabilities() {
         List<String> parent = new ArrayList<>(super.requiredCapabilities());
-        Collections.addAll(parent, MobileCapabilityType.UDID);
+
+        /* 'app' is required for iOS, but not Android */
+        Collections.addAll(parent, MobileCapabilityType.APP);
         return parent;
+    }
+
+    @NotNull
+    @Override
+    public Map<String,Object> distill(@NotNull Map<String,Object> caps) {
+        Map<String,Object> result = new HashMap<>(super.distill(caps));
+
+        /* If testing on simulator, we do not need UDID */
+        if (testMode().isTestingOnSimulatedEnvironment()) {
+            result.remove(MobileCapabilityType.UDID);
+        }
+
+        return result;
     }
 
     /**

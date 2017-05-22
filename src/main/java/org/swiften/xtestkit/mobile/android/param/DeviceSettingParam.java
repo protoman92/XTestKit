@@ -11,7 +11,7 @@ import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
 
 /**
  * Parameter object for
- * {@link ADBHandler#rxChangeSettings(DeviceSettingParam)}
+ * {@link ADBHandler#rx_changeSettings(DeviceSettingParam)}
  */
 public class DeviceSettingParam implements DeviceUIDType, RetryType {
     @NotNull
@@ -53,12 +53,12 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
     }
 
     @NotNull
-    public String putCommand() {
+    public String cm_put() {
         return String.format("put %1$s %2$s %3$s", nameSpace, key, value);
     }
 
     @NotNull
-    public String getCommand() {
+    public String cm_get() {
         return String.format("get %1$s %2$s", nameSpace, key);
     }
 

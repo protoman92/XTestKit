@@ -4,7 +4,7 @@ package org.swiften.xtestkit.base;
  * Created by haipham on 3/19/17.
  */
 
-import io.reactivex.schedulers.Schedulers;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.*;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
@@ -82,8 +82,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     @NotNull String browserName;
     @NotNull String platformName;
-    @NotNull
-    Address serverAddress;
+    @NotNull Address serverAddress;
     @NotNull TestMode testMode;
 
     /**
@@ -119,25 +118,25 @@ public abstract class Engine<D extends WebDriver> implements
     //region TestListenerType
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnFreshStart() {
+    public Flowable<Boolean> rx_onFreshStart() {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rx_onBatchStarted(@NotNull final int[] INDEXES) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rx_onBatchFinished(@NotNull final int[] INDEXES) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnAllTestsFinished() {
+    public Flowable<Boolean> rx_onAllTestsFinished() {
         return Flowable.just(true);
     }
     //endregion
@@ -153,9 +152,9 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+    public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
         if (serverAddress().isLocalInstance()) {
-            return rxStartLocalAppium(param);
+            return rx_startLocalAppium(param);
         }
 
         return Flowable.just(true);
@@ -173,7 +172,7 @@ public abstract class Engine<D extends WebDriver> implements
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
         NetworkHandler HANDLER = networkHandler();
         Address ADDRESS = serverAddress();
 
@@ -186,7 +185,7 @@ public abstract class Engine<D extends WebDriver> implements
         Flowable<Boolean> stopServer;
 
         if (ADDRESS.isLocalInstance()) {
-            stopServer = rxStopLocalAppiumInstance();
+            stopServer = rx_stopLocalAppium();
         } else {
             stopServer = Flowable.just(true);
         }
@@ -207,7 +206,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
+    public Flowable<Boolean> rx_beforeMethod(@NotNull BeforeParam param) {
         return Flowable.just(true);
     }
 
@@ -220,7 +219,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
         return Flowable.just(true);
     }
 
@@ -228,8 +227,8 @@ public abstract class Engine<D extends WebDriver> implements
      * Start appium with a specified {@link #serverUri()}.
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see #cmWhichAppium()
-     * @see #cmFallBackAppium()
+     * @see #cm_whichAppium()
+     * @see #cm_fallBackAppium()
      * @see #appiumStartDelay()
      * @see #startAppiumOnNewThread(String)
      * @see #processRunner()
@@ -237,21 +236,19 @@ public abstract class Engine<D extends WebDriver> implements
      * @see RetryType#retries()
      */
     @NotNull
-    public Flowable<Boolean> rxStartLocalAppium(@NotNull final RetryType PARAM) {
+    public Flowable<Boolean> rx_startLocalAppium(@NotNull final RetryType PARAM) {
         final ProcessRunner RUNNER = processRunner();
-        String whichAppium = cmWhichAppium();
+        String whichAppium = cm_whichAppium();
         long delay = appiumStartDelay();
 
         return RUNNER.rxExecute(whichAppium)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
             .switchIfEmpty(RxUtil.error(APPIUM_NOT_INSTALLED))
-            .onErrorReturnItem(cmFallBackAppium())
+            .onErrorReturnItem(cm_fallBackAppium())
             .doOnNext(this::startAppiumOnNewThread)
             .map(BooleanUtil::toTrue)
-            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline())
+            .delay(delay, TimeUnit.MILLISECONDS)
             .retry(PARAM.retries());
     }
 
@@ -259,7 +256,7 @@ public abstract class Engine<D extends WebDriver> implements
      * Start a new local Appium instance. This will be run in a different
      * thread.
      * @param CLI The path to Appium CLI. {@link String} value.
-     * @see #cmStartLocalAppiumInstance(String, int)
+     * @see #cm_startLocalAppium(String, int)
      * @see NetworkHandler#rxCheckUntilPortAvailable(PortType)
      * @see Address#setPort(int)
      */
@@ -272,7 +269,7 @@ public abstract class Engine<D extends WebDriver> implements
         NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
             .doOnNext(ADDRESS::setPort)
             .doOnNext(a -> {
-                final String COMMAND = cmStartLocalAppiumInstance(CLI, a);
+                final String COMMAND = cm_startLocalAppium(CLI, a);
 
                 new Thread(() -> {
                     for (;;) {
@@ -314,7 +311,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
      */
     @NotNull
-    public Flowable<Boolean> rxStopLocalAppiumInstance() {
+    public Flowable<Boolean> rx_stopLocalAppium() {
         NetworkHandler handler = networkHandler();
         Address address = serverAddress();
         return handler.rxKillWithPort(address, this::isAppiumProcess);
@@ -323,10 +320,10 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Check if a process is potentially an Appium instance. This is used to
      * detect whether it should be killed by
-     * {@link #rxStopLocalAppiumInstance()}
+     * {@link #rx_stopLocalAppium()}
      * @param name The process' name. {@link String} value.
      * @return {@link Boolean} instance.
-     * @see #rxStopLocalAppiumInstance()
+     * @see #rx_stopLocalAppium()
      */
     public boolean isAppiumProcess(@NotNull String name) {
         return name.contains("node");
@@ -339,16 +336,16 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link String} value.
      */
     @NotNull
-    public String cmWhichAppium() {
+    public String cm_whichAppium() {
         return "which appium";
     }
 
     /**
-     * Fall back Appium path if {@link #cmWhichAppium()} fails.
+     * Fall back Appium path if {@link #cm_whichAppium()} fails.
      * @return {@link String} value.
      */
     @NotNull
-    public String cmFallBackAppium() {
+    public String cm_fallBackAppium() {
         return "/usr/local/bin/appium";
     }
 
@@ -360,12 +357,8 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link String} value.
      */
     @NotNull
-    public String cmStartLocalAppiumInstance(@NotNull String cli, int port) {
-        return AppiumCommand.builder()
-            .withBase(cli)
-            .withPort(port)
-            .build()
-            .command();
+    public String cm_startLocalAppium(@NotNull String cli, int port) {
+        return AppiumCommand.builder().withBase(cli).withPort(port).build().command();
     }
     //endregion
 
@@ -445,6 +438,7 @@ public abstract class Engine<D extends WebDriver> implements
      * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
      * {@link #PROCESS_RUNNER}.
      * @return {@link #PROCESS_RUNNER}.
+     * @see #PROCESS_RUNNER
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -455,6 +449,7 @@ public abstract class Engine<D extends WebDriver> implements
      * Return {@link #NETWORK_HANDLER}. This method can be used to stub out
      * {@link #NETWORK_HANDLER}.
      * @return {@link #NETWORK_HANDLER}.
+     * @see #NETWORK_HANDLER
      */
     @NotNull
     public NetworkHandler networkHandler() {
@@ -464,6 +459,8 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get the active {@link D} {@link #driver}.
      * @return {@link D} {@link #driver}.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #driver
      */
     @NotNull
     public D driver() {
@@ -475,21 +472,41 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
+     * Get page source from {@link WebDriver}.
+     * @return {@link String} value.
+     * @see #driver()
+     * @see WebDriver#getPageSource()
+     */
+    @NotNull
+    public String pageSource() {
+        return driver().getPageSource();
+    }
+
+    /**
      * Get the current {@link PlatformView}, or throw {@link Exception} if
      * it is not found.
      * @return {@link PlatformView} instance.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #platformView
      */
     @NotNull
     public PlatformView platformView() {
-        if (platformView != null) {
+        if (ObjectUtil.nonNull(platformView)) {
             return platformView;
+        } else {
+            throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
         }
-
-        throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
     }
     //endregion
 
     //region Setters
+
+    /**
+     * Set {@link #localizer}. Usually this is set when {@link Engine} is
+     * added to {@link TestKit}.
+     * @param delegate {@link LocalizerType} instance.
+     * @see #localizer
+     */
     public void setLocalizer(@NotNull LocalizerType delegate) {
         localizer = new WeakReference<>(delegate);
     }
@@ -537,9 +554,10 @@ public abstract class Engine<D extends WebDriver> implements
             final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
 
-            return Completable.fromAction(() -> {
-                    driver = driver(SERVER_URL, CAPS);
-                })
+            LogUtil.println(distilled);
+
+            return Completable
+                .fromAction(() -> driver = driver(SERVER_URL, CAPS))
                 .<Boolean>toFlowable()
                 .defaultIfEmpty(true)
                 .retry(PARAM.retries());
@@ -552,10 +570,11 @@ public abstract class Engine<D extends WebDriver> implements
      * Quit the active Appium driver. If it is null, throw {@link Exception}
      * instead.
      * @return {@link Flowable} instance.
+     * @see WebDriver#quit()
      */
     @NotNull
     public Flowable<Boolean> rxStopDriver() {
-        return Completable.fromAction(() -> driver().quit())
+        return Completable.fromAction(driver()::quit)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

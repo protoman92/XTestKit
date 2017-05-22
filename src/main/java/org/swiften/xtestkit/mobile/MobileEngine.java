@@ -18,8 +18,9 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -42,25 +43,27 @@ public abstract class MobileEngine<
     @NotNull String automationName;
     @NotNull String deviceName;
     @NotNull String platformVersion;
+    boolean autoLaunch;
 
     /**
      * If this is true, call {@link #rxStartDriver(RetryType)} in
-     * {@link #rxBeforeClass(BeforeClassParam)}. Correspondingly,
+     * {@link #rx_beforeClass(BeforeClassParam)}. Correspondingly,
      * {@link #rxStopDriver()} will be called in
-     * {@link #rxBeforeMethod(BeforeParam)}.
+     * {@link #rx_beforeMethod(BeforeParam)}.
      * Otherwise, {@link #rxStartDriver(RetryType)} is called in
-     * {@link #rxBeforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
-     * is called in {@link #rxAfterMethod(AfterParam)}.
+     * {@link #rx_beforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
+     * is called in {@link #rx_afterMethod(AfterParam)}.
      */
     protected boolean startDriverOnlyOnce;
 
     public MobileEngine() {
         app = "";
         appPackage = "";
-        appiumVersion = "1.6.3";
+        appiumVersion = "1.6.4";
         automationName = "";
         deviceName = "";
         platformVersion = "";
+        autoLaunch = true;
         startDriverOnlyOnce = true;
     }
 
@@ -74,6 +77,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #startDriverOnlyOnce}.
      * @return {@link Boolean} value.
+     * @see #startDriverOnlyOnce
      */
     public boolean startDriverOnlyOnce() {
         return startDriverOnlyOnce;
@@ -82,6 +86,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #app}.
      * @return {@link String} value.
+     * @see #app
      */
     @NotNull
     public String app() {
@@ -91,6 +96,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #appiumVersion}.
      * @return {@link String} value.
+     * @see #appiumVersion
      */
     @NotNull
     public String appiumVersion() {
@@ -100,6 +106,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #automationName}.
      * @return {@link String} value.
+     * @see #automationName
      */
     @NotNull
     public String automationName() {
@@ -109,6 +116,7 @@ public abstract class MobileEngine<
     /**
      * Return {@link #appPackage}.
      * @return {@link String} value.
+     * @see #appPackage
      */
     @NotNull
     public String appPackage() {
@@ -119,6 +127,7 @@ public abstract class MobileEngine<
      * Return {@link #deviceName}. This can be stubbed out for custom
      * implementation.
      * @return {@link String} value.
+     * @see #deviceName
      */
     @NotNull
     public String deviceName() {
@@ -128,10 +137,20 @@ public abstract class MobileEngine<
     /**
      * Return {@link #platformVersion}.
      * @return {@link String} value.
+     * @see #platformVersion
      */
     @NotNull
     public String platformVersion() {
         return platformVersion;
+    }
+
+    /**
+     * Return {@link #autoLaunch}.
+     * @return {@link Boolean} value.
+     * @see #autoLaunch
+     */
+    public boolean autoLaunch() {
+        return autoLaunch;
     }
     //endregion
 
@@ -139,51 +158,45 @@ public abstract class MobileEngine<
     /**
      * @param param {@link BeforeParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxBeforeMethod(BeforeParam)
+     * @see Engine#rx_beforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
      * @see #rxLaunchApp()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-        Flowable<Boolean> source;
+    public Flowable<Boolean> rx_beforeMethod(@NotNull BeforeParam param) {
+        final Flowable<Boolean> SOURCE;
 
         if (startDriverOnlyOnce()) {
-            source = rxLaunchApp();
+            SOURCE = rxLaunchApp();
         } else {
-            source = rxStartDriver(param);
+            SOURCE = rxStartDriver(param);
         }
 
-        return Flowable
-            .concat(super.rxBeforeMethod(param), source)
-            .all(BooleanUtil::isTrue)
-            .toFlowable();
+        return super.rx_beforeMethod(param).flatMap(a -> SOURCE);
     }
 
     /**
      * @param param {@link AfterParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterMethod(AfterParam)
+     * @see Engine#rx_afterMethod(AfterParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
      * @see #rxStopDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        Flowable<Boolean> quitApp;
+    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
+        final Flowable<Boolean> QUIT_APP;
 
         if (startDriverOnlyOnce()) {
-            quitApp = rxResetApp();
+            QUIT_APP = rxResetApp();
         } else {
-            quitApp = rxStopDriver();
+            QUIT_APP = rxStopDriver();
         }
 
-        return Flowable
-            .concat(super.rxAfterMethod(param), quitApp)
-            .all(BooleanUtil::isTrue)
-            .toFlowable();
+        return super.rx_afterMethod(param).flatMap(a -> QUIT_APP);
     }
     //endregion
 
@@ -206,10 +219,7 @@ public abstract class MobileEngine<
         capabilities.put(MobileCapabilityType.DEVICE_NAME, deviceName());
         capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName());
         capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
-
-        /* If startDriverOnlyOnce is false, we should manually start and reset
-         * the app */
-        capabilities.put("autoLaunch", !startDriverOnlyOnce());
+//        capabilities.put("autoLaunch", autoLaunch());
         return capabilities;
     }
     //endregion
@@ -220,15 +230,15 @@ public abstract class MobileEngine<
      * @param <T> Generics parameter that extends {@link MobileEngine}.
      */
     public static class Builder<T extends MobileEngine> extends Engine.Builder<T> {
-        protected Builder(@NotNull T engine,
-                          @NotNull CapType.Builder capBuilder) {
+        protected Builder(@NotNull T engine, @NotNull CapType.Builder capBuilder) {
             super(engine, capBuilder);
         }
 
         /**
-         * Set the {@link #ENGINE#appiumVersion} value.
+         * Set the {@link #appiumVersion} value.
          * @param version The Appium version that will run the test.
          * @return The current {@link Builder} instance.
+         * @see #appiumVersion
          */
         @NotNull
         public Builder<T> withAppiumVersion(@NotNull String version) {
@@ -237,22 +247,36 @@ public abstract class MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#app} value. We assume that the app is
-         * placed in {currentProject}/app folder.
+         * Set the {@link #app} value.
          * @param app The app's file name.
          * @return The current {@link Builder} instance.
+         * @see System#getProperty(String)
+         * @see Paths#get(String, String...)
+         * @see #withApp(Path)
+         * @see #app
          */
         @NotNull
         public Builder<T> withApp(@NotNull String app) {
             String path = System.getProperty("user.dir");
-            ENGINE.app = String.format("%s/app/%s", path, app);
+            return withApp(Paths.get(path, app));
+        }
+
+        /**
+         * Set the {@link #app} value.
+         * @param path {@link Path} instance.
+         * @return The current {@link Builder} instance.
+         * @see #app
+         */
+        public Builder<T> withApp(@NotNull Path path) {
+            ENGINE.app = path.toString();
             return this;
         }
 
         /**
-         * Set the {@link #ENGINE#appPackage} value.
+         * Set the {@link #appPackage} value.
          * @param appPackage The app's package name.
          * @return The current {@link Builder} instance.
+         * @see #appPackage
          */
         @NotNull
         public Builder<T> withAppPackage(@NotNull String appPackage) {
@@ -261,7 +285,7 @@ public abstract class MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#automationName} value.
+         * Set the {@link #automationName} value.
          * @param automationName The app's automation name. For e.g., Android
          *                       SDK 16 or less should specify Selendroid,
          *                       and Appium otherwise. In order to minimize
@@ -269,6 +293,7 @@ public abstract class MobileEngine<
          *                       {@link XPath} as much as possible for
          *                       locator operations.
          * @return The current {@link Builder} instance.
+         * @see #automationName
          */
         @NotNull
         public Builder<T> withAutomationName(@NotNull String automationName) {
@@ -280,6 +305,7 @@ public abstract class MobileEngine<
          * Same as above, but use {@link Automation} instance instead.
          * @param automation {@link Automation} instance.
          * @return The current {@link Builder} instance.
+         * @see #automationName
          */
         @NotNull
         public Builder<T> withAutomation(@NotNull Automation automation) {
@@ -287,9 +313,10 @@ public abstract class MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#deviceName} value.
+         * Set the {@link #deviceName} value.
          * @param deviceName The device name on which test will be executed.
          * @return The current {@link Builder} instance.
+         * @see #deviceName
          */
         @NotNull
         public Builder<T> withDeviceName(@NotNull String deviceName) {
@@ -298,32 +325,39 @@ public abstract class MobileEngine<
         }
 
         /**
-         * Set the {@link #ENGINE#platformVersion} value. Automatically
-         * detect {@link #ENGINE#automationName} as well.
+         * Set the {@link #platformVersion} value. Automatically detect
+         * {@link #automationName} as well.
          * @param version {@link String} value.
          * @return The current {@link Builder} instance.
+         * @see #platformVersion
          */
         @NotNull
         public Builder<T> withPlatformVersion(@NotNull String version) {
             ENGINE.platformVersion = version;
-
-            if (version.compareToIgnoreCase("4.2") < 0) {
-                withAutomation(Automation.SELENDROID);
-            } else {
-                withAutomation(Automation.APPIUM);
-            }
-
             return this;
         }
 
         /**
-         * Set the {@link #ENGINE#startDriverOnlyOnce} value.
+         * Set the {@link #startDriverOnlyOnce} value.
          * @param once {@link Boolean} value.
          * @return The current {@link Builder} instance.
+         * @see #startDriverOnlyOnce
          */
         @NotNull
         public Builder<T> shouldStartDriverOnlyOnce(boolean once) {
             ENGINE.startDriverOnlyOnce = once;
+            return this;
+        }
+
+        /**
+         * Set the {@link #autoLaunch} value.
+         * @param autoLaunch {@link Boolean} value.
+         * @return The current {@link Builder} instance.
+         * @see #autoLaunch
+         */
+        @NotNull
+        public Builder<T> shouldAutoLaunch(boolean autoLaunch) {
+            ENGINE.autoLaunch = autoLaunch;
             return this;
         }
     }

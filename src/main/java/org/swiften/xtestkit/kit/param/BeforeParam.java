@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link Engine#rxBeforeMethod(BeforeParam)}
+ * {@link Engine#rx_beforeMethod(BeforeParam)}
  */
 public class BeforeParam implements IndexType, RetryType {
     @NotNull public static BeforeParam DEFAULT;

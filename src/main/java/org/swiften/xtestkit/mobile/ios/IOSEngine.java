@@ -21,6 +21,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,8 +48,8 @@ public class IOSEngine extends
 
     IOSEngine() {
         XC_HANDLER = XCRunHandler.builder().build();
-        deviceUID = "";
         launchTimeout = simulatorLaunchTimeout();
+        deviceUID = "";
     }
 
     //region Getters
@@ -82,13 +83,13 @@ public class IOSEngine extends
     /**
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxBeforeClass(BeforeClassParam)
+     * @see Engine#rx_beforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
      * @see #rxStartDriver(RetryType)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
+    public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
         final Flowable<Boolean> START_APP;
 
         if (startDriverOnlyOnce()) {
@@ -97,30 +98,30 @@ public class IOSEngine extends
             START_APP = Flowable.just(true);
         }
 
-        return super.rxBeforeClass(param).flatMap(a -> START_APP);
+        return super.rx_beforeClass(param).flatMap(a -> START_APP);
     }
 
     /**
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterClass(AfterClassParam)
+     * @see Engine#rx_afterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryType)
      * @see #startDriverOnlyOnce()
      * @see #rxStopDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
         final Flowable<Boolean> QUIT_APP;
         final Flowable<Boolean> SOURCE;
 
         switch (testMode()) {
-            case SIMULATED:
-                SOURCE = XC_HANDLER.rxStopSimulator(param);
-                break;
+//            case SIMULATED:
+//                SOURCE = XC_HANDLER.rxStopSimulator(param);
+//                break;
 
             default:
-                SOURCE = RxUtil.error(NOT_AVAILABLE);
+                SOURCE = Flowable.just(true);
                 break;
         }
 
@@ -130,7 +131,7 @@ public class IOSEngine extends
             QUIT_APP = Flowable.just(true);
         }
 
-        return super.rxAfterClass(param)
+        return super.rx_afterClass(param)
             .flatMap(a -> SOURCE)
             .flatMap(a -> QUIT_APP);
     }
@@ -140,7 +141,7 @@ public class IOSEngine extends
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = super.capabilities();
+        Map<String,Object> capabilities = new HashMap<>(super.capabilities());
         capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
         capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
         capabilities.put(MobileCapabilityType.UDID, deviceUID());

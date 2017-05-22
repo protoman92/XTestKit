@@ -84,7 +84,7 @@ public class TestKit implements
     /**
      * Return a distinct stream of {@link Engine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
-     * as {@link #rxOnFreshStart()} and {@link #rxOnAllTestsFinished()}.
+     * as {@link #rx_onFreshStart()} and {@link #rx_onAllTestsFinished()}.
      * @return {@link Flowable} instance.
      * @see #engines()
      * @see Engine#getClass()
@@ -97,12 +97,12 @@ public class TestKit implements
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxOnFreshStart() {
+    public Flowable<Boolean> rx_onFreshStart() {
         final TestKit THIS = this;
 
         return rxKillAllAppiumInstances()
             .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(Engine::rxOnFreshStart);
+            .concatMap(Engine::rx_onFreshStart);
     }
 
     /**
@@ -110,8 +110,8 @@ public class TestKit implements
      * based on an Array of {@link Integer} indexes.
      * @param indexes An Array of {@link Integer}.
      * @return {@link Flowable} instance.
-     * @see #rxOnBatchStarted(int[])
-     * @see #rxOnBatchFinished(int[])
+     * @see #rx_onBatchStarted(int[])
+     * @see #rx_onBatchFinished(int[])
      */
     @NotNull
     public Flowable<Engine> rxEnginesFromIndexes(@NotNull int[] indexes) {
@@ -128,9 +128,9 @@ public class TestKit implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchStarted(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rx_onBatchStarted(@NotNull final int[] INDEXES) {
         return rxEnginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rxOnBatchStarted(INDEXES))
+            .flatMap(a -> a.rx_onBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
@@ -138,9 +138,9 @@ public class TestKit implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxOnBatchFinished(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rx_onBatchFinished(@NotNull final int[] INDEXES) {
         return rxEnginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rxOnBatchFinished(INDEXES))
+            .flatMap(a -> a.rx_onBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .map(BooleanUtil::toTrue)
@@ -150,12 +150,12 @@ public class TestKit implements
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxOnAllTestsFinished() {
+    public Flowable<Boolean> rx_onAllTestsFinished() {
         final TestKit THIS = this;
 
         return rxKillAllAppiumInstances()
             .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(Engine::rxOnAllTestsFinished);
+            .concatMap(Engine::rx_onAllTestsFinished);
     }
     //endregion
 
@@ -346,33 +346,33 @@ public class TestKit implements
     /**
      * Convenience method for {@link org.testng.annotations.BeforeSuite}.
      * @return {@link Flowable} instance.
-     * @see #rxOnFreshStart()
+     * @see #rx_onFreshStart()
      */
     @NotNull
     public Flowable<Boolean> rxBeforeSuite() {
-        return rxOnFreshStart();
+        return rx_onFreshStart();
     }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterSuite}.
      * @return {@link Flowable} instance.
-     * @see #rxOnAllTestsFinished()
+     * @see #rx_onAllTestsFinished()
      */
     @NotNull
     public Flowable<Boolean> rxAfterSuite() {
-        return rxOnAllTestsFinished();
+        return rx_onAllTestsFinished();
     }
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxBeforeClass(BeforeClassParam)
+     * @see Engine#rx_beforeClass(BeforeClassParam)
      */
     @NotNull
     public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
         return engine(param.index())
-            .rxBeforeClass(param)
+            .rx_beforeClass(param)
             .compose(RxUtil.withCommonSchedulers());
     }
 
@@ -380,12 +380,12 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterClass(AfterClassParam)
+     * @see Engine#rx_afterClass(AfterClassParam)
      */
     @NotNull
     public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
         return engine(param.index())
-            .rxAfterClass(param)
+            .rx_afterClass(param)
             .compose(RxUtil.withCommonSchedulers());
     }
 
@@ -393,12 +393,12 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * @param param {@link BeforeParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxBeforeMethod(BeforeParam)
+     * @see Engine#rx_beforeMethod(BeforeParam)
      */
     @NotNull
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return engine(param.index())
-            .rxBeforeMethod(param)
+            .rx_beforeMethod(param)
             .compose(RxUtil.withCommonSchedulers());
     }
 
@@ -406,12 +406,12 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxAfterMethod(AfterParam)
+     * @see Engine#rx_afterMethod(AfterParam)
      */
     @NotNull
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
         return engine(param.index())
-            .rxAfterMethod(param)
+            .rx_afterMethod(param)
             .compose(RxUtil.withCommonSchedulers());
     }
 

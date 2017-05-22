@@ -103,7 +103,7 @@ public final class EngineTest implements BaseEngineErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppium(RETRY).subscribe(subscriber);
+            ENGINE.rx_startLocalAppium(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -111,10 +111,10 @@ public final class EngineTest implements BaseEngineErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ENGINE).processRunner();
-            verify(ENGINE).cmWhichAppium();
-            verify(ENGINE).cmFallBackAppium();
+            verify(ENGINE).cm_whichAppium();
+            verify(ENGINE).cm_fallBackAppium();
             verify(ENGINE).appiumStartDelay();
-            verify(ENGINE).rxStartLocalAppium(any());
+            verify(ENGINE).rx_startLocalAppium(any());
             verify(ENGINE).startAppiumOnNewThread(appiumCaptor.capture());
             verifyNoMoreInteractions(ENGINE);
             assertTrue(appiumCaptor.getValue().contains("appium"));
@@ -137,7 +137,7 @@ public final class EngineTest implements BaseEngineErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rxStartLocalAppium(RETRY).subscribe(subscriber);
+            ENGINE.rx_startLocalAppium(RETRY).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -146,11 +146,11 @@ public final class EngineTest implements BaseEngineErrorType {
             subscriber.assertComplete();
             verify(ENGINE).serverAddress();
             verify(ENGINE).networkHandler();
-            verify(ENGINE).cmWhichAppium();
-            verify(ENGINE).cmStartLocalAppiumInstance(anyString(), anyInt());
-            verify(ENGINE).cmFallBackAppium();
+            verify(ENGINE).cm_whichAppium();
+            verify(ENGINE).cm_startLocalAppium(anyString(), anyInt());
+            verify(ENGINE).cm_fallBackAppium();
             verify(ENGINE).startAppiumOnNewThread(anyString());
-            verify(ENGINE).rxStartLocalAppium(any());
+            verify(ENGINE).rx_startLocalAppium(any());
             verify(ENGINE, times(2)).processRunner();
             verify(ENGINE).appiumStartDelay();
             verify(NETWORK_HANDLER, atLeastOnce()).rxCheckUntilPortAvailable(any());
@@ -170,7 +170,7 @@ public final class EngineTest implements BaseEngineErrorType {
 
         // When
         Flowable.range(1, tries)
-            .flatMap(a -> ENGINE.rxStartLocalAppium(RETRY))
+            .flatMap(a -> ENGINE.rx_startLocalAppium(RETRY))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .flatMap(a -> ENGINE.networkHandler().rxKillAll("node appium"))
@@ -195,7 +195,7 @@ public final class EngineTest implements BaseEngineErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rxStopLocalAppiumInstance().subscribe(subscriber);
+            ENGINE.rx_stopLocalAppium().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -203,7 +203,7 @@ public final class EngineTest implements BaseEngineErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ENGINE).serverAddress();
-            verify(ENGINE).rxStopLocalAppiumInstance();
+            verify(ENGINE).rx_stopLocalAppium();
             verify(ENGINE).networkHandler();
             verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {

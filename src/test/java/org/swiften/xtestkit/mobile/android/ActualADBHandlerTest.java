@@ -47,7 +47,7 @@ public final class ActualADBHandlerTest {
         // When
         Flowable.range(1, tries)
             .flatMap(a -> ADB_HANDLER
-                .rxFindAvailablePort(RETRY)
+                .rx_availablePort(RETRY)
                 .onErrorResumeNext(Flowable.empty()))
             .distinct()
             .count()
