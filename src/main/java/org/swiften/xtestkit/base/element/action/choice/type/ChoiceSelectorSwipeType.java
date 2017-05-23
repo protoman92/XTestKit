@@ -57,6 +57,9 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * Get the selected choice's numeric representation to compare against
      * other choice items.
      * @return {@link Double} value.
+     * @see #choiceInput()
+     * @see #selectedChoice()
+     * @see ChoiceInputType#numericValue(String)
      */
     default double selectedChoiceNumericValue() {
         ChoiceInputType input = choiceInput();
@@ -156,6 +159,20 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
     }
 
     /**
+     * Get the target choice item we are interested in.
+     * @return {@link Flowable} instance.
+     * @see #engine()
+     * @see #targetChoiceItemQuery()
+     * @see Engine#rx_byXPath(ByXPath...)
+     */
+    @NotNull
+    default Flowable<WebElement> rx_targetChoiceItem() {
+        Engine<?> engine = engine();
+        ByXPath query = targetChoiceItemQuery();
+        return engine.rx_byXPath(query).firstElement().toFlowable();
+    }
+
+    /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see SwipeRepeatComparisonType#rx_elementSwipeRatio()
@@ -190,10 +207,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
         final String STR_VALUE = selectedChoice();
         ByXPath query = targetChoiceItemQuery();
 
-        return ENGINE
-            .rx_byXPath(query)
-            .firstElement()
-            .toFlowable()
+        return rx_targetChoiceItem()
             .filter(a -> ENGINE.getText(a).equals(STR_VALUE))
             .flatMap(ENGINE::rx_click)
             .map(BooleanUtil::toTrue);

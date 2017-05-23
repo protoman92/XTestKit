@@ -97,7 +97,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         verify(ENGINE).rx_repeatSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxSwipeRecursively();
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rxDirectionToSwipe();

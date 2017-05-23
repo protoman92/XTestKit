@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.type.PlatformType;
  * This interface provides methods to help interact with choice-based input
  * {@link org.openqa.selenium.WebElement}.
  */
-public interface ChoiceInputType extends InputType {
+public interface ChoiceInputType {
     /**
      * Get the scroll view picker {@link XPath} for
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.

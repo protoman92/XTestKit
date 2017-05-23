@@ -24,7 +24,8 @@ public final class XPathTest {
 //            .containsHint("Hint2")
 //            .isEnabled(true)
 //            .isClickable(true)
-            .setIndex(0);
+            .setIndex(0)
+            .build();
 
         XPath xPath2 = XPath.builder(Platform.ANDROID)
             .atIndex(0)

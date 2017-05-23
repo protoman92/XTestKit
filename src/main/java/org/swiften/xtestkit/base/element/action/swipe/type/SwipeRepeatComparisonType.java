@@ -131,7 +131,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rxFirstVisibleChildElement()
      */
     @NotNull
-    default Flowable<Integer> rxInitialSwipesCount() {
+    default Flowable<Integer> rx_initialSwipesCount() {
         final SwipeRepeatComparisonType THIS = this;
 
         return Flowable.zip(
@@ -151,35 +151,46 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
 
     /**
      * Perform initial swipes a number of times.
-     * @param ELEMENT The scrollable {@link WebElement}.
-     * @param DIRECTION {@link Unidirection} instance.
-     * @param TIMES The number of times to swipe. {@link Integer} value.
+     * @param element The scrollable {@link WebElement}.
+     * @param direction {@link Unidirection} instance.
+     * @param time The number of times to swipe. {@link Integer} value.
      * @return {@link Flowable} instance.
      * @see #rx_swipeElement(WebElement, Unidirection, double)
      */
     @NotNull
-    default Flowable<Boolean> rxPerformInitialSwipes(
+    default Flowable<Boolean> rx_initialSwipes(@NotNull WebElement element,
+                                               @NotNull Unidirection direction,
+                                               final int time) {
+        return rx_initialSwipes(element, direction, time, 0);
+    }
+
+    /**
+     * Perform initial swipes a number of times.
+     * @param ELEMENT The scrollable {@link WebElement}.
+     * @param DIRECTION {@link Unidirection} instance.
+     * @param TIMES The number of times to swipe. {@link Integer} value.
+     * @param CURRENT_INDEX The current swipe index.
+     * @return {@link Flowable} instance.
+     * @see #rx_swipeElement(WebElement, Unidirection, double)
+     */
+    @NotNull
+    default Flowable<Boolean> rx_initialSwipes(
         @NotNull final WebElement ELEMENT,
         @NotNull final Unidirection DIRECTION,
-        final int TIMES
+        final int TIMES,
+        final int CURRENT_INDEX
     ) {
         final SwipeRepeatComparisonType THIS = this;
 
-        class InitialSwipe {
-            @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> repeat(final int INDEX) {
-                if (INDEX < TIMES) {
-                    return THIS
-                        .rx_swipeElement(ELEMENT, DIRECTION, 1)
-                        .flatMap(a -> new InitialSwipe().repeat(INDEX + 1));
-                } else {
-                    return Flowable.just(true);
-                }
-            }
+        if (CURRENT_INDEX < TIMES) {
+            return THIS
+                .rx_swipeElement(ELEMENT, DIRECTION, 1)
+                .flatMap(a -> THIS.rx_initialSwipes(
+                    ELEMENT, DIRECTION, TIMES, CURRENT_INDEX + 1)
+                );
+        } else {
+            return Flowable.just(true);
         }
-
-        return new InitialSwipe().repeat(0);
     }
 
     /**
@@ -190,17 +201,15 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rxDirectionToSwipe()
      * @see #rxFirstVisibleChildElement()
      * @see #rx_initialDifference(WebElement)
-     * @see #rxPerformInitialSwipes(WebElement, Unidirection, int)
+     * @see #rx_initialSwipes(WebElement, Unidirection, int)
      */
     @NotNull
-    default Flowable<Boolean> rxPerformInitialSwipes() {
-        final SwipeRepeatComparisonType THIS = this;
-
+    default Flowable<Boolean> rx_initialSwipes() {
         return Flowable.zip(
             rx_scrollableViewToSwipe(),
             rxDirectionToSwipe(),
-            rxInitialSwipesCount(),
-            this::rxPerformInitialSwipes
+            rx_initialSwipesCount(),
+            this::rx_initialSwipes
         ).flatMap(a -> a);
     }
 
@@ -239,13 +248,13 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * Override this method to perform initial swipes.
      * @return {@link Flowable} instance.
      * @see SwipeRepeatType#rx_repeatSwipe()
-     * @see #rxPerformInitialSwipes()
-     * @see #rxSwipeRecursively()
+     * @see #rx_initialSwipes()
+     * @see #rx_swipeRecursively()
      */
     @NotNull
     @Override
     default Flowable<Boolean> rx_repeatSwipe() {
         final SwipeRepeatComparisonType THIS = this;
-        return rxPerformInitialSwipes().flatMap(a -> THIS.rxSwipeRecursively());
+        return rx_initialSwipes().flatMap(a -> THIS.rx_swipeRecursively());
     }
 }

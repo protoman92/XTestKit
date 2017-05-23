@@ -60,7 +60,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rx_repeatSwipe()
      */
     @NotNull
-    default Flowable<Boolean> rxSwipeRecursively() {
+    default Flowable<Boolean> rx_swipeRecursively() {
         final SwipeRepeatType THIS = this;
 
         return rx_shouldKeepSwiping()
@@ -73,25 +73,22 @@ public interface SwipeRepeatType extends SwipeOnceType {
                     THIS::rx_swipeElement
                 )
                 .flatMap(a -> a)
-                .flatMap(a -> THIS.rxSwipeRecursively())
+                .flatMap(a -> THIS.rx_swipeRecursively())
             );
     }
 
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
-     * @see #rxSwipeRecursively()
+     * @see #rx_swipeRecursively()
      */
     @NotNull
     default Flowable<Boolean> rx_repeatSwipe() {
-        return rxSwipeRecursively();
+        return rx_swipeRecursively();
     }
 
     /**
      * Scroll the picker list view to a new page or the previous page.
-     * Applicable to {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR},
-     * or individual spinners in
-     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#SPINNER} mode.
      * @param element The calendar list view {@link WebElement}.
      * @param direction {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
