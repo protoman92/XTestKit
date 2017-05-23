@@ -90,6 +90,15 @@ public class XPath {
         attribute = String.format("%s%s", attribute, attr);
     }
 
+    /**
+     * Append a joiner symbol to then end of the current {@link #attribute}.
+     * @param joiner {@link String} value.
+     * @see #attribute
+     */
+    void appendJoinerSymbol(@NotNull String joiner) {
+        attribute = String.format("%s%s", attribute, joiner);
+    }
+
     //region Builder
     /**
      * Builder class for {@link XPath}.
@@ -629,8 +638,6 @@ public class XPath {
          * Set {@link XPath} index. Contrary to {@link #atIndex(AtIndex)},
          * instead of appending an @index attribute, this method directly
          * sets index with square brackets, e.g. TextView[0].
-         * This method also ends the {@link Builder} chain immediately, since
-         * the index must be the last element.
          * @param atIndex {@link AtIndex} instance.
          * @return The current {@link Builder} instance.
          * @see XPath#appendAttribute(String)
@@ -638,9 +645,9 @@ public class XPath {
          * @see #build()
          */
         @NotNull
-        public XPath setIndex(@NotNull AtIndex atIndex) {
+        public Builder setIndex(@NotNull AtIndex atIndex) {
             XPATH.appendAttribute(String.valueOf(atIndex.value()));
-            return build();
+            return this;
         }
 
         /**
@@ -650,8 +657,20 @@ public class XPath {
          * @see #setIndex(AtIndex)
          */
         @NotNull
-        public XPath setIndex(final int INDEX) {
+        public Builder setIndex(final int INDEX) {
             return setIndex(() -> INDEX);
+        }
+
+        /**
+         * Append a joiner symbol to the end of {@link #attribute}.
+         * @param mode {@link Attribute.Mode} instance.
+         * @return The current {@link Builder} instance.
+         * @see XPath#appendJoinerSymbol(String)
+         */
+        @NotNull
+        public Builder appendJoinerSymbol(@NotNull Attribute.Mode mode) {
+            XPATH.appendJoinerSymbol(mode.joinerSymbol());
+            return this;
         }
 
         @NotNull

@@ -18,7 +18,8 @@ public class AndroidView extends PlatformView {
         EDIT_TEXT,
         LINEAR_LAYOUT,
         LIST_VIEW,
-        TEXT_VIEW;
+        TEXT_VIEW,
+        NUMBER_PICKER;
 
         @NotNull
         @Override
@@ -38,6 +39,9 @@ public class AndroidView extends PlatformView {
 
                 case TEXT_VIEW:
                     return "android.widget.TextView";
+
+                case NUMBER_PICKER:
+                    return "android.widget.NumberPicker";
 
                 default:
                     throw new RuntimeException();

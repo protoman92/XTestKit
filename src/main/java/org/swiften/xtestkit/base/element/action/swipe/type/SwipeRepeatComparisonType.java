@@ -141,9 +141,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
 
             THIS.rxFirstVisibleChildElement()
                 .flatMap(THIS::rx_initialDifference)
-                .doOnNext(a -> LogUtil.printfThread(
-                    "%d initial difference in elements", a)
-                )
+                .doOnNext(a -> LogUtil.printfThread("%d initial difference", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 

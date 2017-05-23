@@ -5,6 +5,7 @@ package org.swiften.xtestkit.base.element.locator.general.xpath;
  */
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public final class Attribute {
         return builder().addAttribute(attribute).build();
     }
 
-    public enum Mode {
+    public enum Mode implements BaseErrorType {
         AND,
         OR;
 
@@ -39,6 +40,7 @@ public final class Attribute {
          * Get the joiner {@link String} that will be used to join attributes
          * in {@link Attribute#attributes}.
          * @return {@link String} value.
+         * @see #NOT_AVAILABLE
          */
         @NotNull
         public String joiner() {
@@ -48,6 +50,22 @@ public final class Attribute {
 
                 case OR:
                     return "or";
+
+                default:
+                    throw new RuntimeException(NOT_AVAILABLE);
+            }
+        }
+
+        /**
+         * Get the joiner symbol {@link String} that can be used to join
+         * different {@link XPath} queries.
+         * @return {@link String} value.
+         */
+        @NotNull
+        public String joinerSymbol() {
+            switch (this) {
+                case OR:
+                    return "|";
 
                 default:
                     return "";
