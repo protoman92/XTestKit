@@ -222,7 +222,7 @@ public final class EngineTest implements BaseEngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
+        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -230,7 +230,7 @@ public final class EngineTest implements BaseEngineErrorType {
         subscriber.assertErrorMessage(INSUFFICIENT_SETTINGS);
         subscriber.assertNotComplete();
         verify(ENGINE, never()).driver(any(), any());
-        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).rx_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
         verify(ENGINE).browserName();
@@ -246,7 +246,7 @@ public final class EngineTest implements BaseEngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
+        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -254,7 +254,7 @@ public final class EngineTest implements BaseEngineErrorType {
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
         verify(ENGINE, times(TRIES + 1)).driver(any(), any());
-        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).rx_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
         verify(ENGINE).browserName();
@@ -272,7 +272,7 @@ public final class EngineTest implements BaseEngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStartDriver(RETRY).subscribe(subscriber);
+        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -280,7 +280,7 @@ public final class EngineTest implements BaseEngineErrorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).rx_startDriver(any());
         verify(ENGINE).serverAddress();
         verify(ENGINE).serverUri();
         verify(ENGINE).driver(any(), any());
@@ -300,14 +300,14 @@ public final class EngineTest implements BaseEngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStopDriver().subscribe(subscriber);
+        ENGINE.rx_stopDriver().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
-        verify(ENGINE).rxStopDriver();
+        verify(ENGINE).rx_stopDriver();
         verify(ENGINE).driver();
         verifyNoMoreInteractions(ENGINE);
     }
@@ -319,7 +319,7 @@ public final class EngineTest implements BaseEngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxStopDriver().subscribe(subscriber);
+        ENGINE.rx_stopDriver().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -333,16 +333,6 @@ public final class EngineTest implements BaseEngineErrorType {
     static class MockEngine extends Engine<WebDriver> implements TestDateActionType {
         @Override
         public <P extends TapType & RetryType> void tap(@NotNull P param) {}
-
-        @NotNull
-        @Override
-        public XPath.Builder xPathBuilder() {
-            PlatformType platform = mock(PlatformType.class);
-            when(platform.enabledAttribute()).thenReturn(Attribute.single("enabled"));
-            when(platform.hintAttribute()).thenReturn(Attribute.single("hint"));
-            when(platform.textAttribute()).thenReturn(Attribute.single("text"));
-            return XPath.builder(platform);
-        }
 
         @NotNull
         @Override

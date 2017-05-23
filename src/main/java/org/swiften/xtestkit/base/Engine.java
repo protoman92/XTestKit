@@ -545,7 +545,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
-    public Flowable<Boolean> rxStartDriver(@NotNull final RetryType PARAM) {
+    public Flowable<Boolean> rx_startDriver(@NotNull final RetryType PARAM) {
         CapType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
@@ -553,6 +553,7 @@ public abstract class Engine<D extends WebDriver> implements
             final Map<String,Object> distilled = capType.distill(caps);
             final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
+            LogUtil.println(distilled);
 
             return Completable
                 .fromAction(() -> driver = driver(SERVER_URL, CAPS))
@@ -571,7 +572,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @see WebDriver#quit()
      */
     @NotNull
-    public Flowable<Boolean> rxStopDriver() {
+    public Flowable<Boolean> rx_stopDriver() {
         return Completable.fromAction(driver()::quit)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);

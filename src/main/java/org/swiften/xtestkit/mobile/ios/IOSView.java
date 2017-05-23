@@ -6,6 +6,7 @@ package org.swiften.xtestkit.mobile.ios;
 
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -13,11 +14,18 @@ import org.swiften.xtestkit.mobile.Platform;
  * Provide {@link Platform#IOS} {@link BaseViewType}
  */
 public class IOSView extends PlatformView {
-    enum ViewType implements BaseViewType {
+    public enum ViewType implements BaseViewType, BaseErrorType {
         UI_BUTTON,
         UI_LABEL,
-        UI_TEXTFIELD;
+        UI_TEXTFIELD,
+        UI_TABLEVIEW,
+        UI_TABLEVIEW_CELL;
 
+        /**
+         * @return {@link String} value.
+         * @see BaseViewType#className()
+         * @see #NOT_AVAILABLE
+         */
         @NotNull
         @Override
         public String className() {
@@ -31,11 +39,21 @@ public class IOSView extends PlatformView {
                 case UI_TEXTFIELD:
                     return "XCUIElementTypeTextField";
 
+                case UI_TABLEVIEW:
+                    return "XCUIElementTypeTable";
+
+                case UI_TABLEVIEW_CELL:
+                    return "XCUIElementTypeCell";
+
                 default:
-                    return "";
+                    throw new RuntimeException(NOT_AVAILABLE);
             }
         }
 
+        /**
+         * @return {@link String} value.
+         * @see BaseViewType#hasText()
+         */
         @Override
         public boolean hasText() {
             switch (this) {
@@ -49,6 +67,10 @@ public class IOSView extends PlatformView {
             }
         }
 
+        /**
+         * @return {@link Boolean} value.
+         * @see BaseViewType#isClickable()
+         */
         @Override
         public boolean isClickable() {
             switch (this) {
@@ -60,6 +82,10 @@ public class IOSView extends PlatformView {
             }
         }
 
+        /**
+         * @return {@link Boolean} value.
+         * @see BaseViewType#isEditable()
+         */
         @Override
         public boolean isEditable() {
             switch (this) {
@@ -72,6 +98,10 @@ public class IOSView extends PlatformView {
         }
     }
 
+    /**
+     * @return Array of {@link BaseViewType}.
+     * @see PlatformView#getViews()
+     */
     @NotNull
     @Override
     public BaseViewType[] getViews() {

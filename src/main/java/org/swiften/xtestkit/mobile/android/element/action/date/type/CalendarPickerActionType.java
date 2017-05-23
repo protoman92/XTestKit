@@ -32,8 +32,7 @@ import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 import java.util.Date;
 
 /**
- * This interface provides actions for
- * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
+ * This interface provides actions for {@link AndroidDatePickerType#CALENDAR}.
  */
 public interface CalendarPickerActionType extends
     BaseClickActionType,
@@ -44,8 +43,7 @@ public interface CalendarPickerActionType extends
     MobileSwipeType<AndroidDriver<AndroidElement>>
 {
     /**
-     * Select a day if the app is using
-     * {@link AndroidDatePickerContainerType.AndroidDatePickerType#CALENDAR}.
+     * Select a day if the app is using {@link AndroidDatePickerType#CALENDAR}.
      * We need to define {@link Attribute} with "content-desc", and
      * repeatedly search for the correct day until it is found. However, even
      * if the day is found, Appium could still select the wrong element -
@@ -60,7 +58,6 @@ public interface CalendarPickerActionType extends
      * @see #platform()
      * @see Attribute#single(String)
      * @see XPath.ContainsString#stringFormat()
-     * @see #xPathBuilder()
      * @see XPath.Builder#appendAttribute(Attribute, String)
      * @see SwipeRepeatType#rx_repeatSwipe()
      * @see DateUtil#notEarlierThan(Date, Date)
@@ -80,7 +77,7 @@ public interface CalendarPickerActionType extends
         String format = ((XPath.ContainsString) () -> DATE_STRING).stringFormat();
         XPath.ContainsString defFormat = () -> "01";
         XPath xp = XPath.builder(platform).appendAttribute(attr, format).build();
-        XPath dxp = xPathBuilder().appendAttribute(attr, defFormat).build();
+        XPath dxp = XPath.builder(platform).appendAttribute(attr, defFormat).build();
         final ByXPath QUERY = ByXPath.builder().withXPath(xp).withRetries(0).build();
         final ByXPath DEF_QUERY = ByXPath.builder().withXPath(dxp).withRetries(0).build();
 

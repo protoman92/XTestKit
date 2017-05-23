@@ -73,9 +73,7 @@ public class ProcessRunner {
                 } catch (IOException e) {
                     observer.onError(e);
                 }
-            }, BackpressureStrategy.BUFFER)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io());
+            }, BackpressureStrategy.BUFFER);
     }
 
     public static final class Builder {

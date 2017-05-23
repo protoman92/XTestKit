@@ -8,10 +8,18 @@ import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.type.DateType;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * Created by haipham on 22/5/17.
  */
 public interface TestDateActionType extends BaseDateActionType<WebDriver> {
+    @NotNull
+    @Override
+    default DatePickerType datePickerType() {
+        return mock(DatePickerType.class);
+    }
+
     @NotNull
     @Override
     default Flowable<Boolean> rx_openYearPicker() {

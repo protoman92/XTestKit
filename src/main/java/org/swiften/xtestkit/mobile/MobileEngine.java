@@ -17,7 +17,6 @@ import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.WebElement;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,12 +43,12 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     boolean autoLaunch;
 
     /**
-     * If this is true, call {@link #rxStartDriver(RetryType)} in
+     * If this is true, call {@link #rx_startDriver(RetryType)} in
      * {@link #rx_beforeClass(BeforeClassParam)}. Correspondingly,
-     * {@link #rxStopDriver()} will be called in
+     * {@link #rx_stopDriver()} will be called in
      * {@link #rx_beforeMethod(BeforeParam)}.
-     * Otherwise, {@link #rxStartDriver(RetryType)} is called in
-     * {@link #rx_beforeMethod(BeforeParam)}, and {@link #rxStopDriver()}
+     * Otherwise, {@link #rx_startDriver(RetryType)} is called in
+     * {@link #rx_beforeMethod(BeforeParam)}, and {@link #rx_stopDriver()}
      * is called in {@link #rx_afterMethod(AfterParam)}.
      */
     protected boolean startDriverOnlyOnce;
@@ -158,7 +157,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @return {@link Flowable} instance.
      * @see Engine#rx_beforeMethod(BeforeParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryType)
+     * @see #rx_startDriver(RetryType)
      * @see #rxLaunchApp()
      */
     @NotNull
@@ -169,7 +168,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         if (startDriverOnlyOnce()) {
             SOURCE = rxLaunchApp();
         } else {
-            SOURCE = rxStartDriver(param);
+            SOURCE = rx_startDriver(param);
         }
 
         return super.rx_beforeMethod(param).flatMap(a -> SOURCE);
@@ -181,7 +180,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @see Engine#rx_afterMethod(AfterParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
-     * @see #rxStopDriver()
+     * @see #rx_stopDriver()
      */
     @NotNull
     @Override
@@ -191,7 +190,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         if (startDriverOnlyOnce()) {
             QUIT_APP = rxResetApp();
         } else {
-            QUIT_APP = rxStopDriver();
+            QUIT_APP = rx_stopDriver();
         }
 
         return super.rx_afterMethod(param).flatMap(a -> QUIT_APP);

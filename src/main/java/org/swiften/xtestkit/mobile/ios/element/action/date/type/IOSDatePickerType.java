@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.type.DatePickerContainerType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.element.locator.general.xpath.type.NewXPathBuilderType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.ios.element.locator.xpath.IOSXPath;
 
@@ -13,17 +12,6 @@ import org.swiften.xtestkit.mobile.ios.element.locator.xpath.IOSXPath;
  */
 public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType {
     BASIC;
-
-    /**
-     * @return {@link XPath.Builder} instance.
-     * @see NewXPathBuilderType#xPathBuilder()
-     * @see Platform#IOS
-     */
-    @NotNull
-    @Override
-    public IOSXPath.Builder xPathBuilder() {
-        return IOSXPath.builder();
-    }
 
     /**
      * @param unit {@link CalendarUnit} instance.
@@ -53,51 +41,47 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerContainerType.DatePickerType#pickerListViewXPath(CalendarUnit)
-     * @see #xPathBuilder()
      */
     @NotNull
     @Override
     public XPath pickerListViewXPath(@NotNull CalendarUnit unit) {
-        return xPathBuilder().containsText("Date Picker").build();
+        return IOSXPath.builder().containsText("Date Picker").build();
     }
 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerContainerType.DatePickerType#componentDisplayViewXPath(CalendarUnit)
-     * @see #xPathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath componentDisplayViewXPath(@NotNull CalendarUnit unit) {
-        return xPathBuilder().build();
+        return IOSXPath.builder().build();
     }
 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerContainerType.DatePickerType#targetListViewItemXPath(CalendarUnit)
-     * @see #xPathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath targetListViewItemXPath(@NotNull CalendarUnit unit) {
-        return xPathBuilder().build();
+        return IOSXPath.builder().build();
     }
 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerContainerType.DatePickerType#pickerListViewItemXPath(CalendarUnit)
-     * @see #xPathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath pickerListViewItemXPath(@NotNull CalendarUnit unit) {
-        return xPathBuilder().build();
+        return IOSXPath.builder().build();
     }
 
     /**
@@ -105,12 +89,11 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
      * {@link CalendarUnit} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see #xPathBuilder()
      * @see XPath.Builder#ofClass(String)
      * @see XPath.Builder#atIndex(int)
      */
     @NotNull
     private XPath pickerWheelXPath(@NotNull CalendarUnit unit) {
-        return xPathBuilder().ofClass("XCUIElementTypePickerWheel").build();
+        return IOSXPath.builder().ofClass("XCUIElementTypePickerWheel").build();
     }
 }

@@ -1,6 +1,5 @@
 package org.swiften.xtestkit.mobile.ios;
 
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.capability.IOSCap;
@@ -84,7 +83,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @return {@link Flowable} instance.
      * @see Engine#rx_beforeClass(BeforeClassParam)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryType)
+     * @see #rx_startDriver(RetryType)
      */
     @NotNull
     @Override
@@ -92,7 +91,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         final Flowable<Boolean> START_APP;
 
         if (startDriverOnlyOnce()) {
-            START_APP = rxStartDriver(param);
+            START_APP = rx_startDriver(param);
         } else {
             START_APP = Flowable.just(true);
         }
@@ -106,7 +105,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @see Engine#rx_afterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryType)
      * @see #startDriverOnlyOnce()
-     * @see #rxStopDriver()
+     * @see #rx_stopDriver()
      */
     @NotNull
     @Override
@@ -125,7 +124,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         }
 
         if (startDriverOnlyOnce()) {
-            QUIT_APP = rxStopDriver();
+            QUIT_APP = rx_stopDriver();
         } else {
             QUIT_APP = Flowable.just(true);
         }

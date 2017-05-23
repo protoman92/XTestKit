@@ -7,7 +7,6 @@ package org.swiften.xtestkit.base.element.action.date.type;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.element.locator.general.xpath.type.NewXPathBuilderType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDatePickerContainerType;
 
@@ -20,7 +19,7 @@ public interface DatePickerContainerType {
     /**
      * This interface provides methods to query date picker subviews.
      */
-    interface DatePickerType extends BaseErrorType, NewXPathBuilderType {
+    interface DatePickerType extends BaseErrorType {
         /**
          * Get the {@link String} format for a particular {@link CalendarUnit}.
          * @param unit {@link CalendarUnit} instance.

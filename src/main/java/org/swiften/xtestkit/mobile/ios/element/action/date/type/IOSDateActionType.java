@@ -25,10 +25,7 @@ public interface IOSDateActionType extends
     @NotNull
     @Override
     default Flowable<WebElement> rx_listView(@NotNull CalendarUnit unit) {
-        return BaseDateActionType.super
-            .rx_listView(unit)
-            .doOnNext(LogUtil::println)
-            .doOnNext(a -> LogUtil.println(a.findElements(MobileBy.className("UIAPickerWheel"))));
+        return Flowable.empty();
     }
 
     //region Action
@@ -70,7 +67,6 @@ public interface IOSDateActionType extends
     @NotNull
     @Override
     default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
-        LogUtil.println(driver().getPageSource());
         final String MONTH = monthString(param);
 
         return rx_listView(CalendarUnit.YEAR)

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.type.DatePickerContainerType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.element.locator.general.xpath.type.NewXPathBuilderType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**

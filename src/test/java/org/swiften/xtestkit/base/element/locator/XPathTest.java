@@ -1,13 +1,9 @@
 package org.swiften.xtestkit.base.element.locator;
 
-import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.mobile.Platform;
 import org.testng.annotations.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by haipham on 3/19/17.
@@ -28,7 +24,7 @@ public final class XPathTest {
 //            .containsHint("Hint2")
 //            .isEnabled(true)
 //            .isClickable(true)
-            .build();
+            .setIndex(0);
 
         XPath xPath2 = XPath.builder(Platform.ANDROID)
             .atIndex(0)

@@ -72,7 +72,7 @@ public final class MockAndroidEngineTest {
     public void test_beforeClass_shouldSucceed() {
         // Setup
         int correctPort = 10;
-        doReturn(Flowable.just(true)).when(ENGINE).rxStartDriver(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rx_startDriver(any());
         doReturn(correctPort).when(ANDROID_INSTANCE).port();
         doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rx_availablePort(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rx_startEmulator(any());
@@ -101,7 +101,7 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).cm_fallBackAppium();
         verify(ENGINE).cm_startLocalAppium(anyString(), anyInt());
         verify(ENGINE).startAppiumOnNewThread(anyString());
-        verify(ENGINE).rxStartDriver(any());
+        verify(ENGINE).rx_startDriver(any());
         verify(ENGINE).rx_startLocalAppium(any());
         verify(ENGINE).rx_beforeClass(any());
         verify(ADB_HANDLER).rx_availablePort(any());
@@ -119,7 +119,7 @@ public final class MockAndroidEngineTest {
     public void test_afterClass_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rx_stopEmulator(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
+        doReturn(Flowable.just(true)).when(ENGINE).rx_stopDriver();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -136,7 +136,7 @@ public final class MockAndroidEngineTest {
         verify(ENGINE, atLeastOnce()).serverAddress();
         verify(ENGINE).testMode();
         verify(ENGINE).startDriverOnlyOnce();
-        verify(ENGINE).rxStopDriver();
+        verify(ENGINE).rx_stopDriver();
         verify(ENGINE).rx_afterClass(any());
         verify(ENGINE).rx_stopLocalAppium();
         verify(ADB_HANDLER).rx_stopEmulator(any());
@@ -152,7 +152,7 @@ public final class MockAndroidEngineTest {
         // Setup
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rx_clearCache(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rx_checkAppInstalled(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxStopDriver();
+        doReturn(Flowable.just(true)).when(ENGINE).rx_stopDriver();
         doReturn(Flowable.just(true)).when(ENGINE).rxResetApp();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 

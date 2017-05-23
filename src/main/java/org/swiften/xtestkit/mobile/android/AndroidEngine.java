@@ -137,7 +137,7 @@ public class AndroidEngine extends
      * @see Engine#rx_beforeClass(BeforeClassParam)
      * @see ADBHandler#rx_disableEmulatorAnimations(DeviceUIDType)
      * @see #startDriverOnlyOnce()
-     * @see #rxStartDriver(RetryType)
+     * @see #rx_startDriver(RetryType)
      */
     @NotNull
     @Override
@@ -172,7 +172,7 @@ public class AndroidEngine extends
         }
 
         if (startDriverOnlyOnce()) {
-            START_APP = rxStartDriver(PARAM);
+            START_APP = rx_startDriver(PARAM);
         } else {
             START_APP = Flowable.just(true);
         }
@@ -197,7 +197,7 @@ public class AndroidEngine extends
      * @see ADBHandler#rx_stopEmulator(StopEmulatorParam)
      * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
-     * @see #rxStopDriver()
+     * @see #rx_stopDriver()
      */
     @NotNull
     @Override
@@ -231,7 +231,7 @@ public class AndroidEngine extends
         }
 
         if (startDriverOnlyOnce()) {
-            QUIT_APP = rxStopDriver();
+            QUIT_APP = rx_stopDriver();
         } else {
             QUIT_APP = Flowable.just(true);
         }

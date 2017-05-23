@@ -1,12 +1,11 @@
 package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
-import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.PlatformType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
 import org.swiften.xtestkit.base.element.property.type.base.StringType;
 import org.swiften.xtestkit.base.element.property.type.sub.*;
+import org.swiften.xtestkit.base.type.PlatformType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,10 +37,25 @@ public class XPath {
     }
 
     @NotNull
+    public String toString() {
+        return fullAttribute();
+    }
+
+    /**
+     * Get {@link #className}.
+     * @return {@link String} value.
+     * @see #className
+     */
+    @NotNull
     public String className() {
         return className;
     }
 
+    /**
+     * Get {@link #attribute}.
+     * @return {@link String} value.
+     * @see #attribute
+     */
     @NotNull
     public String attribute() {
         return attribute;
@@ -58,8 +72,22 @@ public class XPath {
         return String.format("//%s%s", className(), attribute());
     }
 
+    /**
+     * Append an attribute to the end of the current {@link #attribute}.
+     * @param attr {@link String} value.
+     * @see #attribute
+     */
     void appendAttribute(@NotNull String attr) {
-        attribute = String.format("%1$s[%2$s]", attribute, attr);
+        attribute = String.format("%s[%s]", attribute, attr);
+    }
+
+    /**
+     * Append a child attribute to the end of the current {@link #attribute}.
+     * @param attr {@link String} value.
+     * @see #attribute
+     */
+    void appendChildAttribute(@NotNull String attr) {
+        attribute = String.format("%s%s", attribute, attr);
     }
 
     //region Builder
@@ -111,13 +139,12 @@ public class XPath {
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
          * @see #attribute
+         * @see XPath#appendChildAttribute(String)
          * @see XPath#fullAttribute()
          */
         @NotNull
         public Builder addChildXPath(@NotNull XPath xPath) {
-            String attribute = XPATH.attribute;
-            String childAttribute = xPath.fullAttribute();
-            XPATH.attribute = String.format("%s%s", attribute, childAttribute);
+            XPATH.appendChildAttribute(xPath.fullAttribute());
             return this;
         }
 
@@ -596,6 +623,35 @@ public class XPath {
         @NotNull
         public Builder isEditable(final boolean EDITABLE) {
             return isEditable(() -> EDITABLE);
+        }
+
+        /**
+         * Set {@link XPath} index. Contrary to {@link #atIndex(AtIndex)},
+         * instead of appending an @index attribute, this method directly
+         * sets index with square brackets, e.g. TextView[0].
+         * This method also ends the {@link Builder} chain immediately, since
+         * the index must be the last element.
+         * @param atIndex {@link AtIndex} instance.
+         * @return The current {@link Builder} instance.
+         * @see XPath#appendAttribute(String)
+         * @see AtIndex#value()
+         * @see #build()
+         */
+        @NotNull
+        public XPath setIndex(@NotNull AtIndex atIndex) {
+            XPATH.appendAttribute(String.valueOf(atIndex.value()));
+            return build();
+        }
+
+        /**
+         * Same as above, but uses a default {@link AtIndex} instance.
+         * @param INDEX {@link Integer} value.
+         * @return The current {@link Builder} instance.
+         * @see #setIndex(AtIndex)
+         */
+        @NotNull
+        public XPath setIndex(final int INDEX) {
+            return setIndex(() -> INDEX);
         }
 
         @NotNull
