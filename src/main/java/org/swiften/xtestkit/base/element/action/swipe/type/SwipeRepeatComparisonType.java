@@ -183,7 +183,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final SwipeRepeatComparisonType THIS = this;
 
         if (CURRENT_INDEX < TIMES) {
-            return THIS.rx_swipeElement(ELEMENT, DIRECTION, 1)
+            return THIS.rx_swipeElement(ELEMENT, DIRECTION, 0.8d)
                 .flatMap(a -> THIS.rx_initialSwipes(
                     ELEMENT,
                     DIRECTION,
