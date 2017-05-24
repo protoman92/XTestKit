@@ -16,7 +16,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
  * Concrete class that implements {@link ChoiceSelectorSwipeType}.
  * Use this to select items from a choice list view.
  */
-public class ChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorType {
+public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -79,13 +79,13 @@ public class ChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorType {
     }
 
     /**
-     * Builder class for {@link ChoiceSelector}.
+     * Builder class for {@link SimpleChoiceSelector}.
      */
     public static final class Builder {
-        @NotNull final ChoiceSelector SELECTOR;
+        @NotNull final SimpleChoiceSelector SELECTOR;
 
         Builder() {
-            SELECTOR = new ChoiceSelector();
+            SELECTOR = new SimpleChoiceSelector();
         }
 
         /**
@@ -125,7 +125,7 @@ public class ChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorType {
         }
 
         @NotNull
-        public ChoiceSelector build() {
+        public SimpleChoiceSelector build() {
             return SELECTOR;
         }
     }

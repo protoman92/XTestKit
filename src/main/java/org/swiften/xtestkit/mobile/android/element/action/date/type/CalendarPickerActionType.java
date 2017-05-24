@@ -23,9 +23,7 @@ import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
-import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
 import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.android.AndroidView;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 
@@ -59,7 +57,7 @@ public interface CalendarPickerActionType extends
      * @see Attribute#single(String)
      * @see XPath.ContainsString#stringFormat()
      * @see XPath.Builder#appendAttribute(Attribute, String)
-     * @see SwipeRepeatType#rx_repeatSwipe()
+     * @see SwipeRepeatType#rx_execute()
      * @see DateUtil#notEarlierThan(Date, Date)
      */
     @NotNull
@@ -121,7 +119,7 @@ public interface CalendarPickerActionType extends
 
             @NotNull
             @Override
-            public Flowable<Unidirection> rxDirectionToSwipe() {
+            public Flowable<Unidirection> rx_directionToSwipe() {
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rx_displayedDate()
@@ -135,6 +133,6 @@ public interface CalendarPickerActionType extends
             }
         };
 
-        return repeater.rx_repeatSwipe();
+        return repeater.rx_execute();
     }
 }

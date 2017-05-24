@@ -152,7 +152,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @param SCROLL_RATIO A dampening ratio for vertical scroll.
      * @return {@link Flowable} instance.
      * @see #rx_listView(CalendarUnit)
-     * @see SwipeRepeatType#rx_repeatSwipe()
+     * @see SwipeRepeatType#rx_execute()
      */
     @NotNull
     default Flowable<Boolean> rx_scrollAndSelect(
@@ -252,7 +252,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
             }
         };
 
-        return repeater.rx_repeatSwipe();
+        return repeater.rx_execute();
     }
 
     /**

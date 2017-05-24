@@ -14,15 +14,15 @@ import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.input.type.ChoiceInputType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by haipham on 5/24/17.
@@ -35,10 +35,6 @@ public class ChoiceSelectorSwipeTest implements ChoiceSelectorSwipeType {
 
     static {
         CHOICE_LIST_VIEW_XPATH = spy(XPath.class);
-    }
-
-    private static int iterations() {
-        return (int)Math.ceil((double)ITEM_COUNT / ITEM_PER_PAGE);
     }
 
     @NotNull private final Random RAND;
@@ -70,13 +66,50 @@ public class ChoiceSelectorSwipeTest implements ChoiceSelectorSwipeType {
         selected = String.valueOf(ITEMS.get(RAND.nextInt(ITEMS.size())).INDEX);
         doReturn(PLATFORM).when(ENGINE).platform();
         doReturn(Flowable.just(true)).when(ENGINE).rx_swipeOnce(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rx_click(any());
         doReturn(selected).when(SELECTOR).selectedChoice();
 
     }
 
+    @AfterMethod
     public void afterMethod() {
         ITEMS.clear();
         reset(SELECTOR, ENGINE);
+    }
+
+    @NotNull
+    @DataProvider(parallel = false)
+    public Iterator<Object[]> dataProvider() {
+        List<Object[]> data = new LinkedList<>();
+
+        for (int i = 0; i < 100; i++) {
+            data.add(new Object[0]);
+        }
+
+        return data.iterator();
+    }
+
+    @NotNull
+    @Override
+    public Unidirection firstElementDirection() {
+        LogUtil.println("First direction");
+        currentIndex -= 1;
+        return ChoiceSelectorSwipeType.super.firstElementDirection();
+    }
+
+    @NotNull
+    @Override
+    public Unidirection lastElementDirection() {
+        LogUtil.println("Last direction");
+        currentIndex += 1;
+        return ChoiceSelectorSwipeType.super.lastElementDirection();
+    }
+
+    @NotNull
+    @Override
+    public Flowable<?> rx_onTargetItemLocated(@NotNull WebElement element) {
+        assertEquals(element.getText(), selectedChoice());
+        return Flowable.just(true);
     }
 
     @NotNull
@@ -109,34 +142,7 @@ public class ChoiceSelectorSwipeTest implements ChoiceSelectorSwipeType {
             .filter(a -> a.stringChoice().equals(SELECTED))
             .findFirst();
 
-        if (item.isPresent()) {
-            return Flowable.just(item.get().ELEMENT);
-        } else {
-            return Flowable.empty();
-        }
-    }
-
-    @NotNull
-    @Override
-    public Flowable<Boolean> rx_swipeRecursively() {
-        currentIndex += 1;
-        return ChoiceSelectorSwipeType.super.rx_swipeRecursively();
-    }
-
-    @NotNull
-    @Override
-    public Flowable<Boolean> rx_initialSwipes(@NotNull WebElement element,
-                                              @NotNull Unidirection direction,
-                                              int times,
-                                              int currentIndex) {
-        this.currentIndex += 1;
-
-        return ChoiceSelectorSwipeType.super.rx_initialSwipes(
-            element,
-            direction,
-            times,
-            currentIndex
-        );
+        return item.map(a -> Flowable.just(a.ELEMENT)).orElseGet(Flowable::empty);
     }
 
     @NotNull
@@ -166,14 +172,15 @@ public class ChoiceSelectorSwipeTest implements ChoiceSelectorSwipeType {
         return CollectionUtil.subList(ITEMS, lower, upper);
     }
 
-    @Test
     @SuppressWarnings("unchecked")
+    @Test(dataProvider = "dataProvider")
     public void test_selectChoice_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
+        LogUtil.printf("Searching for %s", selectedChoice());
 
         // When
-        SELECTOR.rx_repeatSwipe().subscribe(subscriber);
+        SELECTOR.rx_execute().subscribe(subscriber);
 
         // Then
         subscriber.assertSubscribed();

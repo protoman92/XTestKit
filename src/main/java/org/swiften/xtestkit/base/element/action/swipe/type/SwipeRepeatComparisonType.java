@@ -95,7 +95,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rx_scrollViewChildItems()
      */
     @NotNull
-    default Flowable<WebElement> rxFirstVisibleChildElement() {
+    default Flowable<WebElement> rx_firstVisibleChild() {
         return rx_scrollViewChildItems().firstElement().toFlowable();
     }
 
@@ -106,7 +106,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rx_scrollViewChildItems()
      */
     @NotNull
-    default Flowable<WebElement> rxLastVisibleChildElement() {
+    default Flowable<WebElement> rx_lastVisibleChild() {
         return rx_scrollViewChildItems().lastElement().toFlowable();
     }
 
@@ -128,7 +128,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * target value as possible.
      * @return {@link Flowable} instance.
      * @see #rx_scrollViewChildCount()
-     * @see #rxFirstVisibleChildElement()
+     * @see #rx_firstVisibleChild()
      */
     @NotNull
     default Flowable<Integer> rx_initialSwipesCount() {
@@ -139,13 +139,13 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
                 .doOnNext(a -> LogUtil.printfThread("%d child items", a))
                 .map(Long::doubleValue),
 
-            THIS.rxFirstVisibleChildElement()
+            THIS.rx_firstVisibleChild()
                 .flatMap(THIS::rx_initialDifference)
                 .doOnNext(a -> LogUtil.printfThread("%d initial difference", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
-            (visible, diff) -> (int)(Math.round(diff / visible))
+            (visible, diff) -> (int)(Math.ceil(diff / visible))
         ).doOnNext(a -> LogUtil.printfThread("%d initial swipes", a));
     }
 
@@ -183,10 +183,12 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final SwipeRepeatComparisonType THIS = this;
 
         if (CURRENT_INDEX < TIMES) {
-            return THIS
-                .rx_swipeElement(ELEMENT, DIRECTION, 1)
+            return THIS.rx_swipeElement(ELEMENT, DIRECTION, 1)
                 .flatMap(a -> THIS.rx_initialSwipes(
-                    ELEMENT, DIRECTION, TIMES, CURRENT_INDEX + 1)
+                    ELEMENT,
+                    DIRECTION,
+                    TIMES,
+                    CURRENT_INDEX + 1)
                 );
         } else {
             return Flowable.just(true);
@@ -198,8 +200,8 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * possible.
      * @return {@link Flowable} instance.
      * @see #rx_scrollableViewToSwipe()
-     * @see #rxDirectionToSwipe()
-     * @see #rxFirstVisibleChildElement()
+     * @see #rx_directionToSwipe()
+     * @see #rx_firstVisibleChild()
      * @see #rx_initialDifference(WebElement)
      * @see #rx_initialSwipes(WebElement, Unidirection, int)
      */
@@ -207,7 +209,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     default Flowable<Boolean> rx_initialSwipes() {
         return Flowable.zip(
             rx_scrollableViewToSwipe(),
-            rxDirectionToSwipe(),
+            rx_directionToSwipe(),
             rx_initialSwipesCount(),
             this::rx_initialSwipes
         ).flatMap(a -> a);
@@ -215,7 +217,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
 
     /**
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatType#rxDirectionToSwipe()
+     * @see SwipeRepeatType#rx_directionToSwipe()
      * @see #rx_scrollViewChildItems()
      * @see #rx_compareFirst(WebElement)
      * @see #rx_compareLast(WebElement)
@@ -226,16 +228,16 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    default Flowable<Unidirection> rxDirectionToSwipe() {
+    default Flowable<Unidirection> rx_directionToSwipe() {
         final SwipeRepeatComparisonType THIS = this;
 
         return Flowable
             .mergeArray(
-                THIS.rxFirstVisibleChildElement()
+                THIS.rx_firstVisibleChild()
                     .flatMap(THIS::rx_compareFirst)
                     .map(a -> THIS.firstElementDirection()),
 
-                THIS.rxLastVisibleChildElement()
+                THIS.rx_lastVisibleChild()
                     .flatMap(THIS::rx_compareLast)
                     .map(a -> THIS.lastElementDirection())
             )
@@ -247,13 +249,13 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Override this method to perform initial swipes.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatType#rx_repeatSwipe()
+     * @see SwipeRepeatType#rx_execute()
      * @see #rx_initialSwipes()
      * @see #rx_swipeRecursively()
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rx_repeatSwipe() {
+    default Flowable<Boolean> rx_execute() {
         final SwipeRepeatComparisonType THIS = this;
         return rx_initialSwipes().flatMap(a -> THIS.rx_swipeRecursively());
     }

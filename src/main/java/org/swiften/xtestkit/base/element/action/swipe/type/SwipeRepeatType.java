@@ -12,7 +12,6 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
 import org.swiften.xtestkit.base.element.action.swipe.param.SwipeParam;
-import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDatePickerContainerType;
 
 /**
  * This interface provides methods to repeatedly scroll a scrollable view so
@@ -48,16 +47,17 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Unidirection> rxDirectionToSwipe();
+    Flowable<Unidirection> rx_directionToSwipe();
 
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
      * @see #rx_shouldKeepSwiping()
      * @see #rx_scrollableViewToSwipe()
-     * @see #rxDirectionToSwipe()
+     * @see #rx_directionToSwipe()
      * @see #rx_swipeElement(WebElement, Unidirection, double)
-     * @see #rx_repeatSwipe()
+     * @see #rx_execute()
+     * @see RxUtil#error()
      */
     @NotNull
     default Flowable<Boolean> rx_swipeRecursively() {
@@ -68,7 +68,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
             .onErrorResumeNext(Flowable
                 .zip(
                     rx_scrollableViewToSwipe(),
-                    rxDirectionToSwipe(),
+                    rx_directionToSwipe(),
                     rx_elementSwipeRatio(),
                     THIS::rx_swipeElement
                 )
@@ -83,7 +83,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @see #rx_swipeRecursively()
      */
     @NotNull
-    default Flowable<Boolean> rx_repeatSwipe() {
+    default Flowable<Boolean> rx_execute() {
         return rx_swipeRecursively();
     }
 

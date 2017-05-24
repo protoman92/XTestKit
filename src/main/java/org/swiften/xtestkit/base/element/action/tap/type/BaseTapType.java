@@ -7,16 +7,18 @@ package org.swiften.xtestkit.base.element.action.tap.type;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.tap.param.TapParam;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**
  * This interface provides methods to handle taps.
  */
-public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
+public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyType {
     /**
      * Perform a tap action.
      * @param param {@link P} instance.
@@ -44,8 +46,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      * @see #tap(TapType)
      */
     @NotNull
-    default <P extends TapType & RetryType>
-    Flowable<Boolean> rx_tap(@NotNull final P PARAM) {
+    default <P extends TapType & RetryType> Flowable<Boolean> rx_tap(@NotNull final P PARAM) {
         final BaseTapType<?> THIS = this;
 
         return Completable
@@ -63,16 +64,37 @@ public interface BaseTapType<D extends WebDriver> extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rx_tap(final int X, final int Y) {
-        LogUtil.printfThread(
-            "Tapping at x: %d, y: %d, for %s",
-            X, Y, this
-        );
-
+        LogUtil.printfThread("Tapping at x: %d, y: %d", X, Y);
         final BaseTapType<?> THIS = this;
 
         return Completable
             .fromAction(() -> THIS.tap(X, Y))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
+    }
+
+    /**
+     * Same as above, but uses {@link Point}.
+     * @param point {@link Point} instance.
+     * @return {@link Flowable} instance.
+     * @see Point#getX()
+     * @see Point#getY()
+     * @see #rx_tap(int, int)
+     */
+    @NotNull
+    default Flowable<Boolean> rx_tap(@NotNull Point point) {
+        return rx_tap(point.getX(), point.getY());
+    }
+
+    /**
+     * Tap the middle of {@link WebElement}.
+     * @param element {@link WebElement} instance.
+     * @return {@link Flowable} instance.
+     * @see #getMiddleCoordinate(WebElement)
+     * @see #rx_tap(Point)
+     */
+    @NotNull
+    default Flowable<Boolean> rx_tapMiddle(@NotNull WebElement element) {
+        return rx_tap(getMiddleCoordinate(element));
     }
 }

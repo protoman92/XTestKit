@@ -10,7 +10,6 @@ import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatComparison
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.android.AndroidEngine;
 import org.swiften.xtestkit.util.type.EngineContainerType;
 
 /**
@@ -113,7 +112,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
         return Flowable.just(element)
             .map(ENGINE::getText)
             .map(INPUT::numericValue)
-            .filter(a -> a > NUMERIC_VALUE);
+            .filter(a -> a >= NUMERIC_VALUE);
     }
 
     /**
@@ -137,7 +136,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
         return Flowable.just(element)
             .map(ENGINE::getText)
             .map(INPUT::numericValue)
-            .filter(a -> a < NUMERIC_VALUE);
+            .filter(a -> a <= NUMERIC_VALUE);
     }
 
     /**
@@ -190,26 +189,38 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
     }
 
     /**
+     * This method will be called once the item has been located.
+     * @param element {@link WebElement} instance that is displaying the
+     *                selected choice.
+     * @return {@link Flowable} instance.
+     * @see Engine#rx_click(WebElement)
+     */
+    @NotNull
+    default Flowable<?> rx_onTargetItemLocated(@NotNull WebElement element) {
+        return engine().rx_click(element);
+    }
+
+    /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see SwipeRepeatComparisonType#rx_shouldKeepSwiping()
      * @see #engine()
      * @see #selectedChoice()
      * @see #targetChoiceItemQuery()
+     * @see #rx_onTargetItemLocated(WebElement)
      * @see Engine#getText(WebElement)
-     * @see Engine#rx_click(WebElement)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rx_shouldKeepSwiping() {
+        final ChoiceSelectorSwipeType THIS = this;
         final Engine<?> ENGINE = engine();
         final String STR_VALUE = selectedChoice();
-        ByXPath query = targetChoiceItemQuery();
 
         return rx_targetChoiceItem()
             .filter(a -> ENGINE.getText(a).equals(STR_VALUE))
-            .flatMap(ENGINE::rx_click)
+            .flatMap(THIS::rx_onTargetItemLocated)
             .map(BooleanUtil::toTrue);
     }
 

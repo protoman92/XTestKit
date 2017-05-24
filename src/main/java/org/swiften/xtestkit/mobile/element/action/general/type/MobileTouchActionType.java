@@ -3,8 +3,8 @@ package org.swiften.xtestkit.mobile.element.action.general.type;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
+import org.swiften.xtestkit.base.element.action.tap.type.TapType;
 
 import java.time.Duration;
 
@@ -21,6 +21,11 @@ public interface MobileTouchActionType {
      * Perform a swipe action.
      * @param driver {@link MobileDriver} instance.
      * @param param {@link SwipeType} instance.
+     * @see SwipeType#startX()
+     * @see SwipeType#startY()
+     * @see SwipeType#endX()
+     * @see SwipeType#endY()
+     * @see SwipeType#duration()
      * @see TouchAction#press(int, int)
      * @see TouchAction#waitAction(Duration)
      * @see TouchAction#moveTo(int, int)

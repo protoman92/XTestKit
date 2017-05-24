@@ -102,7 +102,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_repeatSwipe().subscribe(subscriber);
+        ENGINE.rx_execute().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -113,16 +113,16 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         verify(ENGINE, times(TOTAL_SWIPE + 1)).defaultDirection();
         verify(ENGINE, times(TOTAL_SWIPE)).firstElementDirection();
 //        verify(ENGINE, times(TOTAL_SWIPE)).lastElementDirection();
-        verify(ENGINE).rx_repeatSwipe();
+        verify(ENGINE).rx_execute();
         verify(ENGINE).rx_initialSwipes();
         verify(ENGINE).rx_initialSwipes(any(), any(), anyInt());
         verify(ENGINE).rx_initialSwipesCount();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_scrollableViewToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxDirectionToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE + 2)).rxFirstVisibleChildElement();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxLastVisibleChildElement();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_directionToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE + 2)).rx_firstVisibleChild();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_lastVisibleChild();
 
         verify(ENGINE, times(TOTAL_SWIPE * 2 + INITIAL_SWIPE - 1))
             .rx_scrollViewChildItems();

@@ -44,7 +44,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Unidirection> rxDirectionToSwipe() {
+    public Flowable<Unidirection> rx_directionToSwipe() {
         return Flowable.just(Unidirection.UP_DOWN);
     }
 
@@ -89,18 +89,18 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_repeatSwipe().subscribe(subscriber);
+        ENGINE.rx_execute().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rx_repeatSwipe();
+        verify(ENGINE).rx_execute();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_scrollableViewToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxDirectionToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE)).rx_directionToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_elementSwipeRatio();
         verify(ENGINE, times(TOTAL_SWIPE - 1)).rx_swipeElement(any(), any(), anyDouble());
         verifyNoMoreInteractions(ENGINE);

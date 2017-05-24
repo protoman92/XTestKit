@@ -19,7 +19,8 @@ public class IOSView extends PlatformView {
         UI_LABEL,
         UI_TEXTFIELD,
         UI_TABLEVIEW,
-        UI_TABLEVIEW_CELL;
+        UI_TABLEVIEW_CELL,
+        UI_PICKERWHEEL;
 
         /**
          * @return {@link String} value.
@@ -44,6 +45,9 @@ public class IOSView extends PlatformView {
 
                 case UI_TABLEVIEW_CELL:
                     return "XCUIElementTypeCell";
+
+                case UI_PICKERWHEEL:
+                    return "XCUIElementTypePickerWheel";
 
                 default:
                     throw new RuntimeException(NOT_AVAILABLE);

@@ -1,9 +1,8 @@
 package org.swiften.xtestkit.mobile.element.action.swipe.type;
 
 import io.appium.java_client.MobileDriver;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.mobile.element.action.general.type.MobileActionType;
@@ -29,6 +28,7 @@ public interface MobileSwipeType<D extends MobileDriver> extends
      */
     @Override
     default void swipeOnce(@NotNull final SwipeType PARAM) {
+        LogUtil.printf("Swiping with %s", PARAM);
         final MobileDriver<?> DRIVER = driver();
         final MobileTouchActionType action = touchAction();
         action.swipe(DRIVER, PARAM);

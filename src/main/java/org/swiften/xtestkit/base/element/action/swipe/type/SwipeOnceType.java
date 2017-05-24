@@ -53,20 +53,19 @@ public interface SwipeOnceType extends BaseErrorType {
         final long DELAY = PARAM.delay();
         final TimeUnit UNIT = PARAM.timeUnit();
 
-        class Swipe {
+        class Repeater {
             @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Boolean> swipe(final int ITERATION) {
+            private Flowable<Boolean> repeat(final int ITERATION) {
                 if (ITERATION < TIMES) {
                     return rx_swipeOnce(PARAM)
                         .delay(DELAY, UNIT, Schedulers.trampoline())
-                        .flatMap(a -> new Swipe().swipe(ITERATION + 1));
+                        .flatMap(a -> new Repeater().repeat(ITERATION + 1));
                 } else {
                     return Flowable.just(true);
                 }
             }
         }
 
-        return new Swipe().swipe(0);
+        return new Repeater().repeat(0);
     }
 }

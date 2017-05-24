@@ -32,6 +32,8 @@ public interface BaseClickActionType {
      */
     @NotNull
     default Flowable<WebElement> rx_click(@NotNull final WebElement ELEMENT) {
+        LogUtil.printfThread("Clicking on %s", ELEMENT);
+
         return Completable
             .fromAction(() -> this.click(ELEMENT))
             .<WebElement>toFlowable()
