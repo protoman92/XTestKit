@@ -131,6 +131,7 @@ public enum Platform implements PlatformType, AttributeType<String> {
                     .addAttribute("title")
                     .addAttribute("text")
                     .addAttribute("value")
+                    .addAttribute("name")
                     .addAttribute("label")
                     .withMode(Attribute.Mode.OR)
                     .build();

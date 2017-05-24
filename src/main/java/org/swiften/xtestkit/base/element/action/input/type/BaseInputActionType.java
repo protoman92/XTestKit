@@ -46,8 +46,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #sendKeys(WebElement, String...)
      */
     @NotNull
-    default Flowable<WebElement> rxSendKey(@NotNull final WebElement ELEMENT,
-                                           @NotNull final String...TEXT) {
+    default Flowable<WebElement> rx_sendKeys(@NotNull final WebElement ELEMENT,
+                                             @NotNull final String...TEXT) {
         final BaseInputActionType THIS = this;
 
         return Completable
