@@ -49,10 +49,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @see ByXPath#xPath()
      * @see ByXPath#retries()
      * @see BaseViewType#className()
+     * @see CollectionUtil#unify(Collection[])
      * @see ObjectUtil#nonNull(Object)
      * @see D#findElements(By)
-     * @see CollectionUtil#unify(Collection[])
-     * @see RxUtil#error(String)
+     * @see #rx_errorWithPageSource(String)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -73,7 +73,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
                 }
             })
             .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(RxUtil.error(param.error()))
+            .switchIfEmpty(rx_errorWithPageSource(param.error()))
             .retry(param.retries());
     }
 
@@ -87,10 +87,12 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see ByXPath#error()
      * @see String#join(CharSequence, CharSequence...)
-     * @see RxUtil#error()
+     * @see #rx_errorWithPageSource(String)
      */
     @NotNull
     default <T> Flowable<T> rx_xPathQueryFailure(@NotNull ByXPath...param) {
+        final BaseLocatorType<?> THIS = this;
+
         return Flowable
             .fromArray(param)
             .map(ByXPath::error)
@@ -98,7 +100,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> a.toArray(new String[a.size()]))
             .map(a -> String.join("\n", a))
             .toFlowable()
-            .flatMap(RxUtil::error);
+            .flatMap(THIS::rx_errorWithPageSource);
     }
 
     /**

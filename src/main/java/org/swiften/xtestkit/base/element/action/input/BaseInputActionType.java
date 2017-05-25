@@ -12,6 +12,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
@@ -109,13 +110,42 @@ public interface BaseInputActionType<D extends WebDriver> extends
     }
 
     /**
+     * Check whether an input {@link WebElement} is the last one out of a
+     * list of {@link WebElement}.
+     * @param ELEMENT {@link WebElement} instance.
+     * @return {@link Flowable} instance.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #rx_editable()
+     * @see WebElement#getLocation()
+     * @see WebElement#getSize()
+     */
+    @NotNull
+    default Flowable<Boolean> rx_isLastInput(@NotNull final WebElement ELEMENT) {
+        return rx_editable()
+            .lastElement()
+            .toFlowable()
+            .filter(ObjectUtil::nonNull)
+            .map(a -> {
+                Point ap = a.getLocation(), ep = ELEMENT.getLocation();
+                Dimension ad = a.getSize(), ed = ELEMENT.getSize();
+
+                /* Since we cannot directly compare two WebElement instances,
+                 * we can use a proxy method: by comparing their position
+                 * and dimension. Usually editable fields are discrete views
+                 * that do not overlap each other */
+                return ap.equals(ep) && ad.equals(ed);
+            });
+    }
+
+    /**
      * Toggle the next/done input, then delay by a certain duration to allow
      * the views to adjust. We need to check all editable elements to
      * see whether the currently active editable field is the last one in
      * the list.
      * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_editable()
+     * @see BooleanUtil#isTrue(boolean)
+     * @see #rx_isLastInput(WebElement)
      * @see #rx_toggleNextInput(WebElement)
      * @see #rx_toggleDoneInput(WebElement)
      * @see #consecutiveNextToggleDelay()
@@ -125,22 +155,10 @@ public interface BaseInputActionType<D extends WebDriver> extends
         final BaseInputActionType<?> THIS = this;
         long delay = consecutiveNextToggleDelay();
 
-        return rx_editable()
-            .lastElement()
-            .toFlowable()
-            .filter(ObjectUtil::nonNull)
-            .filter(a -> {
-                Point ap = a.getLocation(), ep = ELEMENT.getLocation();
-                Dimension ad = a.getSize(), ed = ELEMENT.getSize();
-
-                /* Since we cannot directly compare two WebElement instances,
-                 * we can use a proxy method: by comparing their position
-                 * and dimension. Usually editable fields are discrete views
-                 * that do not overlap each other */
-                return ap.equals(ep) && ad.equals(ed);
-            })
-            .flatMap(THIS::rx_toggleDoneInput)
+        return rx_isLastInput(ELEMENT)
+            .filter(BooleanUtil::isTrue)
+            .flatMap(a -> THIS.rx_toggleDoneInput(ELEMENT))
             .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT))
-            .delay(delay, TimeUnit.MILLISECONDS, Schedulers.trampoline());
+            .delay(delay, TimeUnit.MILLISECONDS);
     }
 }
