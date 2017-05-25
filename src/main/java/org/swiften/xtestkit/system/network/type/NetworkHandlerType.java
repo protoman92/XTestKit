@@ -11,7 +11,7 @@ import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.system.network.param.GetProcessNameParam;
 import org.swiften.xtestkit.system.process.ProcessRunner;
-import org.swiften.xtestkit.system.type.ProcessRunnerHolderType;
+import org.swiften.xtestkit.system.process.ProcessRunnerHolderType;
 
 import java.util.function.Predicate;
 

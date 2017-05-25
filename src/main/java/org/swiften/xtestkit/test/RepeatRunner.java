@@ -11,8 +11,6 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.kit.TestKit;
-import org.swiften.xtestkit.test.type.RepeatRunnerErrorType;
-import org.swiften.xtestkit.test.type.TestListenerType;
 import org.testng.*;
 import org.testng.annotations.*;
 import org.testng.xml.XmlSuite;

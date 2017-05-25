@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.kit;
 
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.mobile.android.AndroidEngine;
-import org.swiften.xtestkit.mobile.ios.IOSEngine;
+import org.swiften.xtestkit.android.AndroidEngine;
+import org.swiften.xtestkit.ios.IOSEngine;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;

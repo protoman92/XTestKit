@@ -21,31 +21,31 @@
 
     <test name="Base Engine Action Test">
         <classes>
-            <class name="org.swiften.xtestkit.base.element.action.BaseActionTest"/>
-            <class name="org.swiften.xtestkit.base.element.action.BaseSwipeActionTest"/>
-            <class name="org.swiften.xtestkit.base.element.action.SwipeRepeatTest"/>
-            <class name="org.swiften.xtestkit.base.element.action.SwipeRepeatComparisonTest"/>
+            <class name="org.swiften.xtestkit.base.BaseActionTest"/>
+            <class name="org.swiften.xtestkit.base.BaseSwipeActionTest"/>
+            <class name="org.swiften.xtestkit.base.SwipeRepeatTest"/>
+            <class name="org.swiften.xtestkit.base.SwipeRepeatComparisonTest"/>
         </classes>
     </test>
 
     <test name="Base Engine Locator Test">
         <classes>
-            <class name="org.swiften.xtestkit.base.element.locator.BaseLocatorTest"/>
-            <class name="org.swiften.xtestkit.base.element.locator.XPathTest"/>
+            <class name="org.swiften.xtestkit.base.BaseLocatorTest"/>
+            <class name="org.swiften.xtestkit.base.XPathTest"/>
         </classes>
     </test>
 
     <test name="Android Test">
         <classes>
-            <class name="org.swiften.xtestkit.mobile.android.MockAndroidEngineTest"/>
-            <class name="org.swiften.xtestkit.mobile.android.MockADBHandlerTest"/>
+            <class name="org.swiften.xtestkit.android.MockAndroidEngineTest"/>
+            <class name="org.swiften.xtestkit.android.MockADBHandlerTest"/>
         </classes>
     </test>
 
     <test name="iOS Test">
         <classes>
-            <class name="org.swiften.xtestkit.mobile.ios.MockIOSEngineTest"/>
-            <class name="org.swiften.xtestkit.mobile.ios.XCRunHandlerTest"/>
+            <class name="org.swiften.xtestkit.ios.MockIOSEngineTest"/>
+            <class name="org.swiften.xtestkit.ios.XCRunHandlerTest"/>
         </classes>
     </test>
 

@@ -8,7 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.util.type.EngineContainerType;
+import org.swiften.xtestkit.util.EngineContainerType;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

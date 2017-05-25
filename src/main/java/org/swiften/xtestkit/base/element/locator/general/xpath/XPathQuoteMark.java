@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.element.locator.general.xpath;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
+import org.swiften.xtestkit.base.element.property.base.AttributeType;
 
 import java.util.Optional;
 

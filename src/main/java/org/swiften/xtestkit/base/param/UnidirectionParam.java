@@ -3,7 +3,7 @@ package org.swiften.xtestkit.base.param;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
+import org.swiften.xtestkit.base.element.action.general.Unidirection;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.UnidirectionContainerType;

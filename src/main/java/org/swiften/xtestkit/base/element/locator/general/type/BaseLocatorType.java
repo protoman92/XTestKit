@@ -19,10 +19,10 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.general.param.*;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.element.property.type.base.FormatType;
-import org.swiften.xtestkit.base.element.property.type.base.StringType;
-import org.swiften.xtestkit.base.element.property.type.sub.ContainsIDType;
-import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
+import org.swiften.xtestkit.base.element.property.base.FormatType;
+import org.swiften.xtestkit.base.element.property.base.StringType;
+import org.swiften.xtestkit.base.element.property.sub.ContainsIDType;
+import org.swiften.xtestkit.base.element.property.sub.OfClassType;
 import org.swiften.xtestkit.base.type.*;
 
 import java.util.Collection;

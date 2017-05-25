@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
-import org.swiften.xtestkit.test.type.TestListenerType;
 import org.testng.annotations.*;
 
 import java.util.Iterator;

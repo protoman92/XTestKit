@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.element.locator.general.param;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.property.type.base.FormatType;
+import org.swiften.xtestkit.base.element.property.base.FormatType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**

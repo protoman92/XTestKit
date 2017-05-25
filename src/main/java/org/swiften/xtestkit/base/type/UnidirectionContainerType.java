@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.general.model.Unidirection;
+import org.swiften.xtestkit.base.element.action.general.Unidirection;
 
 /**
  * Created by haipham on 5/8/17.

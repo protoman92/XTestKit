@@ -13,7 +13,7 @@ import org.swiften.xtestkit.kit.type.TestKitErrorType;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.RepeatRunner;
-import org.swiften.xtestkit.test.type.TestListenerType;
+import org.swiften.xtestkit.test.TestListenerType;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.mobile.android.AndroidEngine;
+import org.swiften.xtestkit.android.AndroidEngine;
 
 import java.util.*;
 

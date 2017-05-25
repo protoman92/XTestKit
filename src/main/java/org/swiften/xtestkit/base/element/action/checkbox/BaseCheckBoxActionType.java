@@ -6,12 +6,9 @@ package org.swiften.xtestkit.base.element.action.checkbox;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
-import org.swiften.xtestkit.base.element.property.type.base.BooleanType;
 
 /**
  * This interface provides methods to work with checkboxes.

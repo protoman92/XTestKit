@@ -5,13 +5,13 @@ package org.swiften.xtestkit.base.element.action.date;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
+import org.swiften.xtestkit.base.element.property.base.AttributeType;
 
 import java.util.Calendar;
 
 /**
  * Use this enum with
- * {@link org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType}
+ * {@link BaseDateActionType}
  * for better code reuse.
  */
 public enum CalendarUnit implements AttributeType<Integer> {

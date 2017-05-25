@@ -2,9 +2,9 @@ package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.property.type.base.IgnoreCaseType;
+import org.swiften.xtestkit.base.element.property.base.IgnoreCaseType;
 import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.base.element.property.type.base.StringType;
+import org.swiften.xtestkit.base.element.property.base.StringType;
 
 /**
  * Created by haipham on 3/20/17.

@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.element.locator.general.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.property.type.sub.OfClassType;
+import org.swiften.xtestkit.base.element.property.sub.OfClassType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 /**

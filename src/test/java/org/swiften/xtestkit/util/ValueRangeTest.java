@@ -1,8 +1,5 @@
 package org.swiften.xtestkit.util;
 
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.util.type.ValueRangeConverterType;
-import org.swiften.xtestkit.util.type.ValueRangeType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -2,9 +2,9 @@ package org.swiften.xtestkit.base.element.locator.general.xpath;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
-import org.swiften.xtestkit.base.element.property.type.base.StringType;
-import org.swiften.xtestkit.base.element.property.type.sub.*;
+import org.swiften.xtestkit.base.element.property.base.AttributeType;
+import org.swiften.xtestkit.base.element.property.base.StringType;
+import org.swiften.xtestkit.base.element.property.sub.*;
 import org.swiften.xtestkit.base.type.PlatformType;
 
 import java.util.LinkedList;
