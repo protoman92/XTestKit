@@ -18,6 +18,6 @@ public interface IOSDatePickerContainerType extends DatePickerContainerType {
      */
     @NotNull
     default IOSDatePickerType datePickerType() {
-        return IOSDatePickerType.BASIC;
+        return IOSDatePickerType.MMMM_d_YYYY;
     }
 }

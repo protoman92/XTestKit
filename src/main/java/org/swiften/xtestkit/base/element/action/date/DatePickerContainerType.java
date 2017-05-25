@@ -33,7 +33,7 @@ public interface DatePickerContainerType {
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath pickerListViewXPath(@NotNull CalendarUnit unit);
+        XPath pickerViewXPath(@NotNull CalendarUnit unit);
 
         /**
          * Get the display view {@link XPath} that corresponds to
@@ -42,7 +42,7 @@ public interface DatePickerContainerType {
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath componentDisplayViewXPath(@NotNull CalendarUnit unit);
+        XPath unitLabelViewXPath(@NotNull CalendarUnit unit);
 
         /**
          * Get the target item view {@link XPath} that corresponds to
@@ -52,7 +52,7 @@ public interface DatePickerContainerType {
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath targetListViewItemXPath(@NotNull CalendarUnit unit);
+        XPath targetItemXPath(@NotNull CalendarUnit unit);
 
         /**
          * Get the list view's item {@link XPath} that corresponds to a
@@ -61,7 +61,7 @@ public interface DatePickerContainerType {
          * @return {@link XPath} instance.
          */
         @NotNull
-        XPath pickerListViewItemXPath(@NotNull CalendarUnit unit);
+        XPath pickerItemXPath(@NotNull CalendarUnit unit);
     }
 
     /**

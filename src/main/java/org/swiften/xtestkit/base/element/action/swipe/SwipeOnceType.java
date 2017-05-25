@@ -2,7 +2,6 @@ package org.swiften.xtestkit.base.element.action.swipe;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.RepeatType;
@@ -47,25 +46,14 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see #rx_swipeOnce(SwipeType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeType>
-    Flowable<Boolean> rx_swipe(@NotNull final P PARAM) {
+    default <P extends RepeatType & SwipeType> Flowable<Boolean> rx_swipe(@NotNull final P PARAM) {
+        final SwipeOnceType THIS = this;
         final int TIMES = PARAM.times();
         final long DELAY = PARAM.delay();
         final TimeUnit UNIT = PARAM.timeUnit();
 
-        class Repeater {
-            @NotNull
-            private Flowable<Boolean> repeat(final int ITERATION) {
-                if (ITERATION < TIMES) {
-                    return rx_swipeOnce(PARAM)
-                        .delay(DELAY, UNIT, Schedulers.trampoline())
-                        .flatMap(a -> new Repeater().repeat(ITERATION + 1));
-                } else {
-                    return Flowable.just(true);
-                }
-            }
-        }
-
-        return new Repeater().repeat(0);
+        return Flowable
+            .range(0, TIMES)
+            .concatMap(a -> THIS.rx_swipeOnce(PARAM).delay(DELAY, UNIT));
     }
 }

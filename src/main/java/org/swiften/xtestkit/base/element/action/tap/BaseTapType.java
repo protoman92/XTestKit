@@ -82,7 +82,8 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      */
     @NotNull
     default Flowable<Boolean> rx_tap(@NotNull Point point) {
-        return rx_tap(point.getX(), point.getY());
+        int x = point.getX(), y = point.getY();
+        return rx_tap(x, y);
     }
 
     /**
@@ -94,6 +95,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      */
     @NotNull
     default Flowable<Boolean> rx_tapMiddle(@NotNull WebElement element) {
-        return rx_tap(getMiddleCoordinate(element));
+        Point coordinate = getMiddleCoordinate(element);
+        return rx_tap(coordinate);
     }
 }

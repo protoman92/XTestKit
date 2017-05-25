@@ -321,49 +321,32 @@ public final class EngineTest implements EngineErrorType {
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_openYearPicker() {
+        default Flowable<WebElement> rx_allCalendarElements() {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_openMonthPicker() {
+        default Flowable<Boolean> rx_openPicker(@NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_openDayPicker() {
+        default Flowable<Boolean> rx_select(@NotNull DateType param,
+                                            @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
+        default Flowable<Integer> rx_displayedUnit(@NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<Integer> rx_displayedComponent(@NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<WebElement> rx_element(@NotNull CalendarUnit unit) {
+        default Flowable<WebElement> rx_elementLabel(@NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 

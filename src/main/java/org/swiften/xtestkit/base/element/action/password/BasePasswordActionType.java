@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
  * Created by haipham on 5/15/17.
@@ -18,9 +17,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
  * {@link org.swiften.xtestkit.base.type.PlatformType}.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BasePasswordActionType<D extends WebDriver> extends
-    BaseErrorType, BaseElementPropertyType
-{
+public interface BasePasswordActionType<D extends WebDriver> extends BaseElementPropertyType {
     /**
      * Toggle password mask to show/hide password.
      * @param element {@link WebElement} instance.

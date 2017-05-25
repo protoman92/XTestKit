@@ -10,8 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.xtestkit.base.param.NavigateBack;
-import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.base.type.DelayType;
+import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.RepeatType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,51 +41,41 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
     }
 
     /**
-     * Navigate backwards for certain number of times.
-     * @param param {@link RepeatType} object.
+     * Navigate back only once.
      * @return {@link Flowable} instance.
-     * @see #driver()
      * @see WebDriver#navigate()
      * @see WebDriver.Navigation#back()
+     * @see #driver()
      */
     @NotNull
-    default Flowable<Boolean> rx_navigateBack(@NotNull RepeatType param) {
+    default Flowable<Boolean> rx_navigateBackOnce() {
         final WebDriver DRIVER = driver();
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
         final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
 
-        class PerformBack {
-            /**
-             * Loop the operation until a stopping point is reached.
-             * finished navigating back x times.
-             */
-            @NotNull
-            private Completable back(final int ITERATION) {
-                if (ITERATION < TIMES) {
-                    return Completable
-                        .fromAction(NAVIGATION::back)
-                        .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .andThen(new PerformBack().back(ITERATION + 1));
-                }
-
-                return Completable.complete();
-            }
-        }
-
-        return new PerformBack().back(0)
+        return Completable
+            .fromAction(NAVIGATION::back)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
 
     /**
-     * Same as above, but uses a default {@link NavigateBack} instance.
+     * Navigate backwards for certain number of times.
+     * @param param {@link RepeatType} object.
      * @return {@link Flowable} instance.
-     * @see #rx_navigateBack(RepeatType)
+     * @see RepeatType#times()
+     * @see RepeatType#delay()
+     * @see #rx_navigateBackOnce()
      */
     @NotNull
-    default Flowable<Boolean> rx_navigateBackOnce() {
-        return rx_navigateBack(() -> 1);
+    default Flowable<Boolean> rx_navigateBack(@NotNull RepeatType param) {
+        final BaseActionType<?> THIS = this;
+        final int TIMES = param.times();
+        final long DELAY = param.delay();
+        final TimeUnit UNIT = TimeUnit.MILLISECONDS;
+
+        return Flowable
+            .range(0, TIMES)
+            .concatMap(a -> THIS.rx_navigateBackOnce().delay(DELAY, UNIT));
     }
 
     /**

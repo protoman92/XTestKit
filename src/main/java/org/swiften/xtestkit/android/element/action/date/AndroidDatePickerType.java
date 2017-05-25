@@ -57,14 +57,14 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerListViewXPath(CalendarUnit)
+     * @see DatePickerContainerType.DatePickerType#pickerViewXPath(CalendarUnit)
      * @see #xPathBuilder()
      * @see AndroidView.ViewType#LIST_VIEW
      * @see XPath.Builder#ofClass(String)
      */
     @NotNull
     @Override
-    public XPath pickerListViewXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerViewXPath(@NotNull CalendarUnit unit) {
         String cls = AndroidView.ViewType.LIST_VIEW.className();
         return xPathBuilder().ofClass(cls).build();
     }
@@ -81,7 +81,7 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
      */
     @NotNull
     @Override
-    public XPath componentDisplayViewXPath(@NotNull CalendarUnit unit) {
+    public XPath unitLabelViewXPath(@NotNull CalendarUnit unit) {
         switch (unit) {
             case DAY:
                 return dayDisplayViewXPath();
@@ -101,12 +101,12 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see #xPathBuilder()
-     * @see DatePickerContainerType.DatePickerType#targetListViewItemXPath(CalendarUnit)
+     * @see DatePickerContainerType.DatePickerType#targetItemXPath(CalendarUnit)
      * @see XPath.Builder#containsID(String)
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public XPath targetListViewItemXPath(@NotNull CalendarUnit unit) {
+    public XPath targetItemXPath(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
                 return xPathBuilder().containsID("month_text_view").build();
@@ -119,14 +119,14 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerListViewItemXPath(CalendarUnit)
+     * @see DatePickerContainerType.DatePickerType#pickerItemXPath(CalendarUnit)
      * @see XPath.Builder#containsID(String)
      * @see AndroidView.ViewType#TEXT_VIEW
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    public XPath pickerListViewItemXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerItemXPath(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
                 return xPathBuilder()

@@ -114,7 +114,7 @@ public interface CalendarPickerActionType extends
             @NotNull
             @Override
             public Flowable<WebElement> rx_scrollableViewToSwipe() {
-                return rx_listView(CalendarUnit.MONTH);
+                return rx_pickerView(CalendarUnit.MONTH);
             }
 
             @NotNull

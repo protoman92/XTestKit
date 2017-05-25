@@ -18,38 +18,6 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
     IOS;
 
     /**
-     * Check whether the current {@link Platform} instance is {@link #ANDROID}.
-     * This can be useful when we want to check for {@link #ANDROID} specific
-     * features.
-     * @return {@link Boolean} value.
-     */
-    public boolean isAndroidPlatform() {
-        switch (this) {
-            case ANDROID:
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Check whether the current {@link Platform} instance is {@link #IOS}.
-     * This can be useful when we want to check for {@link #IOS} specific
-     * features.
-     * @return {@link Boolean} value.
-     */
-    public boolean isIOSPlatform() {
-        switch (this) {
-            case IOS:
-                return false;
-
-            default:
-                return true;
-        }
-    }
-
-    /**
      * Get {@link Platform} from {@link String} value.
      * @param value {@link String} value.
      * @return {@link Platform} instance.
@@ -110,7 +78,11 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
                 return Attribute.single("resource-id");
 
             case IOS:
-                return Attribute.single("accessibility");
+                return Attribute.builder()
+                    .addAttribute("name")
+                    .addAttribute("accessibility")
+                    .withMode(Attribute.Mode.OR)
+                    .build();
 
             default:
                 return Attribute.BLANK;
@@ -144,7 +116,6 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
                     .addAttribute("title")
                     .addAttribute("text")
                     .addAttribute("value")
-                    .addAttribute("name")
                     .addAttribute("label")
                     .withMode(Attribute.Mode.OR)
                     .build();

@@ -112,8 +112,9 @@ public class BaseActionTest implements BaseActionType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        verify(ENGINE, times(times)).rx_navigateBackOnce();
         verify(ENGINE).rx_navigateBack(any());
-        verify(ENGINE).driver();
+        verify(ENGINE, atLeastOnce()).driver();
         verify(NAVIGATION, times(times)).back();
         verifyNoMoreInteractions(ENGINE);
     }

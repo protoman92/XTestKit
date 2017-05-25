@@ -7,6 +7,7 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.util.EngineContainerType;
 
@@ -67,10 +68,28 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     void addForwardNodes(@NotNull List<Node> nodes);
 
     /**
+     * Same as above, but uses a varargs of {@link Node}.
+     * @param nodes Varargs {@link Node}.
+     * @see #addForwardNodes(List)
+     */
+    default void addForwardNodes(@NotNull Node...nodes) {
+        addForwardNodes(CollectionUtil.asList(nodes));
+    }
+
+    /**
      * Add backward {@link Node} to an inner cache.
      * @param nodes {@link List} of {@link Node}.
      */
     void addBackwardNodes(@NotNull List<Node> nodes);
+
+    /**
+     * Same as above, but uses a varargs of {@link Node}.
+     * @param nodes Varargs {@link Node}.
+     * @see #addBackwardNodes(List)
+     */
+    default void addBackwardNodes(@NotNull Node...nodes) {
+        addBackwardNodes(CollectionUtil.asList(nodes));
+    }
 
     /**
      * Return the inner forward {@link Node} cache.
@@ -128,6 +147,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     default Optional<Node> node(@NotNull final ScreenType FROM,
                                 @NotNull final ScreenType TO) {
         return registeredForwardNodes().stream()
+            .filter(Node::isNotDummy)
             .filter(a -> a.connects(FROM, TO))
             .findFirst();
     }
@@ -190,7 +210,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
             return Collections.singletonList(nodeOps.get());
         } else if (!current.equals(dest)) {
             /* We need to filter out nodes that lead to origin, or else a
-             * StackOverflow may happen if we backtrack once */
+             * StackOverflow may happen if we backtrack even once */
             List<Node> forwardNodes = forwardNodes(current)
                 .stream().filter(a -> !a.S2.equals(ORIGIN))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -199,15 +219,19 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
 
             if (forwardNodes.isEmpty()) {
                 List<Node> backwardNodes = backwardNodes(current);
+
                 /* When we backtrack even once, set the origin node to current
                  * in order to avoid StackOverflow */
                 return shortest(current, dest, backwardNodes);
             } else {
                 return forwardShortest;
             }
+        } else {
+            /* If the current screen is the same as the destination screen,
+             * return a dummy node that does no navigation (but is still
+             * valid) */
+            return Collections.singletonList(Node.dummy(current));
         }
-
-        return Collections.emptyList();
     }
 
     /**
@@ -282,6 +306,19 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
      * to another.
      */
     final class Node {
+        /**
+         * Get a {@link Node} that does no navigation, i.e. {@link #S1} and
+         * {@link #S2} are the same {@link ScreenType}.
+         * @param screen {@link ScreenType} instance.
+         * @return {@link Node} instance.
+         */
+        @NotNull
+        static Node dummy(@NotNull ScreenType screen) {
+            ScreenType.Navigation navigation = a -> Flowable.just(true);
+            TimeUnit unit = TimeUnit.MILLISECONDS;
+            return new Node(screen, screen, navigation, unit, 0);
+        }
+
         @NotNull final ScreenType S1;
         @NotNull final ScreenType S2;
         @NotNull final ScreenType.Navigation NAVIGATION;
@@ -289,12 +326,26 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
         final long DELAY;
 
         Node(@NotNull ScreenType firstScreen,
-             @NotNull ScreenType.Direction direction) {
+             @NotNull ScreenType secondScreen,
+             @NotNull ScreenType.Navigation navigation,
+             @NotNull TimeUnit timeUnit,
+             long delay) {
             S1 = firstScreen;
-            S2 = direction.TARGET;
-            NAVIGATION = direction.NAVIGATION;
-            DELAY = direction.DELAY;
-            TIME_UNIT = direction.TIME_UNIT;
+            S2 = secondScreen;
+            NAVIGATION = navigation;
+            DELAY = delay;
+            TIME_UNIT = timeUnit;
+        }
+
+        Node(@NotNull ScreenType firstScreen,
+             @NotNull ScreenType.Direction direction) {
+            this(
+                firstScreen,
+                direction.TARGET,
+                direction.NAVIGATION,
+                direction.TIME_UNIT,
+                direction.DELAY
+            );
         }
 
         @NotNull
@@ -324,6 +375,25 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
          */
         boolean connects(@NotNull ScreenType from, @NotNull ScreenType to) {
             return S1.equals(from) && S2.equals(to);
+        }
+
+        /**
+         * Check if the current {@link Node} is a dummy.
+         * @return {@link Boolean} value.
+         * @see #S1
+         * @see #S2
+         */
+        boolean isDummy() {
+            return S1.equals(S2);
+        }
+
+        /**
+         * Check if the current {@link Node} is not a dummy.
+         * @return {@link Boolean} value.
+         * @see #isDummy()
+         */
+        boolean isNotDummy() {
+            return !isDummy();
         }
     }
 }
