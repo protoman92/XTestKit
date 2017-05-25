@@ -3,6 +3,7 @@ package org.swiften.xtestkit.mobile.ios;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.mobile.ios.capability.IOSCap;
+import org.swiften.xtestkit.mobile.ios.element.action.choice.type.IOSChoiceSelectorType;
 import org.swiften.xtestkit.mobile.ios.element.action.date.type.IOSDateActionType;
 import org.swiften.xtestkit.mobile.ios.element.action.general.type.IOSActionType;
 import org.swiften.xtestkit.mobile.ios.type.IOSDelayType;
@@ -30,6 +31,7 @@ import java.util.Map;
  */
 public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     IOSActionType,
+    IOSChoiceSelectorType,
     IOSDateActionType,
     IOSDelayType,
     IOSErrorType

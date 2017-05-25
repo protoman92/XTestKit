@@ -117,8 +117,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
-            .flatMap(a -> THIS.rx_byXPath(a)
-                .onErrorResumeNext(Flowable.empty()))
+            .flatMap(a -> THIS.rx_byXPath(a).onErrorResumeNext(Flowable.empty()))
             .toList().toFlowable()
             .flatMap(Flowable::fromIterable)
             .switchIfEmpty(rx_xPathQueryFailure(param));

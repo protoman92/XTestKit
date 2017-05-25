@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.action.choice;
+package org.swiften.xtestkit.base.element.action.choice.param;
 
 /**
  * Created by haipham on 5/23/17.
@@ -8,15 +8,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.element.action.choice.model.ChoiceMode;
 import org.swiften.xtestkit.base.element.action.choice.type.ChoiceSelectorSwipeType;
+import org.swiften.xtestkit.base.element.action.choice.type.ChoiceType;
 import org.swiften.xtestkit.base.element.action.input.type.ChoiceInputType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
- * Concrete class that implements {@link ChoiceSelectorSwipeType}.
- * Use this to select items from a choice list view.
+ * Concrete class that implements {@link ChoiceType}.
+ * Use this with
+ * {@link org.swiften.xtestkit.base.element.action.choice.type.BaseChoiceSelectorType#rx_selectChoice(ChoiceType)}.
  */
-public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorType {
+public class ChoiceParam implements ChoiceType, BaseErrorType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -26,7 +29,7 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
         return new Builder();
     }
 
-    @Nullable Engine<?> engine;
+    @Nullable ChoiceMode mode;
     @Nullable ChoiceInputType input;
     @Nullable String selected;
 
@@ -34,13 +37,14 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
      * @return {@link Engine} instance.
      * @see ChoiceSelectorSwipeType#engine()
      * @see ObjectUtil#nonNull(Object)
-     * @see #engine
+     * @see #mode
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public Engine<?> engine() {
-        if (ObjectUtil.nonNull(engine)) {
-            return engine;
+    @Override
+    public ChoiceMode mode() {
+        if (ObjectUtil.nonNull(mode)) {
+            return mode;
         } else {
             throw new RuntimeException(NOT_AVAILABLE);
         }
@@ -54,7 +58,8 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public ChoiceInputType choiceInput() {
+    @Override
+    public ChoiceInputType input() {
         if (ObjectUtil.nonNull(input)) {
             return input;
         } else {
@@ -70,6 +75,7 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
      * @see #NOT_AVAILABLE
      */
     @NotNull
+    @Override
     public String selectedChoice() {
         if (ObjectUtil.nonNull(selected)) {
             return selected;
@@ -78,25 +84,26 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
         }
     }
 
+    //region Builder
     /**
-     * Builder class for {@link SimpleChoiceSelector}.
+     * Builder class for {@link ChoiceParam}.
      */
     public static final class Builder {
-        @NotNull final SimpleChoiceSelector SELECTOR;
+        @NotNull final ChoiceParam PARAM;
 
         Builder() {
-            SELECTOR = new SimpleChoiceSelector();
+            PARAM = new ChoiceParam();
         }
 
         /**
-         * Set the {@link #engine} instance.
-         * @param engine {@link Engine} instance.
+         * Set the {@link #mode} instance.
+         * @param mode {@link Engine} instance.
          * @return The current {@link Builder} instance.
-         * @see #engine
+         * @see #mode
          */
         @NotNull
-        public Builder withEngine(@NotNull Engine<?> engine) {
-            SELECTOR.engine = engine;
+        public Builder withMode(@NotNull ChoiceMode mode) {
+            PARAM.mode = mode;
             return this;
         }
 
@@ -108,7 +115,7 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
          */
         @NotNull
         public Builder withInput(@NotNull ChoiceInputType input) {
-            SELECTOR.input = input;
+            PARAM.input = input;
             return this;
         }
 
@@ -120,13 +127,14 @@ public class SimpleChoiceSelector implements ChoiceSelectorSwipeType, BaseErrorT
          */
         @NotNull
         public Builder withSelectedChoice(@NotNull String selected) {
-            SELECTOR.selected = selected;
+            PARAM.selected = selected;
             return this;
         }
 
         @NotNull
-        public SimpleChoiceSelector build() {
-            return SELECTOR;
+        public ChoiceParam build() {
+            return PARAM;
         }
     }
+    //endregion
 }

@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.mobile.ios;
 
 import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.base.type.BaseEngineErrorType;
+import org.swiften.xtestkit.base.type.EngineErrorType;
 import org.swiften.xtestkit.mobile.ios.type.IOSErrorType;
 import org.swiften.xtestkit.mobile.ios.capability.IOSCap;
 import org.swiften.xtestkit.system.process.ProcessRunner;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 3/31/17.
  */
-public final class MockIOSEngineTest implements BaseEngineErrorType, IOSErrorType {
+public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSCap CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;

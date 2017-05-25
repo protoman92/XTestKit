@@ -9,7 +9,6 @@ import org.swiften.xtestkit.mobile.element.action.keyboard.type.MobileKeyboardAc
 import org.swiften.xtestkit.mobile.element.action.password.type.MobilePasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.type.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.type.MobileTapType;
-import org.swiften.xtestkit.mobile.element.locator.general.type.MobileLocatorType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
@@ -28,7 +27,6 @@ import java.util.*;
 public abstract class MobileEngine<D extends MobileDriver> extends
     Engine<D> implements
     MobileActionType<D>,
-    MobileLocatorType<D>,
     MobileKeyboardActionType<D>,
     MobilePasswordActionType<D>,
     MobileTapType<D>,
@@ -139,6 +137,19 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     @NotNull
     public String platformVersion() {
         return platformVersion;
+    }
+
+    /**
+     * Get {@link Platform} instance.
+     * @return {@link Platform} instance.
+     * @see #platformName()
+     * @see Platform#fromValue(String)
+     */
+    @NotNull
+    @Override
+    public Platform platform() {
+        String name = platformName();
+        return Platform.fromValue(name);
     }
 
     /**

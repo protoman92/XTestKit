@@ -4,48 +4,48 @@ package org.swiften.xtestkit.base;
  * Created by haipham on 3/19/17.
  */
 
-import io.appium.java_client.ios.IOSDriver;
-import org.openqa.selenium.*;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.string.StringUtil;
+import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.checkbox.BaseCheckBoxActionType;
+import org.swiften.xtestkit.base.element.action.choice.type.BaseChoiceSelectorType;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.general.type.BaseActionType;
-import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.input.type.BaseInputActionType;
 import org.swiften.xtestkit.base.element.action.input.type.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.action.password.type.BasePasswordActionType;
 import org.swiften.xtestkit.base.element.action.swipe.type.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.tap.type.BaseTapType;
 import org.swiften.xtestkit.base.element.action.visibility.BaseVisibilityActionType;
-import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.property.type.BaseElementPropertyType;
 import org.swiften.xtestkit.base.type.*;
-import org.swiften.xtestkit.mobile.*;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.kit.param.BeforeParam;
+import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.type.TestListenerType;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.functions.Function;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
-import org.swiften.javautilities.string.StringUtil;
 
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
@@ -57,17 +57,18 @@ import java.util.function.Predicate;
 public abstract class Engine<D extends WebDriver> implements
     BaseActionType<D>,
     BaseClickActionType,
+    BaseChoiceSelectorType<D>,
     BaseCheckBoxActionType,
     BaseDateActionType<D>,
+    BaseElementPropertyType,
     BaseInputActionType<D>,
     BaseLocatorType<D>,
-    BaseEngineErrorType,
-    BaseElementPropertyType,
     BaseKeyboardActionType<D>,
     BasePasswordActionType<D>,
     BaseTapType<D>,
     BaseSwipeType<D>,
     BaseVisibilityActionType<D>,
+    EngineErrorType,
     EngineDelayType,
     DistinctiveType,
     TestListenerType
@@ -145,7 +146,7 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * This method will be called by
-     * {@link TestKit#rxBeforeClass(BeforeClassParam)}.
+     * {@link org.swiften.xtestkit.kit.TestKit#rxBeforeClass(BeforeClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link BeforeClassParam} instance.
@@ -163,7 +164,7 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * This method will be called by
-     * {@link TestKit#rxAfterClass(AfterClassParam)}.
+     * {@link org.swiften.xtestkit.kit.TestKit#rxAfterClass(AfterClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link AfterClassParam} instance.
@@ -198,8 +199,8 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
-     * This method will be
-     * called by {@link TestKit#rxBeforeMethod(BeforeParam)}.
+     * This method will be called by
+     * {@link org.swiften.xtestkit.kit.TestKit#rxBeforeMethod(BeforeParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link BeforeParam} instance.
@@ -212,7 +213,8 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * This method will be called by {@link TestKit#rxAfterMethod(AfterParam)}.
+     * This method will be called by
+     * {@link org.swiften.xtestkit.kit.TestKit#rxAfterMethod(AfterParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link AfterParam} instance.
@@ -401,8 +403,11 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Return {@link #platformName}.
      * @return {@link String} value.
+     * @see PlatformContainerType#platformName()
+     * @see #platformName
      */
     @NotNull
+    @Override
     public String platformName() {
         return platformName;
     }
@@ -430,7 +435,7 @@ public abstract class Engine<D extends WebDriver> implements
         if (ObjectUtil.nonNull(td) && ObjectUtil.nonNull((ref = td.get()))) {
             return ref;
         } else {
-            throw new RuntimeException(TEXT_DELEGATE_UNAVAILABLE);
+            throw new RuntimeException(LOCALIZER_UNAVAILABLE);
         }
     }
 
@@ -503,7 +508,7 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Set {@link #localizer}. Usually this is set when {@link Engine} is
-     * added to {@link TestKit}.
+     * added to {@link org.swiften.xtestkit.kit.TestKit}.
      * @param delegate {@link LocalizerType} instance.
      * @see #localizer
      */

@@ -1,16 +1,29 @@
 package org.swiften.xtestkit.mobile.android;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.reactivex.Flowable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.*;
+import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
-import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.android.adb.ADBHandler;
-import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.mobile.android.capability.AndroidCap;
+import org.swiften.xtestkit.mobile.android.element.action.choice.type.AndroidChoiceSelectorType;
+import org.swiften.xtestkit.mobile.android.element.action.date.type.AndroidDateActionType;
 import org.swiften.xtestkit.mobile.android.element.action.general.type.AndroidActionType;
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidInputActionType;
 import org.swiften.xtestkit.mobile.android.element.action.input.type.AndroidKeyboardActionType;
@@ -22,24 +35,12 @@ import org.swiften.xtestkit.mobile.android.type.ADBHandlerContainerType;
 import org.swiften.xtestkit.mobile.android.type.AndroidErrorType;
 import org.swiften.xtestkit.mobile.android.type.AndroidInstanceContainerType;
 import org.swiften.xtestkit.mobile.android.type.DeviceUIDType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.system.network.NetworkHandler;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.reactivex.Flowable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.swiften.javautilities.object.ObjectUtil;
 
 /**
  * Created by haipham on 3/22/17.
@@ -48,10 +49,11 @@ public class AndroidEngine extends
     MobileEngine<AndroidDriver<AndroidElement>> implements
     ADBHandlerContainerType,
     AndroidActionType,
-    AndroidInstanceContainerType,
+    AndroidChoiceSelectorType,
     AndroidDateActionType,
     AndroidErrorType,
     AndroidInputActionType,
+    AndroidInstanceContainerType,
     AndroidKeyboardActionType,
     AndroidPasswordActionType<AndroidDriver<AndroidElement>>
 {

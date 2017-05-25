@@ -4,13 +4,11 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.action.input.type.ChoiceInputType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeRepeatComparisonType;
 import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.util.type.EngineContainerType;
 
 /**
  * Created by haipham on 5/23/17.
@@ -23,7 +21,9 @@ import org.swiften.xtestkit.util.type.EngineContainerType;
  * views that display the choice values. The methods defined here help with
  * the navigation and identification of said choices.
  */
-public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, EngineContainerType {
+public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType {
+    @NotNull ChoiceHelperType engine();
+
     /**
      * Get the associated {@link ChoiceInputType} instance.
      * @return {@link ChoiceInputType} instance.
@@ -39,6 +39,11 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
     /**
      * Get the {@link ByXPath} query to locate the target choice item.
      * @return {@link ByXPath} instance.
+     * @see #engine()
+     * @see #choiceInput()
+     * @see #selectedChoice()
+     * @see ChoiceHelperType#platform()
+     * @see ChoiceInputType#targetChoiceItemXPath(PlatformType, String)
      */
     @NotNull
     default ByXPath targetChoiceItemQuery() {
@@ -74,13 +79,13 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see #engine()
      * @see #choiceInput()
      * @see #selectedChoiceNumericValue()
-     * @see Engine#getText(WebElement)
+     * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
      */
     @NotNull
     @Override
     default Flowable<Integer> rx_initialDifference(@NotNull WebElement element) {
-        final Engine<?> ENGINE = engine();
+        final ChoiceHelperType<?> ENGINE = engine();
         final ChoiceInputType INPUT = choiceInput();
         final double NUMERIC_VALUE = selectedChoiceNumericValue();
 
@@ -99,13 +104,13 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see #engine()
      * @see #choiceInput()
      * @see #selectedChoiceNumericValue()
-     * @see Engine#getText(WebElement)
+     * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
      */
     @NotNull
     @Override
     default Flowable<?> rx_compareFirst(@NotNull WebElement element) {
-        final Engine<?> ENGINE = engine();
+        final ChoiceHelperType<?> ENGINE = engine();
         final ChoiceInputType INPUT = choiceInput();
         final double NUMERIC_VALUE = selectedChoiceNumericValue();
 
@@ -123,13 +128,13 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see #engine()
      * @see #choiceInput()
      * @see #selectedChoiceNumericValue()
-     * @see Engine#getText(WebElement)
+     * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
      */
     @NotNull
     @Override
     default Flowable<?> rx_compareLast(@NotNull WebElement element) {
-        final Engine<?> ENGINE = engine();
+        final ChoiceHelperType<?> ENGINE = engine();
         final ChoiceInputType INPUT = choiceInput();
         final double NUMERIC_VALUE = selectedChoiceNumericValue();
 
@@ -145,13 +150,13 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see SwipeRepeatComparisonType#rx_scrollViewChildItems()
      * @see #engine()
      * @see #choiceInput()
-     * @see Engine#platform()
+     * @see ChoiceHelperType#platform()
      * @see ChoiceInputType#choicePickerScrollViewItemXPath(PlatformType)
      */
     @NotNull
     @Override
     default Flowable<WebElement> rx_scrollViewChildItems() {
-        Engine<?> engine = engine();
+        ChoiceHelperType<?> engine = engine();
         ChoiceInputType input = choiceInput();
         PlatformType platform = engine.platform();
         return engine.rx_withXPath(input.choicePickerScrollViewItemXPath(platform));
@@ -162,11 +167,11 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @return {@link Flowable} instance.
      * @see #engine()
      * @see #targetChoiceItemQuery()
-     * @see Engine#rx_byXPath(ByXPath...)
+     * @see ChoiceHelperType#rx_byXPath(ByXPath...)
      */
     @NotNull
     default Flowable<WebElement> rx_targetChoiceItem() {
-        Engine<?> engine = engine();
+        ChoiceHelperType<?> engine = engine();
         ByXPath query = targetChoiceItemQuery();
         return engine.rx_byXPath(query).firstElement().toFlowable();
     }
@@ -177,7 +182,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see SwipeRepeatComparisonType#rx_elementSwipeRatio()
      * @see #engine()
      * @see #choiceInput()
-     * @see Engine#platform()
+     * @see ChoiceHelperType#platform()
      * @see ChoiceInputType#swipeRatio(PlatformType)
      */
     @NotNull
@@ -193,7 +198,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @param element {@link WebElement} instance that is displaying the
      *                selected choice.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_click(WebElement)
+     * @see ChoiceHelperType#rx_click(WebElement)
      */
     @NotNull
     default Flowable<?> rx_onTargetItemLocated(@NotNull WebElement element) {
@@ -208,14 +213,14 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see #selectedChoice()
      * @see #targetChoiceItemQuery()
      * @see #rx_onTargetItemLocated(WebElement)
-     * @see Engine#getText(WebElement)
+     * @see ChoiceHelperType#getText(WebElement)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rx_shouldKeepSwiping() {
         final ChoiceSelectorSwipeType THIS = this;
-        final Engine<?> ENGINE = engine();
+        final ChoiceHelperType<?> ENGINE = engine();
         final String STR_VALUE = selectedChoice();
 
         return rx_targetChoiceItem()
@@ -230,13 +235,13 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @see SwipeRepeatComparisonType#rx_scrollableViewToSwipe()
      * @see #engine()
      * @see #choiceInput()
-     * @see Engine#platform()
+     * @see ChoiceHelperType#platform()
      * @see ChoiceInputType#choicePickerScrollViewXPath(PlatformType)
      */
     @NotNull
     @Override
     default Flowable<WebElement> rx_scrollableViewToSwipe() {
-        Engine<?> engine = engine();
+        ChoiceHelperType<?> engine = engine();
         ChoiceInputType input = choiceInput();
         PlatformType platform = engine.platform();
 
@@ -252,7 +257,7 @@ public interface ChoiceSelectorSwipeType extends SwipeRepeatComparisonType, Engi
      * @return {@link Flowable} instance.
      * @see SwipeRepeatComparisonType#rx_swipeOnce(SwipeType)
      * @see #engine()
-     * @see Engine#rx_swipeOnce(SwipeType)
+     * @see ChoiceHelperType#rx_swipeOnce(SwipeType)
      */
     @NotNull
     @Override

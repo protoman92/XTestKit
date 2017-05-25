@@ -1,41 +1,43 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.capability.BaseCap;
-import org.swiften.xtestkit.base.capability.type.CapType;
-import org.swiften.xtestkit.base.element.action.tap.type.TapType;
-import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
-import org.swiften.xtestkit.base.element.action.type.TestDateActionType;
-import org.swiften.xtestkit.base.type.BaseEngineErrorType;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.system.process.ProcessRunner;
-import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
-import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.system.network.NetworkHandler;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-
-import static org.mockito.Mockito.*;
-
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.WebDriver;
-
-import static org.testng.Assert.*;
-
+import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.xtestkit.base.capability.BaseCap;
+import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.element.action.choice.type.BaseChoiceSelectorType;
+import org.swiften.xtestkit.base.element.action.choice.type.ChoiceType;
+import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
+import org.swiften.xtestkit.base.element.action.date.type.BaseDateActionType;
+import org.swiften.xtestkit.base.element.action.date.type.DateType;
+import org.swiften.xtestkit.base.element.action.input.type.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.action.swipe.type.SwipeType;
+import org.swiften.xtestkit.base.element.action.tap.type.TapType;
+import org.swiften.xtestkit.base.type.EngineErrorType;
+import org.swiften.xtestkit.base.type.PlatformContainerType;
+import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collection;
 
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
+
 /**
  * Created by haipham on 3/20/17.
  */
-public final class EngineTest implements BaseEngineErrorType {
+public final class EngineTest implements EngineErrorType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final CapType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
@@ -294,26 +296,6 @@ public final class EngineTest implements BaseEngineErrorType {
     //region Stop Driver
     @Test
     @SuppressWarnings("unchecked")
-    public void test_stopUnavailableDriver_shouldThrow() {
-        // Setup
-        doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver();
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rx_stopDriver().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
-        subscriber.assertNotComplete();
-        verify(ENGINE).rx_stopDriver();
-        verify(ENGINE).driver();
-        verifyNoMoreInteractions(ENGINE);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void test_stopAvailableDriver_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
@@ -330,7 +312,103 @@ public final class EngineTest implements BaseEngineErrorType {
     }
     //endregion
 
-    static class MockEngine extends Engine<WebDriver> implements TestDateActionType {
+    interface TestDateActionType extends BaseDateActionType<WebDriver> {
+        @NotNull
+        @Override
+        default DatePickerType datePickerType() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_openYearPicker() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_openMonthPicker() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_openDayPicker() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_selectYear(@NotNull DateType param) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_selectMonth(@NotNull DateType param) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_selectDay(@NotNull DateType param) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<Integer> rx_displayedComponent(@NotNull CalendarUnit unit) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default Flowable<WebElement> rx_element(@NotNull CalendarUnit unit) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default String string(@NotNull DateType param, @NotNull CalendarUnit unit) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    interface TestPlatformContainerType extends PlatformContainerType {
+        @NotNull
+        @Override
+        default PlatformType platform() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @NotNull
+        @Override
+        default String platformName() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    interface TestChoiceSelectorType extends BaseChoiceSelectorType<WebDriver> {
+        @NotNull
+        @Override
+        default Flowable<Boolean> rx_selectGeneralChoice(@NotNull ChoiceType param) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    interface TestKeyboardActionType extends BaseKeyboardActionType<WebDriver> {
+        @Override
+        default void hideKeyboard() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    static class MockEngine extends Engine<WebDriver> implements
+        TestChoiceSelectorType,
+        TestDateActionType,
+        TestKeyboardActionType,
+        TestPlatformContainerType
+    {
         @Override
         public <P extends TapType & RetryType> void tap(@NotNull P param) {}
 

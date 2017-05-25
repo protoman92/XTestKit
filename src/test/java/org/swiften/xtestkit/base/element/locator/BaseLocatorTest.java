@@ -9,15 +9,14 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.model.MockPlatform;
-import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.PlatformView;
-import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.general.param.TextParam;
+import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.model.MockPlatform;
+import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.testng.annotations.AfterMethod;
@@ -31,10 +30,6 @@ import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Created by haipham on 5/8/17.
@@ -104,6 +99,12 @@ public class BaseLocatorTest implements BaseLocatorType {
 
     @NotNull
     @Override
+    public String platformName() {
+        throw new RuntimeException(NOT_AVAILABLE);
+    }
+
+    @NotNull
+    @Override
     public PlatformView platformView() {
         return PLATFORM_VIEWS;
     }
@@ -152,7 +153,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn(error1).when(query1).error();
         doReturn(error2).when(query2).error();
         doReturn(error3).when(query3).error();
-
+        doReturn(RxUtil.error("")).when(ENGINE).rx_byXPath(any(ByXPath.class));
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -182,31 +183,6 @@ public class BaseLocatorTest implements BaseLocatorType {
         subscriber.assertSubscribed();
         subscriber.assertError(Exception.class);
         subscriber.assertNotComplete();
-        views.forEach(a -> verify(a, atLeastOnce()).className());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_elementsByXPath_shouldSucceed() {
-        // Setup
-        List<BaseViewType> views = PLATFORM_VIEWS.allViews();
-        ByXPath param = ByXPath.builder().withXPath(XPath.EMPTY).withError("").build();
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        ENGINE.rx_byXPath(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-
-        assertEquals(
-            RxTestUtil.nextEvents(subscriber).size(),
-            PLATFORM_VIEWS.VIEW_COUNT * ELEMENT_COUNT);
-
-        views.forEach(a -> verify(a).className());
     }
     //endregion
 

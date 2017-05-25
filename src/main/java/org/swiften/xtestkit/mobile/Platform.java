@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.mobile;
 
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.base.element.property.type.base.AttributeType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
@@ -12,7 +13,7 @@ import java.util.Optional;
 /**
  * Created by haipham on 3/20/17.
  */
-public enum Platform implements PlatformType, AttributeType<String> {
+public enum Platform implements BaseErrorType, PlatformType, AttributeType<String> {
     ANDROID,
     IOS;
 
@@ -48,11 +49,23 @@ public enum Platform implements PlatformType, AttributeType<String> {
         }
     }
 
+    /**
+     * Get {@link Platform} from {@link String} value.
+     * @param value {@link String} value.
+     * @return {@link Platform} instance.
+     * @see #NOT_AVAILABLE
+     */
     @NotNull
-    public static Optional<Platform> fromValue(@NotNull String value) {
-        return Arrays.stream(values())
+    public static Platform fromValue(@NotNull String value) {
+        Optional<Platform> ops = Arrays.stream(values())
             .filter(a -> a.value().equalsIgnoreCase(value))
             .findFirst();
+
+        if (ops.isPresent()) {
+            return ops.get();
+        } else {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 
     //region AttributeType

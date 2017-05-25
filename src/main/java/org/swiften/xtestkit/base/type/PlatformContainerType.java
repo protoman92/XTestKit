@@ -15,8 +15,12 @@ public interface PlatformContainerType extends BaseErrorType {
      * Get the associated {@link PlatformType} instance.
      * @return {@link PlatformType} instance.
      */
-    @NotNull
-    default PlatformType platform() {
-        throw new RuntimeException(NOT_AVAILABLE);
-    }
+    @NotNull PlatformType platform();
+
+    /**
+     * Get the associated platform name.
+     * @return {@link String} value.
+     * @see PlatformType#value()
+     */
+    @NotNull String platformName();
 }

@@ -19,9 +19,7 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
     /**
      * Hide the currently active keyboard.
      */
-    default void hideKeyboard() {
-        throw new RuntimeException(NOT_AVAILABLE);
-    };
+    void hideKeyboard();
 
     /**
      * Hide the currently active keyboard.
@@ -31,10 +29,6 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
     @NotNull
     default Flowable<Boolean> rx_hideKeyboard() {
         LogUtil.printfThread("Hiding keyboard for %s", this);
-
-        return Completable
-            .fromAction(this::hideKeyboard)
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+        return Completable.fromAction(this::hideKeyboard).<Boolean>toFlowable().defaultIfEmpty(true);
     }
 }

@@ -15,6 +15,19 @@ import org.swiften.xtestkit.base.type.PlatformType;
  */
 public interface ChoiceInputType {
     /**
+     * Get the index of the choice picker, depending on the {@link PlatformType}
+     * being tested. If there is only one choice picker present on the screen,
+     * return 0.
+     * This is useful when there are multiple choice pickers side-by-side
+     * with the same id/accessibility.
+     * @param platform {@link PlatformType} instance.
+     * @return {@link Integer} value.
+     */
+    default int scrollablePickerIndex(@NotNull PlatformType platform) {
+        return 0;
+    }
+
+    /**
      * Get the scroll view picker {@link XPath} for
      * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
      * @param platform {@link PlatformType} instance.
