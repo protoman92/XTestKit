@@ -20,6 +20,7 @@ public class IOSView extends PlatformView {
         UI_TEXTFIELD,
         UI_TABLEVIEW,
         UI_TABLEVIEW_CELL,
+        UI_SECURE_TEXTFIELD,
         UI_PICKERWHEEL;
 
         /**
@@ -39,6 +40,9 @@ public class IOSView extends PlatformView {
 
                 case UI_TEXTFIELD:
                     return "XCUIElementTypeTextField";
+
+                case UI_SECURE_TEXTFIELD:
+                    return "XCUIElementTypeSecureTextField";
 
                 case UI_TABLEVIEW:
                     return "XCUIElementTypeTable";
@@ -64,6 +68,7 @@ public class IOSView extends PlatformView {
                 case UI_BUTTON:
                 case UI_LABEL:
                 case UI_TEXTFIELD:
+                case UI_SECURE_TEXTFIELD:
                     return true;
 
                 default:
@@ -94,6 +99,7 @@ public class IOSView extends PlatformView {
         public boolean isEditable() {
             switch (this) {
                 case UI_TEXTFIELD:
+                case UI_SECURE_TEXTFIELD:
                     return true;
 
                 default:
