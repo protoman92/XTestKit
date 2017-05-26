@@ -40,7 +40,7 @@ public interface IOSDateActionType extends
      * @see BaseDateActionType#rx_select(DateType, CalendarUnit)
      * @see #string(DateType, CalendarUnit)
      * @see #rx_pickerView(CalendarUnit)
-     * @see #rx_sendKeys(WebElement, String...)
+     * @see #rx_type(WebElement, String...)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
@@ -51,7 +51,7 @@ public interface IOSDateActionType extends
         String value = string(param, unit);
 
         return rx_pickerView(unit)
-            .flatMap(a -> THIS.rx_sendKeys(a, value))
+            .flatMap(a -> THIS.rx_type(a, value))
             .map(BooleanUtil::toTrue);
     }
     //endregion

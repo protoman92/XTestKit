@@ -1,27 +1,26 @@
 package org.swiften.xtestkit.ios;
 
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.base.type.EngineErrorType;
-import org.swiften.xtestkit.ios.type.IOSErrorType;
-import org.swiften.xtestkit.ios.capability.IOSCap;
-import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import static org.testng.Assert.*;
-
 import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.xtestkit.base.type.EngineErrorType;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.ios.capability.IOSCapability;
+import org.swiften.xtestkit.ios.type.IOSErrorType;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by haipham on 3/31/17.
  */
 public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
-    @NotNull private final IOSCap CAPABILITY;
+    @NotNull private final IOSCapability CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final RetryType RETRY;
 
@@ -32,7 +31,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
             .build());
 
         /* Return this capability when we call ENGINE.capabilityType() */
-        CAPABILITY = mock(IOSCap.class);
+        CAPABILITY = mock(IOSCapability.class);
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());
@@ -73,11 +72,11 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
         verify(ENGINE).browserName();
         verify(ENGINE).app();
         verify(ENGINE).appiumVersion();
-        verify(ENGINE).automationName();
+        verify(ENGINE).automation();
         verify(ENGINE).deviceName();
+        verify(ENGINE).platform();
         verify(ENGINE).platformName();
         verify(ENGINE).platformVersion();
-        verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).appPackage();
         verify(ENGINE).launchTimeout();
         verify(ENGINE).deviceUID();

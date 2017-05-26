@@ -10,18 +10,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.mobile.Automation;
-import org.swiften.xtestkit.mobile.MobileEngine;
-import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.capability.AndroidCap;
+import org.swiften.xtestkit.android.capability.AndroidCapability;
 import org.swiften.xtestkit.android.element.action.choice.AndroidChoiceSelectorType;
 import org.swiften.xtestkit.android.element.action.date.AndroidDateActionType;
 import org.swiften.xtestkit.android.element.action.general.AndroidActionType;
@@ -35,6 +25,17 @@ import org.swiften.xtestkit.android.type.ADBHandlerContainerType;
 import org.swiften.xtestkit.android.type.AndroidErrorType;
 import org.swiften.xtestkit.android.type.AndroidInstanceContainerType;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.PlatformView;
+import org.swiften.xtestkit.base.TestMode;
+import org.swiften.xtestkit.base.type.AppPackageType;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.mobile.Automation;
+import org.swiften.xtestkit.mobile.MobileEngine;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 
 import java.net.MalformedURLException;
@@ -63,12 +64,14 @@ public class AndroidEngine extends
     }
 
     @NotNull private final ADBHandler ADB_HANDLER;
+    @NotNull private final PlatformView PLATFORM_VIEW;
     @NotNull String appActivity;
     @Nullable AndroidInstance androidInstance;
 
     AndroidEngine() {
         super();
-        ADB_HANDLER = ADBHandler.builder().build();
+        ADB_HANDLER = new ADBHandler();
+        PLATFORM_VIEW = new AndroidView();
         appActivity = "";
     }
 
@@ -99,6 +102,48 @@ public class AndroidEngine extends
 //    //endregion
 
     //region Getters
+    /**
+     * Get {@link Platform#ANDROID}
+     * @return {@link Platform} instance.
+     * @see Platform#ANDROID
+     * @see MobileEngine#platform()
+     */
+    @NotNull
+    @Override
+    public Platform platform() {
+        return Platform.ANDROID;
+    }
+
+    /**
+     * Get {@link AndroidView}.
+     * @return {@link PlatformView} instance.
+     * @see #PLATFORM_VIEW
+     */
+    @NotNull
+    @Override
+    public PlatformView platformView() {
+        return PLATFORM_VIEW;
+    }
+
+    /**
+     * Get {@link Automation#APPIUM} or {@link Automation#SELENDROID}.
+     * @return {@link Automation} instance.
+     * @see Automation#APPIUM
+     * @see Automation#SELENDROID
+     * @see MobileEngine#automation()
+     * @see #platformVersion()
+     */
+    @NotNull
+    public Automation automation() {
+        String version = platformVersion();
+
+        if (version.compareToIgnoreCase("4.2") < 0) {
+            return Automation.SELENDROID;
+        } else {
+            return Automation.APPIUM;
+        }
+    }
+
     /**
      * Return {@link #ADB_HANDLER}.
      * @return {@link ADBHandler} instance.
@@ -136,9 +181,13 @@ public class AndroidEngine extends
     /**
      * @param PARAM {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_beforeClass(BeforeClassParam)
      * @see ADBHandler#rx_disableEmulatorAnimations(DeviceUIDType)
-     * @see #startDriverOnlyOnce()
+     * @see ADBHandler#rx_startEmulator(StartEmulatorParam)
+     * @see AndroidInstance#setPort(int)
+     * @see Engine#rx_beforeClass(BeforeClassParam)
+     * @see #adbHandler()
+     * @see #androidInstance()
+     * @see #testMode()
      * @see #rx_startDriver(RetryType)
      */
     @NotNull
@@ -147,7 +196,7 @@ public class AndroidEngine extends
     public Flowable<Boolean> rx_beforeClass(@NotNull final BeforeClassParam PARAM) {
         final ADBHandler HANDLER = adbHandler();
         final AndroidInstance ANDROID_INSTANCE = androidInstance();
-        final Flowable<Boolean> START_APP;
+        final Flowable<Boolean> START_APP = rx_startDriver(PARAM);
         final Flowable<Boolean> SOURCE;
 
         switch (testMode()) {
@@ -169,14 +218,7 @@ public class AndroidEngine extends
                 break;
 
             default:
-                SOURCE = RxUtil.error(NOT_AVAILABLE);
-                break;
-        }
-
-        if (startDriverOnlyOnce()) {
-            START_APP = rx_startDriver(PARAM);
-        } else {
-            START_APP = Flowable.just(true);
+                throw new RuntimeException(NOT_AVAILABLE);
         }
 
         return super.rx_beforeClass(PARAM)
@@ -197,7 +239,6 @@ public class AndroidEngine extends
      * @return {@link Flowable} instance.
      * @see Engine#rx_afterClass(AfterClassParam)
      * @see ADBHandler#rx_stopEmulator(StopEmulatorParam)
-     * @see #startDriverOnlyOnce()
      * @see #rxResetApp()
      * @see #rx_stopDriver()
      */
@@ -209,7 +250,7 @@ public class AndroidEngine extends
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
         final Flowable<Boolean> SOURCE;
-        final Flowable<Boolean> QUIT_APP;
+        final Flowable<Boolean> QUIT_APP = rx_stopDriver();
 
         switch (testMode()) {
             case ACTUAL:
@@ -230,12 +271,6 @@ public class AndroidEngine extends
             default:
                 SOURCE = RxUtil.error(NOT_AVAILABLE);
                 break;
-        }
-
-        if (startDriverOnlyOnce()) {
-            QUIT_APP = rx_stopDriver();
-        } else {
-            QUIT_APP = Flowable.just(true);
         }
 
         return super.rx_afterClass(param)
@@ -318,7 +353,7 @@ public class AndroidEngine extends
         @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
 
         Builder() {
-            super(new AndroidEngine(), AndroidCap.builder());
+            super(new AndroidEngine(), AndroidCapability.builder());
             ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
         }
 
@@ -369,31 +404,9 @@ public class AndroidEngine extends
             return this;
         }
 
-        /**
-         * Override this method to set {@link #automationName} as well.
-         * @param version {@link String} value.
-         * @return The current {@link MobileEngine.Builder} instance.
-         * @see MobileEngine.Builder#withPlatformVersion(String)
-         * @see Automation#SELENDROID
-         * @see Automation#APPIUM
-         */
-        @NotNull
-        @Override
-        public MobileEngine.Builder<AndroidEngine> withPlatformVersion(@NotNull String version) {
-            if (version.compareToIgnoreCase("4.2") < 0) {
-                withAutomation(Automation.SELENDROID);
-            } else {
-                withAutomation(Automation.APPIUM);
-            }
-
-            return super.withPlatformVersion(version);
-        }
-
         @NotNull
         @Override
         public AndroidEngine build() {
-            withPlatform(Platform.ANDROID);
-            withPlatformView(new AndroidView());
             ENGINE.androidInstance = ANDROID_INSTANCE_BUILDER.build();
             return super.build();
         }

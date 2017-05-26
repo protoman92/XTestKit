@@ -34,11 +34,6 @@ import java.util.stream.IntStream;
  * Created by haipham on 4/8/17.
  */
 public class ADBHandler implements ADBErrorType, ADBDelayType {
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
-    }
-
     /**
      * Recommended port range is 5585 - 5586. However, adb will increment the
      * port number by one, so we need to decrement by 1.
@@ -76,7 +71,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
-    ADBHandler() {
+    public ADBHandler() {
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
     }
@@ -717,19 +712,4 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         return String.format("%1$s settings %2$s", cm_adbShell(param), param.cm_get());
     }
     //endregion
-
-    /**
-     * Builder class for {@link ADBHandler}.
-     */
-    public static final class Builder {
-        @NotNull private final ADBHandler HANDLER;
-
-        Builder() {
-            HANDLER = new ADBHandler();
-        }
-
-        public ADBHandler build() {
-            return HANDLER;
-        }
-    }
 }

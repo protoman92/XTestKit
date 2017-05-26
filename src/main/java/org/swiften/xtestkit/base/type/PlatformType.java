@@ -1,8 +1,7 @@
 package org.swiften.xtestkit.base.type;
 
-import org.apache.tools.ant.taskdefs.optional.windows.Attrib;
-import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
 
 /**
  * Created by haipham on 3/21/17.
@@ -98,5 +97,15 @@ public interface PlatformType {
     @NotNull
     default Attribute editableAttribute() {
         return Attribute.single("editable");
+    }
+
+    /**
+     * Specify the name for a focused attribute. Generally should be 'focused'.
+     * @return {@link Attribute} instance.
+     * @see Attribute#single(String)
+     */
+    @NotNull
+    default Attribute focusedAttribute() {
+        return Attribute.single("focused");
     }
 }

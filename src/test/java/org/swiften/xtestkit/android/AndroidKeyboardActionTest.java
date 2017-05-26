@@ -32,7 +32,7 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
         ANDROID_INSTANCE = mock(AndroidInstance.class);
 
         /* We return this adbHandler when calling ENGINE.adbHandler() */
-        ADB_HANDLER = spy(ADBHandler.builder().build());
+        ADB_HANDLER = spy(new ADBHandler());
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());

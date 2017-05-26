@@ -9,12 +9,12 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.base.capability.BaseCap;
+import org.swiften.xtestkit.base.capability.BaseCapability;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.choice.BaseChoiceSelectorType;
 import org.swiften.xtestkit.base.element.action.choice.ChoiceType;
-import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.BaseDateActionType;
+import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.action.date.DateType;
 import org.swiften.xtestkit.base.element.action.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
@@ -47,9 +47,7 @@ public final class EngineTest implements EngineErrorType {
     private final int TRIES;
 
     {
-        ENGINE = spy(new MockEngine.Builder()
-            .withPlatformView(mock(PlatformView.class))
-            .build());
+        ENGINE = spy(new MockEngine.Builder().build());
 
         /* Return this capability when we cann ENGINE.capabilityType() */
         CAPABILITY = mock(CapType.class);
@@ -147,7 +145,7 @@ public final class EngineTest implements EngineErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ENGINE).serverAddress();
+            verify(ENGINE).address();
             verify(ENGINE).networkHandler();
             verify(ENGINE).cm_whichAppium();
             verify(ENGINE).cm_startLocalAppium(anyString(), anyInt());
@@ -173,7 +171,7 @@ public final class EngineTest implements EngineErrorType {
 
         // When
         Flowable.range(1, tries)
-            .flatMap(a -> ENGINE.rx_startLocalAppium(RETRY))
+            .concatMap(a -> ENGINE.rx_startLocalAppium(RETRY))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .flatMap(a -> ENGINE.networkHandler().rxKillAll("node appium"))
@@ -205,7 +203,7 @@ public final class EngineTest implements EngineErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            verify(ENGINE).serverAddress();
+            verify(ENGINE).address();
             verify(ENGINE).rx_stopLocalAppium();
             verify(ENGINE).networkHandler();
             verifyNoMoreInteractions(ENGINE);
@@ -260,7 +258,7 @@ public final class EngineTest implements EngineErrorType {
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
         verify(ENGINE).browserName();
-        verify(ENGINE).serverAddress();
+        verify(ENGINE).address();
         verify(ENGINE).serverUri();
         verifyNoMoreInteractions(ENGINE);
     }
@@ -283,7 +281,7 @@ public final class EngineTest implements EngineErrorType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).rx_startDriver(any());
-        verify(ENGINE).serverAddress();
+        verify(ENGINE).address();
         verify(ENGINE).serverUri();
         verify(ENGINE).driver(any(), any());
         verify(ENGINE).capabilities();
@@ -392,6 +390,12 @@ public final class EngineTest implements EngineErrorType {
         TestKeyboardActionType,
         TestPlatformContainerType
     {
+        @NotNull
+        @Override
+        public PlatformView platformView() {
+            return mock(PlatformView.class);
+        }
+
         @Override
         public <P extends TapType & RetryType> void tap(@NotNull P param) {}
 
@@ -403,15 +407,21 @@ public final class EngineTest implements EngineErrorType {
 
         static final class Builder extends Engine.Builder<MockEngine> {
             Builder() {
-                super(new MockEngine(), new MockCap.Builder());
+                super(new MockEngine(), new MockCapability.Builder());
             }
         }
     }
 
-    static class MockCap extends BaseCap {
-        static final class Builder extends BaseCap.Builder<MockCap> {
+    static class MockCapability extends BaseCapability {
+        @NotNull
+        @Override
+        public PlatformType platform() {
+            return mock(PlatformType.class);
+        }
+
+        static final class Builder extends BaseCapability.Builder<MockCapability> {
             Builder() {
-                super(new MockCap());
+                super(new MockCapability());
             }
         }
     }

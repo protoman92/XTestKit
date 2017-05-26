@@ -7,8 +7,7 @@ package org.swiften.xtestkit.base.type;
 import org.swiften.xtestkit.base.Engine;
 
 /**
- * This interface provides delay values for
- * {@link Engine}.
+ * This interface provides delay durations for {@link Engine}.
  */
 public interface EngineDelayType {
     default long appiumStartDelay() {

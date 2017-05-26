@@ -4,14 +4,23 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.string.StringUtil;
-import org.swiften.xtestkit.mobile.capability.MobileCap;
+import org.swiften.xtestkit.base.TestMode;
+import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.mobile.capability.MobileCapability;
 
 import java.util.*;
 
 /**
  * Created by haipham on 5/7/17.
  */
-public class IOSCap extends MobileCap {
+
+/**
+ * This class provides capabilities for
+ * {@link org.swiften.xtestkit.mobile.Platform#IOS} and
+ * {@link org.swiften.xtestkit.ios.IOSEngine}.
+ */
+public class IOSCapability extends MobileCapability {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -21,6 +30,21 @@ public class IOSCap extends MobileCap {
         return new Builder();
     }
 
+    /**
+     * Get {@link Platform#IOS}.
+     * @return {@link PlatformType} instance.
+     * @see Platform#IOS
+     */
+    @NotNull
+    @Override
+    public PlatformType platform() {
+        return Platform.IOS;
+    }
+
+    /**
+     * @return {@link List} of {@link String}.
+     * @see MobileCapability#requiredCapabilities()
+     */
     @NotNull
     @Override
     public List<String> requiredCapabilities() {
@@ -31,6 +55,13 @@ public class IOSCap extends MobileCap {
         return parent;
     }
 
+    /**
+     * @param caps {@link Map} instance.
+     * @return {@link Map} instance.
+     * @see MobileCapability#distill(Map)
+     * @see TestMode#isTestingOnSimulatedEnvironment()
+     * @see #testMode()
+     */
     @NotNull
     @Override
     public Map<String,Object> distill(@NotNull Map<String,Object> caps) {
@@ -88,11 +119,11 @@ public class IOSCap extends MobileCap {
 
     //region Builder.
     /**
-     * Builder class for {@link IOSCap}.
+     * Builder class for {@link IOSCapability}.
      */
-    public static final class Builder extends MobileCap.Builder<IOSCap> {
+    public static final class Builder extends MobileCapability.Builder<IOSCapability> {
         Builder() {
-            super(new IOSCap());
+            super(new IOSCapability());
         }
     }
     //endregion

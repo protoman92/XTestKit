@@ -1,24 +1,23 @@
 package org.swiften.xtestkit.android;
 
+import io.reactivex.subscribers.TestSubscriber;
+import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
-import io.reactivex.subscribers.TestSubscriber;
-import org.jetbrains.annotations.NotNull;
-
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
-
-import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
-import org.testng.annotations.*;
+import org.swiften.xtestkit.android.type.DeviceUIDType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
+
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Created by haipham on 3/23/17.
@@ -37,7 +36,7 @@ public final class ADBHandlerDeviceTest {
     private final int RETRIES_ON_ERROR = 3;
 
     {
-        ADB_HANDLER = spy(ADBHandler.builder().build());
+        ADB_HANDLER = spy(new ADBHandler());
         CC_PARAM = mock(ClearCacheParam.class);
         SE_PARAM = mock(StartEmulatorParam.class);
         ST_PARAM = mock(StopEmulatorParam.class);

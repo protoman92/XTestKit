@@ -1,18 +1,5 @@
 package org.swiften.xtestkit.ios;
 
-import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.ios.capability.IOSCap;
-import org.swiften.xtestkit.ios.element.action.choice.IOSChoiceSelectorType;
-import org.swiften.xtestkit.ios.element.action.date.IOSDateActionType;
-import org.swiften.xtestkit.ios.element.action.general.IOSActionType;
-import org.swiften.xtestkit.ios.type.IOSDelayType;
-import org.swiften.xtestkit.ios.type.IOSErrorType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.mobile.Automation;
-import org.swiften.xtestkit.mobile.MobileEngine;
-import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
@@ -20,6 +7,20 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.PlatformView;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.ios.capability.IOSCapability;
+import org.swiften.xtestkit.ios.element.action.choice.IOSChoiceSelectorType;
+import org.swiften.xtestkit.ios.element.action.date.IOSDateActionType;
+import org.swiften.xtestkit.ios.element.action.general.IOSActionType;
+import org.swiften.xtestkit.ios.type.IOSDelayType;
+import org.swiften.xtestkit.ios.type.IOSErrorType;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.mobile.Automation;
+import org.swiften.xtestkit.mobile.MobileEngine;
+import org.swiften.xtestkit.mobile.Platform;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,17 +47,53 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     }
 
     @NotNull private final XCRunHandler XC_HANDLER;
+    @NotNull private final PlatformView PLATFORM_VIEW;
     @NotNull private String deviceUID;
 
     private long launchTimeout;
 
     IOSEngine() {
-        XC_HANDLER = XCRunHandler.builder().build();
+        XC_HANDLER = new XCRunHandler();
+        PLATFORM_VIEW = new IOSView();
         launchTimeout = simulatorLaunchTimeout();
         deviceUID = "";
     }
 
     //region Getters
+    /**
+     * Get {@link Platform#IOS}
+     * @return {@link Platform} instance.
+     * @see Platform#IOS
+     * @see Engine#platform()
+     */
+    @NotNull
+    @Override
+    public Platform platform() {
+        return Platform.IOS;
+    }
+
+    /**
+     * Get {@link IOSView}.
+     * @return {@link PlatformView} instance.
+     * @see #PLATFORM_VIEW
+     */
+    @NotNull
+    @Override
+    public PlatformView platformView() {
+        return PLATFORM_VIEW;
+    }
+
+    /**
+     * Get {@link Automation#XC_UI_TEST}.
+     * @return {@link Automation} instance.
+     * @see Automation#XC_UI_TEST
+     * @see MobileEngine#automation()
+     */
+    @NotNull
+    public Automation automation() {
+        return Automation.XC_UI_TEST;
+    }
+
     /**
      * Return {@link #XC_HANDLER}.
      * @return {@link XCRunHandler} instance.
@@ -88,20 +125,12 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rx_beforeClass(BeforeClassParam)
-     * @see #startDriverOnlyOnce()
      * @see #rx_startDriver(RetryType)
      */
     @NotNull
     @Override
     public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
-        final Flowable<Boolean> START_APP;
-
-        if (startDriverOnlyOnce()) {
-            START_APP = rx_startDriver(param);
-        } else {
-            START_APP = Flowable.just(true);
-        }
-
+        final Flowable<Boolean> START_APP = rx_startDriver(param);
         return super.rx_beforeClass(param).flatMap(a -> START_APP);
     }
 
@@ -110,13 +139,12 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @return {@link Flowable} instance.
      * @see Engine#rx_afterClass(AfterClassParam)
      * @see XCRunHandler#rxStopSimulator(RetryType)
-     * @see #startDriverOnlyOnce()
      * @see #rx_stopDriver()
      */
     @NotNull
     @Override
     public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
-        final Flowable<Boolean> QUIT_APP;
+        final IOSEngine THIS = this;
         final Flowable<Boolean> SOURCE;
 
         switch (testMode()) {
@@ -129,15 +157,9 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
                 break;
         }
 
-        if (startDriverOnlyOnce()) {
-            QUIT_APP = rx_stopDriver();
-        } else {
-            QUIT_APP = Flowable.just(true);
-        }
-
         return super.rx_afterClass(param)
             .flatMap(a -> SOURCE)
-            .flatMap(a -> QUIT_APP);
+            .flatMap(a -> THIS.rx_stopDriver());
     }
     //endregion
 
@@ -173,7 +195,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      */
     public static final class Builder extends MobileEngine.Builder<IOSEngine> {
         Builder() {
-            super(new IOSEngine(), IOSCap.builder());
+            super(new IOSEngine(), IOSCapability.builder());
         }
 
         /**
@@ -197,15 +219,6 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         public Builder withLaunchTimeout(long timeout) {
             ENGINE.launchTimeout = timeout;
             return this;
-        }
-
-        @NotNull
-        @Override
-        public IOSEngine build() {
-            withAutomation(Automation.XC_UI_TEST);
-            withPlatform(Platform.IOS);
-            withPlatformView(new IOSView());
-            return super.build();
         }
     }
     //endregion

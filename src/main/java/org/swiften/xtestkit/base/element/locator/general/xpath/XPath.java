@@ -635,6 +635,32 @@ public class XPath {
         }
 
         /**
+         * Append a @focused attribute.
+         * @param focused {@link Focused} instance.
+         * @return The current {@link Builder} instance.
+         * @see PlatformType#focusedAttribute()
+         * @see Focused#stringFormat()
+         * @see #appendAttribute(Attribute, String)
+         */
+        @NotNull
+        public Builder isFocused(@NotNull Focused focused) {
+            Attribute attribute = PLATFORM.focusedAttribute();
+            String format = focused.stringFormat();
+            return appendAttribute(attribute, format);
+        }
+
+        /**
+         * Same as above, but uses a default {@link Focused} instance.
+         * @param FOCUSED {@link Boolean} value.
+         * @return The current {@link Builder} instance.
+         * @see #isFocused(Focused)
+         */
+        @NotNull
+        public Builder isFocused(final boolean FOCUSED) {
+            return isFocused(() -> FOCUSED);
+        }
+
+        /**
          * Set {@link XPath} index. Contrary to {@link #atIndex(AtIndex)},
          * instead of appending an @index attribute, this method directly
          * sets index with square brackets, e.g. TextView[0].
@@ -722,7 +748,7 @@ public class XPath {
          * quotes by separating and concatenating.
          * @param value {@link String} value.
          * @return {@link String} value.
-         * @see XPathQuoteMark#wrapInQuotation(String)
+         * @see QuoteMark#wrapInQuotation(String)
          */
         @NotNull
         @Override
@@ -735,8 +761,8 @@ public class XPath {
                  * are the first or the last character, or both. */
                 String fChar = String.valueOf(value.charAt(0));
                 String lChar = String.valueOf(value.charAt(value.length() - 1));
-                Optional<XPathQuoteMark> fqm = XPathQuoteMark.from(fChar);
-                Optional<XPathQuoteMark> lqm = XPathQuoteMark.from(lChar);
+                Optional<QuoteMark> fqm = QuoteMark.from(fChar);
+                Optional<QuoteMark> lqm = QuoteMark.from(lChar);
                 String fFormat = "%s";
 
                 if (fqm.isPresent()) {
@@ -845,11 +871,16 @@ public class XPath {
     public interface ContainsText extends ContainsTextType, ContainsString {}
 
     @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
     public interface Editable extends EditableType, Formatible<Boolean> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
     public interface Enabled extends EnabledType, Formatible<Boolean> {}
+
+    @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
+    public interface Focused extends FocusedType, Formatible<Boolean> {}
 
     @FunctionalInterface
     @SuppressWarnings("WeakerAccess")

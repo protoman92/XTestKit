@@ -6,10 +6,7 @@ package org.swiften.xtestkit.base.element.action.input;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
@@ -19,7 +16,6 @@ import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides methods to handle input views.
@@ -34,7 +30,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param text A varargs of {@link String} values.
      * @see WebElement#sendKeys(CharSequence...)
      */
-    default void sendKeys(@NotNull WebElement element, @NotNull String...text) {
+    default void type(@NotNull WebElement element, @NotNull String...text) {
         LogUtil.printfThread("Sending '%s' to %s", Arrays.toString(text), element);
         element.sendKeys(text);
     }
@@ -44,15 +40,15 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param ELEMENT The {@link WebElement} that will receive the key.
      * @param TEXT The {@link String} to be sent.
      * @return {@link Flowable} instance.
-     * @see #sendKeys(WebElement, String...)
+     * @see #type(WebElement, String...)
      */
     @NotNull
-    default Flowable<WebElement> rx_sendKeys(@NotNull final WebElement ELEMENT,
-                                             @NotNull final String...TEXT) {
+    default Flowable<WebElement> rx_type(@NotNull final WebElement ELEMENT,
+                                         @NotNull final String...TEXT) {
         final BaseInputActionType THIS = this;
 
         return Completable
-            .fromAction(() -> THIS.sendKeys(ELEMENT, TEXT))
+            .fromAction(() -> THIS.type(ELEMENT, TEXT))
             .<WebElement>toFlowable()
             .defaultIfEmpty(ELEMENT);
     }
@@ -89,7 +85,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * editable field is the last one.
      * @param element The currently active editable {@link WebElement}.
      */
-    default void toggleDoneInput(@NotNull WebElement element) {
+    default void endInput(@NotNull WebElement element) {
         throw new RuntimeException(NOT_AVAILABLE);
     }
 
@@ -97,14 +93,14 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * Toggle the done input.
      * @param ELEMENT The currently active editable {@link WebElement}.
      * @return {@link Flowable} instance.
-     * @see #toggleDoneInput(WebElement)
+     * @see #endInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rx_toggleDoneInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_finishInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return Completable
-            .fromAction(() -> THIS.toggleDoneInput(ELEMENT))
+            .fromAction(() -> THIS.endInput(ELEMENT))
             .<WebElement>toFlowable()
             .defaultIfEmpty(ELEMENT);
     }
@@ -115,26 +111,17 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see ObjectUtil#nonNull(Object)
+     * @see #sameOriginAndSize(WebElement, WebElement)
      * @see #rx_editable()
-     * @see WebElement#getLocation()
-     * @see WebElement#getSize()
      */
     @NotNull
     default Flowable<Boolean> rx_isLastInput(@NotNull final WebElement ELEMENT) {
+        final BaseInputActionType<?> THIS = this;
         return rx_editable()
             .lastElement()
             .toFlowable()
             .filter(ObjectUtil::nonNull)
-            .map(a -> {
-                Point ap = a.getLocation(), ep = ELEMENT.getLocation();
-                Dimension ad = a.getSize(), ed = ELEMENT.getSize();
-
-                /* Since we cannot directly compare two WebElement instances,
-                 * we can use a proxy method: by comparing their position
-                 * and dimension. Usually editable fields are discrete views
-                 * that do not overlap each other */
-                return ap.equals(ep) && ad.equals(ed);
-            });
+            .map(a -> THIS.sameOriginAndSize(a, ELEMENT));
     }
 
     /**
@@ -147,18 +134,16 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see BooleanUtil#isTrue(boolean)
      * @see #rx_isLastInput(WebElement)
      * @see #rx_toggleNextInput(WebElement)
-     * @see #rx_toggleDoneInput(WebElement)
+     * @see #rx_finishInput(WebElement)
      * @see #consecutiveNextToggleDelay()
      */
     @NotNull
-    default Flowable<WebElement> rx_toggleNextOrDoneInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rx_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
-        long delay = consecutiveNextToggleDelay();
 
         return rx_isLastInput(ELEMENT)
             .filter(BooleanUtil::isTrue)
-            .flatMap(a -> THIS.rx_toggleDoneInput(ELEMENT))
-            .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT))
-            .delay(delay, TimeUnit.MILLISECONDS);
+            .flatMap(a -> THIS.rx_finishInput(ELEMENT))
+            .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT));
     }
 }

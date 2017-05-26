@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
@@ -29,6 +30,42 @@ public interface BaseElementPropertyType extends BaseErrorType {
         String text = element.getText();
         LogUtil.printfThread("Text '%s' for element %s", text, element);
         return text;
+    }
+
+    /**
+     * Check if a {@link WebElement} is focused.
+     * @param element {@link WebElement} instance.
+     * @return {@link Boolean} value.
+     * @see BooleanUtil#isTrue(Object)
+     * @see WebElement#getAttribute(String)
+     */
+    default boolean isFocused(@NotNull WebElement element) {
+        return BooleanUtil.isTrue(element.getAttribute("focused"));
+    }
+
+    /* Since we cannot directly compare two WebElement instances, we can
+         * use a proxy method: by comparing their position and dimension.
+         * Usually editable fields are discrete views that do not overlap each
+         * other */
+
+    /**
+     * Check if two {@link WebElement} have the same {@link Point} and
+     * {@link Dimension}.
+     * Since we cannot directly compare two WebElement instances, we can
+     * use a proxy method: by comparing their position and dimension.
+     * @param element1 {@link WebElement} instance.
+     * @param element2 {@link WebElement} instance.
+     * @return {@link Boolean} value.
+     * @see WebElement#getLocation()
+     * @see WebElement#getSize()
+     */
+    default boolean sameOriginAndSize(@NotNull WebElement element1,
+                                      @NotNull WebElement element2) {
+        Point l1 = element1.getLocation(), l2 = element2.getLocation();
+        Dimension d1 = element1.getSize(), d2 = element2.getSize();
+        LogUtil.println(l1, d1, element1.getText(), element1);
+        LogUtil.println(l2, d2, element1.getText(), element2);
+        return l1.equals(l2) && d1.equals(d2);
     }
 
     /**

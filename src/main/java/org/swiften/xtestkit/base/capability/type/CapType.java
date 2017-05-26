@@ -69,13 +69,6 @@ public interface CapType extends BaseErrorType {
      */
     interface Builder {
         /**
-         * Set the {@link #platform} instance.
-         * @param platform {@link Platform} instance.
-         * @return The current {@link Builder} instance.
-         */
-        Builder withPlatform(@NotNull PlatformType platform);
-
-        /**
          * Set the {@link #testMode} instance.
          * @param testMode {@link TestMode} instance.
          * @return The current {@link Builder} instance.

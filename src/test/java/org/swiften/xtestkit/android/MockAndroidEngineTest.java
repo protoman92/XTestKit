@@ -1,23 +1,22 @@
 package org.swiften.xtestkit.android;
 
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.param.StartEmulatorParam;
-import org.swiften.xtestkit.system.network.NetworkHandler;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import static org.testng.Assert.*;
-
 import org.mockito.ArgumentCaptor;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.xtestkit.android.adb.ADBHandler;
+import org.swiften.xtestkit.android.param.StartEmulatorParam;
+import org.swiften.xtestkit.kit.param.AfterClassParam;
+import org.swiften.xtestkit.kit.param.AfterParam;
+import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by haipham on 3/22/17.
@@ -43,7 +42,7 @@ public final class MockAndroidEngineTest {
         ANDROID_INSTANCE = mock(AndroidInstance.class);
 
         /* We return this adbHandler when calling ENGINE.adbHandler() */
-        ADB_HANDLER = spy(ADBHandler.builder().build());
+        ADB_HANDLER = spy(new ADBHandler());
 
         /* We return this networkHandler when calling ENGINE.networkHandler() */
         NETWORK_HANDLER = spy(NetworkHandler.builder().build());
@@ -92,11 +91,10 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).androidInstance();
         verify(ENGINE).testMode();
         verify(ENGINE).deviceName();
-        verify(ENGINE, atLeastOnce()).serverAddress();
+        verify(ENGINE, atLeastOnce()).address();
         verify(ENGINE, atLeastOnce()).processRunner();
         verify(ENGINE).appiumStartDelay();
         verify(ENGINE).networkHandler();
-        verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).cm_whichAppium();
         verify(ENGINE).cm_fallBackAppium();
         verify(ENGINE).cm_startLocalAppium(anyString(), anyInt());
@@ -133,9 +131,8 @@ public final class MockAndroidEngineTest {
         verify(ENGINE, times(3)).networkHandler();
         verify(ENGINE).androidInstance();
         verify(ENGINE).adbHandler();
-        verify(ENGINE, atLeastOnce()).serverAddress();
+        verify(ENGINE, atLeastOnce()).address();
         verify(ENGINE).testMode();
-        verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).rx_stopDriver();
         verify(ENGINE).rx_afterClass(any());
         verify(ENGINE).rx_stopLocalAppium();
@@ -167,7 +164,6 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).androidInstance();
         verify(ENGINE).adbHandler();
         verify(ENGINE).appPackage();
-        verify(ENGINE).startDriverOnlyOnce();
         verify(ENGINE).rxResetApp();
         verify(ENGINE).rx_afterMethod(any());
         verify(ADB_HANDLER).rx_clearCache(any());

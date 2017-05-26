@@ -37,7 +37,6 @@ import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
-import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
@@ -77,13 +76,11 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private D driver;
-    @Nullable PlatformView platformView;
     @Nullable CapType capability;
     @Nullable private WeakReference<LocalizerType> localizer;
 
     @NotNull String browserName;
-    @NotNull String platformName;
-    @NotNull Address serverAddress;
+    @NotNull Address address;
     @NotNull TestMode testMode;
 
     /**
@@ -98,10 +95,158 @@ public abstract class Engine<D extends WebDriver> implements
         PROCESS_RUNNER = ProcessRunner.builder().build();
         NETWORK_HANDLER = NetworkHandler.builder().build();
         browserName = "";
-        platformName = "";
         testMode = TestMode.SIMULATED;
-        serverAddress = Address.defaultInstance();
+        address = Address.defaultInstance();
     }
+
+    //region Getters
+    public CapType capabilityType() {
+        if (ObjectUtil.nonNull(capability)) {
+            return capability;
+        } else {
+            throw new RuntimeException(CAPABILITY_UNAVAILABLE);
+        }
+    }
+
+    /**
+     * Return {@link #address}.
+     * @return {@link String} value.
+     * @see #address
+     */
+    @NotNull
+    public Address address() {
+        return address;
+    }
+
+    /**
+     * Get the {@link #address()} uri address.
+     * @return {@link String} value.
+     * @see Address#uri()
+     * @see #address
+     */
+    @NotNull
+    public String serverUri() {
+        return address().uri();
+    }
+
+    /**
+     * Return {@link #browserName}.
+     * @return {@link String} value.
+     * @see #browserName
+     */
+    @NotNull
+    public String browserName() {
+        return browserName;
+    }
+
+    /**
+     * Get the associated {@link org.swiften.xtestkit.base.type.PlatformType}
+     * name.
+     * @return {@link String} value.
+     * @see PlatformType#value()
+     * @see #platform()
+     */
+    @NotNull
+    @Override
+    public String platformName() {
+        return platform().value();
+    }
+
+    /**
+     * Return {@link #testMode}. This can be stubbed out for custom
+     * implementation.
+     * @return The specified {@link #testMode} {@link TestMode}.
+     */
+    @NotNull
+    public TestMode testMode() {
+        return testMode;
+    }
+
+    /**
+     * Get the associated {@link LocalizerType} instance.
+     * @return {@link LocalizerType} instance.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #NOT_AVAILABLE
+     */
+    @NotNull
+    public LocalizerType localizer() {
+        WeakReference<LocalizerType> weak = localizer;
+        LocalizerType ref;
+
+        if (ObjectUtil.nonNull(weak) && ObjectUtil.nonNull((ref = weak.get()))) {
+            return ref;
+        } else {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
+     * {@link #PROCESS_RUNNER}.
+     * @return {@link #PROCESS_RUNNER}.
+     * @see #PROCESS_RUNNER
+     */
+    @NotNull
+    public ProcessRunner processRunner() {
+        return PROCESS_RUNNER;
+    }
+
+    /**
+     * Return {@link #NETWORK_HANDLER}. This method can be used to stub out
+     * {@link #NETWORK_HANDLER}.
+     * @return {@link #NETWORK_HANDLER}.
+     * @see #NETWORK_HANDLER
+     */
+    @NotNull
+    public NetworkHandler networkHandler() {
+        return NETWORK_HANDLER;
+    }
+
+    /**
+     * Get the active {@link D} {@link #driver}.
+     * @return {@link D} {@link #driver}.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #driver
+     */
+    @NotNull
+    public D driver() {
+        if (ObjectUtil.nonNull(driver)) {
+            return driver;
+        } else {
+            throw new RuntimeException(DRIVER_UNAVAILABLE);
+        }
+    }
+
+    /**
+     * Get page source from {@link WebDriver}.
+     * @return {@link String} value.
+     * @see #driver()
+     * @see WebDriver#getPageSource()
+     */
+    @NotNull
+    public String pageSource() {
+        return driver().getPageSource();
+    }
+
+    /**
+     * Get the associated {@link PlatformView}.
+     * @return {@link PlatformView} instance.
+     */
+    @NotNull
+    public abstract PlatformView platformView();
+    //endregion
+
+    //region Setters
+    /**
+     * Set {@link #localizer}. Usually this is set when {@link Engine} is
+     * added to {@link org.swiften.xtestkit.kit.TestKit}.
+     * @param delegate {@link LocalizerType} instance.
+     * @see #localizer
+     */
+    public void setLocalizer(@NotNull LocalizerType delegate) {
+        localizer = new WeakReference<>(delegate);
+    }
+    //endregion
 
     //region DistinctiveType
     /**
@@ -154,7 +299,7 @@ public abstract class Engine<D extends WebDriver> implements
      */
     @NotNull
     public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
-        if (serverAddress().isLocalInstance()) {
+        if (address().isLocalInstance()) {
             return rx_startLocalAppium(param);
         }
 
@@ -175,7 +320,7 @@ public abstract class Engine<D extends WebDriver> implements
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
         NetworkHandler HANDLER = networkHandler();
-        Address ADDRESS = serverAddress();
+        Address ADDRESS = address();
 
         Flowable<Boolean> reusePort = Completable
             .fromAction(() -> HANDLER.markPortAsAvailable(ADDRESS.port()))
@@ -265,7 +410,7 @@ public abstract class Engine<D extends WebDriver> implements
     @SuppressWarnings("unchecked")
     public void startAppiumOnNewThread(@NotNull final String CLI) {
         final ProcessRunner RUNNER = processRunner();
-        final Address ADDRESS = serverAddress();
+        final Address ADDRESS = address();
         final NetworkHandler NETWORK_HANDLER = networkHandler();
 
         NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
@@ -315,7 +460,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rx_stopLocalAppium() {
         NetworkHandler handler = networkHandler();
-        Address address = serverAddress();
+        Address address = address();
         return handler.rxKillWithPort(address, this::isAppiumProcess);
     }
 
@@ -361,159 +506,6 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public String cm_startLocalAppium(@NotNull String cli, int port) {
         return AppiumCommand.builder().withBase(cli).withPort(port).build().command();
-    }
-    //endregion
-
-    //region Getters
-    public CapType capabilityType() {
-        if (ObjectUtil.nonNull(capability)) {
-            return capability;
-        } else {
-            throw new RuntimeException(CAPABILITY_UNAVAILABLE);
-        }
-    }
-
-    /**
-     * Return {@link #serverAddress}.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public Address serverAddress() {
-        return serverAddress;
-    }
-
-    /**
-     * Get the {@link #serverAddress()} uri address.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public String serverUri() {
-        return serverAddress().uri();
-    }
-
-    /**
-     * Return {@link #browserName}.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public String browserName() {
-        return browserName;
-    }
-
-    /**
-     * Return {@link #platformName}.
-     * @return {@link String} value.
-     * @see PlatformContainerType#platformName()
-     * @see #platformName
-     */
-    @NotNull
-    @Override
-    public String platformName() {
-        return platformName;
-    }
-
-    /**
-     * Return {@link #testMode}. This can be stubbed out for custom
-     * implementation.
-     * @return The specified {@link #testMode} {@link TestMode}.
-     */
-    @NotNull
-    public TestMode testMode() {
-        return testMode;
-    }
-
-    /**
-     * Get the associated {@link LocalizerType} instance.
-     * @return {@link LocalizerType} instance.
-     */
-    @NotNull
-    public LocalizerType localizer() {
-        WeakReference<LocalizerType> td = localizer;
-
-        LocalizerType ref;
-
-        if (ObjectUtil.nonNull(td) && ObjectUtil.nonNull((ref = td.get()))) {
-            return ref;
-        } else {
-            throw new RuntimeException(LOCALIZER_UNAVAILABLE);
-        }
-    }
-
-    /**
-     * Return {@link #PROCESS_RUNNER}. This method can be used to stub out
-     * {@link #PROCESS_RUNNER}.
-     * @return {@link #PROCESS_RUNNER}.
-     * @see #PROCESS_RUNNER
-     */
-    @NotNull
-    public ProcessRunner processRunner() {
-        return PROCESS_RUNNER;
-    }
-
-    /**
-     * Return {@link #NETWORK_HANDLER}. This method can be used to stub out
-     * {@link #NETWORK_HANDLER}.
-     * @return {@link #NETWORK_HANDLER}.
-     * @see #NETWORK_HANDLER
-     */
-    @NotNull
-    public NetworkHandler networkHandler() {
-        return NETWORK_HANDLER;
-    }
-
-    /**
-     * Get the active {@link D} {@link #driver}.
-     * @return {@link D} {@link #driver}.
-     * @see ObjectUtil#nonNull(Object)
-     * @see #driver
-     */
-    @NotNull
-    public D driver() {
-        if (ObjectUtil.nonNull(driver)) {
-            return driver;
-        } else {
-            throw new RuntimeException(DRIVER_UNAVAILABLE);
-        }
-    }
-
-    /**
-     * Get page source from {@link WebDriver}.
-     * @return {@link String} value.
-     * @see #driver()
-     * @see WebDriver#getPageSource()
-     */
-    @NotNull
-    public String pageSource() {
-        return driver().getPageSource();
-    }
-
-    /**
-     * Get the current {@link PlatformView}, or throw {@link Exception} if
-     * it is not found.
-     * @return {@link PlatformView} instance.
-     * @see ObjectUtil#nonNull(Object)
-     * @see #platformView
-     */
-    @NotNull
-    public PlatformView platformView() {
-        if (ObjectUtil.nonNull(platformView)) {
-            return platformView;
-        } else {
-            throw new RuntimeException(PLATFORM_VIEW_UNAVAILABLE);
-        }
-    }
-    //endregion
-
-    //region Setters
-
-    /**
-     * Set {@link #localizer}. Usually this is set when {@link Engine} is
-     * added to {@link org.swiften.xtestkit.kit.TestKit}.
-     * @param delegate {@link LocalizerType} instance.
-     * @see #localizer
-     */
-    public void setLocalizer(@NotNull LocalizerType delegate) {
-        localizer = new WeakReference<>(delegate);
     }
     //endregion
 
@@ -612,38 +604,14 @@ public abstract class Engine<D extends WebDriver> implements
         }
 
         /**
-         * Set the {@link #ENGINE#platformView} value.
-         * @param platformView {@link PlatformView} instance.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withPlatformView(@NotNull PlatformView platformView) {
-            ENGINE.platformView = platformView;
-            return this;
-        }
-
-        /**
-         * Set the {@link #ENGINE#serverAddress}. This {@link String} represents
+         * Set the {@link #ENGINE#address}. This {@link String} represents
          * the Appium server address.
          * @param address {@link Address} instance.
          * @return The current {@link Builder} instance.
          */
         @NotNull
         public Builder<T> withServerUrl(@NotNull Address address) {
-            ENGINE.serverAddress = address;
-            return this;
-        }
-
-        /**
-         * Same as above, but use {@link org.swiften.xtestkit.mobile.Platform} instance.
-         * @param platform {@link PlatformType} instance.
-         * @return The current {@link MobileEngine.Builder} instance.
-         * @see CapType.Builder#withPlatform(PlatformType)
-         */
-        @NotNull
-        public Builder<T> withPlatform(@NotNull PlatformType platform) {
-            ENGINE.platformName =  platform.value();
-            CAP_BUILDER.withPlatform(platform);
+            ENGINE.address = address;
             return this;
         }
 

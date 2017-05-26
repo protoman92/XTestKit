@@ -14,10 +14,10 @@ import org.openqa.selenium.WebElement;
 public interface BaseInputActionDelayType {
     /**
      * Get the delay interval for
-     * {@link BaseInputActionType#rx_toggleNextOrDoneInput(WebElement)}
+     * {@link BaseInputActionType#rx_toggleNextOrFinishInput(WebElement)}
      * so that the app has time to adjust its views.
      * @return {@link Long} value.
-     * @see BaseInputActionType#rx_toggleNextOrDoneInput(WebElement)
+     * @see BaseInputActionType#rx_toggleNextOrFinishInput(WebElement)
      */
     default long consecutiveNextToggleDelay() {
         return 1000;

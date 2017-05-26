@@ -15,10 +15,10 @@ import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.general.param.*;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
 import org.swiften.xtestkit.base.element.property.base.FormatType;
 import org.swiften.xtestkit.base.element.property.base.StringType;
 import org.swiften.xtestkit.base.element.property.sub.ContainsIDType;
@@ -36,6 +36,7 @@ import java.util.List;
 public interface BaseLocatorType<D extends WebDriver> extends
     DriverContainerType<D>,
     LocalizerContainerType,
+    BaseElementPropertyType,
     BaseLocatorErrorType,
     PlatformContainerType,
     PlatformViewContainerType
@@ -522,8 +523,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
-     * @see #rx_editable()
      * @see WebElement#clear()
+     * @see #rx_editable()
      */
     @NotNull
     default Flowable<Boolean> rx_clearAllEditableElements() {
@@ -531,6 +532,25 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .flatMapCompletable(a -> Completable.fromAction(a::clear))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
+    }
+
+    /**
+     * Get the currently focused {@link BaseViewType#isEditable()} field.
+     * @return {@link Flowable} instance.
+     * @see #isFocused(WebElement)
+     * @see #rx_editable()
+     */
+    @NotNull
+    default Flowable<WebElement> rx_currentlyFocusedEditable() {
+        final BaseLocatorType<?> THIS = this;
+        return rx_editable()
+            .filter(a -> {
+                LogUtil.println(">>>>>>>>>>>>>>", THIS.isFocused(a));
+                return THIS.isFocused(a);
+            })
+            .doOnNext(LogUtil::println)
+            .firstElement().toFlowable()
+            .doOnNext(LogUtil::println);
     }
     //endregion
 }

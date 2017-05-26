@@ -3,7 +3,6 @@ package org.swiften.xtestkit.base.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 
 import java.util.concurrent.Callable;
@@ -42,5 +41,16 @@ public interface DriverContainerType<D extends WebDriver> {
 //            LogUtil.println(THIS.driver().getPageSource());
             return new Exception(error);
         });
+    }
+
+    /**
+     * Same as above, but uses an empty {@link String} error.
+     * @param <T> Generics parameter.
+     * @return {@link Flowable} instance.
+     * @see #rx_errorWithPageSource(String)
+     */
+    @NotNull
+    default <T> Flowable<T> rx_errorWithPageSource() {
+        return rx_errorWithPageSource("");
     }
 }

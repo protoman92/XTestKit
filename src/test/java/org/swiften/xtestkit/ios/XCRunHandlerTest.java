@@ -1,22 +1,19 @@
 package org.swiften.xtestkit.ios;
 
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.ios.param.StartSimulatorParam;
-import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.ios.param.StartSimulatorParam;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -32,7 +29,7 @@ public final class XCRunHandlerTest {
     @NotNull private final String DEVICE_UID;
 
     {
-        XC_HANDLER = spy(XCRunHandler.builder().build());
+        XC_HANDLER = spy(new XCRunHandler());
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(ProcessRunner.builder().build());

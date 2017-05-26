@@ -17,11 +17,6 @@ import java.util.concurrent.TimeUnit;
  * Created by haipham on 4/8/17.
  */
 public class XCRunHandler implements XCRunDelayType {
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
-    }
-
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
     XCRunHandler() {
@@ -301,17 +296,4 @@ public class XCRunHandler implements XCRunDelayType {
         return processRunner.rxExecute(command).map(a -> true);
     }
     //endregion
-
-    public static final class Builder {
-        @NotNull private final XCRunHandler HANDLER;
-
-        Builder() {
-            HANDLER = new XCRunHandler();
-        }
-
-        @NotNull
-        public XCRunHandler build() {
-            return HANDLER;
-        }
-    }
 }

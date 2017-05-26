@@ -17,22 +17,19 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseCap implements CapType, BaseErrorType {
-    @Nullable PlatformType platform;
+public abstract class BaseCapability implements CapType, BaseErrorType {
     @Nullable TestMode testMode;
 
-    protected BaseCap() {}
+    protected BaseCapability() {}
 
-    //region CapType.
+    //region CapType
+    /**
+     * Override this method to provide specific {@link PlatformType}.
+     * @return {@link PlatformType} instance.
+     */
     @NotNull
     @Override
-    public PlatformType platform() {
-        if (ObjectUtil.nonNull(platform)) {
-            return platform;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
+    public abstract PlatformType platform();
 
     @NotNull
     @Override
@@ -69,20 +66,14 @@ public abstract class BaseCap implements CapType, BaseErrorType {
 
     //region Builder
     /**
-     * Builder class for {@link BaseCap}.
-     * @param <C> Generics that extends {@link BaseCap}.
+     * Builder class for {@link BaseCapability}.
+     * @param <C> Generics that extends {@link BaseCapability}.
      */
-    public static class Builder<C extends BaseCap> implements CapType.Builder {
+    public static class Builder<C extends BaseCapability> implements CapType.Builder {
         @NotNull private final C CAPABILITY;
 
         protected Builder(@NotNull C capability) {
             CAPABILITY = capability;
-        }
-
-        @NotNull
-        public Builder<C> withPlatform(@NotNull PlatformType platform) {
-            CAPABILITY.platform = platform;
-            return this;
         }
 
         @NotNull

@@ -44,7 +44,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     private final int ANIM_DISABLE_CMD_COUNT;
 
     {
-        ADB_HANDLER = spy(ADBHandler.builder().build());
+        ADB_HANDLER = spy(new ADBHandler());
 
         /* We return this networkHandler when calling
          * ADB_HANDLER.networkHandler() */

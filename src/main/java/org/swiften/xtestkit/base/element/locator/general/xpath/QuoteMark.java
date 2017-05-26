@@ -12,18 +12,18 @@ import java.util.Optional;
 /**
  * Use this with {@link XPath.QuotationFree} to strip quotation marks.
  */
-public enum XPathQuoteMark implements AttributeType<String> {
+public enum QuoteMark implements AttributeType<String> {
     SINGLE,
     DOUBLE;
 
     /**
-     * Return {@link XPathQuoteMark} from a quotation mark.
+     * Return {@link QuoteMark} from a quotation mark.
      * @param quote {@link String} value.
-     * @return {@link XPathQuoteMark} instance wrapped in {@link Optional}.
+     * @return {@link QuoteMark} instance wrapped in {@link Optional}.
      */
     @NotNull
-    public static Optional<XPathQuoteMark> from(@NotNull String quote) {
-        for (XPathQuoteMark qm : values()) {
+    public static Optional<QuoteMark> from(@NotNull String quote) {
+        for (QuoteMark qm : values()) {
             if (qm.value().equals(quote)) {
                 return Optional.of(qm);
             }
@@ -51,7 +51,7 @@ public enum XPathQuoteMark implements AttributeType<String> {
      */
     @NotNull
     public static String wrapInQuotation(@NotNull String value) {
-        Optional<XPathQuoteMark> qm = from(value);
+        Optional<QuoteMark> qm = from(value);
 
         if (qm.isPresent()) {
             return qm.get().wrappedInQuotation();

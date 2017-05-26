@@ -2,9 +2,8 @@ package org.swiften.xtestkit.mobile.capability;
 
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.capability.BaseCap;
+import org.swiften.xtestkit.base.capability.BaseCapability;
 
 import java.io.File;
 import java.util.*;
@@ -12,7 +11,15 @@ import java.util.*;
 /**
  * Created by haipham on 5/7/17.
  */
-public class MobileCap extends BaseCap {
+
+/**
+ * Extend this class to provide specific capabilities for mobile platforms.
+ */
+public abstract class MobileCapability extends BaseCapability {
+    /**
+     * @return {@link List} of {@link String}.
+     * @see BaseCapability#requiredCapabilities()
+     */
     @NotNull
     @Override
     public List<String> requiredCapabilities() {
@@ -29,6 +36,13 @@ public class MobileCap extends BaseCap {
         return parent;
     }
 
+    /**
+     * @param capabilities {@link Map} instance.
+     * @return {@link Map} instance.
+     * @see BaseCapability#distill(Map)
+     * @see TestMode#isTestingOnActualEnvironment()
+     * @see #testMode()
+     */
     @NotNull
     public Map<String,Object> distill(@NotNull Map<String,Object> capabilities) {
         Map<String,Object> result = new HashMap<>(super.distill(capabilities));
@@ -61,10 +75,10 @@ public class MobileCap extends BaseCap {
 
     //region Builder
     /**
-     * Builder class for {@link MobileCap}.
-     * @param <C> Generics parameter that extends {@link MobileCap}.
+     * Builder class for {@link MobileCapability}.
+     * @param <C> Generics parameter that extends {@link MobileCapability}.
      */
-    public static class Builder<C extends MobileCap> extends BaseCap.Builder<C> {
+    public static class Builder<C extends MobileCapability> extends BaseCapability.Builder<C> {
         protected Builder(@NotNull C capability) {
             super(capability);
         }

@@ -1,6 +1,5 @@
 package org.swiften.xtestkit.android;
 
-import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -8,11 +7,13 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.testng.annotations.*;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Created by haipham on 4/9/17.
@@ -22,7 +23,7 @@ public final class ActualADBHandlerTest {
     @NotNull private final RetryType RETRY;
 
     {
-        ADB_HANDLER = spy(ADBHandler.builder().build());
+        ADB_HANDLER = spy(new ADBHandler());
         RETRY = mock(RetryType.class);
     }
 
