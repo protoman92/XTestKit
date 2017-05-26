@@ -64,7 +64,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
         return Flowable.just(XPATH)
             .subscribeOn(Schedulers.computation())
             .observeOn(Schedulers.computation())
-//            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
+            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
             .concatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */

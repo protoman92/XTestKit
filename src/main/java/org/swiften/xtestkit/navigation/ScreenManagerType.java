@@ -278,8 +278,8 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
      * @see ScreenType.Navigation#navigator(Object)
      */
     @NotNull
-    default Flowable<?> rx_navigate(@NotNull Object initial,
-                                    @NotNull ScreenType...screens) {
+    default Flowable<?> rxa_navigate(@NotNull Object initial,
+                                     @NotNull ScreenType...screens) {
         final List<Node> NODES = multipleShortest(screens);
         final int LENGTH = NODES.size();
 

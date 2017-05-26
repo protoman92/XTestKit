@@ -94,7 +94,7 @@ public class NavigationTest implements ScreenManagerType {
                     try {
                         // When
                         List<Node> nodes = multipleShortest(current, screen);
-                        Flowable<?> navigator = rx_navigate(true, current, screen);
+                        Flowable<?> navigator = rxa_navigate(true, current, screen);
                         LogUtil.println(nodes);
 
                         // Then
