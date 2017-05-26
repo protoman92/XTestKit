@@ -57,14 +57,14 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default Flowable<WebElement> rx_byXPath(@NotNull ByXPath param) {
+    default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath param) {
         final WebDriver DRIVER = driver();
         final String XPATH = param.xPath();
 
         return Flowable.just(XPATH)
             .subscribeOn(Schedulers.computation())
             .observeOn(Schedulers.computation())
-            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
+//            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
             .concatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */
@@ -80,7 +80,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
     /**
      * Get an error {@link Flowable} to be used when
-     * {@link #rx_byXPath(ByXPath...)} fails to emit any {@link WebElement}.
+     * {@link #rxe_byXPath(ByXPath...)} fails to emit any {@link WebElement}.
      * We need to aggregate all error messages from the
      * {@link ByXPath} varargs parameter.
      * @param param A varargs of {@link ByXPath} instances.
@@ -111,16 +111,16 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * platforms.
      * @param param A varargs of {@link ByXPath} instances.
      * @return {@link Flowable} instance.
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      * @see #rx_xPathQueryFailure(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default Flowable<WebElement> rx_byXPath(@NotNull ByXPath...param) {
+    default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
-            .flatMap(a -> THIS.rx_byXPath(a).onErrorResumeNext(Flowable.empty()))
+            .flatMap(a -> THIS.rxe_byXPath(a).onErrorResumeNext(Flowable.empty()))
             .toList().toFlowable()
             .flatMap(Flowable::fromIterable)
             .switchIfEmpty(rx_xPathQueryFailure(param));
@@ -145,17 +145,17 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link XPath}.
      * @return {@link Flowable} instance.
      * @see #withXPathQuery(XPath)
-     * @see #rx_byXPath(ByXPath...)
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
-    default Flowable<WebElement> rx_withXPath(@NotNull XPath...param) {
+    default Flowable<WebElement> rxe_withXPath(@NotNull XPath...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::withXPathQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_byXPath);
+            .flatMap(THIS::rxe_byXPath);
     }
     //endregion
 
@@ -188,7 +188,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #ofClassQuery(OfClassType)
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -199,7 +199,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(THIS::ofClassQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_byXPath);
+            .flatMap(THIS::rxe_byXPath);
     }
 
     /**
@@ -250,11 +250,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link IdParam} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends ContainsIDType & RetryType> Flowable<WebElement> rx_containsID(@NotNull P...param) {
+    default <P extends ContainsIDType & RetryType> Flowable<WebElement> rxe_containsID(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -262,17 +262,17 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(THIS::containsIDQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_byXPath);
+            .flatMap(THIS::rxe_byXPath);
     }
 
     /**
      * Same as above, but uses default {@link IdParam}.
      * @param id A vararg of {@link String} values.
      * @return {@link Flowable} instance.
-     * @see #rx_containsID(ContainsIDType[])
+     * @see #rxe_containsID(ContainsIDType[])
      */
     @NotNull
-    default Flowable<WebElement> rx_containsID(@NotNull String...id) {
+    default Flowable<WebElement> rxe_containsID(@NotNull String...id) {
         final BaseLocatorType THIS = this;
 
         return Flowable
@@ -280,7 +280,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> IdParam.builder().withId(a).build())
             .toList().map(a -> a.toArray(new IdParam[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_containsID);
+            .flatMap(THIS::rxe_containsID);
     }
     //endregion
 
@@ -324,7 +324,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #hasTextQuery(StringType)
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -336,7 +336,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(THIS::hasTextQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_byXPath);
+            .flatMap(THIS::rxe_byXPath);
     }
 
     /**
@@ -400,11 +400,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #containsTextQuery(StringType)
-     * @see #rx_byXPath(ByXPath...)
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement> rx_containsText(@NotNull P...param) {
+    default <P extends StringType & RetryType> Flowable<WebElement> rxe_containsText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -412,7 +412,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(THIS::containsTextQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_byXPath);
+            .flatMap(THIS::rxe_byXPath);
     }
 
     /**
@@ -421,17 +421,17 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param text A vararg of {@link String} values.
      * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
-     * @see #rx_containsText(StringType[])
+     * @see #rxe_containsText(StringType[])
      */
     @NotNull
-    default Flowable<WebElement> rx_containsText(@NotNull String...text) {
+    default Flowable<WebElement> rxe_containsText(@NotNull String...text) {
         final BaseLocatorType<?> THIS = this;
         return Flowable
             .fromArray(text)
             .map(a -> TextParam.builder().withText(a).build())
             .toList().map(a -> a.toArray(new TextParam[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_containsText);
+            .flatMap(THIS::rxe_containsText);
     }
 
     /**
@@ -461,18 +461,18 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #containsTextQuery(FormatType)
-     * @see #rx_containsText(StringType[])
+     * @see #rxe_containsText(StringType[])
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends FormatType & RetryType> Flowable<WebElement> rx_containsText(@NotNull P...param) {
+    default <P extends FormatType & RetryType> Flowable<WebElement> rxe_containsText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::containsTextQuery)
             .toList().map(a -> a.toArray(new TextParam[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_containsText);
+            .flatMap(THIS::rxe_containsText);
     }
 
     /**
@@ -480,10 +480,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param format A vararg of {@link LCFormat} instances.
      * @return {@link Flowable} instance.
      * @see TextFormatParam.Builder#withLCFormat(LCFormat)
-     * @see #rx_containsText(FormatType[])
+     * @see #rxe_containsText(FormatType[])
      */
     @NotNull
-    default Flowable<WebElement> rx_containsText(@NotNull LCFormat...format) {
+    default Flowable<WebElement> rxe_containsText(@NotNull LCFormat...format) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -491,7 +491,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> TextFormatParam.builder().withLCFormat(a).build())
             .toList().map(a -> a.toArray(new TextFormatParam[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_containsText);
+            .flatMap(THIS::rxe_containsText);
     }
     //endregion
 
@@ -501,7 +501,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see #platformView()
      * @see #platform()
-     * @see #rx_byXPath(ByXPath...)
+     * @see #rxe_byXPath(ByXPath...)
      * @see PlatformView#isEditable()
      * @see XPath.Builder#ofClass(String)
      * @see ByXPath.Builder#withXPath(XPath)
@@ -517,7 +517,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> ByXPath.builder().withXPath(a).build())
             .toArray(ByXPath[]::new);
 
-        return rx_byXPath(queries);
+        return rxe_byXPath(queries);
     }
 
     /**
@@ -544,10 +544,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     default Flowable<WebElement> rx_currentlyFocusedEditable() {
         final BaseLocatorType<?> THIS = this;
         return rx_editable()
-            .filter(a -> {
-                LogUtil.println(">>>>>>>>>>>>>>", THIS.isFocused(a));
-                return THIS.isFocused(a);
-            })
+            .filter(THIS::isFocused)
             .doOnNext(LogUtil::println)
             .firstElement().toFlowable()
             .doOnNext(LogUtil::println);

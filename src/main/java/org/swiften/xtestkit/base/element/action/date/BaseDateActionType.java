@@ -47,7 +47,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * user is in a calendar view.
      * @param param {@link DateType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_containsText(String...)
+     * @see #rxe_containsText(String...)
      * @see #dayString(DateType)
      * @see #monthString(DateType)
      * @see #yearString(DateType)
@@ -58,9 +58,9 @@ public interface BaseDateActionType<D extends WebDriver> extends
     default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
         return Maybe
             .mergeArray(
-                rx_containsText(dayString(param)).firstElement(),
-                rx_containsText(monthString(param)).firstElement(),
-                rx_containsText(yearString(param)).firstElement()
+                rxe_containsText(dayString(param)).firstElement(),
+                rxe_containsText(monthString(param)).firstElement(),
+                rxe_containsText(yearString(param)).firstElement()
             )
             .all(ObjectUtil::nonNull)
             .toFlowable();
@@ -122,12 +122,12 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see #datePickerType()
      * @see DatePickerType#pickerViewXPath(CalendarUnit)
-     * @see #rx_withXPath(XPath...)
+     * @see #rxe_withXPath(XPath...)
      */
     @NotNull
     default Flowable<WebElement> rx_pickerView(@NotNull CalendarUnit unit) {
         XPath xPath = datePickerType().pickerViewXPath(unit);
-        return rx_withXPath(xPath).firstElement().toFlowable();
+        return rxe_withXPath(xPath).firstElement().toFlowable();
     }
 
     /**
@@ -136,7 +136,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see #datePickerType()
      * @see DatePickerContainerType.DatePickerType#unitLabelViewXPath(CalendarUnit)
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rx_elementLabel(@NotNull CalendarUnit unit) {
@@ -145,7 +145,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
          * resulting WebElement may not be the one we are looking for */
         XPath xPath = datePickerType().unitLabelViewXPath(unit);
         ByXPath param = ByXPath.builder().withXPath(xPath).build();
-        return rx_byXPath(param).firstElement().toFlowable();
+        return rxe_byXPath(param).firstElement().toFlowable();
     }
 
     /**

@@ -182,7 +182,7 @@ public interface AndroidDateActionType extends
             @NotNull
             @Override
             public Flowable<Boolean> rx_shouldKeepSwiping() {
-                return THIS.rx_byXPath(QUERY)
+                return THIS.rxe_byXPath(QUERY)
                     /* Sometimes the driver will get the wrong element. In
                      * this case, keep scrolling so that in the next scroll,
                      * the element we are interested in gets more focus and
@@ -190,7 +190,7 @@ public interface AndroidDateActionType extends
                      * scroll low in order to catch potential oddities like
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
-                    .flatMap(THIS::rx_click)
+                    .flatMap(THIS::rxa_click)
                     .map(BooleanUtil::toTrue);
             }
 
@@ -232,7 +232,7 @@ public interface AndroidDateActionType extends
      * Open the year picker.
      * @return {@link Flowable} instance.
      * @see #rx_elementLabel(CalendarUnit)
-     * @see #rx_click(WebElement)
+     * @see #rxa_click(WebElement)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
@@ -240,7 +240,7 @@ public interface AndroidDateActionType extends
         final AndroidDateActionType THIS = this;
 
         return rx_elementLabel(CalendarUnit.YEAR)
-            .flatMap(THIS::rx_click)
+            .flatMap(THIS::rxa_click)
             .map(BooleanUtil::toTrue);
     }
 
@@ -334,13 +334,13 @@ public interface AndroidDateActionType extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DatePickerType#pickerItemXPath(CalendarUnit)
-     * @see #rx_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
     default Flowable<WebElement> rx_listViewItems(@NotNull CalendarUnit unit) {
         XPath xPath = datePickerType().pickerItemXPath(unit);
         ByXPath query = ByXPath.builder().withXPath(xPath).build();
-        return rx_byXPath(query);
+        return rxe_byXPath(query);
     }
     //endregion
 }

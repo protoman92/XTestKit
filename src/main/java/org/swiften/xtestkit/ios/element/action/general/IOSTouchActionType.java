@@ -3,7 +3,6 @@ package org.swiften.xtestkit.ios.element.action.general;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileTouchActionType;
 
@@ -36,7 +35,6 @@ public interface IOSTouchActionType extends MobileTouchActionType {
     default void swipe(@NotNull MobileDriver<?> driver, @NotNull SwipeType param) {
         int startX = param.startX(), startY = param.startY();
         int endX = param.endX() - startX, endY = param.endY() - startY;
-        LogUtil.println(">>>>>>>>>>>>>>>>>>>>", startX, endX, startY, endY, "<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         new TouchAction(driver)
             .press(startX, startY)

@@ -167,7 +167,7 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
         ChoiceHelperType<?> engine = engine();
         ChoiceInputType input = choiceInput();
         PlatformType platform = engine.platform();
-        return engine.rx_withXPath(input.choicePickerItemXPath(platform));
+        return engine.rxe_withXPath(input.choicePickerItemXPath(platform));
     }
 
     /**
@@ -175,13 +175,13 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * @return {@link Flowable} instance.
      * @see #engine()
      * @see #targetChoiceItemQuery()
-     * @see ChoiceHelperType#rx_byXPath(ByXPath...)
+     * @see ChoiceHelperType#rxe_byXPath(ByXPath...)
      */
     @NotNull
     default Flowable<WebElement> rx_targetChoiceItem() {
         ChoiceHelperType<?> engine = engine();
         ByXPath query = targetChoiceItemQuery();
-        return engine.rx_byXPath(query).firstElement().toFlowable();
+        return engine.rxe_byXPath(query).firstElement().toFlowable();
     }
 
     /**
@@ -206,11 +206,11 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * @param element {@link WebElement} instance that is displaying the
      *                selected choice.
      * @return {@link Flowable} instance.
-     * @see ChoiceHelperType#rx_click(WebElement)
+     * @see ChoiceHelperType#rxa_click(WebElement)
      */
     @NotNull
     default Flowable<?> rx_onTargetItemLocated(@NotNull WebElement element) {
-        return engine().rx_click(element);
+        return engine().rxa_click(element);
     }
 
     /**
@@ -254,7 +254,7 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
         PlatformType platform = engine.platform();
 
         return engine
-            .rx_withXPath(input.choicePickerXPath(platform))
+            .rxe_withXPath(input.choicePickerXPath(platform))
             .firstElement()
             .toFlowable();
     }

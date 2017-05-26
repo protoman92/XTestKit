@@ -75,7 +75,7 @@ public class BaseActionTest implements BaseActionType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_acceptAlert().subscribe(subscriber);
+        ENGINE.rxa_acceptAlert().subscribe(subscriber);
 
         // Then
         subscriber.assertSubscribed();
@@ -83,8 +83,8 @@ public class BaseActionTest implements BaseActionType {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(ENGINE).driver();
-        verify(ENGINE).rx_acceptAlert();
-        verify(ENGINE).rx_dismissAlert(any(AlertParam.class));
+        verify(ENGINE).rxa_acceptAlert();
+        verify(ENGINE).rxa_dismissAlert(any(AlertParam.class));
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion
@@ -104,7 +104,7 @@ public class BaseActionTest implements BaseActionType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_navigateBack(param).subscribe(subscriber);
+        ENGINE.rxa_navigateBack(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -112,8 +112,8 @@ public class BaseActionTest implements BaseActionType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(ENGINE, times(times)).rx_navigateBackOnce();
-        verify(ENGINE).rx_navigateBack(any());
+        verify(ENGINE, times(times)).rxa_navigateBackOnce();
+        verify(ENGINE).rxa_navigateBack(any());
         verify(ENGINE, atLeastOnce()).driver();
         verify(NAVIGATION, times(times)).back();
         verifyNoMoreInteractions(ENGINE);

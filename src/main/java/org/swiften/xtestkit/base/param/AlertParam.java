@@ -10,7 +10,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 
 /**
  * Parameter object for
- * {@link Engine#rx_dismissAlert(AlertParam)}
+ * {@link Engine#rxa_dismissAlert(AlertParam)}
  */
 public class AlertParam implements RetryType {
     /**

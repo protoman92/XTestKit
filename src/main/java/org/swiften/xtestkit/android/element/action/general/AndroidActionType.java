@@ -37,18 +37,18 @@ public interface AndroidActionType extends
      * {@link AndroidDriver#findElementById(String)}.
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
-     * @see BaseActionType#rx_dismissAlert(AlertParam)
+     * @see BaseActionType#rxa_dismissAlert(AlertParam)
      * @see #driver()
      * @see WebDriver#findElement(By)
      * @see ObjectUtil#nonNull(Object)
-     * @see #rx_click(WebElement)
+     * @see #rxa_click(WebElement)
      * @see RxUtil#error(String)
      * @see #NO_SUCH_ELEMENT
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rx_dismissAlert(@NotNull AlertParam param) {
+    default Flowable<Boolean> rxa_dismissAlert(@NotNull AlertParam param) {
         final AndroidActionType THIS = this;
 
         return Flowable.just(param.shouldAccept())
@@ -57,7 +57,7 @@ public interface AndroidActionType extends
             .map(id -> driver().findElement(By.id(id)))
             .filter(ObjectUtil::nonNull)
             .switchIfEmpty(RxUtil.error(NO_SUCH_ELEMENT))
-            .flatMap(THIS::rx_click)
+            .flatMap(THIS::rxa_click)
             .map(BooleanUtil::toTrue);
     }
 }

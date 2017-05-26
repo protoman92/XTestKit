@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 /**
- * Parameter object for {@link Engine#rx_byXPath(ByXPath)}.
+ * Parameter object for {@link Engine#rxe_byXPath(ByXPath)}.
  */
 public class ByXPath implements BaseLocatorErrorType, RetryType {
     @NotNull

@@ -27,7 +27,7 @@ public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorTy
      * @see #hideKeyboard()
      */
     @NotNull
-    default Flowable<Boolean> rx_hideKeyboard() {
+    default Flowable<Boolean> rxa_hideKeyboard() {
         LogUtil.printfThread("Hiding keyboard for %s", this);
         return Completable.fromAction(this::hideKeyboard).<Boolean>toFlowable().defaultIfEmpty(true);
     }

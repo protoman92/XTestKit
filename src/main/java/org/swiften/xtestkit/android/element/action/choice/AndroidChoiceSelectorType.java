@@ -34,7 +34,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
      * @see ChoiceType#input()
      * @see ChoiceType#selectedChoice()
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
-     * @see ChoiceHelperType#rx_withXPath(XPath...)
+     * @see ChoiceHelperType#rxe_withXPath(XPath...)
      * @see AndroidChoiceSwipeSelectorType#rx_scrollViewChildCount()
      * @see AndroidChoiceSwipeSelectorType#rx_execute()
      */
@@ -56,7 +56,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
             @Override
             public Flowable<WebElement> rx_scrollableViewToSwipe() {
                 XPath xPath = INPUT.choicePickerXPath(PLATFORM);
-                return THIS.rx_withXPath(xPath).elementAt(INDEX).toFlowable();
+                return THIS.rxe_withXPath(xPath).elementAt(INDEX).toFlowable();
             }
 
             @NotNull

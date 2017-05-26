@@ -63,8 +63,6 @@ public interface BaseElementPropertyType extends BaseErrorType {
                                       @NotNull WebElement element2) {
         Point l1 = element1.getLocation(), l2 = element2.getLocation();
         Dimension d1 = element1.getSize(), d2 = element2.getSize();
-        LogUtil.println(l1, d1, element1.getText(), element1);
-        LogUtil.println(l2, d2, element1.getText(), element2);
         return l1.equals(l2) && d1.equals(d2);
     }
 

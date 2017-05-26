@@ -180,24 +180,24 @@ public class TestKit implements
      * @param text {@link String} value.
      * @param locale {@link Locale} instance.
      * @return {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LCFormat, Locale)
-     * @see Localizer#rxLocalize(LCFormat, Locale)
+     * @see LocalizerType#rxa_localize(LCFormat, Locale)
+     * @see Localizer#rxa_localize(LCFormat, Locale)
      */
     @NotNull
     @Override
-    public Flowable<String> rxLocalize(@NotNull String text, @Nullable Locale locale) {
-        return localizer().rxLocalize(text, locale);
+    public Flowable<String> rxa_localize(@NotNull String text, @Nullable Locale locale) {
+        return localizer().rxa_localize(text, locale);
     }
 
     /**
      * @param text {@link String} value.
      * @return {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LCFormat)
-     * @see Localizer#rxLocalize(LCFormat)
+     * @see LocalizerType#rxa_localize(LCFormat)
+     * @see Localizer#rxa_localize(LCFormat)
      */
     @Override
-    public Flowable<String> rxLocalize(@NotNull String text) {
-        return localizer().rxLocalize(text);
+    public Flowable<String> rxa_localize(@NotNull String text) {
+        return localizer().rxa_localize(text);
     }
 
     /**
@@ -228,26 +228,26 @@ public class TestKit implements
      * @param format {@link LCFormat} instance.
      * @param locale {@link Locale} instance.
      * @return {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LCFormat, Locale)
-     * @see Localizer#rxLocalize(LCFormat, Locale)
+     * @see LocalizerType#rxa_localize(LCFormat, Locale)
+     * @see Localizer#rxa_localize(LCFormat, Locale)
      */
     @NotNull
     @Override
-    public Flowable<String> rxLocalize(@NotNull LCFormat format,
-                                       @Nullable Locale locale) {
-        return localizer().rxLocalize(format, locale);
+    public Flowable<String> rxa_localize(@NotNull LCFormat format,
+                                         @Nullable Locale locale) {
+        return localizer().rxa_localize(format, locale);
     }
 
     /**
      * @param format {@link LCFormat} instance.
      * @return {@link Flowable} instance.
-     * @see LocalizerType#rxLocalize(LCFormat)
-     * @see Localizer#rxLocalize(LCFormat)
+     * @see LocalizerType#rxa_localize(LCFormat)
+     * @see Localizer#rxa_localize(LCFormat)
      */
     @NotNull
     @Override
-    public Flowable<String> rxLocalize(@NotNull LCFormat format) {
-        return localizer().rxLocalize(format);
+    public Flowable<String> rxa_localize(@NotNull LCFormat format) {
+        return localizer().rxa_localize(format);
     }
 
     /**

@@ -33,7 +33,7 @@ public interface BasePasswordActionType<D extends WebDriver> extends BaseElement
      * @see #togglePasswordMask(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rx_togglePasswordMask(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rxa_togglePasswordMask(@NotNull final WebElement ELEMENT) {
         final BasePasswordActionType THIS = this;
 
         return Completable

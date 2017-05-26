@@ -29,7 +29,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
      */
     @NotNull
-    default Flowable<Boolean> rx_implicitlyWait(@NotNull DelayType param) {
+    default Flowable<Boolean> rxa_implicitlyWait(@NotNull DelayType param) {
         final WebDriver.Timeouts TIMEOUTS = driver().manage().timeouts();
         final long DELAY = param.delay();
         final TimeUnit UNIT = param.timeUnit();
@@ -48,7 +48,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * @see #driver()
      */
     @NotNull
-    default Flowable<Boolean> rx_navigateBackOnce() {
+    default Flowable<Boolean> rxa_navigateBackOnce() {
         final WebDriver DRIVER = driver();
         final WebDriver.Navigation NAVIGATION = DRIVER.navigate();
 
@@ -64,10 +64,10 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
      * @return {@link Flowable} instance.
      * @see RepeatType#times()
      * @see RepeatType#delay()
-     * @see #rx_navigateBackOnce()
+     * @see #rxa_navigateBackOnce()
      */
     @NotNull
-    default Flowable<Boolean> rx_navigateBack(@NotNull RepeatType param) {
+    default Flowable<Boolean> rxa_navigateBack(@NotNull RepeatType param) {
         final BaseActionType<?> THIS = this;
         final int TIMES = param.times();
         final long DELAY = param.delay();
@@ -75,20 +75,21 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
         return Flowable
             .range(0, TIMES)
-            .concatMap(a -> THIS.rx_navigateBackOnce().delay(DELAY, UNIT));
+            .concatMap(a -> THIS.rxa_navigateBackOnce().delay(DELAY, UNIT));
     }
 
     /**
      * Dismiss a currently active alert. Either accept or reject.
      * @param PARAM {@link AlertParam} instance.
      * @return {@link Flowable} instance.
-     * @see WebDriver#switchTo()
-     * @see WebDriver.TargetLocator#alert()
      * @see Alert#accept()
      * @see Alert#dismiss()
+     * @see AlertParam#shouldAccept()
+     * @see WebDriver#switchTo()
+     * @see WebDriver.TargetLocator#alert()
      */
     @NotNull
-    default Flowable<Boolean> rx_dismissAlert(@NotNull final AlertParam PARAM) {
+    default Flowable<Boolean> rxa_dismissAlert(@NotNull final AlertParam PARAM) {
         final Alert ALERT = driver().switchTo().alert();
 
         return Completable
@@ -106,20 +107,24 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
     /**
      * Same as avove, but uses a default {@link AlertParam}.
      * @return {@link Flowable} instance.
-     * @see #rx_dismissAlert(AlertParam)
+     * @see AlertParam.Builder#accept()
+     * @see #rxa_dismissAlert(AlertParam)
      */
     @NotNull
-    default Flowable<Boolean> rx_acceptAlert() {
-        return rx_dismissAlert(AlertParam.builder().accept().build());
+    default Flowable<Boolean> rxa_acceptAlert() {
+        AlertParam param = AlertParam.builder().accept().build();
+        return rxa_dismissAlert(param);
     }
 
     /**
      * Same as above, but uses a default {@link AlertParam}.
      * @return {@link Flowable} instance.
-     * @see #rx_dismissAlert(AlertParam)
+     * @see AlertParam.Builder#reject()
+     * @see #rxa_dismissAlert(AlertParam)
      */
     @NotNull
-    default Flowable<Boolean> rx_rejectAlert() {
-        return rx_dismissAlert(AlertParam.builder().reject().build());
+    default Flowable<Boolean> rxa_rejectAlert() {
+        AlertParam param = AlertParam.builder().reject().build();
+        return rxa_dismissAlert(param);
     }
 }

@@ -82,7 +82,7 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_hideKeyboard().subscribe(subscriber);
+        ENGINE.rxa_hideKeyboard().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -92,8 +92,8 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
         verify(ADB_HANDLER).rx_checkKeyboardOpen(any());
         verify(ENGINE).adbHandler();
         verify(ENGINE).androidInstance();
-        verify(ENGINE).rx_hideKeyboard();
-        verify(ENGINE, never()).rx_navigateBack(any(NavigateBack.class));
+        verify(ENGINE).rxa_hideKeyboard();
+        verify(ENGINE, never()).rxa_navigateBack(any(NavigateBack.class));
         verifyNoMoreInteractions(ENGINE);
     }
 
@@ -102,11 +102,11 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
     public void test_dismissKeyboard_shouldSucceed() {
         // Setup
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rx_checkKeyboardOpen(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rx_navigateBackOnce();
+        doReturn(Flowable.just(true)).when(ENGINE).rxa_navigateBackOnce();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_hideKeyboard().subscribe(subscriber);
+        ENGINE.rxa_hideKeyboard().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -116,8 +116,8 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
         verify(ADB_HANDLER).rx_checkKeyboardOpen(any());
         verify(ENGINE).adbHandler();
         verify(ENGINE).androidInstance();
-        verify(ENGINE).rx_navigateBackOnce();
-        verify(ENGINE).rx_hideKeyboard();
+        verify(ENGINE).rxa_navigateBackOnce();
+        verify(ENGINE).rxa_hideKeyboard();
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

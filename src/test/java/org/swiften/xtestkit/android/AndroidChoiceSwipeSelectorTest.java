@@ -67,7 +67,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
         selected = String.valueOf(ITEMS.get(RAND.nextInt(ITEMS.size())).INDEX);
         doReturn(PLATFORM).when(ENGINE).platform();
         doReturn(Flowable.just(true)).when(ENGINE).rx_swipeOnce(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rx_click(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxa_click(any());
         doReturn(selected).when(SELECTOR).selectedChoice();
 
     }

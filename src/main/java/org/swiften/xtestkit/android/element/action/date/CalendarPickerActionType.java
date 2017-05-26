@@ -101,12 +101,12 @@ public interface CalendarPickerActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rx_displayedDate to check */
-                return THIS.rx_byXPath(DEF_QUERY)
+                return THIS.rxe_byXPath(DEF_QUERY)
                     .firstElement()
                     .toFlowable()
-                    .flatMap(THIS::rx_click)
-                    .flatMap(a -> THIS.rx_byXPath(QUERY))
-                    .flatMap(THIS::rx_click)
+                    .flatMap(THIS::rxa_click)
+                    .flatMap(a -> THIS.rxe_byXPath(QUERY))
+                    .flatMap(THIS::rxa_click)
                     .flatMap(a -> rx_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
             }

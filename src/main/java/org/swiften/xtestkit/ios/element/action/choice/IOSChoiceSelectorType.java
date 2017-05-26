@@ -41,7 +41,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
         XPath xPath = input.choicePickerXPath(platform);
 
         return ENGINE
-            .rx_withXPath(xPath)
+            .rxe_withXPath(xPath)
             .elementAt(index)
             .toFlowable()
             .flatMap(a -> ENGINE.rx_type(a, SELECTED))
