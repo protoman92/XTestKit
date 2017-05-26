@@ -372,7 +372,7 @@ public final class EngineTest implements EngineErrorType {
     interface TestChoiceSelectorType extends BaseChoiceSelectorType<WebDriver> {
         @NotNull
         @Override
-        default Flowable<Boolean> rx_selectGeneralChoice(@NotNull ChoiceType param) {
+        default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
     }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.model.ChoiceInputType;
 
 /**
- * Parameter object for {@link BaseChoiceSelectorType#rx_selectChoice(ChoiceType)}
+ * Parameter object for {@link BaseChoiceSelectorType#rxa_selectChoice(ChoiceType)}
  */
 public interface ChoiceType {
     /**

@@ -29,7 +29,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see BaseChoiceSelectorType#rx_selectGeneralChoice(ChoiceType)
+     * @see BaseChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
      * @see Platform#ANDROID
      * @see ChoiceType#input()
      * @see ChoiceType#selectedChoice()
@@ -39,7 +39,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
      * @see AndroidChoiceSwipeSelectorType#rx_execute()
      */
     @NotNull
-    default Flowable<Boolean> rx_selectGeneralChoice(@NotNull ChoiceType param) {
+    default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
         final AndroidChoiceSelectorType THIS = this;
         final Platform PLATFORM = Platform.ANDROID;
         final ChoiceInputType INPUT = param.input();

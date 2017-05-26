@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
 /**
  * Concrete class that implements {@link ChoiceType}.
  * Use this with
- * {@link BaseChoiceSelectorType#rx_selectChoice(ChoiceType)}.
+ * {@link BaseChoiceSelectorType#rxa_selectChoice(ChoiceType)}.
  */
 public class ChoiceParam implements ChoiceType, BaseErrorType {
     /**

@@ -22,7 +22,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see BaseChoiceSelectorType#rx_selectGeneralChoice(ChoiceType)
+     * @see BaseChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
      * @see Platform#IOS
      * @see ChoiceType#selectedChoice()
      * @see ChoiceType#input()
@@ -32,7 +32,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
-    default Flowable<Boolean> rx_selectGeneralChoice(@NotNull ChoiceType param) {
+    default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
         final ChoiceHelperType<?> ENGINE = this;
         final String SELECTED = param.selectedChoice();
         Platform platform = Platform.IOS;

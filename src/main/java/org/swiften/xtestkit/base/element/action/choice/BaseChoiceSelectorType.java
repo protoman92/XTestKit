@@ -19,16 +19,16 @@ public interface BaseChoiceSelectorType<D extends WebDriver> extends ChoiceHelpe
      * Select a choice using {@link ChoiceType}.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_selectGeneralChoice(ChoiceType)
+     * @see #rxa_selectGeneralChoice(ChoiceType)
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    default Flowable<Boolean> rx_selectChoice(@NotNull ChoiceType param) {
+    default Flowable<Boolean> rxa_selectChoice(@NotNull ChoiceType param) {
         ChoiceMode mode = param.mode();
 
         switch (mode) {
             case GENERAL:
-                return rx_selectGeneralChoice(param);
+                return rxa_selectGeneralChoice(param);
 
             default:
                 return RxUtil.error(NOT_AVAILABLE);
@@ -41,5 +41,5 @@ public interface BaseChoiceSelectorType<D extends WebDriver> extends ChoiceHelpe
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rx_selectGeneralChoice(@NotNull ChoiceType param);
+    Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param);
 }
