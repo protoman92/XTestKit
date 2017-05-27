@@ -28,17 +28,6 @@ import java.util.regex.Pattern;
 public class NetworkHandler implements NetworkHandlerType {
     @NotNull private static Collection<Integer> USED_PORTS;
 
-    static {
-        USED_PORTS = new HashSet<>();
-    }
-
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @NotNull private final ProcessRunner PROCESS_RUNNER;
-
     /**
      * This {@link AtomicBoolean} is used when
      * {@link #rxCheckUntilPortAvailable(PortType)} is called. Basically
@@ -46,11 +35,17 @@ public class NetworkHandler implements NetworkHandlerType {
      * how many are running in parallel. This is to avoid duplicate ports
      * marked as used.
      */
-    @NonNull private final AtomicBoolean ATOMIC_PORT_FLAG;
+    @NonNull private static final AtomicBoolean ATOMIC_PORT_FLAG;
 
-    NetworkHandler() {
-        PROCESS_RUNNER = ProcessRunner.builder().build();
+    static {
+        USED_PORTS = new HashSet<>();
         ATOMIC_PORT_FLAG = new AtomicBoolean(false);
+    }
+
+    @NotNull private final ProcessRunner PROCESS_RUNNER;
+
+    public NetworkHandler() {
+        PROCESS_RUNNER = new ProcessRunner();
     }
 
     //region Getters
@@ -250,19 +245,4 @@ public class NetworkHandler implements NetworkHandlerType {
             .doOnNext(THIS::markPortAsUsed)
             .doFinally(() -> ATOMIC_PORT_FLAG.getAndSet(false));
     }
-
-    //region Builder
-    public static final class Builder {
-        @NotNull private final NetworkHandler HANDLER;
-
-        Builder() {
-            HANDLER = new NetworkHandler();
-        }
-
-        @NotNull
-        public NetworkHandler build() {
-            return HANDLER;
-        }
-    }
-    //endregion
 }

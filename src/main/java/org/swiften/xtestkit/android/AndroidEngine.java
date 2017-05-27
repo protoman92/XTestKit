@@ -21,10 +21,7 @@ import org.swiften.xtestkit.android.element.action.password.AndroidPasswordActio
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.android.type.ADBHandlerContainerType;
-import org.swiften.xtestkit.android.type.AndroidErrorType;
-import org.swiften.xtestkit.android.type.AndroidInstanceContainerType;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.android.type.*;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
@@ -94,10 +91,10 @@ public class AndroidEngine extends
 //    //region TestListenerType
 //    @NotNull
 //    @Override
-//    public Flowable<Boolean> rx_onFreshStart() {
+//    public Flowable<Boolean> rxa_onFreshStart() {
 //        /* We restart adb server at the start of all test to avoid problems
 //         * with inactive adb instances */
-//        return super.rx_onFreshStart().flatMap(a -> ADB_HANDLER.rx_restartAdb());
+//        return super.rxa_onFreshStart().flatMap(a -> ADB_HANDLER.rx_restartAdb());
 //    }
 //    //endregion
 
@@ -401,6 +398,20 @@ public class AndroidEngine extends
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
             ANDROID_INSTANCE_BUILDER.withDeviceUID(uid);
+            return this;
+        }
+
+        /**
+         * Set {@link #platformVersion}.
+         * @param sdk {@link AndroidSDK} instance.
+         * @return {@link Builder} instance.
+         * @see AndroidSDK#version()
+         * @see #withPlatformVersion(String)
+         */
+        @NotNull
+        public Builder withSDK(@NotNull AndroidSDK sdk) {
+            String version = sdk.version();
+            withPlatformVersion(version);
             return this;
         }
 

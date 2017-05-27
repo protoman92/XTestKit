@@ -34,7 +34,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
         CAPABILITY = mock(IOSCapability.class);
 
         /* We spy this class to check for method calls */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+        PROCESS_RUNNER = spy(new ProcessRunner());
 
         /* Use this parameter when a RetryType is needed */
         RETRY = mock(RetryType.class);

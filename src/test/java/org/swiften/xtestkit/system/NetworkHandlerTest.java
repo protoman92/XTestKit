@@ -39,10 +39,10 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
     {
-        HANDLER = spy(NetworkHandler.builder().build());
+        HANDLER = spy(new NetworkHandler());
 
         /* Return this processRunner when we call HANDLER.processRunner() */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+        PROCESS_RUNNER = spy(new ProcessRunner());
     }
 
     @BeforeMethod

@@ -52,10 +52,10 @@ public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
 
     @BeforeClass
     public static void beforeClass() {
-        doReturn(Flowable.just(true)).when(LISTENER).rx_onFreshStart();
-        doReturn(Flowable.just(true)).when(LISTENER).rx_onBatchStarted(any());
-        doReturn(Flowable.just(true)).when(LISTENER).rx_onBatchFinished(any());
-        doReturn(Flowable.just(true)).when(LISTENER).rx_onAllTestsFinished();
+        doReturn(Flowable.just(true)).when(LISTENER).rxa_onFreshStart();
+        doReturn(Flowable.just(true)).when(LISTENER).rxa_onBatchStarted(any());
+        doReturn(Flowable.just(true)).when(LISTENER).rxa_onBatchFinished(any());
+        doReturn(Flowable.just(true)).when(LISTENER).rxa_onAllTestsFinished();
     }
 
     @AfterClass
@@ -73,10 +73,10 @@ public final class RepeatRuleTestRunner implements RepeatRunner.TestRunner {
         RUNNER.run();
 
         // Then
-        verify(LISTENER).rx_onFreshStart();
-        verify(LISTENER, atLeast(PARTITION_COUNT)).rx_onBatchStarted(any());
-        verify(LISTENER, atLeast(PARTITION_COUNT)).rx_onBatchFinished(any());
-        verify(LISTENER).rx_onAllTestsFinished();
+        verify(LISTENER).rxa_onFreshStart();
+        verify(LISTENER, atLeast(PARTITION_COUNT)).rxa_onBatchStarted(any());
+        verify(LISTENER, atLeast(PARTITION_COUNT)).rxa_onBatchFinished(any());
+        verify(LISTENER).rxa_onAllTestsFinished();
     }
     //endregion
 }

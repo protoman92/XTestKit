@@ -22,7 +22,7 @@ public final class ProcessRunnerTest {
     @NotNull private final ProcessRunner RUNNER;
 
     {
-        RUNNER = spy(ProcessRunner.builder().build());
+        RUNNER = spy(new ProcessRunner());
     }
 
     @AfterMethod

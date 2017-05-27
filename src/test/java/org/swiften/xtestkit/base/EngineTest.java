@@ -53,12 +53,12 @@ public final class EngineTest implements EngineErrorType {
         CAPABILITY = mock(CapType.class);
 
         /* Return this processRunner when we call ENGINE.processRunner() */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+        PROCESS_RUNNER = spy(new ProcessRunner());
 
         /* Return this networkHandler when we call ENGINE.networkHandler().
          * On the other hand, return ENGINE when we call
          * NETWORK_HANDLER.processRunner() */
-        NETWORK_HANDLER = spy(NetworkHandler.builder().build());
+        NETWORK_HANDLER = spy(new NetworkHandler());
 
         /* We initialize a driver here in order to access a common mock that
          * stores call counts on its methods. Tests that require the driver()

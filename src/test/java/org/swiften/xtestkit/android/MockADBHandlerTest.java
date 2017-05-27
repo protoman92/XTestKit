@@ -48,10 +48,10 @@ public final class MockADBHandlerTest implements ADBErrorType {
 
         /* We return this networkHandler when calling
          * ADB_HANDLER.networkHandler() */
-        NETWORK_HANDLER = spy(NetworkHandler.builder().build());
+        NETWORK_HANDLER = spy(new NetworkHandler());
 
         /* We spy this class to check for method calls */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+        PROCESS_RUNNER = spy(new ProcessRunner());
 
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);

@@ -72,6 +72,17 @@ public abstract class Engine<D extends WebDriver> implements
     DistinctiveType,
     TestListenerType
 {
+    /**
+     * This {@link AtomicBoolean} should be used with
+     * {@link #startAppiumOnNewThread(String)} to sequentially start new
+     * Appium servers.
+     */
+    @NotNull private static final AtomicBoolean ATOMIC_START_APPIUM;
+
+    static {
+        ATOMIC_START_APPIUM = new AtomicBoolean(false);
+    }
+
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
@@ -83,17 +94,9 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull Address address;
     @NotNull TestMode testMode;
 
-    /**
-     * This {@link AtomicBoolean} should be used with
-     * {@link #startAppiumOnNewThread(String)} to sequentially start new
-     * Appium servers.
-     */
-    @NotNull private final AtomicBoolean ATOMIC_START_APPIUM;
-
     public Engine() {
-        ATOMIC_START_APPIUM = new AtomicBoolean(false);
-        PROCESS_RUNNER = ProcessRunner.builder().build();
-        NETWORK_HANDLER = NetworkHandler.builder().build();
+        PROCESS_RUNNER = new ProcessRunner();
+        NETWORK_HANDLER = new NetworkHandler();
         browserName = "";
         testMode = TestMode.SIMULATED;
         address = Address.defaultInstance();
@@ -264,25 +267,25 @@ public abstract class Engine<D extends WebDriver> implements
     //region TestListenerType
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onFreshStart() {
+    public Flowable<Boolean> rxa_onFreshStart() {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onBatchStarted(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rxa_onBatchStarted(@NotNull final int[] INDEXES) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onBatchFinished(@NotNull final int[] INDEXES) {
+    public Flowable<Boolean> rxa_onBatchFinished(@NotNull final int[] INDEXES) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onAllTestsFinished() {
+    public Flowable<Boolean> rxa_onAllTestsFinished() {
         return Flowable.just(true);
     }
     //endregion
@@ -352,7 +355,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_beforeMethod(@NotNull BeforeParam param) {
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
         return Flowable.just(true);
     }
 

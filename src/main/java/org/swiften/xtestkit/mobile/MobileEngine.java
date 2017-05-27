@@ -124,14 +124,14 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     /**
      * @param param {@link BeforeParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_beforeMethod(BeforeParam)
+     * @see Engine#rxa_beforeMethod(BeforeParam)
      * @see #rxLaunchApp()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rx_beforeMethod(@NotNull BeforeParam param) {
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
         final Flowable<Boolean> SOURCE = rxLaunchApp();
-        return super.rx_beforeMethod(param).flatMap(a -> SOURCE);
+        return super.rxa_beforeMethod(param).flatMap(a -> SOURCE);
     }
 
     /**

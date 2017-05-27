@@ -20,6 +20,10 @@ public class BeforeClassParam implements IndexType, RetryType {
         DEFAULT = new BeforeClassParam();
     }
 
+    /**
+     * Get a {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -31,10 +35,15 @@ public class BeforeClassParam implements IndexType, RetryType {
         index = 0;
     }
 
+    @Override
     public int index() {
         return index;
     }
 
+    //region Builder
+    /**
+     * Builder class for {@link BeforeClassParam}.
+     */
     public static final class Builder {
         @NotNull private final BeforeClassParam PARAM;
 
@@ -58,4 +67,5 @@ public class BeforeClassParam implements IndexType, RetryType {
             return PARAM;
         }
     }
+    //endregion
 }

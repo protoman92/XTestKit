@@ -37,6 +37,10 @@ public class TestKit implements
     TestKitErrorType,
     TestListenerType
 {
+    /**
+     * Get a {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -48,8 +52,8 @@ public class TestKit implements
     @Nullable private Localizer localizer;
 
     TestKit() {
-        PROCESS_RUNNER = ProcessRunner.builder().build();
-        NETWORK_HANDLER = NetworkHandler.builder().build();
+        PROCESS_RUNNER = new ProcessRunner();
+        NETWORK_HANDLER = new NetworkHandler();
         ENGINES = new LinkedList<>();
     }
 
@@ -84,25 +88,25 @@ public class TestKit implements
     /**
      * Return a distinct stream of {@link Engine} based on each of
      * the engine's {@link Class}. This is useful for one-time setup, such
-     * as {@link #rx_onFreshStart()} and {@link #rx_onAllTestsFinished()}.
+     * as {@link #rxa_onFreshStart()} and {@link #rxa_onAllTestsFinished()}.
      * @return {@link Flowable} instance.
-     * @see #engines()
      * @see Engine#getClass()
+     * @see #engines()
      */
     @NotNull
-    public Flowable<Engine> rxDistinctEngines() {
+    public Flowable<Engine> rxe_distinctEngines() {
         return Flowable.fromIterable(engines()).distinct(Engine::getClass);
     }
 
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_onFreshStart() {
+    public Flowable<Boolean> rxa_onFreshStart() {
         final TestKit THIS = this;
 
-        return rxKillAllAppiumInstances()
-            .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(Engine::rx_onFreshStart);
+        return rxa_killAllAppiumInstances()
+            .flatMap(a -> THIS.rxe_distinctEngines())
+            .concatMap(Engine::rxa_onFreshStart);
     }
 
     /**
@@ -110,11 +114,11 @@ public class TestKit implements
      * based on an Array of {@link Integer} indexes.
      * @param indexes An Array of {@link Integer}.
      * @return {@link Flowable} instance.
-     * @see #rx_onBatchStarted(int[])
-     * @see #rx_onBatchFinished(int[])
+     * @see #rxa_onBatchStarted(int[])
+     * @see #rxa_onBatchFinished(int[])
      */
     @NotNull
-    public Flowable<Engine> rxEnginesFromIndexes(@NotNull int[] indexes) {
+    public Flowable<Engine> rxe_enginesFromIndexes(@NotNull int[] indexes) {
         final List<Engine> ENGINES = engines();
         final int SIZE = ENGINES.size();
 
@@ -128,9 +132,9 @@ public class TestKit implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onBatchStarted(@NotNull final int[] INDEXES) {
-        return rxEnginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rx_onBatchStarted(INDEXES))
+    public Flowable<Boolean> rxa_onBatchStarted(@NotNull final int[] INDEXES) {
+        return rxe_enginesFromIndexes(INDEXES)
+            .flatMap(a -> a.rxa_onBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
@@ -138,9 +142,9 @@ public class TestKit implements
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_onBatchFinished(@NotNull final int[] INDEXES) {
-        return rxEnginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rx_onBatchFinished(INDEXES))
+    public Flowable<Boolean> rxa_onBatchFinished(@NotNull final int[] INDEXES) {
+        return rxe_enginesFromIndexes(INDEXES)
+            .flatMap(a -> a.rxa_onBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .map(BooleanUtil::toTrue)
@@ -150,12 +154,12 @@ public class TestKit implements
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_onAllTestsFinished() {
+    public Flowable<Boolean> rxa_onAllTestsFinished() {
         final TestKit THIS = this;
 
-        return rxKillAllAppiumInstances()
-            .flatMap(a -> THIS.rxDistinctEngines())
-            .concatMap(Engine::rx_onAllTestsFinished);
+        return rxa_killAllAppiumInstances()
+            .flatMap(a -> THIS.rxe_distinctEngines())
+            .concatMap(Engine::rxa_onAllTestsFinished);
     }
     //endregion
 
@@ -165,7 +169,7 @@ public class TestKit implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rxKillAllAppiumInstances() {
+    public Flowable<Boolean> rxa_killAllAppiumInstances() {
         NetworkHandler networkHandler = networkHandler();
         String command = cmKillAllAppiumInstances();
 
@@ -346,21 +350,21 @@ public class TestKit implements
     /**
      * Convenience method for {@link org.testng.annotations.BeforeSuite}.
      * @return {@link Flowable} instance.
-     * @see #rx_onFreshStart()
+     * @see #rxa_onFreshStart()
      */
     @NotNull
     public Flowable<Boolean> rxBeforeSuite() {
-        return rx_onFreshStart();
+        return rxa_onFreshStart();
     }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterSuite}.
      * @return {@link Flowable} instance.
-     * @see #rx_onAllTestsFinished()
+     * @see #rxa_onAllTestsFinished()
      */
     @NotNull
     public Flowable<Boolean> rxAfterSuite() {
-        return rx_onAllTestsFinished();
+        return rxa_onAllTestsFinished();
     }
 
     /**
@@ -393,12 +397,12 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * @param param {@link BeforeParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_beforeMethod(BeforeParam)
+     * @see Engine#rxa_beforeMethod(BeforeParam)
      */
     @NotNull
     public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
         return engine(param.index())
-            .rx_beforeMethod(param)
+            .rxa_beforeMethod(param)
             .compose(RxUtil.withCommonSchedulers());
     }
 
@@ -498,6 +502,9 @@ public class TestKit implements
     //endregion
 
     //region Builder
+    /**
+     * Builder class for {@link TestKit}.
+     */
     public static final class Builder {
         @NotNull private final TestKit TEST_KIT;
         @NotNull private final Localizer.Builder LOCALIZER_BUILDER;

@@ -20,7 +20,7 @@ public class XCRunHandler implements XCRunDelayType {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
 
     XCRunHandler() {
-        PROCESS_RUNNER = ProcessRunner.builder().build();
+        PROCESS_RUNNER = new ProcessRunner();
     }
 
     //region Getters

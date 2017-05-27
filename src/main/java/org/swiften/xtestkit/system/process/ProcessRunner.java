@@ -16,11 +16,6 @@ import java.util.Objects;
  * Created by haipham on 3/22/17.
  */
 public class ProcessRunner {
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
-    }
-
     /**
      * Execute a command using the command line.
      * @param args The command line arguments to run.
@@ -74,18 +69,5 @@ public class ProcessRunner {
                     observer.onError(e);
                 }
             }, BackpressureStrategy.BUFFER);
-    }
-
-    public static final class Builder {
-        @NotNull private final ProcessRunner INSTANCE;
-
-        Builder() {
-            INSTANCE = new ProcessRunner();
-        }
-
-        @NotNull
-        public ProcessRunner build() {
-            return INSTANCE;
-        }
     }
 }

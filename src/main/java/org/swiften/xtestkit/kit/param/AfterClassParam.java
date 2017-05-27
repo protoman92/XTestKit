@@ -19,6 +19,10 @@ public class AfterClassParam implements IndexType, RetryType {
         DEFAULT = new AfterClassParam();
     }
 
+    /**
+     * Get a {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -28,10 +32,15 @@ public class AfterClassParam implements IndexType, RetryType {
 
     AfterClassParam() {}
 
+    @Override
     public int index() {
         return index;
     }
 
+    //region Builder
+    /**
+     * Builder class for {@link AfterClassParam}.
+     */
     public static final class Builder {
         @NotNull private final AfterClassParam PARAM;
 
@@ -55,4 +64,5 @@ public class AfterClassParam implements IndexType, RetryType {
             return PARAM;
         }
     }
+    //endregion
 }

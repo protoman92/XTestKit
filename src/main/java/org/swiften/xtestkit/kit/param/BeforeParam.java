@@ -10,8 +10,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Parameter object for
- * {@link Engine#rx_beforeMethod(BeforeParam)}
+ * Parameter object for {@link Engine#rxa_beforeMethod(BeforeParam)}
  */
 public class BeforeParam implements IndexType, RetryType {
     @NotNull public static BeforeParam DEFAULT;
@@ -20,6 +19,10 @@ public class BeforeParam implements IndexType, RetryType {
         DEFAULT = new BeforeParam();
     }
 
+    /**
+     * Get a {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -33,6 +36,10 @@ public class BeforeParam implements IndexType, RetryType {
         return index;
     }
 
+    //region Builder
+    /**
+     * Builder class for {@link BeforeParam}.
+     */
     public static final class Builder {
         @NotNull private final BeforeParam PARAM;
 
@@ -56,4 +63,5 @@ public class BeforeParam implements IndexType, RetryType {
             return PARAM;
         }
     }
+    //endregion
 }

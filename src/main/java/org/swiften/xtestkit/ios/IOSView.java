@@ -17,6 +17,7 @@ public class IOSView extends PlatformView {
     public enum ViewType implements BaseViewType, BaseErrorType {
         UI_BUTTON,
         UI_LABEL,
+        UI_LINK,
         UI_TEXTFIELD,
         UI_TABLEVIEW,
         UI_TABLEVIEW_CELL,
@@ -37,6 +38,9 @@ public class IOSView extends PlatformView {
 
                 case UI_LABEL:
                     return "XCUIElementTypeLabel";
+
+                case UI_LINK:
+                    return "XCUIElementTypeLink";
 
                 case UI_TEXTFIELD:
                     return "XCUIElementTypeTextField";

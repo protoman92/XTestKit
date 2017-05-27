@@ -45,7 +45,7 @@ public final class MockAndroidEngineTest {
         ADB_HANDLER = spy(new ADBHandler());
 
         /* We return this networkHandler when calling ENGINE.networkHandler() */
-        NETWORK_HANDLER = spy(NetworkHandler.builder().build());
+        NETWORK_HANDLER = spy(new NetworkHandler());
     }
 
     @BeforeMethod

@@ -72,8 +72,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     public ADBHandler() {
-        PROCESS_RUNNER = ProcessRunner.builder().build();
-        NETWORK_HANDLER = NetworkHandler.builder().build();
+        PROCESS_RUNNER = new ProcessRunner();
+        NETWORK_HANDLER = new NetworkHandler();
     }
 
     //region Getters

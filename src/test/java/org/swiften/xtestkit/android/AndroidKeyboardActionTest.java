@@ -35,7 +35,7 @@ public class AndroidKeyboardActionTest implements AndroidKeyboardActionType {
         ADB_HANDLER = spy(new ADBHandler());
 
         /* We spy this class to check for method calls */
-        PROCESS_RUNNER = spy(ProcessRunner.builder().build());
+        PROCESS_RUNNER = spy(new ProcessRunner());
 
         ENGINE = spy(this);
     }
