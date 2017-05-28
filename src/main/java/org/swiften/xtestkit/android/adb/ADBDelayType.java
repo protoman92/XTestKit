@@ -13,7 +13,7 @@ import org.swiften.xtestkit.android.type.DeviceUIDType;
 public interface ADBDelayType {
     /**
      * Use this timeout for
-     * {@link ADBHandler#rx_startEmulator(StartEmulatorParam)}.
+     * {@link ADBHandler#rxa_startEmulator(StartEmulatorParam)}.
      * @return {@link Long} value.
      */
     default long emulatorBootTimeout() {
@@ -22,7 +22,7 @@ public interface ADBDelayType {
 
     /**
      * Use this timeout for
-     * {@link ADBHandler#rx_startEmulator(StartEmulatorParam)}.
+     * {@link ADBHandler#rxa_startEmulator(StartEmulatorParam)}.
      * @return {@link Long} value.
      */
     default long emulatorBootRetryDelay() {
@@ -32,7 +32,7 @@ public interface ADBDelayType {
     /**
      * Use this timeout for operations that change device/emulator settings,
      * such as
-     * {@link ADBHandler#rx_disableEmulatorAnimations(DeviceUIDType)}.
+     * {@link ADBHandler#rxa_disableEmulatorAnimations(DeviceUIDType)}.
      * @return {@link Long} value.
      */
     default long emulatorSettingTimeout() {

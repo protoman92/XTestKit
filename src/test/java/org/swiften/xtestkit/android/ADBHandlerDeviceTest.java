@@ -2,6 +2,7 @@ package org.swiften.xtestkit.android;
 
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
@@ -22,6 +23,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 3/23/17.
  */
+@SuppressWarnings({"UndeclaredTests", "MessageMissingOnTestNGAssertion"})
 public final class ADBHandlerDeviceTest {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final ClearCacheParam CC_PARAM;
@@ -62,7 +64,7 @@ public final class ADBHandlerDeviceTest {
         doReturn(DEVICE_UID).when(DUID_PARAM).deviceUID();
         doReturn(DEVICE_UID).when(CC_PARAM).deviceUID();
         TestSubscriber subscriber = CustomTestSubscriber.create();
-        ADB_HANDLER.rx_startEmulator(SE_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rxa_startEmulator(SE_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
     }
@@ -72,7 +74,7 @@ public final class ADBHandlerDeviceTest {
     public void afterClass() {
         reset(ADB_HANDLER, ST_PARAM, SE_PARAM, DUID_PARAM);
         TestSubscriber subscriber = CustomTestSubscriber.create();
-        ADB_HANDLER.rx_stopEmulator(ST_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rxa_stopEmulator(ST_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
     }
@@ -84,9 +86,9 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rx_disableInternet(DUID_PARAM)
+        ADB_HANDLER.rxa_disableInternet(DUID_PARAM)
             .filter(success -> success)
-            .flatMap(a -> ADB_HANDLER.rx_enableInternet(DUID_PARAM))
+            .flatMap(a -> ADB_HANDLER.rxa_enableInternet(DUID_PARAM))
             .filter(success -> success)
             .switchIfEmpty(RxUtil.error())
             .subscribe(subscriber);
@@ -107,7 +109,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rx_checkKeyboardOpen(DUID_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rxe_keyboardOpen(DUID_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -123,8 +125,8 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rx_disableEmulatorAnimations(DUID_PARAM)
-            .filter(success -> success)
+        ADB_HANDLER.rxa_disableEmulatorAnimations(DUID_PARAM)
+            .filter(BooleanUtil::isTrue)
             .switchIfEmpty(RxUtil.error())
             .subscribe(subscriber);
 
@@ -144,7 +146,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rx_checkAppInstalled(CC_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rxe_appInstalled(CC_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -161,7 +163,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rx_clearCache(CC_PARAM).subscribe(subscriber);
+        ADB_HANDLER.rxa_clearCache(CC_PARAM).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -193,9 +195,9 @@ public final class ADBHandlerDeviceTest {
 
         // When
         ADB_HANDLER
-            .rx_startEmulator(SEP)
+            .rxa_startEmulator(SEP)
             .delay(5000, TimeUnit.MILLISECONDS)
-            .flatMap(a -> ADB_HANDLER.rx_stopEmulator(STP))
+            .flatMap(a -> ADB_HANDLER.rxa_stopEmulator(STP))
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();

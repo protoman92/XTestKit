@@ -44,7 +44,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
      * @see D#closeApp()
      */
     @NotNull
-    default Flowable<Boolean> rxResetApp() {
+    default Flowable<Boolean> rxa_resetApp() {
         return Completable
             .fromAction(driver()::closeApp)
             .<Boolean>toFlowable()

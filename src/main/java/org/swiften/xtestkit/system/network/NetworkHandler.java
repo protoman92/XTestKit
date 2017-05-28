@@ -1,24 +1,20 @@
 package org.swiften.xtestkit.system.network;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.schedulers.Schedulers;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.RetryType;
 import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.system.network.type.*;
 import org.swiften.xtestkit.system.process.ProcessRunner;
-import org.swiften.xtestkit.system.network.param.GetProcessNameParam;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,16 +26,16 @@ public class NetworkHandler implements NetworkHandlerType {
 
     /**
      * This {@link AtomicBoolean} is used when
-     * {@link #rxCheckUntilPortAvailable(PortType)} is called. Basically
+     * {@link #rxa_checkUntilPortAvailable(PortType)} is called. Basically
      * it only allows for one checking process to run at a time, no matter
      * how many are running in parallel. This is to avoid duplicate ports
      * marked as used.
      */
-    @NonNull private static final AtomicBoolean ATOMIC_PORT_FLAG;
+    @NonNull private static final AtomicBoolean AVAILABLE_TO_POLL_PORT;
 
     static {
         USED_PORTS = new HashSet<>();
-        ATOMIC_PORT_FLAG = new AtomicBoolean(false);
+        AVAILABLE_TO_POLL_PORT = new AtomicBoolean(true);
     }
 
     @NotNull private final ProcessRunner PROCESS_RUNNER;
@@ -85,7 +81,7 @@ public class NetworkHandler implements NetworkHandlerType {
      * @return {@link Boolean} value.
      * @see #USED_PORTS
      */
-    public boolean isPortAvailable(int port) {
+    public synchronized boolean isPortAvailable(int port) {
         return !USED_PORTS.contains(port);
     }
 
@@ -95,7 +91,7 @@ public class NetworkHandler implements NetworkHandlerType {
      * @return {@link Boolean} value.
      * @see #USED_PORTS
      */
-    public boolean checkPortsMarkedAsUsed(@NotNull Collection<Integer> ports) {
+    public synchronized boolean checkPortsUsed(@NotNull Collection<Integer> ports) {
         return USED_PORTS.containsAll(ports);
     }
     //endregion
@@ -104,8 +100,9 @@ public class NetworkHandler implements NetworkHandlerType {
     /**
      * Mark a port as used by adding it to {@link #USED_PORTS}.
      * @param port The port to be marked as used. {@link Integer} value.
+     * @see #USED_PORTS
      */
-    public synchronized void markPortAsUsed(int port) {
+    public synchronized void markPortUsed(int port) {
         USED_PORTS.add(port);
     }
 
@@ -115,7 +112,7 @@ public class NetworkHandler implements NetworkHandlerType {
      *             value.
      * @see #USED_PORTS
      */
-    public synchronized void markPortAsAvailable(int port) {
+    public synchronized void markPortAvailable(int port) {
         USED_PORTS.remove(port);
     }
     //endregion
@@ -126,19 +123,19 @@ public class NetworkHandler implements NetworkHandlerType {
      * @param <T> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #processRunner()
-     * @see ProcessRunner#rxExecute(String)
+     * @see ProcessRunner#rxa_executeStream(String)
      * @see #cmListAllPorts()
      * @see #isPortAvailable(String, int)
      */
     @NotNull
     public <T extends PortType & RetryType>
-    Flowable<Boolean> rxCheckPortAvailable(@NonNull final T PARAM) {
+    Flowable<Boolean> rxa_checkPortAvailable(@NonNull final T PARAM) {
         final NetworkHandler THIS = this;
         ProcessRunner processRunner = processRunner();
         String command = cmListAllPorts();
 
         return processRunner
-            .rxExecute(command)
+            .rxa_execute(command)
             .map(a -> THIS.isPortAvailable(a, PARAM.port()))
             .retry(PARAM.retries());
     }
@@ -155,7 +152,6 @@ public class NetworkHandler implements NetworkHandlerType {
         if (USED_PORTS.contains(port)) {
             return false;
         } else {
-
             /* The output we are looking for is *.${PORT} (LISTEN).
              * E.g., *.4723 (LISTEN) */
             String regex = String.format("\\*.%d( \\(LISTEN\\))?", port);
@@ -172,13 +168,16 @@ public class NetworkHandler implements NetworkHandlerType {
      *              initial port to be checked.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rxCheckPortAvailable(PortType)
+     * @see BooleanUtil#isTrue(boolean)
+     * @see BooleanUtil#isFalse(boolean)
      * @see P#port()
      * @see P#retries()
+     * @see #rxa_checkPortAvailable(PortType)
+     * @see #NO_PORT_AVAILABLE
      */
     @NotNull
     public <P extends PortType & MaxPortType & PortStepType & RetryType>
-    Flowable<Integer> rxCheckUntilPortAvailable(@NonNull final P PARAM) {
+    Flowable<Integer> rxa_checkUntilPortAvailable(@NonNull final P PARAM) {
         final NetworkHandler THIS = this;
 
         /* Temporary param that handles both port values and checks */
@@ -211,13 +210,12 @@ public class NetworkHandler implements NetworkHandlerType {
             }
 
             @NotNull
-            @SuppressWarnings("WeakerAccess")
-            Flowable<Integer> check() {
+            private Flowable<Integer> check() {
                 final int PORT = this.PORT;
                 final int STEP = portStep();
 
                 if (PORT < maxPort()) {
-                    return THIS.rxCheckPortAvailable(this)
+                    return THIS.rxa_checkPortAvailable(this)
                         .flatMap(a -> {
                             if (BooleanUtil.isTrue(a)) {
                                 return Flowable.just(PORT);
@@ -233,16 +231,24 @@ public class NetworkHandler implements NetworkHandlerType {
             }
         }
 
-        return Flowable.just(ATOMIC_PORT_FLAG)
+        return Flowable
+            .create(o -> {
+                new Thread(() -> {
+                    for (;;) {
+                        if (AVAILABLE_TO_POLL_PORT.getAndSet(false)) {
+                            o.onNext(true);
+                            o.onComplete();
+                            break;
+                        }
+                    }
+                }).start();
+            }, BackpressureStrategy.BUFFER)
+            .serialize()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
-            .map(AtomicBoolean::get)
-            .filter(BooleanUtil::isFalse)
-            .switchIfEmpty(RxUtil.error())
-            .retry()
-            .doOnNext(a -> ATOMIC_PORT_FLAG.getAndSet(true))
+            .map(BooleanUtil::toTrue)
             .flatMap(a -> new CheckPort(PARAM.port()).check())
-            .doOnNext(THIS::markPortAsUsed)
-            .doFinally(() -> ATOMIC_PORT_FLAG.getAndSet(false));
+            .doOnNext(THIS::markPortUsed)
+            .doFinally(() -> AVAILABLE_TO_POLL_PORT.set(true));
     }
 }

@@ -17,7 +17,6 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.capability.type.CapType;
 import org.swiften.xtestkit.base.element.action.checkbox.BaseCheckBoxActionType;
 import org.swiften.xtestkit.base.element.action.choice.BaseChoiceSelectorType;
@@ -38,15 +37,12 @@ import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.network.NetworkHandler;
-import org.swiften.xtestkit.system.network.type.PortType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.TestListenerType;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +50,7 @@ import java.util.function.Predicate;
  * should extend this class and provide its own wrappers for Appium methods.
  */
 public abstract class Engine<D extends WebDriver> implements
+    AppiumHandlerType,
     BaseActionType<D>,
     BaseClickActionType,
     BaseChoiceSelectorType<D>,
@@ -68,21 +65,9 @@ public abstract class Engine<D extends WebDriver> implements
     BaseSwipeType<D>,
     BaseVisibilityActionType<D>,
     EngineErrorType,
-    EngineDelayType,
     DistinctiveType,
     TestListenerType
 {
-    /**
-     * This {@link AtomicBoolean} should be used with
-     * {@link #startAppiumOnNewThread(String)} to sequentially start new
-     * Appium servers.
-     */
-    @NotNull private static final AtomicBoolean ATOMIC_START_APPIUM;
-
-    static {
-        ATOMIC_START_APPIUM = new AtomicBoolean(false);
-    }
-
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
@@ -294,16 +279,16 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxBeforeClass(BeforeClassParam)}.
+     * {@link org.swiften.xtestkit.kit.TestKit#rxa_beforeClass(BeforeClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
         if (address().isLocalInstance()) {
-            return rx_startLocalAppium(param);
+            return rxa_startLocalAppium(param);
         }
 
         return Flowable.just(true);
@@ -312,21 +297,21 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxAfterClass(AfterClassParam)}.
+     * {@link org.swiften.xtestkit.kit.TestKit#rxa_afterClass(AfterClassParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see NetworkHandler#markPortAsAvailable(int)
+     * @see NetworkHandler#markPortAvailable(int)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
         NetworkHandler HANDLER = networkHandler();
         Address ADDRESS = address();
 
         Flowable<Boolean> reusePort = Completable
-            .fromAction(() -> HANDLER.markPortAsAvailable(ADDRESS.port()))
+            .fromAction(() -> HANDLER.markPortAvailable(ADDRESS.port()))
             .toFlowable()
             .map(BooleanUtil::toTrue)
             .defaultIfEmpty(true);
@@ -348,7 +333,7 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Convenience method for {@link org.testng.annotations.BeforeMethod}.
      * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxBeforeMethod(BeforeParam)}.
+     * {@link org.swiften.xtestkit.kit.TestKit#rxa_beforeMethod(BeforeParam)}.
      * Subclasses of {@link Engine} should provide their own
      * implementations.
      * @param param {@link BeforeParam} instance.
@@ -369,146 +354,8 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
         return Flowable.just(true);
-    }
-
-    /**
-     * Start appium with a specified {@link #serverUri()}.
-     * @param PARAM {@link RetryType} instance.
-     * @return {@link Flowable} instance.
-     * @see #cm_whichAppium()
-     * @see #cm_fallBackAppium()
-     * @see #appiumStartDelay()
-     * @see #startAppiumOnNewThread(String)
-     * @see #processRunner()
-     * @see BooleanUtil#toTrue(Object)
-     * @see RetryType#retries()
-     */
-    @NotNull
-    public Flowable<Boolean> rx_startLocalAppium(@NotNull final RetryType PARAM) {
-        final ProcessRunner RUNNER = processRunner();
-        String whichAppium = cm_whichAppium();
-        long delay = appiumStartDelay();
-
-        return RUNNER.rxExecute(whichAppium)
-            .filter(StringUtil::isNotNullOrEmpty)
-            .map(a -> a.replace("\n", ""))
-            .switchIfEmpty(RxUtil.error(APPIUM_NOT_INSTALLED))
-            .onErrorReturnItem(cm_fallBackAppium())
-            .doOnNext(this::startAppiumOnNewThread)
-            .map(BooleanUtil::toTrue)
-            .delay(delay, TimeUnit.MILLISECONDS)
-            .retry(PARAM.retries());
-    }
-
-    /**
-     * Start a new local Appium instance. This will be run in a different
-     * thread.
-     * @param CLI The path to Appium CLI. {@link String} value.
-     * @see #cm_startLocalAppium(String, int)
-     * @see NetworkHandler#rxCheckUntilPortAvailable(PortType)
-     * @see Address#setPort(int)
-     */
-    @SuppressWarnings("unchecked")
-    public void startAppiumOnNewThread(@NotNull final String CLI) {
-        final ProcessRunner RUNNER = processRunner();
-        final Address ADDRESS = address();
-        final NetworkHandler NETWORK_HANDLER = networkHandler();
-
-        NETWORK_HANDLER.rxCheckUntilPortAvailable(ADDRESS)
-            .doOnNext(ADDRESS::setPort)
-            .doOnNext(a -> {
-                final String COMMAND = cm_startLocalAppium(CLI, a);
-
-                new Thread(() -> {
-                    for (;;) {
-                        if (!ATOMIC_START_APPIUM.get()) {
-                            ATOMIC_START_APPIUM.getAndSet(true);
-
-                            /* Need to start on a new Thread, or else it will
-                             * block */
-                            new Thread(() -> {
-                                try {
-                                    RUNNER.execute(COMMAND);
-                                } catch (Exception e) {
-                                    LogUtil.println(e);
-                                }
-                            }).start();
-
-                            /* Sleep for a while to straddle the initialization
-                             * of Appium servers */
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(2000);
-                            } catch (InterruptedException e) {
-                                LogUtil.println(e);
-                            } finally {
-                                ATOMIC_START_APPIUM.getAndSet(false);
-                            }
-
-                            break;
-                        }
-                    }
-                }).start();
-            })
-            .map(BooleanUtil::toTrue)
-            .subscribe();
-    }
-
-    /**
-     * Stop all local appium instances.
-     * @return {@link Flowable} instance.
-     * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
-     */
-    @NotNull
-    public Flowable<Boolean> rx_stopLocalAppium() {
-        NetworkHandler handler = networkHandler();
-        Address address = address();
-        return handler.rxKillWithPort(address, this::isAppiumProcess);
-    }
-
-    /**
-     * Check if a process is potentially an Appium instance. This is used to
-     * detect whether it should be killed by
-     * {@link #rx_stopLocalAppium()}
-     * @param name The process' name. {@link String} value.
-     * @return {@link Boolean} instance.
-     * @see #rx_stopLocalAppium()
-     */
-    public boolean isAppiumProcess(@NotNull String name) {
-        return name.contains("node");
-    }
-    //endregion
-
-    //region CLI commands
-    /**
-     * Command to detect where appium is installed.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public String cm_whichAppium() {
-        return "which appium";
-    }
-
-    /**
-     * Fall back Appium path if {@link #cm_whichAppium()} fails.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public String cm_fallBackAppium() {
-        return "/usr/local/bin/appium";
-    }
-
-    /**
-     * Command to start an Appium instance.
-     * @param cli The path to Appium CLI. {@link String} value.
-     * @param port The port to be used to start a new Appium instance. An
-     *             {@link Integer} value.
-     * @return {@link String} value.
-     */
-    @NotNull
-    public String cm_startLocalAppium(@NotNull String cli, int port) {
-        return AppiumCommand.builder().withBase(cli).withPort(port).build().command();
     }
     //endregion
 
@@ -545,7 +392,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
-    public Flowable<Boolean> rx_startDriver(@NotNull final RetryType PARAM) {
+    public Flowable<Boolean> rxa_startDriver(@NotNull final RetryType PARAM) {
         CapType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
@@ -572,7 +419,7 @@ public abstract class Engine<D extends WebDriver> implements
      * @see WebDriver#quit()
      */
     @NotNull
-    public Flowable<Boolean> rx_stopDriver() {
+    public Flowable<Boolean> rxa_stopDriver() {
         return Completable.fromAction(driver()::quit)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);

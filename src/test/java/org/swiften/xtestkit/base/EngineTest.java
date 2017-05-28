@@ -3,10 +3,8 @@ package org.swiften.xtestkit.base;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.capability.BaseCapability;
@@ -25,11 +23,10 @@ import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.process.ProcessRunner;
+import org.swiften.xtestkit.util.TestMessageType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.Collection;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -37,7 +34,8 @@ import static org.testng.Assert.*;
 /**
  * Created by haipham on 3/20/17.
  */
-public final class EngineTest implements EngineErrorType {
+@SuppressWarnings("MessageMissingOnTestNGAssertion")
+public final class EngineTest implements EngineErrorType, TestMessageType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final CapType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
@@ -92,127 +90,6 @@ public final class EngineTest implements EngineErrorType {
         );
     }
 
-    //region Appium Server
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_startAppiumServerWithoutCLI_shouldEmitFallback() {
-        try {
-            // Setup
-            doReturn("").when(PROCESS_RUNNER).execute(contains("which appium"));
-            doNothing().when(ENGINE).startAppiumOnNewThread(anyString());
-            ArgumentCaptor<String> appiumCaptor = ArgumentCaptor.forClass(String.class);
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rx_startLocalAppium(RETRY).subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            verify(ENGINE).processRunner();
-            verify(ENGINE).cm_whichAppium();
-            verify(ENGINE).cm_fallBackAppium();
-            verify(ENGINE).appiumStartDelay();
-            verify(ENGINE).rx_startLocalAppium(any());
-            verify(ENGINE).startAppiumOnNewThread(appiumCaptor.capture());
-            verifyNoMoreInteractions(ENGINE);
-            assertTrue(appiumCaptor.getValue().contains("appium"));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_startAppiumServer_shouldSucceed() {
-        try {
-            // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-
-            doReturn(Flowable.just(true))
-                .when(NETWORK_HANDLER).rxCheckPortAvailable(any());
-
-            doReturn(100L).when(ENGINE).appiumStartDelay();
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rx_startLocalAppium(RETRY).subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            verify(ENGINE).address();
-            verify(ENGINE).networkHandler();
-            verify(ENGINE).cm_whichAppium();
-            verify(ENGINE).cm_startLocalAppium(anyString(), anyInt());
-            verify(ENGINE).cm_fallBackAppium();
-            verify(ENGINE).startAppiumOnNewThread(anyString());
-            verify(ENGINE).rx_startLocalAppium(any());
-            verify(ENGINE, times(2)).processRunner();
-            verify(ENGINE).appiumStartDelay();
-            verify(NETWORK_HANDLER, atLeastOnce()).rxCheckUntilPortAvailable(any());
-            verify(NETWORK_HANDLER).markPortAsUsed(anyInt());
-            verifyNoMoreInteractions(ENGINE);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_startAppiumServers_shouldExecuteSequentially() {
-        // Setup
-        int tries = 10;
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        Flowable.range(1, tries)
-            .concatMap(a -> ENGINE.rx_startLocalAppium(RETRY))
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
-            .flatMap(a -> ENGINE.networkHandler().rxKillAll("node appium"))
-            .subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        Collection<Integer> usedPorts = ENGINE.networkHandler().usedPorts();
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertEquals(usedPorts.size(), tries);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_stopAppiumServer_shouldSucceed() {
-        try {
-            // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rx_stopLocalAppium().subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            verify(ENGINE).address();
-            verify(ENGINE).rx_stopLocalAppium();
-            verify(ENGINE).networkHandler();
-            verifyNoMoreInteractions(ENGINE);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-    //endregion
-
     //region Start Driver
     @Test
     @SuppressWarnings("unchecked")
@@ -222,7 +99,7 @@ public final class EngineTest implements EngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
+        ENGINE.rxa_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -230,7 +107,7 @@ public final class EngineTest implements EngineErrorType {
         subscriber.assertErrorMessage(INSUFFICIENT_SETTINGS);
         subscriber.assertNotComplete();
         verify(ENGINE, never()).driver(any(), any());
-        verify(ENGINE).rx_startDriver(any());
+        verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
         verify(ENGINE).browserName();
@@ -246,7 +123,7 @@ public final class EngineTest implements EngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
+        ENGINE.rxa_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -254,7 +131,7 @@ public final class EngineTest implements EngineErrorType {
         subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
         subscriber.assertNotComplete();
         verify(ENGINE, times(TRIES + 1)).driver(any(), any());
-        verify(ENGINE).rx_startDriver(any());
+        verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
         verify(ENGINE).browserName();
@@ -272,7 +149,7 @@ public final class EngineTest implements EngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
+        ENGINE.rxa_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -280,7 +157,7 @@ public final class EngineTest implements EngineErrorType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(ENGINE).rx_startDriver(any());
+        verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).address();
         verify(ENGINE).serverUri();
         verify(ENGINE).driver(any(), any());
@@ -299,7 +176,7 @@ public final class EngineTest implements EngineErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_stopDriver().subscribe(subscriber);
+        ENGINE.rxa_stopDriver().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then

@@ -3,13 +3,13 @@ package org.swiften.xtestkit.kit;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
-import org.swiften.xtestkit.kit.type.TestKitErrorType;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.RepeatRunner;
@@ -32,9 +32,9 @@ import java.util.*;
  * Created by haipham on 3/24/17.
  */
 public class TestKit implements
+    BaseErrorType,
     RepeatRunner.IndexConsumer,
     LocalizerType,
-    TestKitErrorType,
     TestListenerType
 {
     /**
@@ -105,7 +105,7 @@ public class TestKit implements
         final TestKit THIS = this;
 
         return rxa_killAllAppiumInstances()
-            .flatMap(a -> THIS.rxe_distinctEngines())
+            .concatMap(a -> THIS.rxe_distinctEngines())
             .concatMap(Engine::rxa_onFreshStart);
     }
 
@@ -114,8 +114,10 @@ public class TestKit implements
      * based on an Array of {@link Integer} indexes.
      * @param indexes An Array of {@link Integer}.
      * @return {@link Flowable} instance.
+     * @see #engines()
      * @see #rxa_onBatchStarted(int[])
      * @see #rxa_onBatchFinished(int[])
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public Flowable<Engine> rxe_enginesFromIndexes(@NotNull int[] indexes) {
@@ -127,14 +129,14 @@ public class TestKit implements
             .filter(a -> a >= 0 && a < SIZE)
             .map(ENGINES::get)
             .filter(Objects::nonNull)
-            .switchIfEmpty(RxUtil.error(PLATFORM_ENGINE_UNAVAILABLE));
+            .switchIfEmpty(RxUtil.error(NOT_AVAILABLE));
     }
 
     @NotNull
     @Override
     public Flowable<Boolean> rxa_onBatchStarted(@NotNull final int[] INDEXES) {
         return rxe_enginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rxa_onBatchStarted(INDEXES))
+            .concatMap(a -> a.rxa_onBatchStarted(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
@@ -144,7 +146,7 @@ public class TestKit implements
     @Override
     public Flowable<Boolean> rxa_onBatchFinished(@NotNull final int[] INDEXES) {
         return rxe_enginesFromIndexes(INDEXES)
-            .flatMap(a -> a.rxa_onBatchFinished(INDEXES))
+            .concatMap(a -> a.rxa_onBatchFinished(INDEXES))
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .map(BooleanUtil::toTrue)
@@ -158,7 +160,7 @@ public class TestKit implements
         final TestKit THIS = this;
 
         return rxa_killAllAppiumInstances()
-            .flatMap(a -> THIS.rxe_distinctEngines())
+            .concatMap(a -> THIS.rxe_distinctEngines())
             .concatMap(Engine::rxa_onAllTestsFinished);
     }
     //endregion
@@ -174,7 +176,7 @@ public class TestKit implements
         String command = cmKillAllAppiumInstances();
 
         return networkHandler
-            .rxKillAll(command)
+            .rxa_killAll(command)
             .onErrorResumeNext(Flowable.just(true));
     }
     //endregion
@@ -285,6 +287,7 @@ public class TestKit implements
     /**
      * Return {@link #PROCESS_RUNNER}.
      * @return {@link ProcessRunner} instance.
+     * @see #PROCESS_RUNNER
      */
     @NotNull
     public ProcessRunner processRunner() {
@@ -294,6 +297,7 @@ public class TestKit implements
     /**
      * Return {@link #NETWORK_HANDLER}.
      * @return {@link NetworkHandler} instance.
+     * @see #NETWORK_HANDLER
      */
     @NotNull
     public NetworkHandler networkHandler() {
@@ -303,6 +307,7 @@ public class TestKit implements
     /**
      * Get an unmodifiable {@link #ENGINES} clone.
      * @return {@link List} of {@link Engine}.
+     * @see #ENGINES
      */
     @NotNull
     public List<Engine> engines() {
@@ -312,14 +317,16 @@ public class TestKit implements
     /**
      * Get {@link #localizer}.
      * @return {@link Localizer} instance.
+     * @see #localizer
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public Localizer localizer() {
         if (Objects.nonNull(localizer)) {
             return localizer;
+        } else {
+            throw new RuntimeException(NOT_AVAILABLE);
         }
-
-        throw new RuntimeException(NO_LOCALIZER_FOUND);
     }
     //endregion
 
@@ -328,6 +335,7 @@ public class TestKit implements
      * Get the current active {@link Engine}.
      * @return {@link Engine} instance.
      * @throws RuntimeException If no non-null {@link Engine} found.
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public Engine<?> engine(int current) {
@@ -341,7 +349,7 @@ public class TestKit implements
             }
         }
 
-        throw new RuntimeException(NO_TEST_ENGINE_FOUND);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
     //endregion
 
@@ -353,7 +361,7 @@ public class TestKit implements
      * @see #rxa_onFreshStart()
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeSuite() {
+    public Flowable<Boolean> rxa_beforeSuite() {
         return rxa_onFreshStart();
     }
 
@@ -363,7 +371,7 @@ public class TestKit implements
      * @see #rxa_onAllTestsFinished()
      */
     @NotNull
-    public Flowable<Boolean> rxAfterSuite() {
+    public Flowable<Boolean> rxa_afterSuite() {
         return rxa_onAllTestsFinished();
     }
 
@@ -371,26 +379,22 @@ public class TestKit implements
      * Convenience method for {@link org.testng.annotations.BeforeClass}.
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_beforeClass(BeforeClassParam)
+     * @see Engine#rxa_beforeClass(BeforeClassParam)
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeClass(@NotNull BeforeClassParam param) {
-        return engine(param.index())
-            .rx_beforeClass(param)
-            .compose(RxUtil.withCommonSchedulers());
+    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
+        return engine(param.index()).rxa_beforeClass(param);
     }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterClass}.
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterClass(AfterClassParam)
+     * @see Engine#rxa_afterClass(AfterClassParam)
      */
     @NotNull
-    public Flowable<Boolean> rxAfterClass(@NotNull AfterClassParam param) {
-        return engine(param.index())
-            .rx_afterClass(param)
-            .compose(RxUtil.withCommonSchedulers());
+    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
+        return engine(param.index()).rxa_afterClass(param);
     }
 
     /**
@@ -400,42 +404,38 @@ public class TestKit implements
      * @see Engine#rxa_beforeMethod(BeforeParam)
      */
     @NotNull
-    public Flowable<Boolean> rxBeforeMethod(@NotNull BeforeParam param) {
-        return engine(param.index())
-            .rxa_beforeMethod(param)
-            .compose(RxUtil.withCommonSchedulers());
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
+        return engine(param.index()).rxa_beforeMethod(param);
     }
 
     /**
      * Convenience method for {@link org.testng.annotations.AfterMethod}.
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterMethod(AfterParam)
+     * @see Engine#rxa_afterMethod(AfterParam)
      */
     @NotNull
     public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        return engine(param.index())
-            .rx_afterMethod(param)
-            .compose(RxUtil.withCommonSchedulers());
+        return engine(param.index()).rxa_afterMethod(param);
     }
 
     /**
-     * @see #rxBeforeSuite()
+     * @see #rxa_beforeSuite()
      */
     public void beforeSuite() {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxBeforeSuite().subscribe(subscriber);
+        rxa_beforeSuite().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
     }
 
     /**
-     * @see #rxAfterSuite()
+     * @see #rxa_afterSuite()
      */
     public void afterSuite() {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxAfterSuite().subscribe(subscriber);
+        rxa_afterSuite().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
@@ -443,11 +443,11 @@ public class TestKit implements
 
     /**
      * @param param {@link BeforeClassParam} instance.
-     * @see #rxBeforeClass(BeforeClassParam)
+     * @see #rxa_beforeClass(BeforeClassParam)
      */
     public void beforeClass(@NotNull BeforeClassParam param) {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxBeforeClass(param).subscribe(subscriber);
+        rxa_beforeClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
@@ -455,11 +455,11 @@ public class TestKit implements
 
     /**
      * @param param {@link BeforeParam} instance.
-     * @see #rxBeforeMethod(BeforeParam)
+     * @see #rxa_beforeMethod(BeforeParam)
      */
     public void before(@NotNull BeforeParam param) {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxBeforeMethod(param).subscribe(subscriber);
+        rxa_beforeMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
@@ -467,11 +467,11 @@ public class TestKit implements
 
     /**
      * @param param {@link AfterClassParam} instance.
-     * @see #rxAfterClass(AfterClassParam)
+     * @see #rxa_afterClass(AfterClassParam)
      */
     public void afterClass(@NotNull AfterClassParam param) {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxAfterClass(param).subscribe(subscriber);
+        rxa_afterClass(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         subscriber.assertComplete();

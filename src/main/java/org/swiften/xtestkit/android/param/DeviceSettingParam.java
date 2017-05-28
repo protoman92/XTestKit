@@ -11,7 +11,7 @@ import org.swiften.xtestkit.android.type.DeviceUIDType;
 
 /**
  * Parameter object for
- * {@link ADBHandler#rx_changeSettings(DeviceSettingParam)}
+ * {@link ADBHandler#rxa_changeSettings(DeviceSettingParam)}
  */
 public class DeviceSettingParam implements DeviceUIDType, RetryType {
     @NotNull

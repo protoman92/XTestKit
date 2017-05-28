@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.kit;
 
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.AndroidEngine;
 import org.swiften.xtestkit.ios.IOSEngine;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * Created by haipham on 3/24/17.
  */
+@SuppressWarnings("MessageMissingOnTestNGAssertion")
 public final class MockTestKitTest {
     @NotNull private final TestKit TEST_KIT;
     @NotNull private final Engine ENGINE;
@@ -54,10 +56,10 @@ public final class MockTestKitTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        doReturn(Flowable.just(true)).when(ENGINE).rx_beforeClass(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rx_afterClass(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxa_beforeClass(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxa_afterClass(any());
         doReturn(Flowable.just(true)).when(ENGINE).rxa_beforeMethod(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rx_afterMethod(any());
+        doReturn(Flowable.just(true)).when(ENGINE).rxa_afterMethod(any());
         doReturn(Flowable.just(true)).when(ENGINE).rxa_onFreshStart();
         doReturn(Flowable.just(true)).when(ENGINE).rxa_onAllTestsFinished();
         doReturn(Flowable.just(true)).when(ENGINE).rxa_onBatchStarted(any());
@@ -98,10 +100,10 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
+        assertEquals(RxTestUtil.nextEvents(subscriber).size(), 2);
         verify(TEST_KIT).rxe_distinctEngines();
         verify(TEST_KIT).engines();
         verifyNoMoreInteractions(TEST_KIT);
-        assertEquals(RxTestUtil.nextEvents(subscriber).size(), 2);
     }
 
     @Test
@@ -109,7 +111,7 @@ public final class MockTestKitTest {
     public void test_beforeAllTests_shouldSucceed() {
         try {
             // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            doReturn(Flowable.just("")).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -127,7 +129,7 @@ public final class MockTestKitTest {
             verify(TEST_KIT).networkHandler();
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxe_distinctEngines();
-            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verify(NETWORK_HANDLER).rxa_killAll(any());
             verifyNoMoreInteractions(TEST_KIT);;
         } catch (Exception e) {
             fail(e.getMessage());
@@ -139,7 +141,7 @@ public final class MockTestKitTest {
     public void test_beforeAllTestWithKillAllError_shouldSucceed() {
         try {
             // Setup
-            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
+            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -157,7 +159,7 @@ public final class MockTestKitTest {
             verify(TEST_KIT).networkHandler();
             verify(TEST_KIT).engines();
             verify(TEST_KIT).rxe_distinctEngines();
-            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verify(NETWORK_HANDLER).rxa_killAll(any());
             verifyNoMoreInteractions(TEST_KIT);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -169,7 +171,7 @@ public final class MockTestKitTest {
     public void test_afterAllTests_shouldSucceed() {
         try {
             // Setup
-            doReturn("Valid Output").when(PROCESS_RUNNER).execute(anyString());
+            doReturn(Flowable.just("")).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -187,7 +189,7 @@ public final class MockTestKitTest {
             verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).rxa_killAllAppiumInstances();
             verify(TEST_KIT).rxe_distinctEngines();
-            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verify(NETWORK_HANDLER).rxa_killAll(any());
             verifyNoMoreInteractions(TEST_KIT);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -199,7 +201,7 @@ public final class MockTestKitTest {
     public void test_afterAllTestWithKillAllError_shouldSucceed() {
         try {
             // Setup
-            doThrow(new RuntimeException()).when(PROCESS_RUNNER).execute(anyString());
+            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -217,7 +219,7 @@ public final class MockTestKitTest {
             verify(TEST_KIT).cmKillAllAppiumInstances();
             verify(TEST_KIT).rxe_distinctEngines();
             verify(TEST_KIT).rxa_killAllAppiumInstances();
-            verify(NETWORK_HANDLER).rxKillAll(anyString());
+            verify(NETWORK_HANDLER).rxa_killAll(any());
             verifyNoMoreInteractions(TEST_KIT);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -283,7 +285,7 @@ public final class MockTestKitTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        TEST_KIT.rxBeforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
+        TEST_KIT.rxa_beforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -292,8 +294,8 @@ public final class MockTestKitTest {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxBeforeClass(any());
-        verify(ENGINE).rx_beforeClass(any());
+        verify(TEST_KIT).rxa_beforeClass(any());
+        verify(ENGINE).rxa_beforeClass(any());
         verifyNoMoreInteractions(TEST_KIT);
     }
     //endregion
@@ -306,7 +308,7 @@ public final class MockTestKitTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        TEST_KIT.rxBeforeMethod(BeforeParam.DEFAULT).subscribe(subscriber);
+        TEST_KIT.rxa_beforeMethod(BeforeParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -315,7 +317,7 @@ public final class MockTestKitTest {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxBeforeMethod(any());
+        verify(TEST_KIT).rxa_beforeMethod(any());
         verify(ENGINE).rxa_beforeMethod(any());
         verifyNoMoreInteractions(TEST_KIT);
     }
@@ -329,7 +331,7 @@ public final class MockTestKitTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        TEST_KIT.rxAfterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
+        TEST_KIT.rxa_afterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -338,8 +340,8 @@ public final class MockTestKitTest {
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxAfterClass(any());
-        verify(ENGINE).rx_afterClass(any());
+        verify(TEST_KIT).rxa_afterClass(any());
+        verify(ENGINE).rxa_afterClass(any());
         verifyNoMoreInteractions(TEST_KIT);
     }
     //endregion
@@ -362,7 +364,7 @@ public final class MockTestKitTest {
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
         verify(TEST_KIT).engine(anyInt());
         verify(TEST_KIT).rxAfterMethod(any());
-        verify(ENGINE).rx_afterMethod(any());
+        verify(ENGINE).rxa_afterMethod(any());
         verifyNoMoreInteractions(TEST_KIT);
     }
     //endregion

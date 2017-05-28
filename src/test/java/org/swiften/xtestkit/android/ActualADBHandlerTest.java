@@ -3,14 +3,18 @@ package org.swiften.xtestkit.android;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.android.adb.ADBErrorType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
@@ -18,7 +22,8 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by haipham on 4/9/17.
  */
-public final class ActualADBHandlerTest {
+@SuppressWarnings({"MessageMissingOnTestNGAssertion", "UndeclaredTests"})
+public final class ActualADBHandlerTest implements ADBErrorType {
     @NotNull private final ADBHandler ADB_HANDLER;
     @NotNull private final RetryType RETRY;
 
@@ -41,27 +46,26 @@ public final class ActualADBHandlerTest {
     @SuppressWarnings("unchecked")
     public void test_findPortMultipleTimes_shouldSucceed() {
         // Setup
-        int tries = 40;
         int totalPorts = ADBHandler.availablePortsCount();
+        int tries = totalPorts + 5;
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
         Flowable.range(1, tries)
-            .flatMap(a -> ADB_HANDLER
-                .rx_availablePort(RETRY)
-                .onErrorResumeNext(Flowable.empty()))
+            .flatMap(a -> ADB_HANDLER.rxe_availablePort(RETRY))
             .distinct()
-            .count()
-            .toFlowable()
-            .compose(RxUtil.withCommonSchedulers())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         // Then
+        /* Since there are limited number of ports available, we expect the
+         * process to throw an Exception */
+        List ports = RxTestUtil.nextEvents(subscriber);
+        LogUtil.println(ports);
         subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertEquals(RxTestUtil.<Long>firstNextEvent(subscriber).intValue(), totalPorts);
+        subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
+        subscriber.assertNotComplete();
+        assertEquals(ports.size(), totalPorts);
     }
 }

@@ -18,10 +18,7 @@ import java.util.function.Predicate;
 /**
  * This interface provides methods to handle network/system processes.
  */
-public interface NetworkHandlerType extends
-    ProcessRunnerHolderType,
-    NetworkHandlerErrorType
-{
+public interface NetworkHandlerType extends ProcessRunnerHolderType, NetworkHandlerErrorType {
     /**
      * Command to kill all instances of a process name.
      * @param name {@link String} value.
@@ -88,7 +85,7 @@ public interface NetworkHandlerType extends
      * @return {@link Flowable} instance.
      * @see #processRunner()
      * @see #cmFindProcessName(String)
-     * @see ProcessRunner#rxExecute(String)
+     * @see ProcessRunner#rxa_executeStream(String)
      * @see T#pid()
      * @see T#retries()
      */
@@ -97,7 +94,7 @@ public interface NetworkHandlerType extends
     Flowable<String> rxGetProcessName(@NotNull T param) {
         ProcessRunner runner = processRunner();
         String command = cmFindProcessName(param.pid());
-        return runner.rxExecute(command).retry(param.retries());
+        return runner.rxa_execute(command).retry(param.retries());
     }
 
     /**
@@ -113,7 +110,7 @@ public interface NetworkHandlerType extends
         ProcessRunner runner = processRunner();
         String command = cmKillPID(pid);
 
-        return runner.rxExecute(command)
+        return runner.rxa_execute(command)
             .onErrorResumeNext(t -> {
                 /* If 'No such process' is thrown, we skip the error */
                 if (t.getMessage().contains(NO_SUCH_PROCESS)) {
@@ -135,7 +132,7 @@ public interface NetworkHandlerType extends
      * @param <T> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #processRunner()
-     * @see ProcessRunner#rxExecute(String)
+     * @see ProcessRunner#rxa_executeStream(String)
      * @see StringUtil#isNotNullOrEmpty(String)
      * @see #rxGetProcessName(PIDIdentifiableType)
      * @see T#port()
@@ -143,10 +140,10 @@ public interface NetworkHandlerType extends
      */
     @NotNull
     default  <T extends RetryType & PortType>
-    Flowable<Boolean> rxKillWithPort(@NotNull final T PARAM,
-                                     @NotNull final Predicate<String> NP) {
+    Flowable<Boolean> rxa_killWithPort(@NotNull final T PARAM,
+                                       @NotNull final Predicate<String> NP) {
         return processRunner()
-            .rxExecute(cmFindPID(PARAM.port()))
+            .rxa_execute(cmFindPID(PARAM.port()))
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.split("\n"))
             .flatMap(Flowable::fromArray)
@@ -174,7 +171,7 @@ public interface NetworkHandlerType extends
      * @param name {@link String} value.
      * @return {@link Flowable} instance.
      * @see #processRunner()
-     * @see ProcessRunner#rxExecute(String)
+     * @see ProcessRunner#rxa_executeStream(String)
      * @see #cmFindPID(String)
      * @see #rxKillWithPID(String)
      * @see BooleanUtil#isTrue(boolean)
@@ -182,7 +179,7 @@ public interface NetworkHandlerType extends
     @NotNull
     default Flowable<Boolean> rxKillWithName(@NotNull String name) {
         return processRunner()
-            .rxExecute(cmFindPID(name))
+            .rxa_execute(cmFindPID(name))
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.split("\n"))
             .flatMap(Flowable::fromArray)
@@ -198,12 +195,12 @@ public interface NetworkHandlerType extends
      * @param name The process' name. {@link String} value.
      * @return {@link Flowable} instance.
      * @see #processRunner()
-     * @see ProcessRunner#rxExecute(String)
+     * @see ProcessRunner#rxa_executeStream(String)
      * @see #cmKillAll(String)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
-    default Flowable<Boolean> rxKillAll(@NotNull String name) {
-        return processRunner().rxExecute(cmKillAll(name)).map(BooleanUtil::toTrue);
+    default Flowable<Boolean> rxa_killAll(@NotNull String name) {
+        return processRunner().rxa_execute(cmKillAll(name)).map(BooleanUtil::toTrue);
     }
 }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Created by haipham on 4/8/17.
@@ -135,7 +136,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmXCodeSimulator()
      */
     @NotNull
-    public String cmStartSimulator(@NotNull String deviceUID) {
+    public String cm_startSimulator(@NotNull String deviceUID) {
         String simulator = cmXCodeSimulator();
         return String.format("%1$s -CurrentDeviceUDID %2$s", simulator, deviceUID);
     }
@@ -203,50 +204,35 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmCheckSimulatorBooted(String)
      */
     @NotNull
-    public Flowable<Boolean> rxCheckSimulatorBooted(@NotNull String deviceUID) {
+    public Flowable<Boolean> rxa_checkSimulatorBooted(@NotNull String deviceUID) {
         ProcessRunner processRunner = processRunner();
         String command = cmCheckSimulatorBooted(deviceUID);
-        return processRunner.rxExecute(command).map(a -> true);
+        return processRunner.rxa_execute(command).map(a -> true);
     }
 
     /**
      * Start a simulator.
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see #cmStartSimulator(String)
-     * @see #rxCheckSimulatorBooted(String)
+     * @see ProcessRunner#execute(String, Consumer)
+     * @see #processRunner()
+     * @see #simulatorBootRetryDelay()
+     * @see #cm_startSimulator(String)
+     * @see #rxa_checkSimulatorBooted(String)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxStartSimulator(@NotNull final StartSimulatorParam PARAM) {
+    public Flowable<Boolean> rxa_startSimulator(@NotNull final StartSimulatorParam PARAM) {
         final ProcessRunner RUNNER = processRunner();
-        final String COMMAND = cmStartSimulator(PARAM.deviceUID());
-        final List<Exception> ERRORS = new ArrayList<>();
+        final String COMMAND = cm_startSimulator(PARAM.deviceUID());
         final long DELAY = simulatorBootRetryDelay();
 
         /* We need to start the simulator on a new Thread, or else it will
          * block the rest of the operations */
-        new Thread(() -> {
-            try {
-                RUNNER.execute(COMMAND);
-            } catch (Exception e) {
-                ERRORS.add(e);
-            }
-        }).start();
+        new Thread(() -> RUNNER.execute(COMMAND, a -> {})).start();
 
-        return Flowable.ambArray(
-            Flowable
-                .fromIterable(ERRORS)
-                .firstElement()
-                .switchIfEmpty(Maybe.error(new RuntimeException()))
-                .retryWhen(e -> e.delay(DELAY, TimeUnit.MILLISECONDS))
-                .flatMap(Maybe::error)
-                .toFlowable()
-                .map(BooleanUtil::toTrue),
-
-            rxCheckSimulatorBooted(PARAM.deviceUID())
-                .retryWhen(e -> e.delay(DELAY, TimeUnit.MILLISECONDS))
-        );
+        return rxa_checkSimulatorBooted(PARAM.deviceUID())
+            .retryWhen(e -> e.delay(DELAY, TimeUnit.MILLISECONDS));
     }
     //endregion
 
@@ -258,12 +244,12 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmStopSimulator()
      */
     @NotNull
-    public Flowable<Boolean> rxStopSimulator(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_stopSimulator(@NotNull RetryType param) {
         ProcessRunner processRunner = processRunner();
         String command = cmStopSimulator();
 
         return processRunner
-            .rxExecute(command)
+            .rxa_execute(command)
             .map(BooleanUtil::toTrue)
             .onErrorReturnItem(true);
     }
@@ -280,7 +266,7 @@ public class XCRunHandler implements XCRunDelayType {
     public Flowable<Boolean> rxInstallApp(@NotNull String app) {
         ProcessRunner processRunner = processRunner();
         String command = cmInstallApp(app);
-        return processRunner.rxExecute(command).map(a -> true);
+        return processRunner.rxa_execute(command).map(a -> true);
     }
 
     /**
@@ -293,7 +279,7 @@ public class XCRunHandler implements XCRunDelayType {
     public Flowable<Boolean> rxUninstallApp(@NotNull String appPackage) {
         ProcessRunner processRunner = processRunner();
         String command = cmUninstallApp(appPackage);
-        return processRunner.rxExecute(command).map(a -> true);
+        return processRunner.rxa_execute(command).map(a -> true);
     }
     //endregion
 }

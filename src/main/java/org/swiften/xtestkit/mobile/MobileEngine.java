@@ -137,15 +137,15 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     /**
      * @param param {@link AfterParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterMethod(AfterParam)
-     * @see #rxResetApp()
-     * @see #rx_stopDriver()
+     * @see Engine#rxa_afterMethod(AfterParam)
+     * @see #rxa_resetApp()
+     * @see #rxa_stopDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
-        final Flowable<Boolean> QUIT_APP = rxResetApp();
-        return super.rx_afterMethod(param).flatMap(a -> QUIT_APP);
+    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
+        final Flowable<Boolean> QUIT_APP = rxa_resetApp();
+        return super.rxa_afterMethod(param).flatMap(a -> QUIT_APP);
     }
     //endregion
 

@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.capability.AndroidCapability;
 import org.swiften.xtestkit.android.element.action.choice.AndroidChoiceSelectorType;
@@ -94,7 +93,7 @@ public class AndroidEngine extends
 //    public Flowable<Boolean> rxa_onFreshStart() {
 //        /* We restart adb server at the start of all test to avoid problems
 //         * with inactive adb instances */
-//        return super.rxa_onFreshStart().flatMap(a -> ADB_HANDLER.rx_restartAdb());
+//        return super.rxa_onFreshStart().flatMap(a -> ADB_HANDLER.rxa_restartAdb());
 //    }
 //    //endregion
 
@@ -178,55 +177,53 @@ public class AndroidEngine extends
     /**
      * @param PARAM {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see ADBHandler#rx_disableEmulatorAnimations(DeviceUIDType)
-     * @see ADBHandler#rx_startEmulator(StartEmulatorParam)
+     * @see ADBHandler#rxa_disableEmulatorAnimations(DeviceUIDType)
+     * @see ADBHandler#rxa_startEmulator(StartEmulatorParam)
+     * @see ADBHandler#rxe_availablePort(RetryType)
      * @see AndroidInstance#setPort(int)
-     * @see Engine#rx_beforeClass(BeforeClassParam)
+     * @see BooleanUtil#isTrue(boolean)
+     * @see Engine#rxa_beforeClass(BeforeClassParam)
+     * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
+     * @see #deviceName()
      * @see #testMode()
-     * @see #rx_startDriver(RetryType)
+     * @see #rxa_startDriver(RetryType)
      */
     @NotNull
     @Override
-    @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_beforeClass(@NotNull final BeforeClassParam PARAM) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull final BeforeClassParam PARAM) {
         final ADBHandler HANDLER = adbHandler();
         final AndroidInstance ANDROID_INSTANCE = androidInstance();
-        final Flowable<Boolean> START_APP = rx_startDriver(PARAM);
-        final Flowable<Boolean> SOURCE;
+        final Flowable<Boolean> START_APP = rxa_startDriver(PARAM);
+        Flowable<Boolean> source;
+        TestMode testMode = testMode();
 
-        switch (testMode()) {
-            case SIMULATED:
-                SOURCE = HANDLER.rx_availablePort(PARAM)
-                    .doOnNext(ANDROID_INSTANCE::setPort)
-                    .map(a -> StartEmulatorParam.builder()
-                        .withDeviceName(deviceName())
-                        .withAndroidInstance(ANDROID_INSTANCE)
-                        .withRetries(100)
-                        .build())
-                    .flatMap(HANDLER::rx_startEmulator);
-
-                break;
-
-            case ACTUAL:
-                /* Assuming the device is already started up */
-                SOURCE = Flowable.just(true);
-                break;
-
-            default:
-                throw new RuntimeException(NOT_AVAILABLE);
+        if (testMode.isTestingOnSimulatedEnvironment()) {
+            source = HANDLER.rxe_availablePort(PARAM)
+                .doOnNext(ANDROID_INSTANCE::setPort)
+                .map(a -> StartEmulatorParam.builder()
+                    .withDeviceName(deviceName())
+                    .withAndroidInstance(ANDROID_INSTANCE)
+                    .withRetries(100)
+                    .build())
+                .flatMap(HANDLER::rxa_startEmulator);
+        } else {
+            /* Assuming the device is already started up */
+            source = Flowable.just(true);
         }
 
-        return super.rx_beforeClass(PARAM)
-            .flatMap(a -> SOURCE)
+        return Flowable
+            .concat(super.rxa_beforeClass(PARAM), source)
+            .all(BooleanUtil::toTrue)
+            .toFlowable()
 
             /* Disable animations to avoid erratic behaviors */
             .flatMap(a -> HANDLER
-                .rx_disableEmulatorAnimations(ANDROID_INSTANCE)
+                .rxa_disableEmulatorAnimations(ANDROID_INSTANCE)
 
-                /* This is not absolutely crucial, so even if
-                 * there is an error, we proceed anyway */
+                /* This is not absolutely crucial, so even if there is an
+                 * error, we proceed anyway */
                 .onErrorResumeNext(Flowable.just(true)))
             .flatMap(a -> START_APP);
     }
@@ -234,61 +231,61 @@ public class AndroidEngine extends
     /**
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterClass(AfterClassParam)
-     * @see ADBHandler#rx_stopEmulator(StopEmulatorParam)
-     * @see #rxResetApp()
-     * @see #rx_stopDriver()
+     * @see ADBHandler#rxa_stopEmulator(StopEmulatorParam)
+     * @see AndroidInstance#port()
+     * @see BooleanUtil#isTrue(boolean)
+     * @see Engine#rxa_afterClass(AfterClassParam)
+     * @see NetworkHandler#markPortAvailable(int)
+     * @see TestMode#isTestingOnSimulatedEnvironment()
+     * @see #adbHandler()
+     * @see #androidInstance()
+     * @see #networkHandler()
+     * @see #testMode()
+     * @see #rxa_resetApp()
+     * @see #rxa_stopDriver()
      */
     @NotNull
     @Override
-    @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
         AndroidInstance androidInstance = androidInstance();
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
-        final Flowable<Boolean> SOURCE;
-        final Flowable<Boolean> QUIT_APP = rx_stopDriver();
+        Flowable<Boolean> source;
+        TestMode mode = testMode();
 
-        switch (testMode()) {
-            case ACTUAL:
-                SOURCE = Flowable.just(true);
-                break;
+        if (mode.isTestingOnSimulatedEnvironment()) {
+            StopEmulatorParam seParam = StopEmulatorParam.builder()
+                .withRetryType(param)
+                .withPortType(androidInstance)
+                .build();
 
-            case SIMULATED:
-                SOURCE = Flowable.just(true);
-//                StopEmulatorParam seParam = StopEmulatorParam
-//                    .builder()
-//                    .withRetryType(param)
-//                    .withPortType(androidInstance)
-//                    .build();
-//
-//                SOURCE = adbHandler().rx_stopEmulator(seParam);
-                break;
-
-            default:
-                SOURCE = RxUtil.error(NOT_AVAILABLE);
-                break;
+            source = adbHandler().rxa_stopEmulator(seParam);
+        } else {
+            source = Flowable.just(true);
         }
 
-        return super.rx_afterClass(param)
-            .flatMap(a -> QUIT_APP)
-            .flatMap(a -> SOURCE)
-            .doOnNext(a -> HANDLER.markPortAsAvailable(PORT));
+        return Flowable
+            .concat(super.rxa_afterClass(param), rxa_stopDriver(), source)
+            .all(BooleanUtil::isTrue)
+            .toFlowable()
+            .doOnNext(a -> HANDLER.markPortAvailable(PORT));
     }
 
     /**
      * @param param {@link AfterParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterMethod(AfterParam)
-     * @see ADBHandler#rx_clearCache(AppPackageType)
+     * @see ADBHandler#rxa_clearCache(AppPackageType)
+     * @see Engine#rxa_afterMethod(AfterParam)
+     * @see #adbHandler()
+     * @see #androidInstance()
+     * @see #appPackage()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rx_afterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
         final ADBHandler ADB_HANDLER = adbHandler();
 
-        ClearCacheParam CC_PARAM = ClearCacheParam
-            .builder()
+        ClearCacheParam CC_PARAM = ClearCacheParam.builder()
             .withAppPackage(appPackage())
             .withDeviceUIDType(androidInstance())
             .withRetryType(param)
@@ -297,11 +294,11 @@ public class AndroidEngine extends
         /* Clear cached data such as SharedPreferences. If the app is not
          * found in the active device/emulator, throw an error */
         Flowable<Boolean> clearCache = ADB_HANDLER
-            .rx_checkAppInstalled(CC_PARAM)
-            .flatMap(a -> ADB_HANDLER.rx_clearCache(CC_PARAM));
+            .rxe_appInstalled(CC_PARAM)
+            .flatMap(a -> ADB_HANDLER.rxa_clearCache(CC_PARAM));
 
         return Flowable
-            .concat(super.rx_afterMethod(param), clearCache)
+            .concat(super.rxa_afterMethod(param), clearCache)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

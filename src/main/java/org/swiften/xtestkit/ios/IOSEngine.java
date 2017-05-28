@@ -7,8 +7,10 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
+import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.ios.capability.IOSCapability;
 import org.swiften.xtestkit.ios.element.action.choice.IOSChoiceSelectorType;
@@ -124,42 +126,44 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_beforeClass(BeforeClassParam)
-     * @see #rx_startDriver(RetryType)
+     * @see BooleanUtil#isTrue(boolean)
+     * @see Engine#rxa_beforeClass(BeforeClassParam)
+     * @see #rxa_startDriver(RetryType)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rx_beforeClass(@NotNull BeforeClassParam param) {
-        final Flowable<Boolean> START_APP = rx_startDriver(param);
-        return super.rx_beforeClass(param).flatMap(a -> START_APP);
+    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
+        return Flowable
+            .concat(super.rxa_beforeClass(param), rxa_startDriver(param))
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rx_afterClass(AfterClassParam)
-     * @see XCRunHandler#rxStopSimulator(RetryType)
-     * @see #rx_stopDriver()
+     * @see Engine#rxa_afterClass(AfterClassParam)
+     * @see TestMode#isTestingOnSimulatedEnvironment()
+     * @see XCRunHandler#rxa_stopSimulator(RetryType)
+     * @see #testMode()
+     * @see #rxa_stopDriver()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rx_afterClass(@NotNull AfterClassParam param) {
-        final IOSEngine THIS = this;
-        final Flowable<Boolean> SOURCE;
+    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
+        Flowable<Boolean> source;
+        TestMode testMode = testMode();
 
-        switch (testMode()) {
-//            case SIMULATED:
-//                SOURCE = XC_HANDLER.rxStopSimulator(param);
-//                break;
-
-            default:
-                SOURCE = Flowable.just(true);
-                break;
+        if (testMode.isTestingOnSimulatedEnvironment()) {
+            source = XC_HANDLER.rxa_stopSimulator(param);
+        } else {
+            source = Flowable.just(true);
         }
 
-        return super.rx_afterClass(param)
-            .flatMap(a -> SOURCE)
-            .flatMap(a -> THIS.rx_stopDriver());
+        return Flowable
+            .concat(super.rxa_afterClass(param), source, rxa_stopDriver())
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
     //endregion
 

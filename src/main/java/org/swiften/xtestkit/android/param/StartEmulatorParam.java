@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link ADBHandler#rx_startEmulator(StartEmulatorParam)}
+ * {@link ADBHandler#rxa_startEmulator(StartEmulatorParam)}
  */
 public class StartEmulatorParam implements
     DeviceUIDType,

@@ -36,17 +36,17 @@ public interface AndroidKeyboardActionType extends
     /**
      * Dismiss the keyboard if it is open. We first need to check whether the
      * keyboard is present with
-     * {@link ADBHandler#rx_checkKeyboardOpen(DeviceUIDType)},
+     * {@link ADBHandler#rxe_keyboardOpen(DeviceUIDType)},
      * and then call {@link #rxa_navigateBack(RepeatType)}.
      * @return {@link Flowable} instance.
      * @see #rxa_navigateBack(RepeatType)
-     * @see ADBHandler#rx_checkKeyboardOpen(DeviceUIDType)
+     * @see ADBHandler#rxe_keyboardOpen(DeviceUIDType)
      */
     @NotNull
     default Flowable<Boolean> rxa_hideKeyboard() {
         AndroidInstance instance = androidInstance();
 
-        return adbHandler().rx_checkKeyboardOpen(instance)
+        return adbHandler().rxe_keyboardOpen(instance)
             .filter(BooleanUtil::isTrue)
             .flatMap(a -> rxa_navigateBackOnce())
             .defaultIfEmpty(true);

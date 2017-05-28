@@ -20,13 +20,12 @@ import org.testng.annotations.Test;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -34,6 +33,7 @@ import static org.testng.Assert.fail;
 /**
  * Created by haipham on 4/7/17.
  */
+@SuppressWarnings("MessageMissingOnTestNGAssertion")
 public final class NetworkHandlerTest implements NetworkHandlerErrorType {
     @NotNull private final NetworkHandler HANDLER;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
@@ -62,13 +62,13 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
         try {
             // Setup
             int tries = 10;
-            doReturn(false).when(HANDLER).isPortAvailable(anyString(), anyInt());
-            doReturn(true).when(HANDLER).isPortAvailable(anyString(), eq(tries));
+            doReturn(false).when(HANDLER).isPortAvailable(any(), anyInt());
+            doReturn(true).when(HANDLER).isPortAvailable(any(), eq(tries));
             CheckPort param = new CheckPort(1);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            HANDLER.rxCheckUntilPortAvailable(param).subscribe(subscriber);
+            HANDLER.rxa_checkUntilPortAvailable(param).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -76,11 +76,11 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             assertEquals(RxTestUtil.firstNextEvent(subscriber), Integer.valueOf(tries));
-            verify(HANDLER, times(tries)).isPortAvailable(anyString(), anyInt());
+            verify(HANDLER, times(tries)).isPortAvailable(any(), anyInt());
             verify(HANDLER, times(tries)).processRunner();
             verify(HANDLER, times(tries)).cmListAllPorts();
-            verify(HANDLER, times(tries)).rxCheckPortAvailable(any());
-            verify(HANDLER).rxCheckUntilPortAvailable(any());
+            verify(HANDLER, times(tries)).rxa_checkPortAvailable(any());
+            verify(HANDLER).rxa_checkUntilPortAvailable(any());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -91,12 +91,12 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
     public void test_checkPortAvailable_shouldSucceed() {
         try {
             // Setup
-            doReturn("").when(PROCESS_RUNNER).execute(anyString());
+            doReturn(Flowable.just("")).when(PROCESS_RUNNER).rxa_execute(any());
             CheckPort param = new CheckPort(0);
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            HANDLER.rxCheckUntilPortAvailable(param).subscribe(subscriber);
+            HANDLER.rxa_checkUntilPortAvailable(param).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -106,9 +106,9 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
             assertEquals(RxTestUtil.firstNextEvent(subscriber), Integer.valueOf(0));
             verify(HANDLER).processRunner();
             verify(HANDLER).cmListAllPorts();
-            verify(HANDLER).rxCheckPortAvailable(any());
-            verify(HANDLER).rxCheckUntilPortAvailable(any());
-            verify(HANDLER).isPortAvailable(anyString(), anyInt());
+            verify(HANDLER).rxa_checkPortAvailable(any());
+            verify(HANDLER).rxa_checkUntilPortAvailable(any());
+            verify(HANDLER).isPortAvailable(any(), anyInt());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -123,21 +123,21 @@ public final class NetworkHandlerTest implements NetworkHandlerErrorType {
 
         // When
         Flowable.range(minPort, tries)
-            .doOnNext(LogUtil::println)
             .map(CheckPort::new)
-            .concatMap(HANDLER::rxCheckUntilPortAvailable)
+            .flatMap(HANDLER::rxa_checkUntilPortAvailable)
             .doOnNext(a -> LogUtil.printfThread("Port %d", a))
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         // Then
-        List<Integer> usedPorts = new LinkedList<>(HANDLER.usedPorts());
-        LogUtil.println(usedPorts);
+        Collection<Integer> used = HANDLER.usedPorts();
+        Collection<Integer> distinct = used.stream().distinct().collect(Collectors.toList());
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(usedPorts.size(), tries);
+        assertEquals(used.size(), distinct.size());
+        assertEquals(used.size(), tries);
     }
 
     private static final class CheckPort implements PortType, MaxPortType, PortStepType, RetryType {

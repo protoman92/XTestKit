@@ -62,7 +62,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_startDriver(RETRY).subscribe(subscriber);
+        ENGINE.rxa_startDriver(RETRY).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -82,7 +82,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
         verify(ENGINE).deviceUID();
         verify(ENGINE).capabilities();
         verify(ENGINE).capabilityType();
-        verify(ENGINE).rx_startDriver(any());
+        verify(ENGINE).rxa_startDriver(any());
         verifyNoMoreInteractions(ENGINE);
 
         try {

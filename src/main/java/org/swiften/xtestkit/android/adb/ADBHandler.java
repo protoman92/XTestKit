@@ -1,5 +1,6 @@
 package org.swiften.xtestkit.android.adb;
 
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.base.type.RetryType;
@@ -19,10 +20,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.string.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -122,7 +120,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_restartAdb() {
+    public Flowable<Boolean> rxa_restartAdb() {
         final ProcessRunner RUNNER = processRunner();
         NetworkHandler handler = networkHandler();
 
@@ -130,7 +128,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .rxKillWithName("adb")
             .onErrorResumeNext(Flowable.just(true))
             .map(a -> cm_launchAdb())
-            .flatMap(RUNNER::rxExecute)
+            .flatMap(RUNNER::rxa_execute)
             .map(BooleanUtil::toTrue);
     }
     //endregion
@@ -141,15 +139,15 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * * @see #rxIsAcceptablePort(int)
-     * @see NetworkHandler#checkPortsMarkedAsUsed(Collection)
-     * @see NetworkHandler#rxCheckPortAvailable(PortType)
+     * @see NetworkHandler#checkPortsUsed(Collection)
+     * @see NetworkHandler#rxa_checkPortAvailable(PortType)
      */
     @NotNull
-    public Flowable<Integer> rx_availablePort(@NotNull final RetryType PARAM) {
+    public Flowable<Integer> rxe_availablePort(@NotNull final RetryType PARAM) {
         NetworkHandler networkHandler = networkHandler();
         Collection<Integer> availablePorts = availablePorts();
 
-        if (networkHandler.checkPortsMarkedAsUsed(availablePorts)) {
+        if (networkHandler.checkPortsUsed(availablePorts)) {
             return RxUtil.error(NO_PORT_AVAILABLE);
         } else {
             PortCheckParam param = PortCheckParam.builder()
@@ -159,7 +157,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
                 .withRetryType(PARAM)
                 .build();
 
-            return networkHandler.rxCheckUntilPortAvailable(param);
+            return networkHandler.rxa_checkUntilPortAvailable(param);
         }
     }
 
@@ -168,47 +166,35 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * 'closed' and then emit value.
      * @param PARAM {@link StartEmulatorParam} instance.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#toTrue(Object)
+     * @see ObjectUtil#nonNull(Object)
+     * @see RxUtil#error()
      * @see #cm_startEmulator(StartEmulatorParam)
      * @see #cm_bootAnim(DeviceUIDType)
+     * @see #emulatorBootTimeout()
+     * @see #emulatorBootRetryDelay()
      */
     @NotNull
-    public Flowable<Boolean> rx_startEmulator(@NotNull final StartEmulatorParam PARAM) {
-        if (!isAcceptablePort(PARAM.port())) {
-            String error = unacceptablePort(PARAM.port());
-            return RxUtil.error(error);
-        }
-
-        final ProcessRunner PROCESS_RUNNER = processRunner();
+    public Flowable<Boolean> rxa_startEmulator(@NotNull final StartEmulatorParam PARAM) {
+        final ProcessRunner RUNNER = processRunner();
         final int RETRIES = PARAM.retries();
-
-        @SuppressWarnings("WeakerAccess")
         final long DELAY = emulatorBootRetryDelay();
-
-        @SuppressWarnings("WeakerAccess")
         final long TIMEOUT = emulatorBootTimeout();
-
-        /* Append any error when starting up the emulator to this list, and
-         * have retryWhen read it to determine whether to continue retrying */
-        final List<Exception> ERRORS = new ArrayList<>();
 
         /* We need to start the emulator on a new Thread, or else it will
          * block the rest of the operations */
-        new Thread(() -> {
-            try {
-                PROCESS_RUNNER.execute(cm_startEmulator(PARAM));
-            } catch (Exception e) {
-                ERRORS.add(e);
-            }
-        }).start();
+        RUNNER.rxa_execute(cm_startEmulator(PARAM)).subscribe();
 
-        return PROCESS_RUNNER
-            .rxExecute(cm_bootAnim(PARAM))
-            .filter(Objects::nonNull)
+        return RUNNER
+            .rxa_execute(cm_bootAnim(PARAM))
+            .filter(ObjectUtil::nonNull)
             .map(String::trim)
 
             /* There are two errors that can be thrown here:
+             *
              * When the emulator is first started: no devices/emulators found
              * When the emulator is booting up: device unauthorized
+             *
              * Afterwards, when the emulator has booted up fully, a value
              * 'stopped' will be emitted */
             .filter(a -> a.equals("stopped"))
@@ -223,13 +209,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
                         return e;
                     }
                 })
-                .flatMap(e -> {
-                    if (ERRORS.isEmpty()) {
-                        return Flowable.timer(DELAY, TimeUnit.MILLISECONDS);
-                    } else {
-                        return Flowable.<Long>error(e);
-                    }
-                }))
+                .flatMap(e -> Flowable.timer(DELAY, TimeUnit.MILLISECONDS)))
             .map(BooleanUtil::toTrue)
 
             /* timeout is used here in case processRunner() fails to poll
@@ -248,11 +228,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cm_stopAllEmulators()
      */
     @NotNull
-    public Flowable<Boolean> rx_stopAllEmulators(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_stopAllEmulators(@NotNull RetryType param) {
         String command = cm_stopAllEmulators();
 
         return processRunner()
-            .rxExecute(command)
+            .rxa_execute(command)
             .map(BooleanUtil::toTrue)
             .retry(param.retries());
     }
@@ -261,11 +241,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Kill a specific emulator instance, based on its port number.
      * @param param {@link StopEmulatorParam} instance.
      * @return {@link Flowable} instance.
-     * @see NetworkHandler#rxKillWithPort(RetryType, Predicate)
+     * @see NetworkHandler#rxa_killWithPort(RetryType, Predicate)
      */
     @NotNull
-    public Flowable<Boolean> rx_stopEmulator(@NotNull StopEmulatorParam param) {
-        return networkHandler().rxKillWithPort(param, a -> true);
+    public Flowable<Boolean> rxa_stopEmulator(@NotNull StopEmulatorParam param) {
+        return networkHandler().rxa_killWithPort(param, a -> true);
     }
     //endregion
 
@@ -281,13 +261,13 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      */
     @NotNull
     public <T extends AppPackageType & DeviceUIDType & RetryType>
-    Flowable<Boolean> rx_clearCache(@NotNull T param) {
+    Flowable<Boolean> rxa_clearCache(@NotNull T param) {
         ProcessRunner runner = processRunner();
         final String APP = param.appPackage();
         String command = cm_clearCache(param);
 
         return runner
-            .rxExecute(command)
+            .rxa_execute(command)
 
             /* Output from the above command may either be 'Success' or
              * 'Failed'. Failures may be due to the app's package name not
@@ -310,13 +290,13 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      */
     @NotNull
     public <T extends AppPackageType & DeviceUIDType & RetryType>
-    Flowable<Boolean> rx_checkAppInstalled(@NotNull final T PARAM) {
+    Flowable<Boolean> rxe_appInstalled(@NotNull final T PARAM) {
         ProcessRunner processRunner = processRunner();
         String listCommand = cm_listPackages(PARAM);
         final String PKG = PARAM.appPackage();
 
         return processRunner
-            .rxExecute(listCommand)
+            .rxa_execute(listCommand)
             .filter(a -> a.contains(PKG))
             .retry(PARAM.retries())
             .map(BooleanUtil::toTrue)
@@ -333,10 +313,10 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cm_toggleInternet(ConnectionParam)
      */
     @NotNull
-    public Flowable<Boolean> rx_toggleInternet(@NotNull ConnectionParam param) {
+    public Flowable<Boolean> rxa_toggleInternet(@NotNull ConnectionParam param) {
         String command = cm_toggleInternet(param);
 
-        return processRunner().rxExecute(command)
+        return processRunner().rxa_execute(command)
             /* If successful, there should be no output */
             .filter(String::isEmpty)
             .map(BooleanUtil::toTrue)
@@ -347,34 +327,34 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Same as above, but uses a default {@link ConnectionParam}.
      * @param param {@link DeviceUIDType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_toggleInternet(ConnectionParam)
+     * @see #rxa_toggleInternet(ConnectionParam)
      */
     @NotNull
-    public Flowable<Boolean> rx_enableInternet(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_enableInternet(@NotNull DeviceUIDType param) {
         ConnectionParam conn = ConnectionParam
             .builder()
             .shouldEnable(true)
             .withDeviceUIDProtocol(param)
             .build();
 
-        return rx_toggleInternet(conn);
+        return rxa_toggleInternet(conn);
     }
 
     /**
      * Same as above, but uses a default {@link ConnectionParam}.
      * @param param {@link DeviceUIDType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_toggleInternet(ConnectionParam)
+     * @see #rxa_toggleInternet(ConnectionParam)
      */
     @NotNull
-    public Flowable<Boolean> rx_disableInternet(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableInternet(@NotNull DeviceUIDType param) {
         ConnectionParam conn = ConnectionParam
             .builder()
             .shouldEnable(false)
             .withDeviceUIDProtocol(param)
             .build();
 
-        return rx_toggleInternet(conn);
+        return rxa_toggleInternet(conn);
     }
     //endregion
 
@@ -386,10 +366,10 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cm_checkKeyboardOpen(DeviceUIDType)
      */
     @NotNull
-    public Flowable<Boolean> rx_checkKeyboardOpen(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxe_keyboardOpen(@NotNull DeviceUIDType param) {
         String command = cm_checkKeyboardOpen(param);
 
-        return processRunner().rxExecute(command)
+        return processRunner().rxa_execute(command)
             .filter(StringUtil::isNotNullOrEmpty)
             .map(output -> {
                 String regex = "mHasSurface=(\\w+)";
@@ -420,11 +400,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #cm_getSettings(DeviceSettingParam)
      */
     @NotNull
-    public Flowable<Boolean> rx_changeSettings(@NotNull final DeviceSettingParam PARAM) {
+    public Flowable<Boolean> rxa_changeSettings(@NotNull final DeviceSettingParam PARAM) {
         final ProcessRunner RUNNER = processRunner();
 
-        return RUNNER.rxExecute(cm_putSettings(PARAM))
-            .flatMap(a -> RUNNER.rxExecute(cm_getSettings(PARAM)))
+        return RUNNER.rxa_execute(cm_putSettings(PARAM))
+            .flatMap(a -> RUNNER.rxa_execute(cm_getSettings(PARAM)))
             .filter(a -> a.contains(PARAM.value()))
             .map(BooleanUtil::toTrue)
             .onErrorResumeNext(Flowable.empty())
@@ -450,7 +430,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_disableWindowAnimationScale(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableWindowAnimationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("window_animation_scale")
@@ -458,7 +438,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .withDeviceUIDProtocol(param)
             .build();
 
-        return rx_changeSettings(setting);
+        return rxa_changeSettings(setting);
     }
     //endregion
 
@@ -469,7 +449,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_disableTransitionAnimationScale(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableTransitionAnimationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("transition_animation_scale")
@@ -477,7 +457,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .withDeviceUIDProtocol(param)
             .build();
 
-        return rx_changeSettings(setting);
+        return rxa_changeSettings(setting);
     }
     //endregion
 
@@ -488,7 +468,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    public Flowable<Boolean> rx_disableAnimatorDurationScale(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableAnimatorDurationScale(@NotNull DeviceUIDType param) {
         DeviceSettingParam setting = DeviceSettingParam.builder()
             .withGlobalNameSpace()
             .withKey("animator_duration_scale")
@@ -496,7 +476,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .withDeviceUIDProtocol(param)
             .build();
 
-        return rx_changeSettings(setting);
+        return rxa_changeSettings(setting);
     }
     //endregion
 
@@ -507,18 +487,18 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * emulators are rooted by default.
      * @param param {@link DeviceUIDType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_disableWindowAnimationScale(DeviceUIDType)
-     * @see #rx_disableTransitionAnimationScale(DeviceUIDType)
-     * @see #rx_disableAnimatorDurationScale(DeviceUIDType)
+     * @see #rxa_disableWindowAnimationScale(DeviceUIDType)
+     * @see #rxa_disableTransitionAnimationScale(DeviceUIDType)
+     * @see #rxa_disableAnimatorDurationScale(DeviceUIDType)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rx_disableEmulatorAnimations(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableEmulatorAnimations(@NotNull DeviceUIDType param) {
         return Flowable
             .mergeArray(
-                rx_disableWindowAnimationScale(param),
-                rx_disableTransitionAnimationScale(param),
-                rx_disableAnimatorDurationScale(param)
+                rxa_disableWindowAnimationScale(param),
+                rxa_disableTransitionAnimationScale(param),
+                rxa_disableAnimatorDurationScale(param)
             )
             .all(BooleanUtil::isTrue)
             .toFlowable();

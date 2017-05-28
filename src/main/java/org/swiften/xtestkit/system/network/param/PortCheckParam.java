@@ -12,7 +12,7 @@ import org.swiften.xtestkit.system.network.type.PortType;
 
 /**
  * Parameter object for
- * {@link org.swiften.xtestkit.system.network.NetworkHandler#rxCheckUntilPortAvailable(PortType)}
+ * {@link org.swiften.xtestkit.system.network.NetworkHandler#rxa_checkUntilPortAvailable(PortType)}
  */
 public class PortCheckParam implements PortType, MaxPortType, PortStepType, RetryType {
     /**

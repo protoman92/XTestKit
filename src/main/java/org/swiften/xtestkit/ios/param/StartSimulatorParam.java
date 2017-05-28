@@ -4,13 +4,14 @@ package org.swiften.xtestkit.ios.param;
  * Created by haipham on 4/8/17.
  */
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 import org.swiften.xtestkit.ios.XCRunHandler;
 
 /**
- * Parameter object for {@link XCRunHandler#rxStartSimulator(StartSimulatorParam)}.
+ * Parameter object for {@link XCRunHandler#rxa_startSimulator(StartSimulatorParam)}.
  */
 public class StartSimulatorParam implements RetryType, DeviceUIDType {
     @NotNull public static StartSimulatorParam DEFAULT;
@@ -36,19 +37,16 @@ public class StartSimulatorParam implements RetryType, DeviceUIDType {
         deviceUID = "";
     }
 
-    //region RetryType.
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
-    //region DeviceUIDType.
     @NotNull
+    @Override
     public String deviceUID() {
         return deviceUID;
     }
-    //endregion
 
     //region Builder.
     /**

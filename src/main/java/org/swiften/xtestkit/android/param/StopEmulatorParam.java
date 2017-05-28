@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Parameter object for
- * {@link ADBHandler#rx_stopEmulator(StopEmulatorParam)}
+ * {@link ADBHandler#rxa_stopEmulator(StopEmulatorParam)}
  */
 public class StopEmulatorParam implements RetryType, PortType {
     @NotNull
