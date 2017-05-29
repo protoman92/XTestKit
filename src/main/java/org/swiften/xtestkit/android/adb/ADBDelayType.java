@@ -17,7 +17,7 @@ public interface ADBDelayType {
      * @return {@link Long} value.
      */
     default long emulatorBootTimeout() {
-        return 50000;
+        return 60000;
     }
 
     /**

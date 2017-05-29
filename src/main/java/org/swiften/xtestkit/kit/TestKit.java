@@ -457,7 +457,7 @@ public class TestKit implements
      * @param param {@link BeforeParam} instance.
      * @see #rxa_beforeMethod(BeforeParam)
      */
-    public void before(@NotNull BeforeParam param) {
+    public void beforeMethod(@NotNull BeforeParam param) {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxa_beforeMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
@@ -481,7 +481,7 @@ public class TestKit implements
      * @param param {@link AfterParam} instance.
      * @see #rxAfterMethod(AfterParam)
      */
-    public void after(@NotNull AfterParam param) {
+    public void afterMethod(@NotNull AfterParam param) {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxAfterMethod(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();

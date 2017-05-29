@@ -12,7 +12,7 @@ import org.swiften.xtestkit.base.element.action.general.Unidirection;
  * swipes.
  */
 @FunctionalInterface
-public interface UnidirectionContainerType {
+public interface UnidirectionType {
     /**
      * Get the associated {@link Unidirection}.
      * @return {@link Unidirection} instance.

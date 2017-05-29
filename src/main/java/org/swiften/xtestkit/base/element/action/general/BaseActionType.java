@@ -100,6 +100,7 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
                     ALERT.dismiss();
                 }
             })
+            .onErrorComplete()
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

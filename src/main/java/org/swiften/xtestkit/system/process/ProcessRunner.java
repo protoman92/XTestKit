@@ -20,7 +20,7 @@ public class ProcessRunner {
      * @param args {@link String} command to be executed.
      */
     private void logCommand(@NotNull String args) {
-//        LogUtil.printfThread("Executing '%s'", args);
+        LogUtil.printfThread("Executing '%s'", args);
     }
 
     /**
@@ -91,6 +91,15 @@ public class ProcessRunner {
      */
     public void execute(@NotNull String args, @NotNull Consumer<String> onNext) {
         execute(args, onNext, LogUtil::println);
+    }
+
+    /**
+     * Same as above, but ignore all events.
+     * @param args {@link String} command to execute.
+     * @see #execute(String, Consumer)
+     */
+    public void execute(@NotNull String args) {
+        execute(args, LogUtil::println);
     }
 
     /**
@@ -203,6 +212,15 @@ public class ProcessRunner {
      */
     public void executeStream(@NotNull String args, @NotNull Consumer<String> onNext) {
         executeStream(args, onNext, LogUtil::println);
+    }
+
+    /**
+     * Same as above, but ignore all events.
+     * @param args {@link String} command to execute.
+     * @see #executeStream(String, Consumer)
+     */
+    public void executeStream(@NotNull String args) {
+        executeStream(args, LogUtil::println);
     }
 
     /**

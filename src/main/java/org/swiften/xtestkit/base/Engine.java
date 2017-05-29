@@ -43,7 +43,6 @@ import org.swiften.xtestkit.test.TestListenerType;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * A base class for platform-specific implementations. Each Different platform
@@ -289,9 +288,9 @@ public abstract class Engine<D extends WebDriver> implements
     public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
         if (address().isLocalInstance()) {
             return rxa_startLocalAppium(param);
+        } else {
+            return Flowable.just(true);
         }
-
-        return Flowable.just(true);
     }
 
     /**
@@ -417,10 +416,13 @@ public abstract class Engine<D extends WebDriver> implements
      * instead.
      * @return {@link Flowable} instance.
      * @see WebDriver#quit()
+     * @see #driver()
      */
     @NotNull
     public Flowable<Boolean> rxa_stopDriver() {
-        return Completable.fromAction(driver()::quit)
+        final WebDriver DRIVER = driver();
+
+        return Completable.fromAction(DRIVER::quit)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

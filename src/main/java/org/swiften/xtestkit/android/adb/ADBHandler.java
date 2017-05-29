@@ -183,7 +183,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
         /* We need to start the emulator on a new Thread, or else it will
          * block the rest of the operations */
-        RUNNER.rxa_execute(cm_startEmulator(PARAM)).subscribe();
+        final String START = cm_startEmulator(PARAM);
+        new Thread(() -> RUNNER.execute(START)).start();
 
         return RUNNER
             .rxa_execute(cm_bootAnim(PARAM))

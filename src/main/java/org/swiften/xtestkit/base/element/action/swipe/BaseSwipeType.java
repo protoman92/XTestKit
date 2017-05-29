@@ -7,43 +7,48 @@ package org.swiften.xtestkit.base.element.action.swipe;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.rx.RxUtil;
+import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.action.general.Unidirection;
 import org.swiften.xtestkit.base.param.UnidirectionParam;
-import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.DurationType;
+import org.swiften.xtestkit.base.type.RepeatType;
+import org.swiften.xtestkit.base.type.UnidirectionType;
 
 /**
  * This interface provides methods to perform swipe gestures.
  */
-public interface BaseSwipeType<D extends WebDriver> extends
-    BaseSwipeErrorType, DriverContainerType<D>, SwipeOnceType
-{
+public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<D>, SwipeOnceType {
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
      * full swipe is required.
+     * @param element {@link WebElement} instance to be swiped.
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
+     * @see WebElement#getLocation()
+     * @see WebElement#getSize()
      * @see #rx_swipe(RepeatType)
-     * @see WebDriver#manage()
-     * @see WebDriver.Options#window()
-     * @see WebDriver.Window#getSize()
+     * @see #NOT_AVAILABLE
      */
     @NotNull
-    default <P extends DurationType & UnidirectionContainerType & RepeatType>
-    Flowable<Boolean> rx_swipeGenericUnidirectional(@NotNull P param) {
-        Dimension size = driver().manage().window().getSize();
+    default <P extends DurationType & UnidirectionType & SwipeDampenType & RepeatType>
+    Flowable<Boolean> rxa_swipeGeneric(@NotNull WebElement element, @NotNull P param) {
+        Point origin = element.getLocation();
+        Dimension size = element.getSize();
         double height = size.height, width = size.width;
+        int originX = origin.getX(), originY = origin.getY();
         int startX, endX, startY, endY;
-        double startRatio = 0.3d, endRatio = 0.7d;
+        double startRatio = param.startRatio(), endRatio = param.endRatio();
 
-        int lowX = (int)(width * startRatio);
-        int midX = (int)(width / 2);
-        int highX = (int)(width * endRatio);
-        int lowY = (int)(height * startRatio);
-        int midY = (int)(height / 2);
-        int highY = (int)(height * endRatio);
+        int lowX = (int)(originX + width * startRatio);
+        int midX = (int)(originX + width / 2);
+        int highX = (int)(originX + width * endRatio);
+        int lowY = (int)(originY + height * startRatio);
+        int midY = (int)(originY + height / 2);
+        int highY = (int)(originY + height * endRatio);
 
         switch (param.direction()) {
             case LEFT_RIGHT:
@@ -59,7 +64,7 @@ public interface BaseSwipeType<D extends WebDriver> extends
                 break;
 
             default:
-                return RxUtil.error(WRONG_DIRECTION);
+                throw new RuntimeException(NOT_AVAILABLE);
         }
 
         SwipeParam swipeParam = SwipeParam.builder()
@@ -78,37 +83,37 @@ public interface BaseSwipeType<D extends WebDriver> extends
      * Perform a generic horizontal swipe motion from left to right.
      * @param param {@link P} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_swipeGenericUnidirectional(DurationType)
+     * @see #rxa_swipeGeneric(WebElement, DurationType)
      * @see Unidirection#LEFT_RIGHT
      */
     @NotNull
-    default <P extends DurationType & RepeatType>
-    Flowable<Boolean> rx_swipeGenericLR(@NotNull P param) {
-        UnidirectionParam uniParam = UnidirectionParam.builder()
+    default <P extends DurationType & RepeatType> Flowable<Boolean>
+    rxa_swipeGenericLR(@NotNull WebElement element, @NotNull P param) {
+        UnidirectionParam directionParam = UnidirectionParam.builder()
             .withDirection(Unidirection.LEFT_RIGHT)
             .withRepeatableType(param)
             .withDurationType(param)
             .build();
 
-        return rx_swipeGenericUnidirectional(uniParam);
+        return rxa_swipeGeneric(element, directionParam);
     }
 
     /**
      * Perform a generic horizontal swipe motion from right to left.
      * @param param {@link RepeatType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_swipeGenericUnidirectional(DurationType)
+     * @see #rxa_swipeGeneric(WebElement, DurationType)
      * @see Unidirection#RIGHT_LEFT
      */
     @NotNull
-    default <P extends DurationType & RepeatType>
-    Flowable<Boolean> rxSwipeGenericRL(@NotNull P param) {
-        UnidirectionParam uniParam = UnidirectionParam.builder()
+    default <P extends DurationType & RepeatType> Flowable<Boolean>
+    rxa_swipeGenericRL(@NotNull WebElement element, @NotNull P param) {
+        UnidirectionParam directionParam = UnidirectionParam.builder()
             .withDirection(Unidirection.RIGHT_LEFT)
             .withRepeatableType(param)
             .withDurationType(param)
             .build();
 
-        return rx_swipeGenericUnidirectional(uniParam);
+        return rxa_swipeGeneric(element, directionParam);
     }
 }

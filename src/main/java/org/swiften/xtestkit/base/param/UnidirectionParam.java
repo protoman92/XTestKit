@@ -2,22 +2,23 @@ package org.swiften.xtestkit.base.param;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.action.general.Unidirection;
+import org.swiften.xtestkit.base.element.action.swipe.SwipeDampenType;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
-import org.swiften.xtestkit.base.type.UnidirectionContainerType;
+import org.swiften.xtestkit.base.type.UnidirectionType;
 
 /**
  * Created by haipham on 5/8/17.
  */
 
 /**
- * Parameter object for
- * {@link Engine#rx_swipeGenericUnidirectional(DurationType)}.
+ * Parameter object for {@link Engine#rxa_swipeGeneric(WebElement, DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
-public class UnidirectionParam implements DurationType, RepeatType, UnidirectionContainerType {
+public class UnidirectionParam implements DurationType, RepeatType, SwipeDampenType, UnidirectionType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -28,8 +29,8 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
     }
 
     @NotNull Unidirection direction;
-    private int times;
-    private int duration;
+    private double startRatio, endRatio;
+    private int times, duration;
     private long delay;
 
     UnidirectionParam() {
@@ -39,6 +40,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
 
     //region Getters
     @NotNull
+    @Override
     public Unidirection direction() {
         return direction;
     }
@@ -56,6 +58,16 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
     @Override
     public int duration() {
         return duration;
+    }
+
+    @Override
+    public double startRatio() {
+        return startRatio;
+    }
+
+    @Override
+    public double endRatio() {
+        return endRatio;
     }
     //endregion
 
@@ -75,6 +87,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set the {@link #direction} instance.
          * @param direction {@link Unidirection} instance.
          * @return The current {@link Builder} instance.
+         * @see #direction
          */
         @NotNull
         public Builder withDirection(@NotNull Unidirection direction) {
@@ -86,6 +99,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set the {@link #times} value.
          * @param times {@link Integer} value.
          * @return The current {@link Builder} instance.
+         * @see #times
          */
         @NonNull
         public Builder withTimes(int times) {
@@ -97,6 +111,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set the {@link #duration} value.
          * @param duration {@link Integer} value.
          * @return The current {@link Builder} instance.
+         * @see #duration
          */
         @NotNull
         public Builder withDuration(int duration) {
@@ -108,6 +123,7 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set the {@link #delay} value.
          * @param delay {@link Long} value.
          * @return The current {@link Builder} instance.
+         * @see #delay
          */
         @NotNull
         public Builder withDelay(long delay) {
@@ -119,6 +135,8 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set {@link #times} and {@link #delay}.
          * @param type {@link RepeatType} instance.
          * @return The current {@link Builder} instance.
+         * @see RepeatType#times()
+         * @see RepeatType#delay()
          */
         @NotNull
         public Builder withRepeatableType(@NotNull RepeatType type) {
@@ -129,10 +147,50 @@ public class UnidirectionParam implements DurationType, RepeatType, Unidirection
          * Set the {@link #duration} value.
          * @param type {@link DurationType} instance.
          * @return The current {@link Builder} instance.
+         * @see DurationType#duration()
+         * @see #withDuration(int)
          */
         @NotNull
         public Builder withDurationType(@NotNull DurationType type) {
+            return withDuration(type.duration());
+        }
+
+        /**
+         * Set the {@link #startRatio} value.
+         * @param startRatio {@link Double} value.
+         * @return The current {@link Builder} instance.
+         * @see #startRatio
+         */
+        @NotNull
+        public Builder withStartRatio(double startRatio) {
+            PARAM.startRatio = startRatio;
             return this;
+        }
+
+        /**
+         * Set the {@link #endRatio} value.
+         * @param endRatio {@link Double} value.
+         * @return The current {@link Builder} instance.
+         * @see #endRatio
+         */
+        @NotNull
+        public Builder withEndRatio(double endRatio) {
+            PARAM.endRatio = endRatio;
+            return this;
+        }
+
+        /**
+         * Set the {@link #startRatio} and {@link #endRatio} values.
+         * @param type {@link SwipeDampenType} instance.
+         * @return The current {@link Builder} instance.
+         * @see SwipeDampenType#startRatio()
+         * @see SwipeDampenType#endRatio()
+         * @see #withStartRatio(double)
+         * @see #withEndRatio(double)
+         */
+        @NotNull
+        public Builder withSwipeDampenType(@NotNull SwipeDampenType type) {
+            return withStartRatio(type.startRatio()).withEndRatio(type.endRatio());
         }
 
         @NonNull
