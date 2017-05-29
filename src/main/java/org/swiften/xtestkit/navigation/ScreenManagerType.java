@@ -245,7 +245,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
      * @see #shortest(ScreenType, ScreenType, List)
      */
     @NotNull
-    default List<Node> multipleShortest(@NotNull ScreenType...screens) {
+    default List<Node> multiNodes(@NotNull ScreenType...screens) {
         List<Node> nav = new LinkedList<>();
 
         for (int i = 0, length = screens.length; i < length; i++) {
@@ -270,27 +270,29 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     /**
      * Navigate sequentially from the first {@link Node} to the last.
      * @param initial The initial argument to pass to
-     *                {@link ScreenType.Navigation#navigator(Object)}
+     *                {@link ScreenType.NavigationSupplier#navigation(Object)}
      * @param screens A varargs of {@link ScreenType}.
      * @return {@link Flowable} instance.
-     * @see #multipleShortest(ScreenType...)
      * @see ScreenType.Direction#NAVIGATION
-     * @see ScreenType.Navigation#navigator(Object)
+     * @see ScreenType.NavigationSupplier#navigation(Object)
+     * @see ScreenType#rxa_onInitialized()
+     * @see #multiNodes(ScreenType...)
      */
     @NotNull
     default Flowable<?> rxa_navigate(@NotNull Object initial,
                                      @NotNull ScreenType...screens) {
-        final List<Node> NODES = multipleShortest(screens);
+        final List<Node> NODES = multiNodes(screens);
         final int LENGTH = NODES.size();
 
         class Repeater {
             @NotNull
             private Flowable<?> repeat(@NotNull Object init, final int INDEX) {
                 if (INDEX < LENGTH) {
-                    Node node = NODES.get(INDEX);
+                    final Node NODE = NODES.get(INDEX);
 
-                    return node.NAVIGATION.navigator(init)
-                        .delay(node.DELAY, node.TIME_UNIT)
+                    return NODE.NAV_SUPPLIER.navigation(init)
+                        .delay(NODE.DELAY, NODE.TIME_UNIT)
+                        .flatMap(NODE.S2.rxa_onInitialized()::navigation)
                         .flatMap(a -> new Repeater().repeat(a, INDEX + 1));
                 } else {
                     return Flowable.just(init);
@@ -314,25 +316,25 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
          */
         @NotNull
         static Node dummy(@NotNull ScreenType screen) {
-            ScreenType.Navigation navigation = a -> Flowable.just(true);
+            ScreenType.NavigationSupplier navigation = a -> Flowable.just(true);
             TimeUnit unit = TimeUnit.MILLISECONDS;
             return new Node(screen, screen, navigation, unit, 0);
         }
 
         @NotNull final ScreenType S1;
         @NotNull final ScreenType S2;
-        @NotNull final ScreenType.Navigation NAVIGATION;
+        @NotNull final ScreenType.NavigationSupplier NAV_SUPPLIER;
         @NotNull final TimeUnit TIME_UNIT;
         final long DELAY;
 
         Node(@NotNull ScreenType firstScreen,
              @NotNull ScreenType secondScreen,
-             @NotNull ScreenType.Navigation navigation,
+             @NotNull ScreenType.NavigationSupplier navigation,
              @NotNull TimeUnit timeUnit,
              long delay) {
             S1 = firstScreen;
             S2 = secondScreen;
-            NAVIGATION = navigation;
+            NAV_SUPPLIER = navigation;
             DELAY = delay;
             TIME_UNIT = timeUnit;
         }

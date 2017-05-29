@@ -328,7 +328,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement> rx_withText(@NotNull P...param) {
+    default <P extends StringType & RetryType> Flowable<WebElement> rxe_withText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -344,10 +344,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param text A varargs of {@link String} values.
      * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
-     * @see #rx_withText(StringType[])
+     * @see #rxe_withText(StringType[])
      */
     @NotNull
-    default Flowable<WebElement> rx_withText(@NotNull String...text) {
+    default Flowable<WebElement> rxe_withText(@NotNull String...text) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -355,7 +355,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> TextParam.builder().withText(a).build())
             .toList().map(a -> a.toArray(new TextParam[a.size()]))
             .toFlowable()
-            .flatMap(THIS::rx_withText);
+            .flatMap(THIS::rxe_withText);
     }
     //endregion
 

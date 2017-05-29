@@ -93,7 +93,7 @@ public class NavigationTest implements ScreenManagerType {
                 if (!current.equals(screen)) {
                     try {
                         // When
-                        List<Node> nodes = multipleShortest(current, screen);
+                        List<Node> nodes = multiNodes(current, screen);
                         Flowable<?> navigator = rxa_navigate(true, current, screen);
                         LogUtil.println(nodes);
 

@@ -195,7 +195,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn("").when(param).value();
 
         // When
-        ENGINE.rx_withText(param).subscribe(subscriber);
+        ENGINE.rxe_withText(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then

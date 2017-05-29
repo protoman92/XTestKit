@@ -7,6 +7,7 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.type.PlatformType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,25 +40,33 @@ public interface ScreenType {
     List<Direction> backwardAccessible(@NotNull Engine<?> engine);
 
     /**
+     * This will be called when the screen has been navigated to.
+     * @return {@link Flowable} instance.
+     */
+    @NotNull
+    default NavigationSupplier rxa_onInitialized() {
+        return a -> Flowable.just(true);
+    }
+
+    /**
      * Get the animation delay when the current {@link ScreenType} is being
      * navigated to. This value should be different for each
      * {@link org.swiften.xtestkit.base.type.PlatformType}, e.g.
      * {@link org.swiften.xtestkit.mobile.Platform#IOS} should have a non-zero
      * return value because we cannot disable animations.
-     * @param engine {@link Engine} instance to check for
-     * {@link org.swiften.xtestkit.base.type.PlatformType}.
+     * @param platform {@link PlatformType} instance.
      * @return {@link Long} value.
      */
-    long animationDelay(@NotNull Engine<?> engine);
+    long animationDelay(@NotNull PlatformType platform);
 
     /**
-     * Get the {@link TimeUnit} to use with {@link #animationDelay(Engine)}.
-     * @param engine {@link Engine} instance.
+     * Get the {@link TimeUnit} to use with {@link #animationDelay(PlatformType)}.
+     * @param platform {@link Engine} instance.
      * @return {@link TimeUnit} instance.
      * @see TimeUnit#MILLISECONDS
      */
     @NotNull
-    default TimeUnit animationDelayTimeUnit(@NotNull Engine<?> engine) {
+    default TimeUnit animationDelayTimeUnit(@NotNull PlatformType platform) {
         return TimeUnit.MILLISECONDS;
     }
 
@@ -67,28 +76,28 @@ public interface ScreenType {
      */
     final class Direction {
         @NotNull final ScreenType TARGET;
-        @NotNull final Navigation NAVIGATION;
+        @NotNull final NavigationSupplier NAVIGATION;
         @NotNull final TimeUnit TIME_UNIT;
         final long DELAY;
 
-        public Direction(@NotNull Engine<?> engine,
-                         @NotNull ScreenType target,
-                         @NotNull Navigation navigator) {
+        public Direction(@NotNull ScreenType target,
+                         @NotNull NavigationSupplier navigation,
+                         @NotNull PlatformType platform) {
             TARGET = target;
-            NAVIGATION = navigator;
-            DELAY = target.animationDelay(engine);
-            TIME_UNIT = target.animationDelayTimeUnit(engine);
+            NAVIGATION = navigation;
+            DELAY = target.animationDelay(platform);
+            TIME_UNIT = target.animationDelayTimeUnit(platform);
         }
     }
 
     @FunctionalInterface
-    interface Navigation {
+    interface NavigationSupplier {
         /**
          * Get a navigation {@link Flowable} based on the previous navigation
          * result.
-         * @param previousResult {@link Object} instance.
+         * @param prev {@link Object} instance.
          * @return {@link Flowable} instance.
          */
-        @NotNull Flowable<?> navigator(@NotNull Object previousResult);
+        @NotNull Flowable<?> navigation(@NotNull Object prev);
     }
 }
