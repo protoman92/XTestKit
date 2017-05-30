@@ -18,6 +18,10 @@ import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by haipham on 24/5/17.
  */
@@ -47,34 +51,51 @@ public interface IOSActionType extends
      * @return {@link Flowable} instance.
      * @see AlertParam#shouldAccept()
      * @see BooleanUtil#toTrue(Object)
+     * @see Collections#reverse(List)
      * @see IOSView.ViewType#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see Platform#IOS
      * @see XPath.Builder#setClass(String)
-     * @see XPath.Builder#containsText(String)
+     * @see XPath.Builder#hasText(XPath.HasText)
      * @see #localizer()
      * @see #rxa_click(WebElement)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
+    @Override
     default Flowable<Boolean> rxa_dismissAlert(@NotNull AlertParam param) {
         final IOSActionType THIS = this;
-        LocalizerType localizer = localizer();
-        String title;
+        final Platform PLATFORM = Platform.IOS;
+        final LocalizerType LOCALIZER = localizer();
+        final String BTN_CLS = IOSView.ViewType.UI_BUTTON.className();
+        String[] titles;
 
         if (param.shouldAccept()) {
-            title = "alert_title_allow";
+            titles = new String[] { "alert_title_allow", "alert_title_ok" };
         } else {
-            title = "alert_title_doNotAllow";
+            titles = new String[] { "alert_title_doNotAllow" };
         }
 
-        XPath xPath = XPath.builder(Platform.IOS)
-            .setClass(IOSView.ViewType.UI_BUTTON.className())
-            .containsText(localizer.localize(title))
-            .build();
+        return Flowable.fromArray(titles)
+            .map(a -> XPath.builder(PLATFORM)
+                .setClass(BTN_CLS)
+                .containsText(LOCALIZER.localize(a))
+                .build())
+            .toList()
+            .map(a -> a.toArray(new XPath[a.size()]))
+            .toFlowable()
+            .flatMap(THIS::rxe_withXPath)
+            .toList()
 
-        return rxe_withXPath(xPath)
+            /* In case the texts are "Don't allow" and "Allow", searching
+             * for an element that contains "Allow" will actually result in
+             * "Don't Allow". Therefore, we reverse the order of the elements
+             * to take care of this specific case. In other situations, this
+             * simply does nothing */
+            .map(a -> { Collections.reverse(a); return a; })
+            .toFlowable()
+            .concatMapIterable(a -> a)
             .firstElement()
             .toFlowable()
             .flatMap(THIS::rxa_click)
