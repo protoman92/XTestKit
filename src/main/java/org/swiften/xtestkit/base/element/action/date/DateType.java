@@ -7,6 +7,7 @@ import org.swiften.xtestkit.base.type.RetryType;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by haipham on 5/8/17.
@@ -14,9 +15,29 @@ import java.util.Date;
 
 /**
  * This interface provides parameter properties for
- * {@link BaseDateActionType#rx_selectDate(DateType)}
+ * {@link BaseDateActionType#rxa_selectDate(DateType)}
  */
-public interface DateType extends AttributeType<Date>, RetryType {
+public interface DateType extends RetryType {
+    /**
+     * Get the associated {@link Date} instance to select.
+     * @return {@link Date} instance.
+     */
+    @NotNull Date date();
+
+    /**
+     * Get the associated {@link DatePickerType} instance to determine the
+     * type of widget the app is using. This allows us to customize our date
+     * selection tools to maximize accuracy.
+     * @return {@link DatePickerType} instance.
+     */
+    @NotNull DatePickerType datePickerType();
+
+    /**
+     * Get the associated {@link CalendarUnit} for date/time selection.
+     * @return {@link List} of {@link CalendarUnit}.
+     */
+    @NotNull List<CalendarUnit> calendarUnits();
+
     /**
      * Get {@link Calendar} instance.
      * @return {@link Calendar} instance.
@@ -25,7 +46,7 @@ public interface DateType extends AttributeType<Date>, RetryType {
     @NotNull
     default Calendar calendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(value());
+        calendar.setTime(date());
         return calendar;
     }
 
@@ -73,14 +94,14 @@ public interface DateType extends AttributeType<Date>, RetryType {
     }
 
     /**
-     * Get {@link String} representation of {@link #value()}.
+     * Get {@link String} representation of {@link #date()}.
      * @param format {@link String} format.
      * @return {@link String} value.
-     * @see #value()
+     * @see #date()
      */
     @NotNull
     default String dateString(@NotNull String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
-        return formatter.format(value());
+        return formatter.format(date());
     }
 }

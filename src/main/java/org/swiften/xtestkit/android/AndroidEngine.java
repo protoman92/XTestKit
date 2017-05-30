@@ -400,13 +400,13 @@ public class AndroidEngine extends
 
         /**
          * Set {@link #platformVersion}.
-         * @param sdk {@link AndroidSDK} instance.
+         * @param sdk {@link AndroidVersion} instance.
          * @return {@link Builder} instance.
-         * @see AndroidSDK#version()
+         * @see AndroidVersion#version()
          * @see #withPlatformVersion(String)
          */
         @NotNull
-        public Builder withSDK(@NotNull AndroidSDK sdk) {
+        public Builder withSDK(@NotNull AndroidVersion sdk) {
             String version = sdk.version();
             withPlatformVersion(version);
             return this;

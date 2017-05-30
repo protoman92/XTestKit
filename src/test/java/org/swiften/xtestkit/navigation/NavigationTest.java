@@ -9,6 +9,8 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
 
+import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkit.mobile.Platform;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -46,6 +48,7 @@ public class NavigationTest implements ScreenManagerType {
 
     @BeforeMethod
     public void beforeMethod() {
+        doReturn(mock(PlatformType.class)).when(ENGINE).platform();
         MANAGER.register(Screen.values());
     }
 
@@ -71,13 +74,21 @@ public class NavigationTest implements ScreenManagerType {
     }
 
     @NotNull
+    @Override
     public List<Node> registeredForwardNodes() {
         return FORWARD_NODES;
     }
 
     @NotNull
+    @Override
     public List<Node> registeredBackwardNodes() {
         return BACKWARD_NODES;
+    }
+
+    @Override
+    public void clearAllNodes() {
+        FORWARD_NODES.clear();
+        BACKWARD_NODES.clear();
     }
 
     @SuppressWarnings("EmptyCatchBlock")
@@ -128,7 +139,7 @@ public class NavigationTest implements ScreenManagerType {
         }
 
         @Override
-        public long animationDelay(@NotNull Engine<?> engine) {
+        public long animationDelay(@NotNull PlatformType platform) {
             return 0;
         }
 
@@ -143,7 +154,7 @@ public class NavigationTest implements ScreenManagerType {
             return CollectionUtil
                 .subList(screens, 0, size).stream()
                 .filter(a -> a.largerThan(THIS) && RAND.nextBoolean())
-                .map(a -> new Direction(ENGINE, a, Flowable::just))
+                .map(a -> new Direction(a, Flowable::just, ENGINE.platform()))
                 .collect(Collectors.toList());
         }
 
@@ -158,7 +169,7 @@ public class NavigationTest implements ScreenManagerType {
             return CollectionUtil
                 .subList(screens, 0, size).stream()
                 .filter(a -> THIS.largerThan(a) && RAND.nextBoolean())
-                .map(a -> new Direction(ENGINE, a, Flowable::just))
+                .map(a -> new Direction(a, Flowable::just, ENGINE.platform()))
                 .collect(Collectors.toList());
         }
     }

@@ -17,6 +17,8 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.click.BaseClickActionType;
 import org.swiften.xtestkit.base.element.action.general.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorErrorType;
+import org.swiften.xtestkit.base.element.locator.general.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -28,36 +30,42 @@ import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 public interface AndroidActionType extends
     BaseClickActionType,
     BaseActionType<AndroidDriver<AndroidElement>>,
-    BaseLocatorErrorType,
+    BaseLocatorType<AndroidDriver<AndroidElement>>,
     MobileActionType<AndroidDriver<AndroidElement>>
 {
     /**
      * Since {@link WebDriver.TargetLocator#alert()} is not yet implemented
      * on {@link Platform#ANDROID}, we need a custom solution by using
      * {@link AndroidDriver#findElementById(String)}.
+     * In case there is no alert on the screen, swallow the error since this
+     * is not absolutely critical.
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
+     * @see AlertParam#shouldAccept()
      * @see BaseActionType#rxa_dismissAlert(AlertParam)
-     * @see #driver()
-     * @see WebDriver#findElement(By)
-     * @see ObjectUtil#nonNull(Object)
-     * @see #rxa_click(WebElement)
-     * @see RxUtil#error(String)
-     * @see #NO_SUCH_ELEMENT
      * @see BooleanUtil#toTrue(Object)
+     * @see #driver()
+     * @see #rxa_click(WebElement)
+     * @see #rxe_containsID(String...)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxa_dismissAlert(@NotNull AlertParam param) {
         final AndroidActionType THIS = this;
 
-        return Flowable.just(param.shouldAccept())
-            .map(a -> a ? "permission_allow_button" : "permission_deny_button")
-            .map(id -> String.format("com.android.packageinstaller:id/%s", id))
-            .map(id -> driver().findElement(By.id(id)))
-            .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(RxUtil.error(NO_SUCH_ELEMENT))
+        String id;
+
+        if (param.shouldAccept()) {
+            id = "permission_allow_button";
+        } else {
+            id = "permission_deny_button";
+        }
+
+        return rxe_containsID(id)
+            .firstElement()
+            .toFlowable()
             .flatMap(THIS::rxa_click)
-            .map(BooleanUtil::toTrue);
+            .map(BooleanUtil::toTrue)
+            .onErrorReturnItem(true);
     }
 }

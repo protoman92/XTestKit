@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
  * Convenient {@link Enum} to set
  * {@link org.swiften.xtestkit.android.AndroidEngine#platformVersion}.
  */
-public enum AndroidSDK implements BaseErrorType {
+public enum AndroidVersion implements BaseErrorType {
     SDK_22,
     SDK_23;
 

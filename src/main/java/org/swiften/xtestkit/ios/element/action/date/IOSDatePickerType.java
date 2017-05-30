@@ -3,8 +3,9 @@ package org.swiften.xtestkit.ios.element.action.date;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
-import org.swiften.xtestkit.base.element.action.date.DatePickerContainerType;
+import org.swiften.xtestkit.base.element.action.date.DatePickerType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -16,13 +17,13 @@ import org.swiften.xtestkit.mobile.Platform;
  * This {@link Enum} contains different types of date picker for
  * {@link Platform#IOS}.
  */
-public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType {
+public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     MMMM_d_YYYY;
 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see DatePickerContainerType.DatePickerType#stringFormat(CalendarUnit)
+     * @see DatePickerType#stringFormat(CalendarUnit)
      * @see Platform#IOS
      * @see #NOT_AVAILABLE
      */
@@ -47,7 +48,7 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerViewXPath(CalendarUnit)
+     * @see DatePickerType#pickerViewXPath(CalendarUnit)
      * @see Platform#IOS
      * @see IOSView.ViewType#UI_PICKERWHEEL
      * @see XPath.Builder#setClass(String)
@@ -71,7 +72,7 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
      * to extract it.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#unitLabelViewXPath(CalendarUnit)
+     * @see DatePickerType#unitLabelViewXPath(CalendarUnit)
      * @see #pickerViewXPath(CalendarUnit)
      */
     @NotNull
@@ -83,7 +84,7 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#targetItemXPath(CalendarUnit)
+     * @see DatePickerType#targetItemXPath(CalendarUnit)
      * @see Platform#IOS
      * @see #NOT_AVAILABLE
      */
@@ -96,7 +97,7 @@ public enum IOSDatePickerType implements DatePickerContainerType.DatePickerType 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerItemXPath(CalendarUnit)
+     * @see DatePickerType#pickerItemXPath(CalendarUnit)
      * @see #NOT_AVAILABLE
      */
     @NotNull

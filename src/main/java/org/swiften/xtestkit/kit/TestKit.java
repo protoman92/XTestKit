@@ -550,6 +550,9 @@ public class TestKit implements
 
         @NotNull
         public TestKit build() {
+            /* Add default resource bundles */
+            addResourceBundle("TestKit", Locale.US);
+
             final TestKit KIT = TEST_KIT;
             List<Engine> engines = KIT.engines();
             engines.forEach(a -> a.setLocalizer(KIT));

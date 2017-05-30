@@ -80,6 +80,9 @@ public interface BaseActionType<D extends WebDriver> extends DriverContainerType
 
     /**
      * Dismiss a currently active alert. Either accept or reject.
+     * Beware the default implementation of
+     * {@link WebDriver.TargetLocator#alert()}, because it throws an error
+     * when an alert is not present on the screen.
      * @param PARAM {@link AlertParam} instance.
      * @return {@link Flowable} instance.
      * @see Alert#accept()

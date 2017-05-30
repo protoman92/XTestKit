@@ -115,7 +115,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #rx_editable()
      */
     @NotNull
-    default Flowable<Boolean> rx_isLastInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<Boolean> rxv_isLastInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
         return rx_editable()
             .lastElement()
@@ -132,7 +132,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
-     * @see #rx_isLastInput(WebElement)
+     * @see #rxv_isLastInput(WebElement)
      * @see #rx_toggleNextInput(WebElement)
      * @see #rx_finishInput(WebElement)
      * @see #consecutiveNextToggleDelay()
@@ -141,7 +141,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
     default Flowable<WebElement> rx_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
-        return rx_isLastInput(ELEMENT)
+        return rxv_isLastInput(ELEMENT)
             .filter(BooleanUtil::isTrue)
             .flatMap(a -> THIS.rx_finishInput(ELEMENT))
             .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT));

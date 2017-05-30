@@ -62,6 +62,11 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     }
 
     /**
+     * Clear all {@link Node} from the inner caches.
+     */
+    void clearAllNodes();
+
+    /**
      * Add forward {@link Node} to an inner cache.
      * @param nodes {@link List} of {@link Node}.
      */

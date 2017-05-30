@@ -13,6 +13,7 @@ import org.swiften.xtestkit.base.element.action.choice.BaseChoiceSelectorType;
 import org.swiften.xtestkit.base.element.action.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.action.date.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
+import org.swiften.xtestkit.base.element.action.date.DatePickerType;
 import org.swiften.xtestkit.base.element.action.date.DateType;
 import org.swiften.xtestkit.base.element.action.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
@@ -190,38 +191,29 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
     interface TestDateActionType extends BaseDateActionType<WebDriver> {
         @NotNull
         @Override
-        default DatePickerType datePickerType() {
+        default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+                                                 @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<WebElement> rx_allCalendarElements() {
+        default Flowable<Boolean> rxa_select(@NotNull DateType param,
+                                             @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_openPicker(@NotNull CalendarUnit unit) {
+        default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
+                                                    @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rx_select(@NotNull DateType param,
-                                            @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<Integer> rx_displayedUnit(@NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<WebElement> rx_elementLabel(@NotNull CalendarUnit unit) {
+        default Flowable<WebElement> rxe_elementLabel(@NotNull DateType param,
+                                                      @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 

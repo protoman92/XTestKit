@@ -43,11 +43,6 @@ public interface BaseElementPropertyType extends BaseErrorType {
         return BooleanUtil.isTrue(element.getAttribute("focused"));
     }
 
-    /* Since we cannot directly compare two WebElement instances, we can
-         * use a proxy method: by comparing their position and dimension.
-         * Usually editable fields are discrete views that do not overlap each
-         * other */
-
     /**
      * Check if two {@link WebElement} have the same {@link Point} and
      * {@link Dimension}.

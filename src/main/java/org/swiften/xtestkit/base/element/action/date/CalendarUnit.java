@@ -7,7 +7,9 @@ package org.swiften.xtestkit.base.element.action.date;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.base.AttributeType;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Use this enum with
@@ -18,6 +20,18 @@ public enum CalendarUnit implements AttributeType<Integer> {
     DAY,
     MONTH,
     YEAR;
+
+    /**
+     * Get the {@link CalendarUnit} involved in date selection.
+     * @return {@link List} of {@link CalendarUnit}.
+     * @see #YEAR
+     * @see #MONTH
+     * @see #DAY
+     */
+    @NotNull
+    public static List<CalendarUnit> datePickerUnits() {
+        return Arrays.asList(YEAR, MONTH, DAY);
+    }
 
     /**
      * Get the {@link Calendar} constant that corresponds to this

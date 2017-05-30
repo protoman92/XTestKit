@@ -5,11 +5,11 @@ package org.swiften.xtestkit.base.element.action.date;
  */
 
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.collection.Zip;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
@@ -24,6 +24,8 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This interface provides date-related actions, such as selecting a date/
@@ -38,8 +40,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
     BaseElementPropertyType,
     BaseErrorType,
     BaseLocatorType<D>,
-    BaseSwipeType<D>,
-    DatePickerContainerType
+    BaseSwipeType<D>
 {
     //region Validation
     /**
@@ -47,21 +48,21 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * user is in a calendar view.
      * @param param {@link DateType} instance.
      * @return {@link Flowable} instance.
-     * @see #rxe_containsText(String...)
-     * @see #dayString(DateType)
-     * @see #monthString(DateType)
-     * @see #yearString(DateType)
+     * @see DateType#calendarUnits()
      * @see ObjectUtil#nonNull(Object)
+     * @see #string(DateType, CalendarUnit)
+     * @see #rxe_containsText(String...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default Flowable<Boolean> rx_hasDate(@NotNull DateType param) {
-        return Maybe
-            .mergeArray(
-                rxe_containsText(dayString(param)).firstElement(),
-                rxe_containsText(monthString(param)).firstElement(),
-                rxe_containsText(yearString(param)).firstElement()
-            )
+    default Flowable<Boolean> rxv_hasDate(@NotNull DateType param) {
+        final BaseDateActionType<?> THIS = this;
+        List<CalendarUnit> units = param.calendarUnits();
+
+        return Flowable
+            .fromIterable(units)
+            .map(a -> THIS.string(param, a))
+            .flatMap(THIS::rxe_containsText)
             .all(ObjectUtil::nonNull)
             .toFlowable();
     }
@@ -70,34 +71,40 @@ public interface BaseDateActionType<D extends WebDriver> extends
     //region Actions
     /**
      * Open the picker view that corresponds to {@link CalendarUnit}.
+     * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rx_openPicker(@NotNull CalendarUnit unit);
+    Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+                                     @NotNull CalendarUnit unit);
 
     /**
      * Select {@link Date}. This assumes that the user is in a calendar view.
      * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
-     * @see #rx_openPicker(CalendarUnit)
-     * @see #rx_select(DateType, CalendarUnit)
-     * @see #rx_hasDate(DateType)
      * @see BooleanUtil#isTrue(boolean)
+     * @see DateType#calendarUnits()
+     * @see ObjectUtil#nonNull(Object)
+     * @see #rxa_openPicker(DateType, CalendarUnit)
+     * @see #rxa_select(DateType, CalendarUnit)
+     * @see #rxv_hasDate(DateType)
+     * @see RxUtil#error(String)
      * @see #DATES_NOT_MATCHED
      */
     @NotNull
-    default Flowable<Boolean> rx_selectDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxa_selectDate(@NotNull final DateType PARAM) {
         LogUtil.printfThread("Selecting %s", dateString(PARAM));
 
         final BaseDateActionType<?> THIS = this;
 
         return Flowable
-            .fromArray(CalendarUnit.YEAR, CalendarUnit.MONTH, CalendarUnit.DAY)
-            .concatMap(a -> THIS.rx_openPicker(a).flatMap(b -> THIS.rx_select(PARAM, a)))
+            .fromIterable(PARAM.calendarUnits())
+            .concatMap(a -> THIS.rxa_openPicker(PARAM, a)
+                .flatMap(b -> THIS.rxa_select(PARAM, a)))
             .all(ObjectUtil::nonNull)
             .toFlowable()
-            .flatMap(a -> THIS.rx_hasDate(PARAM))
+            .flatMap(a -> THIS.rxv_hasDate(PARAM))
             .filter(BooleanUtil::isTrue)
             .switchIfEmpty(RxUtil.error(DATES_NOT_MATCHED));
     }
@@ -109,24 +116,23 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rx_select(@NotNull DateType param,
-                                @NotNull CalendarUnit unit);
+    Flowable<Boolean> rxa_select(@NotNull DateType param, @NotNull CalendarUnit unit);
     //endregion
 
     //region Elements
     /**
      * Get the list view that corresponds to {@link CalendarUnit}.
-     * The implementations may change based on
-     * {@link org.swiften.xtestkit.base.element.action.date.DatePickerContainerType.DatePickerType}.
+     * The implementations may change based on {@link DatePickerType}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see #datePickerType()
+     * @see DateType#datePickerType()
      * @see DatePickerType#pickerViewXPath(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
-    default Flowable<WebElement> rx_pickerView(@NotNull CalendarUnit unit) {
-        XPath xPath = datePickerType().pickerViewXPath(unit);
+    default Flowable<WebElement> rxe_pickerView(@NotNull DateType param,
+                                                @NotNull CalendarUnit unit) {
+        XPath xPath = param.datePickerType().pickerViewXPath(unit);
         return rxe_withXPath(xPath).firstElement().toFlowable();
     }
 
@@ -134,45 +140,40 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * Get the {@link WebElement} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see #datePickerType()
-     * @see DatePickerContainerType.DatePickerType#unitLabelViewXPath(CalendarUnit)
+     * @see DateType#datePickerType()
+     * @see DatePickerType#unitLabelViewXPath(CalendarUnit)
      * @see #rxe_byXPath(ByXPath)
      */
     @NotNull
-    default Flowable<WebElement> rx_elementLabel(@NotNull CalendarUnit unit) {
+    default Flowable<WebElement> rxe_elementLabel(@NotNull DateType param,
+                                                  @NotNull CalendarUnit unit) {
         /* We need to use a custom XPath query because there are some views
          * that have similar IDs (e.g. if we search for date_picker_month, the
          * resulting WebElement may not be the one we are looking for */
-        XPath xPath = datePickerType().unitLabelViewXPath(unit);
-        ByXPath param = ByXPath.builder().withXPath(xPath).build();
-        return rxe_byXPath(param).firstElement().toFlowable();
+        XPath xPath = param.datePickerType().unitLabelViewXPath(unit);
+        ByXPath byXPath = ByXPath.builder().withXPath(xPath).build();
+        return rxe_byXPath(byXPath).firstElement().toFlowable();
     }
-
-    /**
-     * Get all calendar {@link WebElement}. This assumes that the user is in a
-     * calendar view.
-     * @return {@link Flowable} instance.
-     */
-    @NotNull Flowable<WebElement> rx_allCalendarElements();
 
     /**
      * Get the {@link Integer} value that represents the {@link CalendarUnit}
      * as displayed by the relevant {@link WebElement}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see #datePickerType()
+     * @see DateType#datePickerType()
      * @see DatePickerType#stringFormat(CalendarUnit)
-     * @see #rx_elementLabel(CalendarUnit)
+     * @see #rxe_elementLabel(DateType, CalendarUnit)
      */
     @NotNull
     @SuppressWarnings("MagicConstant")
-    default Flowable<Integer> rx_displayedUnit(@NotNull CalendarUnit unit) {
+    default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
+                                                @NotNull CalendarUnit unit) {
         final BaseDateActionType<?> THIS = this;
-        String format = datePickerType().stringFormat(unit);
+        String format = param.datePickerType().stringFormat(unit);
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
         final Integer CALENDAR_CONSTANT = unit.value();
 
-        return rx_elementLabel(unit)
+        return rxe_elementLabel(param, unit)
             .map(THIS::getText)
             .map(FORMATTER::parse)
             .map(a -> {
@@ -186,91 +187,52 @@ public interface BaseDateActionType<D extends WebDriver> extends
     /**
      * Get the {@link Date} as displayed by the date picker.
      * @return {@link Flowable} instance.
-     * @see #rx_displayedUnit(CalendarUnit)
+     * @see #rxe_displayedUnit(DateType, CalendarUnit)
      */
     @NotNull
-    @SuppressWarnings("MagicConstant")
-    default Flowable<Date> rx_displayedDate() {
-        return Flowable.zip(
-            rx_displayedUnit(CalendarUnit.DAY),
-            rx_displayedUnit(CalendarUnit.MONTH),
-            rx_displayedUnit(CalendarUnit.YEAR),
-            (day, month, year) -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(CalendarUnit.DAY.value(), day);
-                calendar.set(CalendarUnit.MONTH.value(), month);
-                calendar.set(CalendarUnit.YEAR.value(), year);
-                return calendar;
+    @SuppressWarnings({"MagicConstant", "ConstantConditions"})
+    default Flowable<Date> rxe_displayedDate(@NotNull final DateType PARAM) {
+        final BaseDateActionType<?> THIS = this;
+
+        return Flowable.fromIterable(PARAM.calendarUnits())
+            .flatMap(a -> THIS.rxe_displayedUnit(PARAM, a).map(b -> new Zip<>(a, b)))
+            .reduce(Calendar.getInstance(), (a, b) -> {
+                a.set(b.A.value(), b.B); return a;
             })
-            .map(Calendar::getTime);
+            .map(Calendar::getTime)
+            .toFlowable();
     }
     //endregion
 
     /**
      * Get {@link CalendarUnit}'s {@link String} representation of
-     * {@link DateType#value()}.
+     * {@link DateType#date()}.
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see #datePickerType()
-     * @see DatePickerContainerType.DatePickerType#stringFormat(CalendarUnit)
+     * @see DateType#datePickerType()
+     * @see DatePickerType#stringFormat(CalendarUnit)
      * @see CalendarUnit#value()
      */
     @NotNull
     default String string(@NotNull DateType param, @NotNull CalendarUnit unit) {
-        Date date = param.value();
-        String format = datePickerType().stringFormat(unit);
+        Date date = param.date();
+        String format = param.datePickerType().stringFormat(unit);
         return new SimpleDateFormat(format).format(date);
     }
 
     /**
-     * Get the day {@link String}.
+     * Get {@link String} representation of {@link DateType#date()}.
      * @param param {@link DateType} instance.
      * @return {@link String} value.
      * @see #string(DateType, CalendarUnit)
-     */
-    @NotNull
-    default String dayString(@NotNull DateType param) {
-        return string(param, CalendarUnit.DAY);
-    }
-
-    /**
-     * Get the month {@link String}.
-     * @param param {@link DateType} instance.
-     * @return {@link String} value.
-     * @see #string(DateType, CalendarUnit)
-     */
-    @NotNull
-    default String monthString(@NotNull DateType param) {
-        return string(param, CalendarUnit.MONTH);
-    }
-
-    /**
-     * Get the year {@link String}.
-     * @param param {@link DateType} instance.
-     * @return {@link String} value.
-     * @see #string(DateType, CalendarUnit)
-     */
-    @NotNull
-    default String yearString(@NotNull DateType param) {
-        return string(param, CalendarUnit.YEAR);
-    }
-
-    /**
-     * Get {@link String} representation of {@link DateType#value()}.
-     * @param param {@link DateType} instance.
-     * @return {@link String} value.
-     * @see #dateString(DateType)
-     * @see #monthString(DateType)
-     * @see #yearString(DateType)
      */
     @NotNull
     default String dateString(@NotNull DateType param) {
-        return String.format(
-            "Day: %s, Month: %s, Year: %s",
-            dayString(param),
-            monthString(param),
-            yearString(param)
-        );
+        List<String> params = param.calendarUnits().stream()
+            .map(a -> String.format("%s %s", a, string(param, a)))
+            .collect(Collectors.toList());
+
+        return String.join(" ", params);
     }
 }

@@ -154,11 +154,11 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         Flowable<Boolean> source;
         TestMode testMode = testMode();
 
-        if (testMode.isTestingOnSimulatedEnvironment()) {
-            source = XC_HANDLER.rxa_stopSimulator(param);
-        } else {
+//        if (testMode.isTestingOnSimulatedEnvironment()) {
+//            source = XC_HANDLER.rxa_stopSimulator(param);
+//        } else {
             source = Flowable.just(true);
-        }
+//        }
 
         return Flowable
             .concat(super.rxa_afterClass(param), source, rxa_stopDriver())

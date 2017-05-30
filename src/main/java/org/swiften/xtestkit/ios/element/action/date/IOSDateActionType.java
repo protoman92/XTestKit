@@ -16,8 +16,7 @@ import org.swiften.xtestkit.base.element.action.input.BaseInputActionType;
  */
 public interface IOSDateActionType extends
     BaseDateActionType<IOSDriver<IOSElement>>,
-    BaseInputActionType<IOSDriver<IOSElement>>,
-    IOSDatePickerContainerType
+    BaseInputActionType<IOSDriver<IOSElement>>
 {
     //region Action
     /**
@@ -25,10 +24,12 @@ public interface IOSDateActionType extends
      * We do nothing here because the date picker is displayed by default.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see BaseDateActionType#rx_openPicker(CalendarUnit)
+     * @see BaseDateActionType#rxa_openPicker(DateType, CalendarUnit)
      */
     @NotNull
-    default Flowable<Boolean> rx_openPicker(@NotNull CalendarUnit unit) {
+    @Override
+    default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+                                             @NotNull CalendarUnit unit) {
         return Flowable.just(true);
     }
 
@@ -37,44 +38,22 @@ public interface IOSDateActionType extends
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see BaseDateActionType#rx_select(DateType, CalendarUnit)
-     * @see #string(DateType, CalendarUnit)
-     * @see #rx_pickerView(CalendarUnit)
-     * @see #rx_type(WebElement, String...)
+     * @see BaseDateActionType#rxa_select(DateType, CalendarUnit)
      * @see BooleanUtil#toTrue(Object)
+     * @see #string(DateType, CalendarUnit)
+     * @see #rxe_pickerView(DateType, CalendarUnit)
+     * @see #rx_type(WebElement, String...)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rx_select(@NotNull DateType param,
-                                        @NotNull CalendarUnit unit) {
+    default Flowable<Boolean> rxa_select(@NotNull DateType param,
+                                         @NotNull CalendarUnit unit) {
         final IOSDateActionType THIS = this;
         String value = string(param, unit);
 
-        return rx_pickerView(unit)
+        return rxe_pickerView(param, unit)
             .flatMap(a -> THIS.rx_type(a, value))
             .map(BooleanUtil::toTrue);
-    }
-    //endregion
-
-    //region Elements
-    /**
-     * Override this method to provide default implementation.
-     * @return {@link Flowable} instance.
-     * @see BaseDateActionType#rx_allCalendarElements()
-     * @see #rx_elementLabel(CalendarUnit)
-     * @see #rx_pickerView(CalendarUnit)
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    default Flowable<WebElement> rx_allCalendarElements() {
-        return Flowable.mergeArray(
-            rx_elementLabel(CalendarUnit.DAY),
-            rx_elementLabel(CalendarUnit.MONTH),
-            rx_elementLabel(CalendarUnit.YEAR),
-            rx_pickerView(CalendarUnit.DAY),
-            rx_pickerView(CalendarUnit.MONTH),
-            rx_pickerView(CalendarUnit.YEAR)
-        );
     }
     //endregion
 }

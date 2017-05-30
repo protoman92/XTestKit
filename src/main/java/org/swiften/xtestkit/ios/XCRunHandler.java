@@ -6,11 +6,8 @@ import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.ios.type.XCRunDelayType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -41,7 +38,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @return {@link String} value.
      */
     @NotNull
-    public String cmXCRun() {
+    public String cm_XCRun() {
         return "xcrun";
     }
 
@@ -51,7 +48,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @return {@link String} value.
      */
     @NotNull
-    public String cmXCode() {
+    public String cm_XCode() {
         return "/Applications/Xcode.app/Contents";
     }
 
@@ -60,9 +57,9 @@ public class XCRunHandler implements XCRunDelayType {
      * @return {@link String} value.
      */
     @NotNull
-    public String cmXCodeSimulator() {
+    public String cm_XCodeSimulator() {
         String[] components = new String[] {
-            cmXCode(),
+            cm_XCode(),
             "Developer",
             "Applications",
             "Simulator.app",
@@ -77,21 +74,21 @@ public class XCRunHandler implements XCRunDelayType {
     /**
      * Get path to xcrun instruments.
      * @return {@link String} value.
-     * @see #cmXCRun()
+     * @see #cm_XCRun()
      */
     @NotNull
     public String cmInstruments() {
-        return String.format("%s instruments", cmXCRun());
+        return String.format("%s instruments", cm_XCRun());
     }
 
     /**
      * Get path to simctl.
      * @return {@link String} value.
-     * @see #cmXCRun()
+     * @see #cm_XCRun()
      */
     @NotNull
     public String cmSimctl() {
-        return String.format("%s simctl", cmXCRun());
+        return String.format("%s simctl", cm_XCRun());
     }
 
     /**
@@ -115,7 +112,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmGetEnv(String, String)
      */
     @NotNull
-    public String cmGetHomeEnv(@NotNull String deviceUID) {
+    public String cm_getHomeEnv(@NotNull String deviceUID) {
         return cmGetEnv("HOME", deviceUID);
     }
 
@@ -133,11 +130,11 @@ public class XCRunHandler implements XCRunDelayType {
      * Command to start a simulator.
      * @param deviceUID {@link String} value specifying the device UID.
      * @return {@link String} value.
-     * @see #cmXCodeSimulator()
+     * @see #cm_XCodeSimulator()
      */
     @NotNull
     public String cm_startSimulator(@NotNull String deviceUID) {
-        String simulator = cmXCodeSimulator();
+        String simulator = cm_XCodeSimulator();
         return String.format("%1$s -CurrentDeviceUDID %2$s", simulator, deviceUID);
     }
 
@@ -146,7 +143,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @return {@link String} value.
      */
     @NotNull
-    public String cmStopSimulator() {
+    public String cm_stopSimulator() {
         return "killall \"Simulator\"";
     }
 
@@ -154,11 +151,11 @@ public class XCRunHandler implements XCRunDelayType {
      * Command to check whether the simulator has booted up or not.
      * @param deviceUID {@link String} value specifying the device UID.
      * @return {@link String} value.
-     * @see #cmGetHomeEnv(String)
+     * @see #cm_getHomeEnv(String)
      */
     @NotNull
-    public String cmCheckSimulatorBooted(@NotNull String deviceUID) {
-        return cmGetHomeEnv(deviceUID);
+    public String cm_checkSimulatorBooted(@NotNull String deviceUID) {
+        return cm_getHomeEnv(deviceUID);
     }
 
     /**
@@ -168,7 +165,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmSimctl()
      */
     @NotNull
-    public String cmInstallApp(@NotNull String app) {
+    public String cm_installApp(@NotNull String app) {
         return String.format("%1$s install booted %2$s", cmSimctl(), app);
     }
 
@@ -179,7 +176,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmSimctl()
      */
     @NotNull
-    public String cmLaunchApp(@NotNull String appPackage) {
+    public String cm_launchApp(@NotNull String appPackage) {
         return String.format("%1$s launch booted %2$s", cmSimctl(), appPackage);
     }
 
@@ -190,7 +187,7 @@ public class XCRunHandler implements XCRunDelayType {
      * @see #cmSimctl()
      */
     @NotNull
-    public String cmUninstallApp(@NotNull String appPackage) {
+    public String cm_uninstallApp(@NotNull String appPackage) {
         return String.format("%1$s uninstall booted %2$s", cmSimctl(), appPackage);
     }
     //endregion
@@ -201,12 +198,12 @@ public class XCRunHandler implements XCRunDelayType {
      * Check if the simulator has been booted yet.
      * @param deviceUID {@link String} value specifying the device UID.
      * @return {@link String} value.
-     * @see #cmCheckSimulatorBooted(String)
+     * @see #cm_checkSimulatorBooted(String)
      */
     @NotNull
     public Flowable<Boolean> rxa_checkSimulatorBooted(@NotNull String deviceUID) {
         ProcessRunner processRunner = processRunner();
-        String command = cmCheckSimulatorBooted(deviceUID);
+        String command = cm_checkSimulatorBooted(deviceUID);
         return processRunner.rxa_execute(command).map(a -> true);
     }
 
@@ -241,12 +238,14 @@ public class XCRunHandler implements XCRunDelayType {
      * Stop the currently active simulator.
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see #cmStopSimulator()
+     * @see BooleanUtil#toTrue(Object)
+     * @see #cm_stopSimulator()
+     * @see #processRunner()
      */
     @NotNull
     public Flowable<Boolean> rxa_stopSimulator(@NotNull RetryType param) {
         ProcessRunner processRunner = processRunner();
-        String command = cmStopSimulator();
+        String command = cm_stopSimulator();
 
         return processRunner
             .rxa_execute(command)
@@ -260,12 +259,12 @@ public class XCRunHandler implements XCRunDelayType {
      * Install an app.
      * @param app {@link String} value specifying the app path.
      * @return {@link Flowable} instance.
-     * @see #cmInstallApp(String)
+     * @see #cm_installApp(String)
      */
     @NotNull
     public Flowable<Boolean> rxInstallApp(@NotNull String app) {
         ProcessRunner processRunner = processRunner();
-        String command = cmInstallApp(app);
+        String command = cm_installApp(app);
         return processRunner.rxa_execute(command).map(a -> true);
     }
 
@@ -273,12 +272,12 @@ public class XCRunHandler implements XCRunDelayType {
      * Uninstall an app.
      * @param appPackage The app's package name.
      * @return {@link Flowable} instance.
-     * @see #cmUninstallApp(String)
+     * @see #cm_uninstallApp(String)
      */
     @NotNull
     public Flowable<Boolean> rxUninstallApp(@NotNull String appPackage) {
         ProcessRunner processRunner = processRunner();
-        String command = cmUninstallApp(appPackage);
+        String command = cm_uninstallApp(appPackage);
         return processRunner.rxa_execute(command).map(a -> true);
     }
     //endregion

@@ -82,14 +82,14 @@ public final class XCRunHandlerTest {
             verify(XC_HANDLER).rxa_startSimulator(any());
             verify(XC_HANDLER, times(2)).processRunner();
             verify(XC_HANDLER).simulatorBootRetryDelay();
-            verify(XC_HANDLER).cmXCode();
-            verify(XC_HANDLER).cmXCodeSimulator();
+            verify(XC_HANDLER).cm_XCode();
+            verify(XC_HANDLER).cm_XCodeSimulator();
             verify(XC_HANDLER).cm_startSimulator(any());
-            verify(XC_HANDLER).cmCheckSimulatorBooted(any());
+            verify(XC_HANDLER).cm_checkSimulatorBooted(any());
             verify(XC_HANDLER).cmGetEnv(any(), any());
-            verify(XC_HANDLER).cmGetHomeEnv(any());
+            verify(XC_HANDLER).cm_getHomeEnv(any());
             verify(XC_HANDLER).cmSimctl();
-            verify(XC_HANDLER).cmXCRun();
+            verify(XC_HANDLER).cm_XCRun();
             verifyNoMoreInteractions(XC_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -117,14 +117,14 @@ public final class XCRunHandlerTest {
             verify(XC_HANDLER).rxa_startSimulator(any());
             verify(XC_HANDLER, times(2)).processRunner();
             verify(XC_HANDLER).simulatorBootRetryDelay();
-            verify(XC_HANDLER).cmXCode();
-            verify(XC_HANDLER).cmXCodeSimulator();
+            verify(XC_HANDLER).cm_XCode();
+            verify(XC_HANDLER).cm_XCodeSimulator();
             verify(XC_HANDLER).cm_startSimulator(any());
-            verify(XC_HANDLER).cmCheckSimulatorBooted(any());
+            verify(XC_HANDLER).cm_checkSimulatorBooted(any());
             verify(XC_HANDLER).cmGetEnv(any(), any());
-            verify(XC_HANDLER).cmGetHomeEnv(any());
+            verify(XC_HANDLER).cm_getHomeEnv(any());
             verify(XC_HANDLER).cmSimctl();
-            verify(XC_HANDLER).cmXCRun();
+            verify(XC_HANDLER).cm_XCRun();
             verifyNoMoreInteractions(XC_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -152,7 +152,7 @@ public final class XCRunHandlerTest {
             assertTrue(RxTestUtil.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxa_stopSimulator(any());
             verify(XC_HANDLER).processRunner();
-            verify(XC_HANDLER).cmStopSimulator();
+            verify(XC_HANDLER).cm_stopSimulator();
             verifyNoMoreInteractions(XC_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());

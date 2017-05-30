@@ -6,17 +6,51 @@ package org.swiften.xtestkit.android.element.action.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
-import org.swiften.xtestkit.base.element.action.date.DatePickerContainerType;
+import org.swiften.xtestkit.base.element.action.date.DatePickerType;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.android.AndroidView;
 
 /**
- * Represents the available types of calendar views.
+ * Represents the available types of calendar views for {@link Platform#ANDROID}.
  */
-public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerType {
-    CALENDAR,
+public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
+    /**
+     * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_22} and
+     * below, the calendar is scrolled vertically. Therefore, we need to use
+     * {@link org.swiften.xtestkit.base.element.action.general.Unidirection#UP_DOWN}
+     * and {@link org.swiften.xtestkit.base.element.action.general.Unidirection#DOWN_UP}
+     * to navigate it.
+     */
+    VERTICAL_CALENDAR,
+
+    /**
+     * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_23} and
+     * above, the calendar is scrolled horizontally. Therefore, we need to use
+     * {@link org.swiften.xtestkit.base.element.action.general.Unidirection#LEFT_RIGHT}
+     * and {@link org.swiften.xtestkit.base.element.action.general.Unidirection#RIGHT_LEFT}
+     * to navigate it.
+     */
+    HORIZONTAL_CALENDAR,
     SPINNER;
+
+    /**
+     * Check if the current {@link AndroidDatePickerType} is calendar-based.
+     * @return {@link Boolean} value.
+     * @see #HORIZONTAL_CALENDAR
+     * @see #VERTICAL_CALENDAR
+     */
+    public boolean isCalendarMode() {
+        switch (this) {
+            case HORIZONTAL_CALENDAR:
+            case VERTICAL_CALENDAR:
+                return true;
+
+            default:
+                return false;
+        }
+    }
 
     /**
      * @return {@link XPath.Builder} instance.
@@ -57,7 +91,7 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerViewXPath(CalendarUnit)
+     * @see DatePickerType#pickerViewXPath(CalendarUnit)
      * @see #xPathBuilder()
      * @see AndroidView.ViewType#LIST_VIEW
      * @see XPath.Builder#ofClass(String)
@@ -101,7 +135,7 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see #xPathBuilder()
-     * @see DatePickerContainerType.DatePickerType#targetItemXPath(CalendarUnit)
+     * @see DatePickerType#targetItemXPath(CalendarUnit)
      * @see XPath.Builder#containsID(String)
      * @see #NOT_AVAILABLE
      */
@@ -119,7 +153,7 @@ public enum AndroidDatePickerType implements DatePickerContainerType.DatePickerT
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerContainerType.DatePickerType#pickerItemXPath(CalendarUnit)
+     * @see DatePickerType#pickerItemXPath(CalendarUnit)
      * @see XPath.Builder#containsID(String)
      * @see AndroidView.ViewType#TEXT_VIEW
      * @see #NOT_AVAILABLE
