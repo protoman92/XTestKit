@@ -38,7 +38,7 @@ public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocat
      * @see #watchUntilHidden(WebElement)
      */
     @NotNull
-    default Flowable<Boolean> rx_watchUntilHidden(@NotNull final WebElement ELEMENT) {
+    default Flowable<Boolean> rxa_watchUntilHidden(@NotNull final WebElement ELEMENT) {
         final BaseVisibilityActionType THIS = this;
 
         return Completable

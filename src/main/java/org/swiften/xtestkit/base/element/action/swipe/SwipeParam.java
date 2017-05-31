@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
 
 /**
- * Parameter object for {@link Engine#rx_swipe(RepeatType)}
+ * Parameter object for {@link Engine#rxa_swipe(RepeatType)}
  */
 public class SwipeParam implements RepeatType, SwipeType {
     /**

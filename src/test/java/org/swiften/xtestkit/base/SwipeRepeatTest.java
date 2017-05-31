@@ -69,7 +69,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
+    public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
         return Flowable.just(true);
     }
 

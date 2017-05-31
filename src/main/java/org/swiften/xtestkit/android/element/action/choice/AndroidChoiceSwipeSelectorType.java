@@ -263,13 +263,13 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Override this method to provide default implementation.
      * @param param {@link SwipeType} instance.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rx_swipeOnce(SwipeType)
+     * @see SwipeRepeatComparisonType#rxa_swipeOnce(SwipeType)
      * @see #engine()
-     * @see ChoiceHelperType#rx_swipeOnce(SwipeType)
+     * @see ChoiceHelperType#rxa_swipeOnce(SwipeType)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
-        return engine().rx_swipeOnce(param);
+    default Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
+        return engine().rxa_swipeOnce(param);
     }
 }

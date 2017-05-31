@@ -36,7 +36,7 @@ public interface DateType extends RetryType {
      * Get the associated {@link CalendarUnit} for date/time selection.
      * @return {@link List} of {@link CalendarUnit}.
      */
-    @NotNull List<CalendarUnit> calendarUnits();
+    @NotNull List<CalendarUnit> units();
 
     /**
      * Get {@link Calendar} instance.

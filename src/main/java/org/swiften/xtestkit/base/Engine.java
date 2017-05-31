@@ -320,7 +320,7 @@ public abstract class Engine<D extends WebDriver> implements
         Flowable<Boolean> stopServer;
 
         if (ADDRESS.isLocalInstance()) {
-            stopServer = rx_stopLocalAppium();
+            stopServer = rxa_stopLocalAppium();
         } else {
             stopServer = Flowable.just(true);
         }

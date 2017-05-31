@@ -72,7 +72,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      */
     @NotNull
     @Override
-    public String stringFormat(@NotNull CalendarUnit unit) {
+    public String valueStringFormat(@NotNull CalendarUnit unit) {
         switch (unit) {
             case DAY:
                 return dayFormat();

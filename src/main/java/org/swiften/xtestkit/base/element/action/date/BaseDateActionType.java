@@ -46,22 +46,22 @@ public interface BaseDateActionType<D extends WebDriver> extends
     /**
      * Check if {@link Date} is currently active. This assumes that the
      * user is in a calendar view.
-     * @param param {@link DateType} instance.
+     * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
-     * @see DateType#calendarUnits()
+     * @see DateType#units()
      * @see ObjectUtil#nonNull(Object)
-     * @see #string(DateType, CalendarUnit)
+     * @see #valueString(DateType, CalendarUnit)
      * @see #rxe_containsText(String...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default Flowable<Boolean> rxv_hasDate(@NotNull DateType param) {
+    default Flowable<Boolean> rxv_hasDate(@NotNull final DateType PARAM) {
         final BaseDateActionType<?> THIS = this;
-        List<CalendarUnit> units = param.calendarUnits();
+        List<CalendarUnit> units = PARAM.units();
 
         return Flowable
             .fromIterable(units)
-            .map(a -> THIS.string(param, a))
+            .map(a -> THIS.displayString(PARAM, a))
             .flatMap(THIS::rxe_containsText)
             .all(ObjectUtil::nonNull)
             .toFlowable();
@@ -84,7 +84,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
-     * @see DateType#calendarUnits()
+     * @see DateType#units()
      * @see ObjectUtil#nonNull(Object)
      * @see #rxa_openPicker(DateType, CalendarUnit)
      * @see #rxa_select(DateType, CalendarUnit)
@@ -99,7 +99,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
         final BaseDateActionType<?> THIS = this;
 
         return Flowable
-            .fromIterable(PARAM.calendarUnits())
+            .fromIterable(PARAM.units())
             .concatMap(a -> THIS.rxa_openPicker(PARAM, a)
                 .flatMap(b -> THIS.rxa_select(PARAM, a)))
             .all(ObjectUtil::nonNull)
@@ -161,7 +161,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateType#datePickerType()
-     * @see DatePickerType#stringFormat(CalendarUnit)
+     * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see #rxe_elementLabel(DateType, CalendarUnit)
      */
     @NotNull
@@ -169,7 +169,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
     default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
                                                 @NotNull CalendarUnit unit) {
         final BaseDateActionType<?> THIS = this;
-        String format = param.datePickerType().stringFormat(unit);
+        String format = param.datePickerType().valueStringFormat(unit);
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
         final Integer CALENDAR_CONSTANT = unit.value();
 
@@ -194,7 +194,7 @@ public interface BaseDateActionType<D extends WebDriver> extends
     default Flowable<Date> rxe_displayedDate(@NotNull final DateType PARAM) {
         final BaseDateActionType<?> THIS = this;
 
-        return Flowable.fromIterable(PARAM.calendarUnits())
+        return Flowable.fromIterable(PARAM.units())
             .flatMap(a -> THIS.rxe_displayedUnit(PARAM, a).map(b -> new Zip<>(a, b)))
             .reduce(Calendar.getInstance(), (a, b) -> {
                 a.set(b.A.value(), b.B); return a;
@@ -207,30 +207,49 @@ public interface BaseDateActionType<D extends WebDriver> extends
     /**
      * Get {@link CalendarUnit}'s {@link String} representation of
      * {@link DateType#date()}.
+     * This may be differennt from {@link #displayString(DateType, CalendarUnit)}
+     * if the text that appears on screen is formatted different from how we
+     * expect it to be.
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
      * @see DateType#datePickerType()
-     * @see DatePickerType#stringFormat(CalendarUnit)
+     * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see CalendarUnit#value()
      */
     @NotNull
-    default String string(@NotNull DateType param, @NotNull CalendarUnit unit) {
+    default String valueString(@NotNull DateType param, @NotNull CalendarUnit unit) {
         Date date = param.date();
-        String format = param.datePickerType().stringFormat(unit);
+        String format = param.datePickerType().valueStringFormat(unit);
         return new SimpleDateFormat(format).format(date);
     }
 
     /**
-     * Get {@link String} representation of {@link DateType#date()}.
+     * Get {@link CalendarUnit}'s {@link String} representation of
+     * {@link DateType#date()}, as displayed on the screen. Most of the time,
+     * this should be the same as {@link #valueString(DateType, CalendarUnit)},
+     * but there might be select cases where it is not.
      * @param param {@link DateType} instance.
+     * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see #string(DateType, CalendarUnit)
+     * @see #valueString(DateType, CalendarUnit)
      */
     @NotNull
-    default String dateString(@NotNull DateType param) {
-        List<String> params = param.calendarUnits().stream()
-            .map(a -> String.format("%s %s", a, string(param, a)))
+    default String displayString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+        return valueString(param, unit);
+    }
+
+    /**
+     * Get {@link String} representation of {@link DateType#date()}.
+     * @param PARAM {@link DateType} instance.
+     * @return {@link String} value.
+     * @see DateType#units()
+     * @see #valueString(DateType, CalendarUnit)
+     */
+    @NotNull
+    default String dateString(@NotNull final DateType PARAM) {
+        List<String> params = PARAM.units().stream()
+            .map(a -> String.format("%s %s", a, valueString(PARAM, a)))
             .collect(Collectors.toList());
 
         return String.join(" ", params);

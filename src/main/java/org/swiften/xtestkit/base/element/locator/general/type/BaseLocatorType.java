@@ -53,7 +53,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @see CollectionUtil#unify(Collection[])
      * @see ObjectUtil#nonNull(Object)
      * @see D#findElements(By)
-     * @see #rx_errorWithPageSource(String)
+     * @see #rxv_errorWithPageSource(String)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -74,7 +74,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
                 }
             })
             .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(rx_errorWithPageSource(param.error()))
+            .switchIfEmpty(rxv_errorWithPageSource(param.error()))
             .retry(param.retries());
     }
 
@@ -88,10 +88,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see ByXPath#error()
      * @see String#join(CharSequence, CharSequence...)
-     * @see #rx_errorWithPageSource(String)
+     * @see #rxv_errorWithPageSource(String)
      */
     @NotNull
-    default <T> Flowable<T> rx_xPathQueryFailure(@NotNull ByXPath...param) {
+    default <T> Flowable<T> rxe_xPathQueryFailure(@NotNull ByXPath...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -101,7 +101,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .map(a -> a.toArray(new String[a.size()]))
             .map(a -> String.join("\n", a))
             .toFlowable()
-            .flatMap(THIS::rx_errorWithPageSource);
+            .flatMap(THIS::rxv_errorWithPageSource);
     }
 
     /**
@@ -112,7 +112,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link ByXPath} instances.
      * @return {@link Flowable} instance.
      * @see #rxe_byXPath(ByXPath)
-     * @see #rx_xPathQueryFailure(ByXPath...)
+     * @see #rxe_xPathQueryFailure(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -123,7 +123,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .flatMap(a -> THIS.rxe_byXPath(a).onErrorResumeNext(Flowable.empty()))
             .toList().toFlowable()
             .flatMap(Flowable::fromIterable)
-            .switchIfEmpty(rx_xPathQueryFailure(param));
+            .switchIfEmpty(rxe_xPathQueryFailure(param));
     }
     //endregion
 
@@ -507,7 +507,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @see ByXPath.Builder#withXPath(XPath)
      */
     @NotNull
-    default Flowable<WebElement> rx_editable() {
+    default Flowable<WebElement> rxe_editables() {
         List<? extends BaseViewType> views = platformView().isEditable();
         final PlatformType PLATFORM = platform();
 
@@ -524,11 +524,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
      * @see WebElement#clear()
-     * @see #rx_editable()
+     * @see #rxe_editables()
      */
     @NotNull
-    default Flowable<Boolean> rx_clearAllEditableElements() {
-        return rx_editable()
+    default Flowable<Boolean> rxa_clearAllEditables() {
+        return rxe_editables()
             .flatMapCompletable(a -> Completable.fromAction(a::clear))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
@@ -538,12 +538,12 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get the currently focused {@link BaseViewType#isEditable()} field.
      * @return {@link Flowable} instance.
      * @see #isFocused(WebElement)
-     * @see #rx_editable()
+     * @see #rxe_editables()
      */
     @NotNull
-    default Flowable<WebElement> rx_currentlyFocusedEditable() {
+    default Flowable<WebElement> rxe_currentlyFocusedEditable() {
         final BaseLocatorType<?> THIS = this;
-        return rx_editable()
+        return rxe_editables()
             .filter(THIS::isFocused)
             .doOnNext(LogUtil::println)
             .firstElement().toFlowable()

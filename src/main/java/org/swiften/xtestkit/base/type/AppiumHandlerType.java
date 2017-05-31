@@ -61,10 +61,10 @@ public interface AppiumHandlerType extends
     /**
      * Check if a process is potentially an Appium instance. This is used to
      * detect whether it should be killed by
-     * {@link #rx_stopLocalAppium()}
+     * {@link #rxa_stopLocalAppium()}
      * @param name The process' name. {@link String} value.
      * @return {@link Boolean} instance.
-     * @see #rx_stopLocalAppium()
+     * @see #rxa_stopLocalAppium()
      */
     default boolean isAppiumProcess(@NotNull String name) {
         return name.contains("node");
@@ -179,7 +179,7 @@ public interface AppiumHandlerType extends
      * @see #isAppiumProcess(String)
      */
     @NotNull
-    default Flowable<Boolean> rx_stopLocalAppium() {
+    default Flowable<Boolean> rxa_stopLocalAppium() {
         NetworkHandler handler = networkHandler();
         Address address = address();
         return handler.rxa_killWithPort(address, this::isAppiumProcess);

@@ -6,19 +6,27 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.date.DateUtil;
+import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.action.date.BaseDateActionType;
 import org.swiften.xtestkit.base.element.action.date.CalendarUnit;
+import org.swiften.xtestkit.base.element.action.date.DatePickerType;
 import org.swiften.xtestkit.base.element.action.date.DateType;
 import org.swiften.xtestkit.base.element.action.input.BaseInputActionType;
+import org.swiften.xtestkit.base.type.LocalizerContainerType;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by haipham on 22/5/17.
  */
 public interface IOSDateActionType extends
     BaseDateActionType<IOSDriver<IOSElement>>,
-    BaseInputActionType<IOSDriver<IOSElement>>
+    BaseInputActionType<IOSDriver<IOSElement>>,
+    LocalizerContainerType
 {
-    //region Action
     /**
      * Override this method to provide default implementation.
      * We do nothing here because the date picker is displayed by default.
@@ -40,20 +48,59 @@ public interface IOSDateActionType extends
      * @return {@link Flowable} instance.
      * @see BaseDateActionType#rxa_select(DateType, CalendarUnit)
      * @see BooleanUtil#toTrue(Object)
-     * @see #string(DateType, CalendarUnit)
+     * @see #valueString(DateType, CalendarUnit)
+     * @see #rxa_type(WebElement, String...)
      * @see #rxe_pickerView(DateType, CalendarUnit)
-     * @see #rx_type(WebElement, String...)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxa_select(@NotNull DateType param,
                                          @NotNull CalendarUnit unit) {
         final IOSDateActionType THIS = this;
-        String value = string(param, unit);
+        String value = valueString(param, unit);
 
         return rxe_pickerView(param, unit)
-            .flatMap(a -> THIS.rx_type(a, value))
+            .flatMap(a -> THIS.rxa_type(a, value))
             .map(BooleanUtil::toTrue);
     }
-    //endregion
+
+    /**
+     * Override this method to take care of a few special cases whereby
+     * {@link String} format with {@link SimpleDateFormat} is not enough.
+     * For example, if {@link DateType#datePickerType()} is
+     * {@link IOSDatePickerType#MMMd_h_mm_a}, the month-day {@link String} will
+     * be "Today" if the {@link Date} is the current day.
+     * @param param {@link DateType} instance.
+     * @param unit {@link CalendarUnit} instance.
+     * @return {@link String} value.
+     * @see BaseDateActionType#valueString(DateType, CalendarUnit)
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#isDay()
+     * @see CalendarUnit#isMonth()
+     * @see CalendarUnit#value()
+     * @see DateType#date()
+     * @see DateType#datePickerType()
+     * @see DateUtil#sameAs(Date, Date, int)
+     * @see LocalizerType#localize(String)
+     * @see IOSDatePickerType#MMMd_h_mm_a
+     * @see #localizer()
+     */
+    @NotNull
+    @Override
+    default String displayString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+        DatePickerType picker = param.datePickerType();
+        DatePickerType target = IOSDatePickerType.MMMd_h_mm_a;
+
+        if (picker.equals(target) && (unit.isMonth() || unit.isDay())) {
+            LocalizerType localizer = localizer();
+            Date now = Calendar.getInstance().getTime();
+            Date date = param.date();
+
+            if (DateUtil.sameAs(now, date, CalendarUnit.DAY.value())) {
+                return localizer.localize("date_title_today");
+            }
+        }
+
+        return BaseDateActionType.super.displayString(param, unit);
+    }
 }

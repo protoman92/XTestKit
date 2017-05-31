@@ -219,7 +219,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
 
         @NotNull
         @Override
-        default String string(@NotNull DateType param, @NotNull CalendarUnit unit) {
+        default String valueString(@NotNull DateType param, @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
     }
@@ -270,7 +270,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
 
         @NotNull
         @Override
-        public Flowable<Boolean> rx_swipeOnce(@NotNull SwipeType param) {
+        public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
             return Flowable.empty();
         }
 

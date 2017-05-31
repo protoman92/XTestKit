@@ -185,7 +185,7 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ENGINE.rx_stopLocalAppium().subscribe(subscriber);
+            ENGINE.rxa_stopLocalAppium().subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -193,7 +193,7 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
             subscriber.assertNoErrors();
             subscriber.assertComplete();
             verify(ENGINE).address();
-            verify(ENGINE).rx_stopLocalAppium();
+            verify(ENGINE).rxa_stopLocalAppium();
             verify(ENGINE).networkHandler();
             verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {

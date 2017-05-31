@@ -6,7 +6,6 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.action.date.*;
 import org.swiften.xtestkit.base.element.action.general.BaseActionType;
 import org.swiften.xtestkit.base.element.action.swipe.SwipeRepeatComparisonType;
@@ -100,7 +99,7 @@ public interface AndroidDateActionType extends
      * @param UNIT {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
-     * @see DatePickerType#stringFormat(CalendarUnit)
+     * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see DatePickerType#targetItemXPath(CalendarUnit)
      * @see DateParam.Builder#withDate(Date)
      * @see DateParam.Builder#withDateType(DateType)
@@ -108,8 +107,9 @@ public interface AndroidDateActionType extends
      * @see DateType#datePickerType()
      * @see SwipeRepeatType#rx_execute()
      * @see XPath.Builder#containsText(String)
+     * @see #displayString(DateType, CalendarUnit)
      * @see #getText(WebElement)
-     * @see #string(DateType, CalendarUnit)
+     * @see #platform()
      * @see #rxa_click(WebElement)
      * @see #rxe_pickerView(DateType, CalendarUnit)
      */
@@ -117,14 +117,14 @@ public interface AndroidDateActionType extends
     default Flowable<Boolean> rxa_scrollAndSelect(@NotNull final DateType PARAM,
                                                   @NotNull final CalendarUnit UNIT) {
         final AndroidDateActionType THIS = this;
-        final String CP_STRING = string(PARAM, UNIT);
+        final String CP_STRING = displayString(PARAM, UNIT);
         final int COMPONENT = PARAM.component(UNIT);
-        String format = PARAM.datePickerType().stringFormat(UNIT);
+        String format = PARAM.datePickerType().valueStringFormat(UNIT);
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
 
         XPath xPath = XPath.builder(platform())
             .withXPath(PARAM.datePickerType().targetItemXPath(UNIT))
-            .containsText(string(PARAM, UNIT))
+            .containsText(CP_STRING)
             .build();
 
         /* We need a custom ByXPath because we want to limit the retry

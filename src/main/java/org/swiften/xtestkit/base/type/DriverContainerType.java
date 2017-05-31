@@ -35,7 +35,7 @@ public interface DriverContainerType<D extends WebDriver> {
      * @see #driver()
      */
     @NotNull
-    default  <T> Flowable<T> rx_errorWithPageSource(@NotNull String error) {
+    default  <T> Flowable<T> rxv_errorWithPageSource(@NotNull String error) {
         final DriverContainerType<?> THIS = this;
 
         return Flowable.error(() -> {
@@ -48,10 +48,10 @@ public interface DriverContainerType<D extends WebDriver> {
      * Same as above, but uses an empty {@link String} error.
      * @param <T> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rx_errorWithPageSource(String)
+     * @see #rxv_errorWithPageSource(String)
      */
     @NotNull
-    default <T> Flowable<T> rx_errorWithPageSource() {
-        return rx_errorWithPageSource("");
+    default <T> Flowable<T> rxv_errorWithPageSource() {
+        return rxv_errorWithPageSource("");
     }
 }

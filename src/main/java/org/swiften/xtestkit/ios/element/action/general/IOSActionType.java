@@ -3,7 +3,6 @@ package org.swiften.xtestkit.ios.element.action.general;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
-import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,10 +16,6 @@ import org.swiften.xtestkit.base.type.LocalizerContainerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by haipham on 24/5/17.
@@ -51,7 +46,6 @@ public interface IOSActionType extends
      * @return {@link Flowable} instance.
      * @see AlertParam#shouldAccept()
      * @see BooleanUtil#toTrue(Object)
-     * @see Collections#reverse(List)
      * @see IOSView.ViewType#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
@@ -80,22 +74,12 @@ public interface IOSActionType extends
         return Flowable.fromArray(titles)
             .map(a -> XPath.builder(PLATFORM)
                 .setClass(BTN_CLS)
-                .containsText(LOCALIZER.localize(a))
+                .hasText(LOCALIZER.localize(a))
                 .build())
             .toList()
             .map(a -> a.toArray(new XPath[a.size()]))
             .toFlowable()
             .flatMap(THIS::rxe_withXPath)
-            .toList()
-
-            /* In case the texts are "Don't allow" and "Allow", searching
-             * for an element that contains "Allow" will actually result in
-             * "Don't Allow". Therefore, we reverse the order of the elements
-             * to take care of this specific case. In other situations, this
-             * simply does nothing */
-            .map(a -> { Collections.reverse(a); return a; })
-            .toFlowable()
-            .concatMapIterable(a -> a)
             .firstElement()
             .toFlowable()
             .flatMap(THIS::rxa_click)

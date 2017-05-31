@@ -126,7 +126,7 @@ public class BaseLocatorTest implements BaseLocatorType {
         doReturn(RxUtil.error()).when(ENGINE).rxe_byXPath(eq(query1));
         doReturn(Flowable.just(element1)).when(ENGINE).rxe_byXPath(eq(query2));
         doReturn(Flowable.just(element2)).when(ENGINE).rxe_byXPath(eq(query3));
-        doReturn(RxUtil.error()).when(ENGINE).rx_xPathQueryFailure(any());
+        doReturn(RxUtil.error()).when(ENGINE).rxe_xPathQueryFailure(any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 

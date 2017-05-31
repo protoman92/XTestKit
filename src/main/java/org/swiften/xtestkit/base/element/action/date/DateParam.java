@@ -70,12 +70,12 @@ public class DateParam implements DateType, BaseErrorType {
 
     /**
      * @return {@link List} of {@link CalendarUnit}.
-     * @see DateType#calendarUnits()
+     * @see DateType#units()
      * @see #UNITS
      */
     @NotNull
     @Override
-    public List<CalendarUnit> calendarUnits() {
+    public List<CalendarUnit> units() {
         return UNITS;
     }
 
@@ -159,7 +159,7 @@ public class DateParam implements DateType, BaseErrorType {
          */
         @NotNull
         public Builder withDateType(@NotNull DateType type) {
-            return withCalendarUnits(type.calendarUnits()).withDate(type.date());
+            return withCalendarUnits(type.units()).withDate(type.date());
         }
 
         /**

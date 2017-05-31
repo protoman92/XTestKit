@@ -134,7 +134,7 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).testMode();
         verify(ENGINE).rxa_stopDriver();
         verify(ENGINE).rxa_afterClass(any());
-        verify(ENGINE).rx_stopLocalAppium();
+        verify(ENGINE).rxa_stopLocalAppium();
         verify(ADB_HANDLER).rxa_stopEmulator(any());
         verify(NETWORK_HANDLER, times(2)).markPortAvailable(anyInt());
         verifyNoMoreInteractions(ENGINE);

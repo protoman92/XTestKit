@@ -6,7 +6,6 @@ package org.swiften.xtestkit.base.element.action.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
-import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
  * This interface provides methods to query date picker subviews.
@@ -18,7 +17,7 @@ public interface DatePickerType {
      * @return {@link String} value.
      */
     @NotNull
-    String stringFormat(@NotNull CalendarUnit unit);
+    String valueStringFormat(@NotNull CalendarUnit unit);
 
     /**
      * Get the picker list view {@link XPath} that corresponds to

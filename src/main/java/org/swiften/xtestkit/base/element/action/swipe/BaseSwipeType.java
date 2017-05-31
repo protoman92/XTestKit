@@ -30,7 +30,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @return {@link Flowable} instance.
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
-     * @see #rx_swipe(RepeatType)
+     * @see #rxa_swipe(RepeatType)
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -76,7 +76,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
             .withDurationType(param)
             .build();
 
-        return rx_swipe(swipeParam);
+        return rxa_swipe(swipeParam);
     }
 
     /**

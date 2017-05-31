@@ -31,7 +31,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see #swipeOnce(SwipeType)
      */
     @NotNull
-    default Flowable<Boolean> rx_swipeOnce(@NotNull final SwipeType PARAM) {
+    default Flowable<Boolean> rxa_swipeOnce(@NotNull final SwipeType PARAM) {
         return Completable
             .fromAction(() -> this.swipeOnce(PARAM))
             .<Boolean>toFlowable()
@@ -43,10 +43,10 @@ public interface SwipeOnceType extends BaseErrorType {
      * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rx_swipeOnce(SwipeType)
+     * @see #rxa_swipeOnce(SwipeType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeType> Flowable<Boolean> rx_swipe(@NotNull final P PARAM) {
+    default <P extends RepeatType & SwipeType> Flowable<Boolean> rxa_swipe(@NotNull final P PARAM) {
         final SwipeOnceType THIS = this;
         final int TIMES = PARAM.times();
         final long DELAY = PARAM.delay();
@@ -54,6 +54,6 @@ public interface SwipeOnceType extends BaseErrorType {
 
         return Flowable
             .range(0, TIMES)
-            .concatMap(a -> THIS.rx_swipeOnce(PARAM).delay(DELAY, UNIT));
+            .concatMap(a -> THIS.rxa_swipeOnce(PARAM).delay(DELAY, UNIT));
     }
 }

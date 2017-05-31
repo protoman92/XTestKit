@@ -45,7 +45,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      * @see #tap(TapType)
      */
     @NotNull
-    default <P extends TapType & RetryType> Flowable<Boolean> rx_tap(@NotNull final P PARAM) {
+    default <P extends TapType & RetryType> Flowable<Boolean> rxa_tap(@NotNull final P PARAM) {
         final BaseTapType<?> THIS = this;
 
         return Completable
@@ -62,7 +62,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      * @see #tap(int, int)
      */
     @NotNull
-    default Flowable<Boolean> rx_tap(final int X, final int Y) {
+    default Flowable<Boolean> rxa_tap(final int X, final int Y) {
         LogUtil.printfThread("Tapping at x: %d, y: %d", X, Y);
         final BaseTapType<?> THIS = this;
 
@@ -78,12 +78,12 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      * @return {@link Flowable} instance.
      * @see Point#getX()
      * @see Point#getY()
-     * @see #rx_tap(int, int)
+     * @see #rxa_tap(int, int)
      */
     @NotNull
-    default Flowable<Boolean> rx_tap(@NotNull Point point) {
+    default Flowable<Boolean> rxa_tap(@NotNull Point point) {
         int x = point.getX(), y = point.getY();
-        return rx_tap(x, y);
+        return rxa_tap(x, y);
     }
 
     /**
@@ -91,11 +91,11 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see #getMiddleCoordinate(WebElement)
-     * @see #rx_tap(Point)
+     * @see #rxa_tap(Point)
      */
     @NotNull
-    default Flowable<Boolean> rx_tapMiddle(@NotNull WebElement element) {
+    default Flowable<Boolean> rxa_tapMiddle(@NotNull WebElement element) {
         Point coordinate = getMiddleCoordinate(element);
-        return rx_tap(coordinate);
+        return rxa_tap(coordinate);
     }
 }

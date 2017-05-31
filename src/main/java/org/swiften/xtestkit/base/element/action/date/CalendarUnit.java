@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.element.action.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.property.base.AttributeType;
+import org.swiften.xtestkit.base.type.BaseErrorType;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -16,10 +17,67 @@ import java.util.List;
  * {@link BaseDateActionType}
  * for better code reuse.
  */
-public enum CalendarUnit implements AttributeType<Integer> {
+public enum CalendarUnit implements AttributeType<Integer>, BaseErrorType {
     DAY,
     MONTH,
-    YEAR;
+    YEAR,
+    HOUR,
+    MINUTE,
+    PERIOD;
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #DAY}.
+     * @return {@link Boolean} value.
+     * @see #DAY
+     */
+    public boolean isDay() {
+        return equals(DAY);
+    }
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #MONTH}.
+     * @return {@link Boolean} value.
+     * @see #MONTH
+     */
+    public boolean isMonth() {
+        return equals(MONTH);
+    }
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #YEAR}.
+     * @return {@link Boolean} value.
+     * @see #YEAR
+     */
+    public boolean isYear() {
+        return equals(YEAR);
+    }
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #HOUR}.
+     * @return {@link Boolean} value.
+     * @see #HOUR
+     */
+    public boolean isHour() {
+        return equals(HOUR);
+    }
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #MINUTE}.
+     * @return {@link Boolean} value.
+     * @see #MINUTE
+     */
+    public boolean isMinute() {
+        return equals(MINUTE);
+    }
+
+    /**
+     * Check if the current {@link CalendarUnit} is {@link #PERIOD}.
+     * @return {@link Boolean} value.
+     * @see #PERIOD
+     */
+    public boolean isPeriod() {
+        return equals(PERIOD);
+    }
 
     /**
      * Get the {@link CalendarUnit} involved in date selection.
@@ -37,6 +95,7 @@ public enum CalendarUnit implements AttributeType<Integer> {
      * Get the {@link Calendar} constant that corresponds to this
      * {@link CalendarUnit}.
      * @return {@link Integer} instance.
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public Integer value() {
@@ -50,8 +109,17 @@ public enum CalendarUnit implements AttributeType<Integer> {
             case YEAR:
                 return Calendar.YEAR;
 
+            case HOUR:
+                return Calendar.HOUR;
+
+            case MINUTE:
+                return Calendar.MINUTE;
+
+            case PERIOD:
+                return Calendar.AM_PM;
+
             default:
-                return 0;
+                throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 }

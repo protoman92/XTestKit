@@ -43,8 +43,8 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #type(WebElement, String...)
      */
     @NotNull
-    default Flowable<WebElement> rx_type(@NotNull final WebElement ELEMENT,
-                                         @NotNull final String...TEXT) {
+    default Flowable<WebElement> rxa_type(@NotNull final WebElement ELEMENT,
+                                          @NotNull final String...TEXT) {
         final BaseInputActionType THIS = this;
 
         return Completable
@@ -70,7 +70,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #toggleNextInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rx_toggleNextInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rxa_toggleNextInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return Completable
@@ -96,7 +96,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see #endInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rx_finishInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rxa_finishInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return Completable
@@ -112,12 +112,12 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see ObjectUtil#nonNull(Object)
      * @see #sameOriginAndSize(WebElement, WebElement)
-     * @see #rx_editable()
+     * @see #rxe_editables()
      */
     @NotNull
     default Flowable<Boolean> rxv_isLastInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
-        return rx_editable()
+        return rxe_editables()
             .lastElement()
             .toFlowable()
             .filter(ObjectUtil::nonNull)
@@ -133,17 +133,17 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
      * @see #rxv_isLastInput(WebElement)
-     * @see #rx_toggleNextInput(WebElement)
-     * @see #rx_finishInput(WebElement)
+     * @see #rxa_toggleNextInput(WebElement)
+     * @see #rxa_finishInput(WebElement)
      * @see #consecutiveNextToggleDelay()
      */
     @NotNull
-    default Flowable<WebElement> rx_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
+    default Flowable<WebElement> rxa_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
         final BaseInputActionType<?> THIS = this;
 
         return rxv_isLastInput(ELEMENT)
             .filter(BooleanUtil::isTrue)
-            .flatMap(a -> THIS.rx_finishInput(ELEMENT))
-            .switchIfEmpty(THIS.rx_toggleNextInput(ELEMENT));
+            .flatMap(a -> THIS.rxa_finishInput(ELEMENT))
+            .switchIfEmpty(THIS.rxa_toggleNextInput(ELEMENT));
     }
 }

@@ -92,7 +92,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      * @param direction {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return {@link Flowable} instance.
-     * @see #rx_swipeOnce(SwipeType)
+     * @see #rxa_swipeOnce(SwipeType)
      */
     @NotNull
     default Flowable<Boolean> rx_swipeElement(@NotNull WebElement element,
@@ -129,6 +129,6 @@ public interface SwipeRepeatType extends SwipeOnceType {
             .withEndY(endY)
             .build();
 
-        return rx_swipeOnce(param);
+        return rxa_swipeOnce(param);
     }
 }

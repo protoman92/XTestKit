@@ -67,7 +67,7 @@ public class BaseSwipeActionTest implements BaseSwipeType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_swipe(param).subscribe(subscriber);
+        ENGINE.rxa_swipe(param).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -75,9 +75,9 @@ public class BaseSwipeActionTest implements BaseSwipeType {
         subscriber.assertNoErrors();
         subscriber.assertComplete();
         assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(ENGINE).rx_swipe(any());
+        verify(ENGINE).rxa_swipe(any());
         verify(ENGINE, times(times)).swipeOnce(any());
-        verify(ENGINE, times(times)).rx_swipeOnce(any());
+        verify(ENGINE, times(times)).rxa_swipeOnce(any());
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

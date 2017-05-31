@@ -28,7 +28,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
      * @see ChoiceType#input()
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
      * @see ChoiceInputType#choicePickerXPath(PlatformType)
-     * @see ChoiceHelperType#rx_type(WebElement, String...)
+     * @see ChoiceHelperType#rxa_type(WebElement, String...)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
@@ -44,7 +44,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
             .rxe_withXPath(xPath)
             .elementAt(index)
             .toFlowable()
-            .flatMap(a -> ENGINE.rx_type(a, SELECTED))
+            .flatMap(a -> ENGINE.rxa_type(a, SELECTED))
             .map(BooleanUtil::toTrue);
     }
 }
