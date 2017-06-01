@@ -17,6 +17,7 @@ import org.swiften.xtestkit.android.element.action.general.AndroidActionType;
 import org.swiften.xtestkit.android.element.action.input.AndroidInputActionType;
 import org.swiften.xtestkit.android.element.action.input.AndroidKeyboardActionType;
 import org.swiften.xtestkit.android.element.action.password.AndroidPasswordActionType;
+import org.swiften.xtestkit.android.element.action.search.AndroidSearchActionType;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
@@ -52,7 +53,8 @@ public class AndroidEngine extends
     AndroidInputActionType,
     AndroidInstanceContainerType,
     AndroidKeyboardActionType,
-    AndroidPasswordActionType<AndroidDriver<AndroidElement>>
+    AndroidPasswordActionType,
+    AndroidSearchActionType
 {
     @NotNull
     public static Builder builder() {

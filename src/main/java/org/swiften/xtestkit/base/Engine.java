@@ -26,6 +26,7 @@ import org.swiften.xtestkit.base.element.action.general.BaseActionType;
 import org.swiften.xtestkit.base.element.action.input.BaseInputActionType;
 import org.swiften.xtestkit.base.element.action.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.action.password.BasePasswordActionType;
+import org.swiften.xtestkit.base.element.action.search.BaseSearchActionType;
 import org.swiften.xtestkit.base.element.action.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.action.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.action.tap.BaseTapType;
@@ -62,6 +63,7 @@ public abstract class Engine<D extends WebDriver> implements
     BaseKeyboardActionType<D>,
     BasePasswordActionType<D>,
     BaseTapType<D>,
+    BaseSearchActionType,
     BaseSwipeType<D>,
     BaseSwitcherActionType,
     BaseVisibilityActionType<D>,

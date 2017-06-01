@@ -16,6 +16,7 @@ import org.swiften.xtestkit.ios.capability.IOSCapability;
 import org.swiften.xtestkit.ios.element.action.choice.IOSChoiceSelectorType;
 import org.swiften.xtestkit.ios.element.action.date.IOSDateActionType;
 import org.swiften.xtestkit.ios.element.action.general.IOSActionType;
+import org.swiften.xtestkit.ios.element.action.search.IOSSearchActionType;
 import org.swiften.xtestkit.ios.type.IOSDelayType;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -37,7 +38,8 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     IOSChoiceSelectorType,
     IOSDateActionType,
     IOSDelayType,
-    IOSErrorType
+    IOSErrorType,
+    IOSSearchActionType
 {
     /**
      * Get a new {@link Builder} instance.

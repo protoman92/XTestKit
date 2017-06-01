@@ -22,6 +22,7 @@ public class IOSView extends PlatformView {
         UI_TEXTFIELD,
         UI_TABLEVIEW,
         UI_TABLEVIEW_CELL,
+        UI_SEARCHBAR,
         UI_SCROLLVIEW,
         UI_STATICTEXT,
         UI_SWITCH,
@@ -51,6 +52,9 @@ public class IOSView extends PlatformView {
 
                 case UI_TEXTFIELD:
                     return "XCUIElementTypeTextField";
+
+                case UI_SEARCHBAR:
+                    return "XCUIElementTypeSearchField";
 
                 case UI_SECURE_TEXTFIELD:
                     return "XCUIElementTypeSecureTextField";

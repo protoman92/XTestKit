@@ -12,8 +12,8 @@ import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionT
 /**
  * Created by haipham on 5/15/17.
  */
-public interface AndroidPasswordActionType<D extends AndroidDriver<AndroidElement>> extends
-    MobilePasswordActionType<D>
+public interface AndroidPasswordActionType extends
+    MobilePasswordActionType<AndroidDriver<AndroidElement>>
 {
     /**
      * Override this method to provide a default
