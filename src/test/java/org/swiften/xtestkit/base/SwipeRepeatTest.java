@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.action.general.Unidirection;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeRepeatType;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkit.base.element.swipe.SwipeRepeatType;
+import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,7 +39,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Double> rx_elementSwipeRatio() {
+    public Flowable<Double> rxe_elementSwipeRatio() {
         return Flowable.just(0.9d);
     }
 
@@ -51,7 +51,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_shouldKeepSwiping() {
+    public Flowable<Boolean> rxv_shouldKeepSwiping() {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
@@ -63,7 +63,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_scrollableViewToSwipe() {
+    public Flowable<WebElement> rxe_scrollableViewToSwipe() {
         return Flowable.just(ELEMENT);
     }
 
@@ -75,7 +75,7 @@ public class SwipeRepeatTest implements SwipeRepeatType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_swipeElement(
+    public Flowable<Boolean> rxa_swipeElement(
         @NotNull WebElement element,
         @NotNull Unidirection direction,
         double scrollRatio
@@ -90,20 +90,20 @@ public class SwipeRepeatTest implements SwipeRepeatType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_execute().subscribe(subscriber);
+        ENGINE.rxa_performAction().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE).rx_execute();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_swipeRecursively();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_scrollableViewToSwipe();
+        verify(ENGINE).rxa_performAction();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxa_swipeRecursively();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxv_shouldKeepSwiping();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxe_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE)).rx_directionToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_elementSwipeRatio();
-        verify(ENGINE, times(TOTAL_SWIPE - 1)).rx_swipeElement(any(), any(), anyDouble());
+        verify(ENGINE, times(TOTAL_SWIPE)).rxe_elementSwipeRatio();
+        verify(ENGINE, times(TOTAL_SWIPE - 1)).rxa_swipeElement(any(), any(), anyDouble());
         verifyNoMoreInteractions(ENGINE);
     }
 }

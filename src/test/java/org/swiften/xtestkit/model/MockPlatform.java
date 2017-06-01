@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.model;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.locator.general.xpath.Attribute;
+import org.swiften.xtestkit.base.element.locator.xpath.Attribute;
 import org.swiften.xtestkit.base.type.PlatformType;
 
 /**

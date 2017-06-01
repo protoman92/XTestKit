@@ -11,13 +11,14 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.capability.AndroidCapability;
-import org.swiften.xtestkit.android.element.action.choice.AndroidChoiceSelectorType;
-import org.swiften.xtestkit.android.element.action.date.AndroidDateActionType;
-import org.swiften.xtestkit.android.element.action.general.AndroidActionType;
-import org.swiften.xtestkit.android.element.action.input.AndroidInputActionType;
-import org.swiften.xtestkit.android.element.action.input.AndroidKeyboardActionType;
-import org.swiften.xtestkit.android.element.action.password.AndroidPasswordActionType;
-import org.swiften.xtestkit.android.element.action.search.AndroidSearchActionType;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType;
+import org.swiften.xtestkit.android.element.date.AndroidDateActionType;
+import org.swiften.xtestkit.android.element.general.AndroidActionType;
+import org.swiften.xtestkit.android.element.input.AndroidInputActionType;
+import org.swiften.xtestkit.android.element.input.AndroidKeyboardActionType;
+import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
+import org.swiften.xtestkit.android.element.password.AndroidPasswordActionType;
+import org.swiften.xtestkit.android.element.search.AndroidSearchActionType;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
@@ -52,6 +53,7 @@ public class AndroidEngine extends
     AndroidErrorType,
     AndroidInputActionType,
     AndroidInstanceContainerType,
+    AndroidLocatorType,
     AndroidKeyboardActionType,
     AndroidPasswordActionType,
     AndroidSearchActionType

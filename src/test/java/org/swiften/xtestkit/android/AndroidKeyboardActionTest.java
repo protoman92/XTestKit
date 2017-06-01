@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.base.param.NavigateBack;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.element.action.input.AndroidKeyboardActionType;
+import org.swiften.xtestkit.android.element.input.AndroidKeyboardActionType;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

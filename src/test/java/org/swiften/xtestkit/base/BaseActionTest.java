@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.NumberTestUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.base.element.action.general.BaseActionType;
+import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
 import org.testng.annotations.AfterMethod;

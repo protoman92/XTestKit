@@ -4,8 +4,8 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.action.general.Unidirection;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeDampenType;
+import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkit.base.element.swipe.SwipeDampenType;
 import org.swiften.xtestkit.base.type.DurationType;
 import org.swiften.xtestkit.base.type.RepeatType;
 import org.swiften.xtestkit.base.type.UnidirectionType;
@@ -18,7 +18,12 @@ import org.swiften.xtestkit.base.type.UnidirectionType;
  * Parameter object for {@link Engine#rxa_swipeGeneric(WebElement, DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
-public class UnidirectionParam implements DurationType, RepeatType, SwipeDampenType, UnidirectionType {
+public class UnidirectionParam implements
+    DurationType,
+    RepeatType,
+    SwipeDampenType,
+    UnidirectionType
+{
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -36,6 +41,9 @@ public class UnidirectionParam implements DurationType, RepeatType, SwipeDampenT
     UnidirectionParam() {
         direction = Unidirection.LEFT_RIGHT;
         delay = RepeatType.super.delay();
+        times = 1;
+        startRatio = SwipeDampenType.super.startRatio();
+        endRatio = SwipeDampenType.super.endRatio();
     }
 
     //region Getters

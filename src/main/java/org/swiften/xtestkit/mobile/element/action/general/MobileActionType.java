@@ -4,7 +4,7 @@ import io.appium.java_client.MobileDriver;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.general.BaseActionType;
+import org.swiften.xtestkit.base.element.general.BaseActionType;
 
 /**
  * Created by haipham on 5/8/17.

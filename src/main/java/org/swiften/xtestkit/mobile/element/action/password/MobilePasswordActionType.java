@@ -5,7 +5,7 @@ package org.swiften.xtestkit.mobile.element.action.password;
  */
 
 import io.appium.java_client.MobileDriver;
-import org.swiften.xtestkit.base.element.action.password.BasePasswordActionType;
+import org.swiften.xtestkit.base.element.password.BasePasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
 
 /**

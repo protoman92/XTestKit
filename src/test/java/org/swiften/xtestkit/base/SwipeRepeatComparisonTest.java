@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.action.general.Unidirection;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeRepeatComparisonType;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkit.base.element.swipe.SwipeRepeatComparisonType;
+import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.testng.annotations.Test;
 
 import java.util.Random;
@@ -34,7 +34,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Double> rx_elementSwipeRatio() {
+    public Flowable<Double> rxe_elementSwipeRatio() {
         return Flowable.just(0.9d);
     }
 
@@ -46,7 +46,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_scrollableViewToSwipe() {
+    public Flowable<WebElement> rxe_scrollableViewToSwipe() {
         return Flowable.just(ELEMENT);
     }
 
@@ -58,7 +58,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_shouldKeepSwiping() {
+    public Flowable<Boolean> rxv_shouldKeepSwiping() {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
@@ -88,7 +88,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_swipeElement(
+    public Flowable<Boolean> rxa_swipeElement(
         @NotNull WebElement element,
         @NotNull Unidirection direction,
         double scrollRatio
@@ -103,24 +103,24 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rx_execute().subscribe(subscriber);
+        ENGINE.rxa_performAction().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_elementSwipeRatio();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_elementSwipeRatio();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).defaultDirection();
         verify(ENGINE, times(TOTAL_SWIPE)).firstElementDirection();
 //        verify(ENGINE, times(TOTAL_SWIPE)).lastElementDirection();
-        verify(ENGINE).rx_execute();
+        verify(ENGINE).rxa_performAction();
         verify(ENGINE).rx_initialSwipes();
         verify(ENGINE).rx_initialSwipes(any(), any(), anyInt());
         verify(ENGINE).rx_initialSwipesCount();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_swipeRecursively();
-        verify(ENGINE, times(TOTAL_SWIPE)).rx_shouldKeepSwiping();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_scrollableViewToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxa_swipeRecursively();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxv_shouldKeepSwiping();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_scrollableViewToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_directionToSwipe();
         verify(ENGINE, times(TOTAL_SWIPE + 2)).rx_firstVisibleChild();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_lastVisibleChild();
@@ -129,6 +129,6 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
             .rx_scrollViewChildItems();
 
         verify(ENGINE, times(TOTAL_SWIPE + INITIAL_SWIPE - 1))
-            .rx_swipeElement(any(), any(), anyDouble());
+            .rxa_swipeElement(any(), any(), anyDouble());
     }
 }

@@ -9,12 +9,12 @@ import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.action.general.Unidirection;
-import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.model.AndroidChoiceInputType;
-import org.swiften.xtestkit.android.element.action.choice.AndroidChoiceSwipeSelectorType;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -114,15 +114,15 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
     }
 
     @NotNull
-    public Flowable<Boolean> rx_swipeElement(@NotNull WebElement element,
-                                             @NotNull Unidirection direction,
-                                             double scrollRatio) {
+    public Flowable<Boolean> rxa_swipeElement(@NotNull WebElement element,
+                                              @NotNull Unidirection direction,
+                                              double scrollRatio) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_scrollableViewToSwipe() {
+    public Flowable<WebElement> rxe_scrollableViewToSwipe() {
         return Flowable.just(SCROLL_VIEW);
     }
 
@@ -181,7 +181,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
         LogUtil.printf("Searching for %s", selectedChoice());
 
         // When
-        SELECTOR.rx_execute().subscribe(subscriber);
+        SELECTOR.rxa_performAction().subscribe(subscriber);
 
         // Then
         subscriber.assertSubscribed();

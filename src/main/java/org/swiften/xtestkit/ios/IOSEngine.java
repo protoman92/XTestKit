@@ -13,10 +13,11 @@ import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.RetryType;
 import org.swiften.xtestkit.ios.capability.IOSCapability;
-import org.swiften.xtestkit.ios.element.action.choice.IOSChoiceSelectorType;
-import org.swiften.xtestkit.ios.element.action.date.IOSDateActionType;
-import org.swiften.xtestkit.ios.element.action.general.IOSActionType;
-import org.swiften.xtestkit.ios.element.action.search.IOSSearchActionType;
+import org.swiften.xtestkit.ios.element.choice.IOSChoiceSelectorType;
+import org.swiften.xtestkit.ios.element.date.IOSDateActionType;
+import org.swiften.xtestkit.ios.element.general.IOSActionType;
+import org.swiften.xtestkit.ios.element.locator.IOSLocatorType;
+import org.swiften.xtestkit.ios.element.search.IOSSearchActionType;
 import org.swiften.xtestkit.ios.type.IOSDelayType;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
@@ -39,6 +40,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     IOSDateActionType,
     IOSDelayType,
     IOSErrorType,
+    IOSLocatorType,
     IOSSearchActionType
 {
     /**

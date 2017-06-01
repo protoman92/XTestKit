@@ -6,8 +6,8 @@ package org.swiften.xtestkit.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.AndroidView;
-import org.swiften.xtestkit.base.element.locator.general.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.general.xpath.XPath;
+import org.swiften.xtestkit.base.element.locator.param.ByXPath;
+import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
 

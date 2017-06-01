@@ -19,15 +19,19 @@ public class IOSView extends PlatformView {
         UI_IMAGEVIEW,
         UI_LABEL,
         UI_LINK,
-        UI_TEXTFIELD,
-        UI_TABLEVIEW,
-        UI_TABLEVIEW_CELL,
+        UI_PICKERWHEEL,
         UI_SEARCHBAR,
+        UI_SECURETEXTFIELD,
         UI_SCROLLVIEW,
         UI_STATICTEXT,
+        UI_STATUSBAR,
         UI_SWITCH,
-        UI_SECURE_TEXTFIELD,
-        UI_PICKERWHEEL;
+        UI_TABLEVIEW,
+        UI_TABLEVIEW_CELL,
+        UI_TEXTFIELD,
+        UI_TEXTVIEW,
+        UI_TOOLBAR,
+        UI_WINDOW;
 
         /**
          * @return {@link String} value.
@@ -50,13 +54,13 @@ public class IOSView extends PlatformView {
                 case UI_LINK:
                     return "XCUIElementTypeLink";
 
-                case UI_TEXTFIELD:
-                    return "XCUIElementTypeTextField";
+                case UI_PICKERWHEEL:
+                    return "XCUIElementTypePickerWheel";
 
                 case UI_SEARCHBAR:
                     return "XCUIElementTypeSearchField";
 
-                case UI_SECURE_TEXTFIELD:
+                case UI_SECURETEXTFIELD:
                     return "XCUIElementTypeSecureTextField";
 
                 case UI_SCROLLVIEW:
@@ -64,6 +68,9 @@ public class IOSView extends PlatformView {
 
                 case UI_STATICTEXT:
                     return "XCUIElementTypeStaticText";
+
+                case UI_STATUSBAR:
+                    return "XCUIElementTypeStatusBar";
 
                 case UI_SWITCH:
                     return "XCUIElementTypeSwitch";
@@ -74,8 +81,17 @@ public class IOSView extends PlatformView {
                 case UI_TABLEVIEW_CELL:
                     return "XCUIElementTypeCell";
 
-                case UI_PICKERWHEEL:
-                    return "XCUIElementTypePickerWheel";
+                case UI_TEXTFIELD:
+                    return "XCUIElementTypeTextField";
+
+                case UI_TOOLBAR:
+                    return "XCUIElementTypeToolbar";
+
+                case UI_TEXTVIEW:
+                    return "XCUIElementTypeTextView";
+
+                case UI_WINDOW:
+                    return "XCUIElementTypeWindow";
 
                 default:
                     throw new RuntimeException(NOT_AVAILABLE);
@@ -92,7 +108,7 @@ public class IOSView extends PlatformView {
                 case UI_BUTTON:
                 case UI_LABEL:
                 case UI_TEXTFIELD:
-                case UI_SECURE_TEXTFIELD:
+                case UI_SECURETEXTFIELD:
                     return true;
 
                 default:
@@ -123,7 +139,7 @@ public class IOSView extends PlatformView {
         public boolean isEditable() {
             switch (this) {
                 case UI_TEXTFIELD:
-                case UI_SECURE_TEXTFIELD:
+                case UI_SECURETEXTFIELD:
                     return true;
 
                 default:

@@ -5,7 +5,7 @@ package org.swiften.xtestkit.mobile.element.action.keyboard;
  */
 
 import io.appium.java_client.MobileDriver;
-import org.swiften.xtestkit.base.element.action.input.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.type.DriverContainerType;
 
 /**

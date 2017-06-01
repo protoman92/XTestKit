@@ -3,8 +3,8 @@ package org.swiften.xtestkit.mobile.element.action.general;
 import io.appium.java_client.MobileDriver;
 import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.action.swipe.SwipeType;
-import org.swiften.xtestkit.base.element.action.tap.TapType;
+import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.tap.TapType;
 
 import java.time.Duration;
 
