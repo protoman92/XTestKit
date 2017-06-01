@@ -60,8 +60,8 @@ public class AndroidCapability extends MobileCapability {
     /**
      * @param capabilities {@link Map} instance.
      * @return {@link Map} instance.
-     * @see TestMode#isTestingOnActualEnvironment()
      * @see MobileCapability#distill(Map)
+     * @see TestMode#isTestingOnActualEnvironment()
      * @see #testMode()
      */
     @NotNull
