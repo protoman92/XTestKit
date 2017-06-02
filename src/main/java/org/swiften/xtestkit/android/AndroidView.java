@@ -15,11 +15,13 @@ import org.swiften.xtestkit.mobile.Platform;
 public class AndroidView extends PlatformView {
     public enum ViewType implements BaseViewType {
         BUTTON,
-        EDIT_TEXT,
+        EDITTEXT,
+        IMAGEVIEW,
         LINEAR_LAYOUT,
         LIST_VIEW,
-        TEXT_VIEW,
-        NUMBER_PICKER;
+        NUMBER_PICKER,
+        TEXTVIEW,
+        SWITCH;
 
         @NotNull
         @Override
@@ -28,8 +30,11 @@ public class AndroidView extends PlatformView {
                 case BUTTON:
                     return "android.widget.Button";
 
-                case EDIT_TEXT:
+                case EDITTEXT:
                     return "android.widget.EditText";
+
+                case IMAGEVIEW:
+                    return "android.widget.ImageView";
 
                 case LINEAR_LAYOUT:
                     return "android.widget.LinearLayout";
@@ -37,11 +42,14 @@ public class AndroidView extends PlatformView {
                 case LIST_VIEW:
                     return "android.widget.ListView";
 
-                case TEXT_VIEW:
-                    return "android.widget.TextView";
-
                 case NUMBER_PICKER:
                     return "android.widget.NumberPicker";
+
+                case SWITCH:
+                    return "android.widget.Switch";
+
+                case TEXTVIEW:
+                    return "android.widget.TextView";
 
                 default:
                     throw new RuntimeException();
@@ -52,9 +60,9 @@ public class AndroidView extends PlatformView {
         public boolean hasText() {
             switch (this) {
                 case BUTTON:
-                case EDIT_TEXT:
+                case EDITTEXT:
                 case LINEAR_LAYOUT:
-                case TEXT_VIEW:
+                case TEXTVIEW:
                     return true;
 
                 default:
@@ -66,8 +74,8 @@ public class AndroidView extends PlatformView {
         public boolean isClickable() {
             switch (this) {
                 case BUTTON:
-                case EDIT_TEXT:
-                case TEXT_VIEW:
+                case EDITTEXT:
+                case TEXTVIEW:
                     return true;
 
                 default:
@@ -78,7 +86,7 @@ public class AndroidView extends PlatformView {
         @Override
         public boolean isEditable() {
             switch (this) {
-                case EDIT_TEXT:
+                case EDITTEXT:
                     return true;
 
                 default:

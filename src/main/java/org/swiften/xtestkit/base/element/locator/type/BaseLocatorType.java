@@ -561,4 +561,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     Flowable<WebElement> rxe_window();
+
+    /**
+     * Get all image views {@link WebElement}.
+     * @return {@link Flowable} instance.
+     */
+    @NotNull
+    Flowable<WebElement> rxe_imageViews();
 }

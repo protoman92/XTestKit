@@ -22,14 +22,14 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @param selected {@link String} value of the selected choice.
      * @return {@link ByXPath} instance.
      * @see Platform#ANDROID
-     * @see AndroidView.ViewType#EDIT_TEXT
+     * @see AndroidView.ViewType#EDITTEXT
      * @see XPath.Builder#ofClass(String)
      * @see XPath.Builder#ofInstance(int)
      */
     @NotNull
     @Override
     default XPath androidTargetChoiceItemXPath(@NotNull String selected) {
-        String cls = AndroidView.ViewType.EDIT_TEXT.className();
+        String cls = AndroidView.ViewType.EDITTEXT.className();
         return XPath.builder(Platform.ANDROID).ofClass(cls).hasText(selected).build();
     }
 

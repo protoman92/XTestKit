@@ -257,16 +257,16 @@ public class AndroidEngine extends
         Flowable<Boolean> source;
         TestMode mode = testMode();
 
-        if (mode.isTestingOnSimulatedEnvironment()) {
-            StopEmulatorParam seParam = StopEmulatorParam.builder()
-                .withRetryType(param)
-                .withPortType(androidInstance)
-                .build();
-
-            source = adbHandler().rxa_stopEmulator(seParam);
-        } else {
+//        if (mode.isTestingOnSimulatedEnvironment()) {
+//            StopEmulatorParam seParam = StopEmulatorParam.builder()
+//                .withRetryType(param)
+//                .withPortType(androidInstance)
+//                .build();
+//
+//            source = adbHandler().rxa_stopEmulator(seParam);
+//        } else {
             source = Flowable.just(true);
-        }
+//        }
 
         return Flowable
             .concat(super.rxa_afterClass(param), rxa_stopDriver(), source)
