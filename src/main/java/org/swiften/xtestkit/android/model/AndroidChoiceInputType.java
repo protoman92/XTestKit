@@ -32,17 +32,17 @@ public interface AndroidChoiceInputType extends ChoiceInputType {
      * @param selected The selected {@link String} choice.
      */
     @NotNull
-    XPath androidTargetChoiceItemXPath(@NotNull String selected);
+    XPath androidTargetChoiceItemXP(@NotNull String selected);
 
     /**
      * Get the scroll view picker {@link XPath} for {@link Platform#ANDROID}.
      * @return {@link XPath} instance.
      */
-    @NotNull XPath androidChoicePickerXPath();
+    @NotNull XPath androidChoicePickerXP();
 
     /**
      * Get the scroll view picker item {@link XPath} for {@link Platform#ANDROID}.
      * @return {@link XPath} instance.
      */
-    @NotNull XPath androidChoicePickerItemXPath();
+    @NotNull XPath androidChoicePickerItemXP();
 }

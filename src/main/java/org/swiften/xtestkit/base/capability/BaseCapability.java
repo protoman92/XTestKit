@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.capability.type.CapabilityType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.PlatformType;
 
@@ -17,12 +17,12 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseCapability implements CapType, BaseErrorType {
+public abstract class BaseCapability implements CapabilityType, BaseErrorType {
     @Nullable TestMode testMode;
 
     protected BaseCapability() {}
 
-    //region CapType
+    //region CapabilityType
     /**
      * Override this method to provide specific {@link PlatformType}.
      * @return {@link PlatformType} instance.
@@ -69,7 +69,7 @@ public abstract class BaseCapability implements CapType, BaseErrorType {
      * Builder class for {@link BaseCapability}.
      * @param <C> Generics that extends {@link BaseCapability}.
      */
-    public static class Builder<C extends BaseCapability> implements CapType.Builder {
+    public static class Builder<C extends BaseCapability> implements CapabilityType.Builder {
         @NotNull private final C CAPABILITY;
 
         protected Builder(@NotNull C capability) {

@@ -9,12 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Parameter object for {@link BaseDateActionType#rxa_selectDate(DateType)}.
+ * Parameter object for {@link DateActionType#rxa_selectDate(DateType)}.
  */
 public class DateParam implements DateType, BaseErrorType {
     /**
@@ -115,6 +113,17 @@ public class DateParam implements DateType, BaseErrorType {
         }
 
         /**
+         * Add {@link CalendarUnit} to {@link #UNITS}.
+         * @param units Varargs of {@link CalendarUnit}.
+         * @return The current {@link Builder} instance.
+         * @see #addCalendarUnits(List)
+         */
+        @NotNull
+        public Builder addCalendarUnits(@NotNull CalendarUnit...units) {
+            return addCalendarUnits(Arrays.asList(units));
+        }
+
+        /**
          * Set the {@link #pickerType} instance.
          * @param pickerType {@link DatePickerType} instance.
          * @return The current {@link Builder} instance.
@@ -129,7 +138,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Replace all {@link CalendarUnit} within {@link #UNITS}.
          * @param units {@link List} of {@link CalendarUnit}.
-         * @return {@link Builder} instance.
+         * @return The current {@link Builder} instance.
          * @see #UNITS
          */
         @NotNull
@@ -137,6 +146,17 @@ public class DateParam implements DateType, BaseErrorType {
             PARAM.UNITS.clear();
             PARAM.UNITS.addAll(units);
             return this;
+        }
+
+        /**
+         * Replace all {@link CalendarUnit} within {@link #UNITS}.
+         * @param units Varargs of {@link CalendarUnit}.
+         * @return The current {@link Builder} instance.
+         * @see #withCalendarUnits(List)
+         */
+        @NotNull
+        public Builder withCalendarUnits(@NotNull CalendarUnit...units) {
+            return withCalendarUnits(Arrays.asList(units));
         }
 
         /**

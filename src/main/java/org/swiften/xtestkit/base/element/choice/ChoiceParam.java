@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
  * Concrete class that implements {@link ChoiceType}.
  * Use this with
- * {@link BaseChoiceSelectorType#rxa_selectChoice(ChoiceType)}.
+ * {@link ChoiceSelectorType#rxa_selectChoice(ChoiceType)}.
  */
 public class ChoiceParam implements ChoiceType, BaseErrorType {
     /**
@@ -33,7 +33,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
     /**
      * @return {@link Engine} instance.
-     * @see AndroidChoiceSwipeSelectorType#helper()
+     * @see AndroidChoiceMultiSwipeType#helper()
      * @see ObjectUtil#nonNull(Object)
      * @see #mode
      * @see #NOT_AVAILABLE
@@ -50,7 +50,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
     /**
      * @return {@link ChoiceInputType} instance.
-     * @see AndroidChoiceSwipeSelectorType#choiceInput()
+     * @see AndroidChoiceMultiSwipeType#choiceInput()
      * @see ObjectUtil#nonNull(Object)
      * @see #input
      * @see #NOT_AVAILABLE
@@ -67,7 +67,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
     /**
      * @return {@link String} value.
-     * @see AndroidChoiceSwipeSelectorType#selectedChoice()
+     * @see AndroidChoiceMultiSwipeType#selectedChoice()
      * @see ObjectUtil#nonNull(Object)
      * @see #selected
      * @see #NOT_AVAILABLE

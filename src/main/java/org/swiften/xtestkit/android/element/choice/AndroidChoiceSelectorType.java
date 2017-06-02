@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
-import org.swiften.xtestkit.base.element.choice.BaseChoiceSelectorType;
+import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkit.base.element.swipe.SwipeRepeatType;
+import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
@@ -24,21 +24,22 @@ import org.swiften.xtestkit.mobile.Platform;
  * This interface provides choice selection capabilities for
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
  */
-public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<AndroidDriver<AndroidElement>> {
+public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDriver<AndroidElement>> {
     /**
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see BaseChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
-     * @see Platform#ANDROID
+     * @see ChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
+     * @see AndroidChoiceMultiSwipeType#rxa_performAction()
+     * @see AndroidChoiceMultiSwipeType#rxe_scrollViewChildCount()
      * @see ChoiceType#input()
      * @see ChoiceType#selectedChoice()
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
      * @see ChoiceHelperType#rxe_withXPath(XPath...)
-     * @see AndroidChoiceSwipeSelectorType#rx_scrollViewChildCount()
-     * @see AndroidChoiceSwipeSelectorType#rxa_performAction()
+     * @see Platform#ANDROID
      */
     @NotNull
+    @Override
     default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
         final AndroidChoiceSelectorType THIS = this;
         final Platform PLATFORM = Platform.ANDROID;
@@ -46,7 +47,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
         final String SELECTED = param.selectedChoice();
         final int INDEX = INPUT.scrollablePickerIndex(PLATFORM);
 
-        SwipeRepeatType selector = new AndroidChoiceSwipeSelectorType() {
+        MultiSwipeType selector = new AndroidChoiceMultiSwipeType() {
             /**
              * Since there are might be multiple pickers with identical id,
              * we need to get the element that corresponds to a specified
@@ -55,7 +56,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
             @NotNull
             @Override
             public Flowable<WebElement> rxe_scrollableViewToSwipe() {
-                XPath xPath = INPUT.choicePickerXPath(PLATFORM);
+                XPath xPath = INPUT.choicePickerXP(PLATFORM);
                 return THIS.rxe_withXPath(xPath).elementAt(INDEX).toFlowable();
             }
 
@@ -64,7 +65,7 @@ public interface AndroidChoiceSelectorType extends BaseChoiceSelectorType<Androi
             public Flowable<Double> rxe_elementSwipeRatio() {
                 /* Customize the swipe ratio so that the picker is scrolled
                  * by one item at a time, to ensure accuracy */
-                return rx_scrollViewChildCount().map(NumberUtil::inverse);
+                return rxe_scrollViewChildCount().map(NumberUtil::inverse);
             }
 
             @NotNull

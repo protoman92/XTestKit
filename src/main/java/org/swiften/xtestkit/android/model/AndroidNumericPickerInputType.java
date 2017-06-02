@@ -5,9 +5,11 @@ package org.swiften.xtestkit.android.model;
  */
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -21,53 +23,93 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * Override this to provide default implementation.
      * @param selected {@link String} value of the selected choice.
      * @return {@link ByXPath} instance.
-     * @see Platform#ANDROID
      * @see AndroidView.ViewType#EDITTEXT
+     * @see BaseViewType#className()
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#ofClass(String)
      * @see XPath.Builder#ofInstance(int)
      */
     @NotNull
     @Override
-    default XPath androidTargetChoiceItemXPath(@NotNull String selected) {
-        String cls = AndroidView.ViewType.EDITTEXT.className();
-        return XPath.builder(Platform.ANDROID).ofClass(cls).hasText(selected).build();
+    default XPath androidTargetChoiceItemXP(@NotNull String selected) {
+        return XPath.builder(Platform.ANDROID)
+            .ofClass(AndroidView.ViewType.EDITTEXT.className())
+            .hasText(selected)
+            .addAnyClass()
+            .build();
+    }
+
+    /**
+     * Get the parent {@link XPath} to use with
+     * {@link #androidChoicePickerXP()} in order to narrow down the
+     * {@link java.util.List} of located {@link org.openqa.selenium.WebElement}.
+     * Prepend this in front of {@link #androidChoicePickerXP()}.
+     * @return {@link XPath} instance.
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAnyClass()
+     * @see #androidChoicePickerXP()
+     */
+    @NotNull
+    default XPath androidChoicePickerParentXP() {
+        return XPath.builder(Platform.ANDROID).addAnyClass().build();
     }
 
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see Platform#ANDROID
+     * @see AndroidChoiceInputType#androidChoicePickerXP()
      * @see AndroidView.ViewType#NUMBERPICKER
-     * @see #androidScrollablePickerIndex()
+     * @see BaseViewType#className()
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addChildXPath(XPath)
      * @see XPath.Builder#atIndex(int)
      * @see XPath.Builder#ofClass(String)
+     * @see XPath.Builder#withXPath(XPath)
+     * @see #androidChoicePickerParentXP()
+     * @see #androidScrollablePickerIndex()
      */
     @NotNull
     @Override
-    default XPath androidChoicePickerXPath() {
+    default XPath androidChoicePickerXP() {
+        Platform p = Platform.ANDROID;
         String cls = AndroidView.ViewType.NUMBERPICKER.className();
-        return XPath.builder(Platform.ANDROID).setClass(cls).build();
+
+        return XPath.builder(p)
+            .withXPath(androidChoicePickerParentXP())
+            .addChildXPath(XPath.builder(p).addClass(cls).build())
+            .build();
     }
 
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see Platform#ANDROID
      * @see AndroidView.ViewType#NUMBERPICKER
-     * @see #androidScrollablePickerIndex()
+     * @see BaseViewType#className()
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAnyClass()
+     * @see XPath.Builder#addChildXPath(XPath)
      * @see XPath.Builder#containsID(String)
      * @see XPath.Builder#ofInstance(int)
+     * @see #androidChoicePickerParentXP()
+     * @see #androidScrollablePickerIndex()
      */
     @NotNull
     @Override
-    default XPath androidChoicePickerItemXPath() {
+    default XPath androidChoicePickerItemXP() {
         PlatformType platform = Platform.ANDROID;
-        XPath cxp = XPath.builder(platform).build();
+
+        XPath child = XPath.builder(platform)
+            .addClass(AndroidView.ViewType.NUMBERPICKER.className())
+
+            /* Need to add 1 since XPath index is 1-based */
+            .setIndex(androidScrollablePickerIndex() + 1)
+            .addChildXPath(XPath.builder(platform).addAnyClass().build())
+            .build();
 
         return XPath.builder(platform)
-            .setClass(AndroidView.ViewType.NUMBERPICKER.className())
-            .ofInstance(androidScrollablePickerIndex())
-            .addChildXPath(cxp)
+            .withXPath(androidChoicePickerParentXP())
+            .addChildXPath(child)
             .build();
     }
 }

@@ -8,12 +8,12 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.click.BaseClickActionType;
+import org.swiften.xtestkit.base.element.click.ClickActionType;
 
 /**
  * This interface provides methods to work with checkboxes.
  */
-public interface BaseCheckBoxActionType extends BaseClickActionType {
+public interface CheckBoxActionType extends ClickActionType {
     /**
      * Check if a check box is checked.
      * @param element {@link WebElement} instance.
@@ -35,7 +35,7 @@ public interface BaseCheckBoxActionType extends BaseClickActionType {
      * @param element {@link WebElement} instance.
      * @param checked {@link Boolean} value.
      * @see #isCheckBoxChecked(WebElement)
-     * @see BaseClickActionType#click(WebElement)
+     * @see ClickActionType#click(WebElement)
      */
     default void setCheckBoxState(@NotNull WebElement element, boolean checked) {
         if (isCheckBoxChecked(element) != checked) {
@@ -54,7 +54,7 @@ public interface BaseCheckBoxActionType extends BaseClickActionType {
     default Flowable<WebElement> toggleCheckBox(
         @NotNull final WebElement ELEMENT, final boolean CHECKED)
     {
-        final BaseCheckBoxActionType THIS = this;
+        final CheckBoxActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.setCheckBoxState(ELEMENT, CHECKED))

@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android.element.search;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.search.BaseSearchActionType;
+import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
  * This interface provides methods to handle search for
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
  */
-public interface AndroidSearchActionType extends BaseErrorType, BaseSearchActionType {
+public interface AndroidSearchActionType extends BaseErrorType, SearchActionType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.

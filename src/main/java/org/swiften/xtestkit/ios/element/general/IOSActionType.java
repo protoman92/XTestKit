@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.xtestkit.base.element.click.BaseClickActionType;
+import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.param.AlertParam;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  * {@link org.swiften.xtestkit.mobile.Platform#IOS}.
  */
 public interface IOSActionType extends
-    BaseClickActionType,
+    ClickActionType,
     BaseLocatorType<IOSDriver<IOSElement>>,
     LocalizerContainerType,
     MobileActionType<IOSDriver<IOSElement>>
@@ -53,7 +53,7 @@ public interface IOSActionType extends
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see Platform#IOS
-     * @see XPath.Builder#setClass(String)
+     * @see XPath.Builder#addClass(String)
      * @see XPath.Builder#hasText(XPath.HasText)
      * @see #alertDismissalDelay()
      * @see #localizer()
@@ -77,7 +77,7 @@ public interface IOSActionType extends
 
         return Flowable.fromArray(titles)
             .map(a -> XPath.builder(PLATFORM)
-                .setClass(BTN_CLS)
+                .addClass(BTN_CLS)
                 .hasText(LOCALIZER.localize(a))
                 .build())
             .toList()

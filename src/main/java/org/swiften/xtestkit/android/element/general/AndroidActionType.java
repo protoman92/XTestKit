@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.element.click.BaseClickActionType;
+import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
  */
 public interface AndroidActionType extends
-    BaseClickActionType,
+    ClickActionType,
     BaseActionType<AndroidDriver<AndroidElement>>,
     BaseLocatorType<AndroidDriver<AndroidElement>>,
     MobileActionType<AndroidDriver<AndroidElement>>

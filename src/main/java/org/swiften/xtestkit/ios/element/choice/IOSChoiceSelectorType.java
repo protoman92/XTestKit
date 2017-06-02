@@ -6,7 +6,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.element.choice.BaseChoiceSelectorType;
+import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
@@ -17,17 +17,17 @@ import org.swiften.xtestkit.mobile.Platform;
 /**
  * Created by haipham on 25/5/17.
  */
-public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<IOSElement>> {
+public interface IOSChoiceSelectorType extends ChoiceSelectorType<IOSDriver<IOSElement>> {
     /**
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see BaseChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
+     * @see ChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
      * @see Platform#IOS
      * @see ChoiceType#selectedChoice()
      * @see ChoiceType#input()
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
-     * @see ChoiceInputType#choicePickerXPath(PlatformType)
+     * @see ChoiceInputType#choicePickerXP(PlatformType)
      * @see ChoiceHelperType#rxa_type(WebElement, String...)
      * @see BooleanUtil#toTrue(Object)
      */
@@ -38,7 +38,7 @@ public interface IOSChoiceSelectorType extends BaseChoiceSelectorType<IOSDriver<
         Platform platform = Platform.IOS;
         ChoiceInputType input = param.input();
         int index = input.scrollablePickerIndex(platform);
-        XPath xPath = input.choicePickerXPath(platform);
+        XPath xPath = input.choicePickerXP(platform);
 
         return ENGINE
             .rxe_withXPath(xPath)

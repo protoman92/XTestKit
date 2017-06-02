@@ -8,15 +8,14 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.capability.BaseCapability;
-import org.swiften.xtestkit.base.capability.type.CapType;
-import org.swiften.xtestkit.base.element.choice.BaseChoiceSelectorType;
+import org.swiften.xtestkit.base.capability.type.CapabilityType;
+import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.base.element.date.BaseDateActionType;
+import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.search.BaseSearchActionType;
+import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.type.*;
@@ -36,7 +35,7 @@ import static org.testng.Assert.*;
 @SuppressWarnings("MessageMissingOnTestNGAssertion")
 public final class EngineTest implements EngineErrorType, TestMessageType {
     @NotNull private final WebDriver DRIVER;
-    @NotNull private final CapType CAPABILITY;
+    @NotNull private final CapabilityType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -47,7 +46,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
         ENGINE = spy(new MockEngine.Builder().build());
 
         /* Return this capability when we cann ENGINE.capabilityType() */
-        CAPABILITY = mock(CapType.class);
+        CAPABILITY = mock(CapabilityType.class);
 
         /* Return this processRunner when we call ENGINE.processRunner() */
         PROCESS_RUNNER = spy(new ProcessRunner());
@@ -186,7 +185,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
     }
     //endregion
 
-    interface TestDateActionType extends BaseDateActionType<WebDriver> {
+    interface TestDateActionType extends DateActionType<WebDriver> {
         @NotNull
         @Override
         default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
@@ -236,7 +235,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
         }
     }
 
-    interface TestChoiceSelectorType extends BaseChoiceSelectorType<WebDriver> {
+    interface TestChoiceSelectorType extends ChoiceSelectorType<WebDriver> {
         @NotNull
         @Override
         default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
@@ -251,7 +250,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
         }
     }
 
-    interface TestSearchActionType extends BaseSearchActionType {
+    interface TestSearchActionType extends SearchActionType {
         @NotNull
         @Override
         default Flowable<WebElement> rxe_textClear() {

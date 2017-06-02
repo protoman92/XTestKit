@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to click on {@link WebElement}.
  */
-public interface BaseClickActionType {
+public interface ClickActionType {
     /**
      * Perform a click action for {@link WebElement}.
      * @param element {@link WebElement} instance.
@@ -56,7 +56,7 @@ public interface BaseClickActionType {
     @NotNull
     default Flowable<WebElement> rxa_click(@NotNull final WebElement ELEMENT,
                                            @NotNull RepeatType param) {
-        final BaseClickActionType THIS = this;
+        final ClickActionType THIS = this;
         final long DELAY = param.delay();
         final TimeUnit UNIT = TimeUnit.MILLISECONDS;
 

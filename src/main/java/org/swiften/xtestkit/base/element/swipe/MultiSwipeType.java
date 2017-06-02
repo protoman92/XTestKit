@@ -16,7 +16,7 @@ import org.swiften.xtestkit.base.element.general.Unidirection;
  * This interface provides methods to repeatedly scroll a scrollable view so
  * long as a condition is satisfied.
  */
-public interface SwipeRepeatType extends SwipeOnceType {
+public interface MultiSwipeType extends SwipeOnceType {
     /**
      * Get the swipe ratio that is used to dampen the swipe gesture in order
      * to avoid a full unidirectional swipe.
@@ -60,7 +60,7 @@ public interface SwipeRepeatType extends SwipeOnceType {
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeRecursively() {
-        final SwipeRepeatType THIS = this;
+        final MultiSwipeType THIS = this;
 
         return rxv_shouldKeepSwiping()
             .switchIfEmpty(RxUtil.error())

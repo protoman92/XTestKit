@@ -11,13 +11,13 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.general.Unidirection;
 
 /**
- * This interface is a more specialized version of {@link SwipeRepeatType}.
+ * This interface is a more specialized version of {@link MultiSwipeType}.
  * It gets the first and last sub-elements of the scrollable view, compare
  * their values with a pre-determined value to get the swipe
  * {@link Unidirection}.
  * Note that this interface is very opinionated.
  */
-public interface SwipeRepeatComparisonType extends SwipeRepeatType {
+public interface MultiSwipeComparisonType extends MultiSwipeType {
     /**
      * Get the default {@link Unidirection} in case we cannot detect the
      * direction from the sub-elements.
@@ -119,7 +119,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rxe_scrollViewChildItems()
      */
     @NotNull
-    default Flowable<Long> rx_scrollViewChildCount() {
+    default Flowable<Long> rxe_scrollViewChildCount() {
         return rxe_scrollViewChildItems().count().toFlowable();
     }
 
@@ -127,15 +127,15 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * Get the number of initial swipes to perform to get as close to the
      * target value as possible.
      * @return {@link Flowable} instance.
-     * @see #rx_scrollViewChildCount()
+     * @see #rxe_scrollViewChildCount()
      * @see #rx_firstVisibleChild()
      */
     @NotNull
     default Flowable<Integer> rx_initialSwipesCount() {
-        final SwipeRepeatComparisonType THIS = this;
+        final MultiSwipeComparisonType THIS = this;
 
         return Flowable.zip(
-            THIS.rx_scrollViewChildCount()
+            THIS.rxe_scrollViewChildCount()
                 .doOnNext(a -> LogUtil.printfThread("%d child items", a))
                 .map(Long::doubleValue),
 
@@ -180,7 +180,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         final int TIMES,
         final int CURRENT_INDEX
     ) {
-        final SwipeRepeatComparisonType THIS = this;
+        final MultiSwipeComparisonType THIS = this;
 
         if (CURRENT_INDEX < TIMES) {
             return THIS.rxa_swipeElement(ELEMENT, DIRECTION, 0.8d)
@@ -217,7 +217,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
 
     /**
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatType#rx_directionToSwipe()
+     * @see MultiSwipeType#rx_directionToSwipe()
      * @see #rxe_scrollViewChildItems()
      * @see #rxa_compareFirst(WebElement)
      * @see #rxa_compareLast(WebElement)
@@ -229,7 +229,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     @Override
     @SuppressWarnings("unchecked")
     default Flowable<Unidirection> rx_directionToSwipe() {
-        final SwipeRepeatComparisonType THIS = this;
+        final MultiSwipeComparisonType THIS = this;
 
         return Flowable
             .mergeArray(
@@ -249,14 +249,14 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * Override this method to perform initial swipes.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatType#rxa_performAction()
+     * @see MultiSwipeType#rxa_performAction()
      * @see #rx_initialSwipes()
      * @see #rxa_swipeRecursively()
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxa_performAction() {
-        final SwipeRepeatComparisonType THIS = this;
+        final MultiSwipeComparisonType THIS = this;
         return rx_initialSwipes().flatMap(a -> THIS.rxa_swipeRecursively());
     }
 }

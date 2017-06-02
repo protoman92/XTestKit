@@ -23,8 +23,8 @@
         <classes>
             <class name="org.swiften.xtestkit.base.BaseActionTest"/>
             <class name="org.swiften.xtestkit.base.BaseSwipeActionTest"/>
-            <class name="org.swiften.xtestkit.base.SwipeRepeatTest"/>
-            <class name="org.swiften.xtestkit.base.SwipeRepeatComparisonTest"/>
+            <class name="org.swiften.xtestkit.base.MultiSwipeTest"/>
+            <class name="org.swiften.xtestkit.base.MultiSwipeComparisonTest"/>
         </classes>
     </test>
 

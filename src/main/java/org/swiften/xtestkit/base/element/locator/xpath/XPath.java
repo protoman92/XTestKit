@@ -23,32 +23,25 @@ import java.util.stream.Collectors;
 public class XPath {
     @NotNull public static XPath EMPTY = new XPath();
 
+    /**
+     * Get {@link XPath} instance.
+     * @param platform {@link PlatformType} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder(@NotNull PlatformType platform) {
         return new Builder(platform);
     }
 
-    @NotNull private String className;
     @NotNull private String attribute;
 
     protected XPath() {
         attribute = "";
-        className = "*";
     }
 
     @NotNull
     public String toString() {
-        return fullAttribute();
-    }
-
-    /**
-     * Get {@link #className}.
-     * @return {@link String} value.
-     * @see #className
-     */
-    @NotNull
-    public String className() {
-        return className;
+        return attribute();
     }
 
     /**
@@ -62,23 +55,21 @@ public class XPath {
     }
 
     /**
-     * Get {@link #attribute} prefixed by path slashes.
-     * @return {@link String} value.
-     * @see #attribute()
-     * @see #className()
-     */
-    @NotNull
-    public String fullAttribute() {
-        return String.format("//%s%s", className(), attribute());
-    }
-
-    /**
      * Append an attribute to the end of the current {@link #attribute}.
      * @param attr {@link String} value.
      * @see #attribute
      */
     void appendAttribute(@NotNull String attr) {
         attribute = String.format("%s[%s]", attribute, attr);
+    }
+
+    /**
+     * Append a class name to the beginning of the current {@link #attribute}.
+     * @param cls {@link String} value.
+     * @see #attribute
+     */
+    void appendClassName(@NotNull String cls) {
+        attribute = String.format("//%s%s", cls, attribute);
     }
 
     /**
@@ -115,16 +106,24 @@ public class XPath {
         }
 
         /**
-         * Set the {@link #className} value to prefix the {@link XPath}
-         * {@link #attribute}.
+         * Set the class name for the current {@link #attribute}.
          * @param className {@link String} value.
          * @return The current {@link Builder} instance.
-         * @see #className
+         * @see XPath#appendClassName(String)
          */
         @NotNull
-        public Builder setClass(@NotNull String className) {
-            XPATH.className = className;
+        public Builder addClass(@NotNull String className) {
+            XPATH.appendClassName(className);
             return this;
+        }
+
+        /**
+         * Set class name to "*", representing any class.
+         * @return The current {@link Builder} instance.
+         * @see #addClass(String)
+         */
+        public Builder addAnyClass() {
+            return addClass("*");
         }
 
         /**
@@ -132,8 +131,8 @@ public class XPath {
          * it will override all other elements.
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
-         * @see #attribute
          * @see XPath#attribute()
+         * @see #attribute
          */
         @NotNull
         public Builder withXPath(@NotNull XPath xPath) {
@@ -149,11 +148,11 @@ public class XPath {
          * @return The current {@link Builder} instance.
          * @see #attribute
          * @see XPath#appendChildAttribute(String)
-         * @see XPath#fullAttribute()
+         * @see XPath#attribute()
          */
         @NotNull
         public Builder addChildXPath(@NotNull XPath xPath) {
-            XPATH.appendChildAttribute(xPath.fullAttribute());
+            XPATH.appendChildAttribute(xPath.attribute());
             return this;
         }
 

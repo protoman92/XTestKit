@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.element.choice;
  */
 
 import org.openqa.selenium.WebDriver;
-import org.swiften.xtestkit.base.element.click.BaseClickActionType;
+import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
@@ -18,7 +18,7 @@ import org.swiften.xtestkit.base.type.PlatformContainerType;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface ChoiceHelperType<D extends WebDriver> extends
-    BaseClickActionType,
+    ClickActionType,
     BaseElementPropertyType,
     BaseInputActionType<D>,
     BaseLocatorType<D>,

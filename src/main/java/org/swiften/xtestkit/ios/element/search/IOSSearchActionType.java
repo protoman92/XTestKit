@@ -9,7 +9,7 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.search.BaseSearchActionType;
+import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 
 /**
@@ -17,13 +17,13 @@ import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
  * {@link org.swiften.xtestkit.mobile.Platform#IOS}.
  */
 public interface IOSSearchActionType extends
-    BaseSearchActionType,
+    SearchActionType,
     BaseLocatorType<IOSDriver<IOSElement>>
 {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see BaseSearchActionType#rxe_textClear()
+     * @see SearchActionType#rxe_textClear()
      * @see #rxe_containsID(String...)
      */
     @NotNull

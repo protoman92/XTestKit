@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Use this enum with
- * {@link BaseDateActionType}
+ * {@link DateActionType}
  * for better code reuse.
  */
 public enum CalendarUnit implements AttributeType<Integer>, BaseErrorType {

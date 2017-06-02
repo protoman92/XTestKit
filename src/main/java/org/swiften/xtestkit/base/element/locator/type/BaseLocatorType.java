@@ -162,15 +162,20 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see #platform()
-     * @see XPath.Builder#ofClass(XPath.OfClass)
      * @see P#value()
+     * @see XPath.Builder#addAnyClass()
+     * @see XPath.Builder#ofClass(XPath.OfClass)
      * @see #noElementsWithClass(String)
+     * @see #platform()
      */
     @NotNull
     default <P extends OfClassType & RetryType> ByXPath ofClassQuery(@NotNull P param) {
         PlatformType platform = platform();
-        XPath xPath = XPath.builder(platform).ofClass(param).build();
+
+        XPath xPath = XPath.builder(platform)
+            .ofClass(param)
+            .addAnyClass()
+            .build();
 
         return ByXPath.builder()
             .withXPath(xPath)
@@ -225,14 +230,18 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see #platform()
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsID(XPath.ContainsID)
      * @see #noElementsWithId(String)
+     * @see #platform()
      */
     @NotNull
     default <P extends ContainsIDType & RetryType> ByXPath containsIDQuery(@NotNull P param) {
-        PlatformType platform = platform();
-        XPath xPath = XPath.builder(platform).containsID(param).build();
+        XPath xPath = XPath
+            .builder(platform())
+            .containsID(param)
+            .addAnyClass()
+            .build();
 
         return ByXPath.builder()
             .withXPath(xPath)
@@ -287,12 +296,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see #platform()
-     * @see #localizer()
      * @see org.swiften.javautilities.localizer.LocalizerType#localize(String)
      * @see P#value()
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#hasText(String)
+     * @see #localizer()
      * @see #noElementsWithText(String)
+     * @see #platform()
      */
     @NotNull
     default <P extends StringType & RetryType> ByXPath hasTextQuery(@NotNull P param) {
@@ -305,7 +315,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .shouldIgnoreCase(param)
             .build();
 
-        XPath xPath = XPath.builder(platform).hasText(newParam).build();
+        XPath xPath = XPath.builder(platform)
+            .hasText(newParam)
+            .addAnyClass()
+            .build();
 
         return ByXPath.builder()
             .withXPath(xPath)
@@ -362,13 +375,14 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see #platform()
-     * @see P#value()
-     * @see #localizer()
      * @see org.swiften.javautilities.localizer.LocalizerType#localize(String)
+     * @see P#value()
      * @see TextParam.Builder#withText(String)
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsText(StringType)
+     * @see #localizer()
      * @see #noElementsContainingText(String)
+     * @see #platform()
      */
     @NotNull
     default <P extends StringType & RetryType> ByXPath containsTextQuery(@NotNull P param) {
@@ -381,7 +395,10 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .shouldIgnoreCase(param)
             .build();
 
-        XPath xPath = XPath.builder(platform).containsText(newParam).build();
+        XPath xPath = XPath.builder(platform)
+            .containsText(newParam)
+            .addAnyClass()
+            .build();
 
         return ByXPath.builder()
             .withXPath(xPath)
@@ -496,12 +513,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
-     * @see #platformView()
-     * @see #platform()
-     * @see #rxe_byXPath(ByXPath...)
-     * @see PlatformView#isEditable()
-     * @see XPath.Builder#ofClass(String)
      * @see ByXPath.Builder#withXPath(XPath)
+     * @see PlatformView#isEditable()
+     * @see XPath.Builder#addAnyClass()
+     * @see XPath.Builder#ofClass(String)
+     * @see #platform()
+     * @see #platformView()
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     default Flowable<WebElement> rxe_editables() {
@@ -510,7 +528,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
 
         ByXPath[] queries = views.stream()
             .map(BaseViewType::className)
-            .map(a -> XPath.builder(PLATFORM).ofClass(a).build())
+            .map(a -> XPath.builder(PLATFORM).ofClass(a).addAnyClass().build())
             .map(a -> ByXPath.builder().withXPath(a).build())
             .toArray(ByXPath[]::new);
 

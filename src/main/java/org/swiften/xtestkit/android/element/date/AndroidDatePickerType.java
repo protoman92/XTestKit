@@ -9,6 +9,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.android.AndroidView;
 
@@ -32,19 +33,34 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     CALENDAR,
 
     /**
-     * This is only relevant for {@link CalendarUnit#HOUR} and
-     * {@link CalendarUnit#MINUTE}.
+     * Only relevant for {@link CalendarUnit#HOUR} and {@link CalendarUnit#MINUTE}.
      */
-    hh_mm_SPINNER;
+    hh_mm_TIMEPICKER;
 
     /**
      * Check if the current {@link AndroidDatePickerType} is calendar-based.
      * @return {@link Boolean} value.
      * @see #CALENDAR
      */
-    public boolean isCalendarMode() {
+    public boolean isCalendar() {
         switch (this) {
             case CALENDAR:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Check if the current {@link AndroidDatePickerType} is
+     * {@link AndroidView.ViewType#NUMBERPICKER}-based.
+     * @return {@link Boolean} value.
+     * @see #hh_mm_TIMEPICKER
+     */
+    public boolean isNumberPicker() {
+        switch (this) {
+            case hh_mm_TIMEPICKER:
                 return true;
 
             default:
@@ -57,7 +73,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Platform#ANDROID
      */
     @NotNull
-    public XPath.Builder xPathBuilder() {
+    public XPath.Builder xpathBuilder() {
         return XPath.builder(Platform.ANDROID);
     }
 
@@ -100,20 +116,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerType#pickerViewXPath(CalendarUnit)
+     * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see AndroidView.ViewType#LISTVIEW
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#ofClass(String)
      * @see #CALENDAR
-     * @see #xPathBuilder()
+     * @see #xpathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    public XPath pickerViewXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerViewXP(@NotNull CalendarUnit unit) {
         switch (this) {
             case CALENDAR:
                 String cls = AndroidView.ViewType.LISTVIEW.className();
-                return xPathBuilder().ofClass(cls).build();
+                return xpathBuilder().ofClass(cls).addAnyClass().build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -124,7 +141,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the display view {@link XPath} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see #dayDisplayViewXPath()
+     * @see #dayDisplayViewXP()
      * @see #monthDisplayViewXPath()
      * @see #yearDisplayViewXPath()
      * @see #NOT_AVAILABLE
@@ -134,7 +151,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     public XPath unitLabelViewXPath(@NotNull CalendarUnit unit) {
         switch (unit) {
             case DAY:
-                return dayDisplayViewXPath();
+                return dayDisplayViewXP();
 
             case MONTH:
                 return monthDisplayViewXPath();
@@ -150,16 +167,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see #xPathBuilder()
-     * @see DatePickerType#targetItemXPath(CalendarUnit)
+     * @see DatePickerType#targetItemXP(CalendarUnit)
+     * @see CalendarUnit#YEAR
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsID(String)
+     * @see #xpathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public XPath targetItemXPath(@NotNull CalendarUnit unit) {
+    public XPath targetItemXP(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
-                return xPathBuilder().containsID("month_text_view").build();
+                return xpathBuilder()
+                    .containsID("month_text_view")
+                    .addAnyClass()
+                    .build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -169,19 +191,22 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerType#pickerItemXPath(CalendarUnit)
-     * @see XPath.Builder#containsID(String)
+     * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see AndroidView.ViewType#TEXTVIEW
+     * @see XPath.Builder#addAnyClass()
+     * @see XPath.Builder#containsID(String)
+     * @see XPath.Builder#ofClass(String)
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    public XPath pickerItemXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerItemXP(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
-                return xPathBuilder()
+                return xpathBuilder()
                     .containsID("month_text_view")
                     .ofClass(AndroidView.ViewType.TEXTVIEW.className())
+                    .addAnyClass()
                     .build();
 
             default:
@@ -192,45 +217,54 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the day display view {@link XPath}.
      * @return {@link XPath} instance.
+     * @see AndroidView.ViewType#TEXTVIEW
+     * @see BaseViewType#className()
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsID(String)
      * @see XPath.Builder#ofClass(String)
-     * @see AndroidView.ViewType#TEXTVIEW
      */
     @NotNull
-    private XPath dayDisplayViewXPath() {
-        return xPathBuilder()
+    private XPath dayDisplayViewXP() {
+        return xpathBuilder()
             .containsID("date_picker_day")
             .ofClass(AndroidView.ViewType.TEXTVIEW.className())
+            .addAnyClass()
             .build();
     }
 
     /**
      * Get the month display view {@link XPath}.
      * @return {@link XPath} instance.
+     * @see AndroidView.ViewType#TEXTVIEW
+     * @see BaseViewType#className()
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsID(String)
      * @see XPath.Builder#ofClass(String)
-     * @see AndroidView.ViewType#TEXTVIEW
      */
     @NotNull
     private XPath monthDisplayViewXPath() {
-        return xPathBuilder()
+        return xpathBuilder()
             .containsID("date_picker_month")
             .ofClass(AndroidView.ViewType.TEXTVIEW.className())
+            .addAnyClass()
             .build();
     }
 
     /**
      * * Get the year display view {@link XPath}.
      * @return {@link XPath} instance.
+     * @see AndroidView.ViewType#TEXTVIEW
+     * @see BaseViewType#className()
+     * @see XPath.Builder#addAnyClass()
      * @see XPath.Builder#containsID(String)
      * @see XPath.Builder#ofClass(String)
-     * @see AndroidView.ViewType#TEXTVIEW
      */
     @NotNull
     private XPath yearDisplayViewXPath() {
-        return xPathBuilder()
+        return xpathBuilder()
             .containsID("date_picker_year")
             .ofClass(AndroidView.ViewType.TEXTVIEW.className())
+            .addAnyClass()
             .build();
     }
 
@@ -288,13 +322,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#HOUR} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_SPINNER
+     * @see #hh_mm_TIMEPICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String hourFormat() {
         switch (this) {
-            case hh_mm_SPINNER:
+            case hh_mm_TIMEPICKER:
                 return "hh";
 
             default:
@@ -305,13 +339,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#MINUTE} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_SPINNER
+     * @see #hh_mm_TIMEPICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String minuteFormat() {
         switch (this) {
-            case hh_mm_SPINNER:
+            case hh_mm_TIMEPICKER:
                 return "mm";
 
             default:

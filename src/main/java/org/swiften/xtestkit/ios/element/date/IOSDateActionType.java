@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.xtestkit.base.element.date.BaseDateActionType;
+import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateType;
@@ -23,7 +23,7 @@ import java.util.Date;
  * Created by haipham on 22/5/17.
  */
 public interface IOSDateActionType extends
-    BaseDateActionType<IOSDriver<IOSElement>>,
+    DateActionType<IOSDriver<IOSElement>>,
     BaseInputActionType<IOSDriver<IOSElement>>,
     LocalizerContainerType
 {
@@ -32,7 +32,7 @@ public interface IOSDateActionType extends
      * We do nothing here because the date picker is displayed by default.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see BaseDateActionType#rxa_openPicker(DateType, CalendarUnit)
+     * @see DateActionType#rxa_openPicker(DateType, CalendarUnit)
      */
     @NotNull
     @Override
@@ -46,7 +46,7 @@ public interface IOSDateActionType extends
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see BaseDateActionType#rxa_select(DateType, CalendarUnit)
+     * @see DateActionType#rxa_select(DateType, CalendarUnit)
      * @see BooleanUtil#toTrue(Object)
      * @see #valueString(DateType, CalendarUnit)
      * @see #rxa_type(WebElement, String...)
@@ -73,7 +73,7 @@ public interface IOSDateActionType extends
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see BaseDateActionType#valueString(DateType, CalendarUnit)
+     * @see DateActionType#valueString(DateType, CalendarUnit)
      * @see CalendarUnit#DAY
      * @see CalendarUnit#isDay()
      * @see CalendarUnit#isMonth()
@@ -101,6 +101,6 @@ public interface IOSDateActionType extends
             }
         }
 
-        return BaseDateActionType.super.displayString(param, unit);
+        return DateActionType.super.displayString(param, unit);
     }
 }

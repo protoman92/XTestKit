@@ -7,7 +7,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkit.base.element.swipe.SwipeRepeatComparisonType;
+import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.type.PlatformType;
@@ -28,7 +28,7 @@ import org.swiften.xtestkit.base.type.PlatformType;
  * It is only on {@link org.swiften.xtestkit.mobile.Platform#ANDROID} that
  * we have difficulty.
  */
-public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonType {
+public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     /**
      * Get the associated {@link ChoiceHelperType} instance.
      * @return {@link ChoiceHelperType} instance.
@@ -50,11 +50,11 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Get the {@link ByXPath} query to locate the target choice item.
      * @return {@link ByXPath} instance.
-     * @see #helper()
-     * @see #choiceInput()
-     * @see #selectedChoice()
+     * @see AndroidChoiceInputType#androidTargetChoiceItemXP(String)
      * @see ChoiceHelperType#platform()
-     * @see AndroidChoiceInputType#androidTargetChoiceItemXPath(String)
+     * @see #choiceInput()
+     * @see #helper()
+     * @see #selectedChoice()
      */
     @NotNull
     default ByXPath targetChoiceItemQuery() {
@@ -62,7 +62,7 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
         String stringValue = selectedChoice();
 
         return ByXPath.builder()
-            .withXPath(input.androidTargetChoiceItemXPath(stringValue))
+            .withXPath(input.androidTargetChoiceItemXP(stringValue))
             .withRetries(1)
             .build();
     }
@@ -71,9 +71,9 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Get the selected choice's numeric representation to compare against
      * other choice items.
      * @return {@link Double} value.
+     * @see ChoiceInputType#numericValue(String)
      * @see #choiceInput()
      * @see #selectedChoice()
-     * @see ChoiceInputType#numericValue(String)
      */
     default double selectedChoiceNumericValue() {
         ChoiceInputType input = choiceInput();
@@ -85,12 +85,12 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Override this method to provide default implementation.
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxe_initialDifference(WebElement)
+     * @see MultiSwipeComparisonType#rxe_initialDifference(WebElement)
+     * @see ChoiceHelperType#getText(WebElement)
+     * @see ChoiceInputType#numericValue(String)
      * @see #helper()
      * @see #choiceInput()
      * @see #selectedChoiceNumericValue()
-     * @see ChoiceHelperType#getText(WebElement)
-     * @see ChoiceInputType#numericValue(String)
      */
     @NotNull
     @Override
@@ -110,12 +110,12 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Override this method to provide default implementation.
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxa_compareFirst(WebElement)
-     * @see #helper()
-     * @see #choiceInput()
-     * @see #selectedChoiceNumericValue()
+     * @see MultiSwipeComparisonType#rxa_compareFirst(WebElement)
      * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
+     * @see #choiceInput()
+     * @see #helper()
+     * @see #selectedChoiceNumericValue()
      */
     @NotNull
     @Override
@@ -134,12 +134,12 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Override this method to provide default implementation.
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxa_compareLast(WebElement)
-     * @see #helper()
-     * @see #choiceInput()
-     * @see #selectedChoiceNumericValue()
+     * @see MultiSwipeComparisonType#rxa_compareLast(WebElement)
      * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
+     * @see #choiceInput()
+     * @see #helper()
+     * @see #selectedChoiceNumericValue()
      */
     @NotNull
     @Override
@@ -157,11 +157,11 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxe_scrollViewChildItems()
-     * @see #helper()
-     * @see #choiceInput()
+     * @see MultiSwipeComparisonType#rxe_scrollViewChildItems()
      * @see ChoiceHelperType#platform()
      * @see ChoiceInputType#choicePickerItemXPath(PlatformType)
+     * @see #choiceInput()
+     * @see #helper()
      */
     @NotNull
     @Override
@@ -175,9 +175,9 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Get the target choice item we are interested in.
      * @return {@link Flowable} instance.
+     * @see ChoiceHelperType#rxe_byXPath(ByXPath...)
      * @see #helper()
      * @see #targetChoiceItemQuery()
-     * @see ChoiceHelperType#rxe_byXPath(ByXPath...)
      */
     @NotNull
     default Flowable<WebElement> rxe_targetChoiceItem() {
@@ -189,11 +189,11 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxe_elementSwipeRatio()
-     * @see #helper()
-     * @see #choiceInput()
+     * @see MultiSwipeComparisonType#rxe_elementSwipeRatio()
      * @see ChoiceHelperType#platform()
      * @see ChoiceInputType#swipeRatio(PlatformType)
+     * @see #choiceInput()
+     * @see #helper()
      */
     @NotNull
     @Override
@@ -218,18 +218,18 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxv_shouldKeepSwiping()
+     * @see MultiSwipeComparisonType#rxv_shouldKeepSwiping()
+     * @see BooleanUtil#toTrue(Object)
+     * @see ChoiceHelperType#getText(WebElement)
      * @see #helper()
      * @see #selectedChoice()
      * @see #targetChoiceItemQuery()
      * @see #rxa_targetItemLocated(WebElement)
-     * @see ChoiceHelperType#getText(WebElement)
-     * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxv_shouldKeepSwiping() {
-        final AndroidChoiceSwipeSelectorType THIS = this;
+        final AndroidChoiceMultiSwipeType THIS = this;
         final ChoiceHelperType<?> ENGINE = helper();
         final String STR_VALUE = selectedChoice();
 
@@ -242,11 +242,11 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxe_scrollableViewToSwipe()
+     * @see MultiSwipeComparisonType#rxe_scrollableViewToSwipe()
+     * @see ChoiceHelperType#platform()
+     * @see ChoiceInputType#choicePickerXP(PlatformType)
      * @see #helper()
      * @see #choiceInput()
-     * @see ChoiceHelperType#platform()
-     * @see ChoiceInputType#choicePickerXPath(PlatformType)
      */
     @NotNull
     @Override
@@ -256,7 +256,7 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
         PlatformType platform = engine.platform();
 
         return engine
-            .rxe_withXPath(input.choicePickerXPath(platform))
+            .rxe_withXPath(input.choicePickerXP(platform))
             .firstElement()
             .toFlowable();
     }
@@ -265,9 +265,9 @@ public interface AndroidChoiceSwipeSelectorType extends SwipeRepeatComparisonTyp
      * Override this method to provide default implementation.
      * @param param {@link SwipeType} instance.
      * @return {@link Flowable} instance.
-     * @see SwipeRepeatComparisonType#rxa_swipeOnce(SwipeType)
-     * @see #helper()
+     * @see MultiSwipeComparisonType#rxa_swipeOnce(SwipeType)
      * @see ChoiceHelperType#rxa_swipeOnce(SwipeType)
+     * @see #helper()
      */
     @NotNull
     @Override

@@ -33,8 +33,8 @@ public interface IOSChoiceInputType {
      * @see IOSView.ViewType#UI_PICKERWHEEL
      */
     @NotNull
-    default XPath iOSScrollViewPickerXPath() {
+    default XPath iOSScrollViewPickerXP() {
         String cls = IOSView.ViewType.UI_PICKERWHEEL.className();
-        return XPath.builder(Platform.IOS).setClass(cls).build();
+        return XPath.builder(Platform.IOS).addClass(cls).build();
     }
 }

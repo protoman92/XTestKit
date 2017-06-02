@@ -1,8 +1,9 @@
 package org.swiften.xtestkit.scrap;
 
-import org.mockito.Mockito;
 import org.swiften.javautilities.log.LogUtil;
-import org.testng.TestNG;
+import org.swiften.xtestkit.android.element.date.AndroidDatePickerType;
+import org.swiften.xtestkit.android.element.date.UnitNumberPickerWrapper;
+import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by haipham on 5/17/17.
  */
+@SuppressWarnings("UndeclaredTests")
 public final class ScrapTest {
     @Test
     @SuppressWarnings("EmptyCatchBlock")

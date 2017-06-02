@@ -6,6 +6,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -180,37 +181,38 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerType#pickerViewXPath(CalendarUnit)
+     * @see DatePickerType#pickerViewXP(CalendarUnit)
+     * @see BaseViewType#className()
      * @see Platform#IOS
      * @see IOSView.ViewType#UI_PICKERWHEEL
-     * @see XPath.Builder#setClass(String)
+     * @see XPath.Builder#addClass(String)
      * @see XPath.Builder#setIndex(int)
      * @see #pickerViewIndex(CalendarUnit)
      */
     @NotNull
     @Override
-    public XPath pickerViewXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerViewXP(@NotNull CalendarUnit unit) {
         Platform platform = Platform.IOS;
         String cls = IOSView.ViewType.UI_PICKERWHEEL.className();
 
         /* Add one because XPath index is 1-based */
         int index = pickerViewIndex(unit) + 1;
-        return XPath.builder(platform).setClass(cls).setIndex(index).build();
+        return XPath.builder(platform).addClass(cls).setIndex(index).build();
     }
 
     /**
-     * We reuse {@link #pickerViewXPath(CalendarUnit)} because the picker
+     * We reuse {@link #pickerViewXP(CalendarUnit)} because the picker
      * wheel displays the text itself. We can use {@link WebElement#getText()}
      * to extract it.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#unitLabelViewXPath(CalendarUnit)
-     * @see #pickerViewXPath(CalendarUnit)
+     * @see #pickerViewXP(CalendarUnit)
      */
     @NotNull
     @Override
     public XPath unitLabelViewXPath(@NotNull CalendarUnit unit) {
-        return pickerViewXPath(unit);
+        return pickerViewXP(unit);
     }
 
     /**
@@ -219,13 +221,13 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * elements.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerType#targetItemXPath(CalendarUnit)
+     * @see DatePickerType#targetItemXP(CalendarUnit)
      * @see Platform#IOS
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    public XPath targetItemXPath(@NotNull CalendarUnit unit) {
+    public XPath targetItemXP(@NotNull CalendarUnit unit) {
         throw new RuntimeException(NOT_AVAILABLE);
     }
 
@@ -235,12 +237,12 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * elements.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
-     * @see DatePickerType#pickerItemXPath(CalendarUnit)
+     * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    public XPath pickerItemXPath(@NotNull CalendarUnit unit) {
+    public XPath pickerItemXP(@NotNull CalendarUnit unit) {
         throw new RuntimeException(NOT_AVAILABLE);
     }
 

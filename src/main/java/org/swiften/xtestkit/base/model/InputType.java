@@ -21,5 +21,5 @@ public interface InputType {
      * @return {@link XPath} value.
      */
     @NotNull
-    XPath inputViewXPath(@NotNull PlatformType platform);
+    XPath inputViewXP(@NotNull PlatformType platform);
 }

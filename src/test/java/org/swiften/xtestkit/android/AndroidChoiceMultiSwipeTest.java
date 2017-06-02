@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
-import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -28,7 +28,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by haipham on 5/24/17.
  */
-public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelectorType {
+public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType {
     private static final int ITEM_COUNT = 100;
     private static final int ITEM_PER_PAGE = 15;
 
@@ -39,7 +39,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
     }
 
     @NotNull private final Random RAND;
-    @NotNull private final AndroidChoiceSwipeSelectorType SELECTOR;
+    @NotNull private final AndroidChoiceMultiSwipeType SELECTOR;
     @NotNull private final Engine<?> ENGINE;
     @NotNull private final PlatformType PLATFORM;
     @NotNull private final List<ChoiceInputItem> ITEMS;
@@ -95,7 +95,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
     public Unidirection firstElementDirection() {
         LogUtil.println("First direction");
         currentIndex -= 1;
-        return AndroidChoiceSwipeSelectorType.super.firstElementDirection();
+        return AndroidChoiceMultiSwipeType.super.firstElementDirection();
     }
 
     @NotNull
@@ -103,7 +103,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
     public Unidirection lastElementDirection() {
         LogUtil.println("Last direction");
         currentIndex += 1;
-        return AndroidChoiceSwipeSelectorType.super.lastElementDirection();
+        return AndroidChoiceMultiSwipeType.super.lastElementDirection();
     }
 
     @NotNull
@@ -194,7 +194,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
 
         @NotNull
         @Override
-        public XPath choicePickerXPath(@NotNull PlatformType platform) {
+        public XPath choicePickerXP(@NotNull PlatformType platform) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
@@ -206,19 +206,19 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
 
         @NotNull
         @Override
-        public XPath androidChoicePickerXPath() {
+        public XPath androidChoicePickerXP() {
             return CHOICE_LIST_VIEW_XPATH;
         }
 
         @NotNull
         @Override
-        public XPath androidChoicePickerItemXPath() {
+        public XPath androidChoicePickerItemXP() {
             return XPath.builder(Platform.ANDROID).build();
         }
 
         @NotNull
         @Override
-        public XPath androidTargetChoiceItemXPath(@NotNull String selected) {
+        public XPath androidTargetChoiceItemXP(@NotNull String selected) {
             return XPath.builder(Platform.ANDROID).build();
         }
     }

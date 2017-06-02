@@ -14,11 +14,13 @@ import org.swiften.javautilities.rx.RxUtil;
  * {@link ChoiceMode}.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseChoiceSelectorType<D extends WebDriver> extends ChoiceHelperType<D> {
+public interface ChoiceSelectorType<D extends WebDriver> extends ChoiceHelperType<D> {
     /**
      * Select a choice using {@link ChoiceType}.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
+     * @see ChoiceMode#GENERAL
+     * @see ChoiceType#mode()
      * @see #rxa_selectGeneralChoice(ChoiceType)
      * @see #NOT_AVAILABLE
      */
@@ -31,7 +33,7 @@ public interface BaseChoiceSelectorType<D extends WebDriver> extends ChoiceHelpe
                 return rxa_selectGeneralChoice(param);
 
             default:
-                return RxUtil.error(NOT_AVAILABLE);
+                throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 

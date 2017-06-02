@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.model;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 
@@ -34,15 +34,15 @@ public interface ChoiceInputType {
      * @return {@link XPath} value.
      */
     @NotNull
-    XPath choicePickerXPath(@NotNull PlatformType platform);
+    XPath choicePickerXP(@NotNull PlatformType platform);
 
     /**
      * Get the item {@link XPath} for each item found in the
      * {@link org.openqa.selenium.WebElement} whose {@link XPath} is the
-     * {@link #choicePickerXPath(PlatformType)}.
+     * {@link #choicePickerXP(PlatformType)}.
      * @param platform {@link PlatformType} instance.
      * @return {@link XPath} instance.
-     * @see #choicePickerXPath(PlatformType)
+     * @see #choicePickerXP(PlatformType)
      */
     @NotNull XPath choicePickerItemXPath(@NotNull PlatformType platform);
 
@@ -71,7 +71,7 @@ public interface ChoiceInputType {
 
     /**
      * Get the swipe ratio to use with
-     * {@link AndroidChoiceSwipeSelectorType#rxe_elementSwipeRatio()}.
+     * {@link AndroidChoiceMultiSwipeType#rxe_elementSwipeRatio()}.
      * @param platform {@link PlatformType} instance.
      * @return {@link Double} value.
      */

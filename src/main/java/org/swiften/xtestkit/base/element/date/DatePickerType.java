@@ -26,7 +26,7 @@ public interface DatePickerType {
      * @return {@link XPath} instance.
      */
     @NotNull
-    XPath pickerViewXPath(@NotNull CalendarUnit unit);
+    XPath pickerViewXP(@NotNull CalendarUnit unit);
 
     /**
      * Get the display view {@link XPath} that corresponds to
@@ -45,7 +45,7 @@ public interface DatePickerType {
      * @return {@link XPath} instance.
      */
     @NotNull
-    XPath targetItemXPath(@NotNull CalendarUnit unit);
+    XPath targetItemXP(@NotNull CalendarUnit unit);
 
     /**
      * Get the list view's item {@link XPath} that corresponds to a
@@ -54,5 +54,5 @@ public interface DatePickerType {
      * @return {@link XPath} instance.
      */
     @NotNull
-    XPath pickerItemXPath(@NotNull CalendarUnit unit);
+    XPath pickerItemXP(@NotNull CalendarUnit unit);
 }

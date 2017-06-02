@@ -5,7 +5,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.capability.type.CapType;
+import org.swiften.xtestkit.base.capability.type.CapabilityType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -184,7 +184,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @param <T> Generics parameter that extends {@link MobileEngine}.
      */
     public static class Builder<T extends MobileEngine> extends Engine.Builder<T> {
-        protected Builder(@NotNull T engine, @NotNull CapType.Builder capBuilder) {
+        protected Builder(@NotNull T engine, @NotNull CapabilityType.Builder capBuilder) {
             super(engine, capBuilder);
         }
 

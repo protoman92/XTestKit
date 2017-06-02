@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
  */
 
 /**
- * This interface provides errors for {@link BaseDateActionType}.
+ * This interface provides errors for {@link DateActionType}.
  */
-public interface BaseDateErrorType {
+public interface DateActionErrorType {
     @NotNull String DATES_NOT_MATCHED = "Dates do not match";
 }

@@ -21,6 +21,7 @@ public class AndroidView extends PlatformView {
         LISTVIEW,
         NUMBERPICKER,
         TEXTVIEW,
+        TIMEPICKER,
         SWITCH;
 
         @NotNull
@@ -50,6 +51,9 @@ public class AndroidView extends PlatformView {
 
                 case TEXTVIEW:
                     return "android.widget.TextView";
+
+                case TIMEPICKER:
+                    return "android.widget.TimePicker";
 
                 default:
                     throw new RuntimeException();

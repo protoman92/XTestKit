@@ -10,23 +10,22 @@ import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.capability.type.CapType;
-import org.swiften.xtestkit.base.element.checkbox.BaseCheckBoxActionType;
-import org.swiften.xtestkit.base.element.choice.BaseChoiceSelectorType;
-import org.swiften.xtestkit.base.element.click.BaseClickActionType;
-import org.swiften.xtestkit.base.element.date.BaseDateActionType;
+import org.swiften.xtestkit.base.capability.type.CapabilityType;
+import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
+import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
+import org.swiften.xtestkit.base.element.click.ClickActionType;
+import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.password.BasePasswordActionType;
-import org.swiften.xtestkit.base.element.search.BaseSearchActionType;
+import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.BaseTapType;
@@ -53,17 +52,17 @@ import java.util.Map;
 public abstract class Engine<D extends WebDriver> implements
     AppiumHandlerType,
     BaseActionType<D>,
-    BaseClickActionType,
-    BaseChoiceSelectorType<D>,
-    BaseCheckBoxActionType,
-    BaseDateActionType<D>,
+    ClickActionType,
+    ChoiceSelectorType<D>,
+    CheckBoxActionType,
+    DateActionType<D>,
     BaseElementPropertyType,
     BaseInputActionType<D>,
     BaseLocatorType<D>,
     BaseKeyboardActionType<D>,
     BasePasswordActionType<D>,
     BaseTapType<D>,
-    BaseSearchActionType,
+    SearchActionType,
     BaseSwipeType<D>,
     BaseSwitcherActionType,
     BaseVisibilityActionType<D>,
@@ -75,7 +74,8 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private D driver;
-    @Nullable CapType capability;
+    @Nullable
+    CapabilityType capability;
     @Nullable private WeakReference<LocalizerType> localizer;
 
     @NotNull String browserName;
@@ -91,7 +91,7 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     //region Getters
-    public CapType capabilityType() {
+    public CapabilityType capabilityType() {
         if (ObjectUtil.nonNull(capability)) {
             return capability;
         } else {
@@ -370,7 +370,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = new HashMap<String,Object>();
-        capabilities.put(CapabilityType.BROWSER_NAME, browserName());
+        capabilities.put(org.openqa.selenium.remote.CapabilityType.BROWSER_NAME, browserName());
         return capabilities;
     }
     //endregion
@@ -386,17 +386,17 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Start the Appium driver. If {@link CapType#isComplete(Map)}
+     * Start the Appium driver. If {@link CapabilityType#isComplete(Map)}
      * returns false, throw {@link Exception}.
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see CapType#isComplete(Map)
-     * @see CapType#distill(Map)
+     * @see CapabilityType#isComplete(Map)
+     * @see CapabilityType#distill(Map)
      * @see #driver(String, DesiredCapabilities)
      */
     @NotNull
     public Flowable<Boolean> rxa_startDriver(@NotNull final RetryType PARAM) {
-        CapType capType = capabilityType();
+        CapabilityType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
         if (capType.isComplete(caps)) {
@@ -439,10 +439,10 @@ public abstract class Engine<D extends WebDriver> implements
      */
     public static abstract class Builder<T extends Engine> {
         @NotNull final protected T ENGINE;
-        @NotNull final protected CapType.Builder CAP_BUILDER;
+        @NotNull final protected CapabilityType.Builder CAP_BUILDER;
 
         protected Builder(@NotNull T engine,
-                          @NotNull CapType.Builder capBuilder) {
+                          @NotNull CapabilityType.Builder capBuilder) {
             ENGINE = engine;
             CAP_BUILDER = capBuilder;
         }
@@ -476,7 +476,7 @@ public abstract class Engine<D extends WebDriver> implements
          * which test environment to be used.
          * @param mode {@link TestMode} instance.
          * @return The current {@link Builder} instance.
-         * @see CapType.Builder#withTestMode(TestMode)
+         * @see CapabilityType.Builder#withTestMode(TestMode)
          */
         @NotNull
         public Builder<T> withTestMode(@NotNull TestMode mode) {

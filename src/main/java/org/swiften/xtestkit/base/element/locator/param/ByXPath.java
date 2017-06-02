@@ -71,10 +71,10 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          * The {@link XPath} query that will be used to search for elements.
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
-         * @see XPath#fullAttribute()
+         * @see XPath#appendClassName(String)
          */
         public Builder withXPath(@NotNull XPath xPath) {
-            PARAM.xPath = xPath.fullAttribute();
+            PARAM.xPath = xPath.attribute();
             return this;
         }
 
