@@ -68,7 +68,7 @@ public class AndroidEngine extends
     @NotNull String appActivity;
     @Nullable AndroidInstance androidInstance;
 
-    AndroidEngine() {
+    protected AndroidEngine() {
         super();
         ADB_HANDLER = new ADBHandler();
         PLATFORM_VIEW = new AndroidView();
@@ -347,12 +347,23 @@ public class AndroidEngine extends
     /**
      * Builder for {@link AndroidEngine}.
      */
-    public static final class Builder extends MobileEngine.Builder<AndroidEngine> {
+    public static class Builder extends MobileEngine.Builder<AndroidEngine> {
         @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
 
-        Builder() {
-            super(new AndroidEngine(), AndroidCapability.builder());
+        /**
+         * Override this constructor to provide custom {@link AndroidEngine}
+         * and {@link AndroidCapability.Builder} instances.
+         * @param engine {@link AndroidEngine} instance.
+         * @param builder {@link AndroidCapability.Builder} instance.
+         */
+        protected Builder(@NotNull AndroidEngine engine,
+                          @NotNull AndroidCapability.Builder builder) {
+            super(engine, builder);
             ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
+        }
+
+        Builder() {
+            this(new AndroidEngine(), AndroidCapability.builder());
         }
 
         /**

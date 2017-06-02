@@ -58,7 +58,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
 
     private long launchTimeout;
 
-    IOSEngine() {
+    protected IOSEngine() {
         XC_HANDLER = new XCRunHandler();
         PLATFORM_VIEW = new IOSView();
         launchTimeout = simulatorLaunchTimeout();
@@ -201,9 +201,20 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Builder class for {@link IOSEngine}.
      */
-    public static final class Builder extends MobileEngine.Builder<IOSEngine> {
+    public static class Builder extends MobileEngine.Builder<IOSEngine> {
+        /**
+         * Override this constructor to provide custom {@link IOSEngine}
+         * and {@link IOSCapability.Builder} instances.
+         * @param engine {@link IOSEngine} instance.
+         * @param builder {@link IOSCapability.Builder} instance.
+         */
+        protected Builder(@NotNull IOSEngine engine,
+                          @NotNull IOSCapability.Builder builder) {
+            super(engine, builder);
+        }
+
         Builder() {
-            super(new IOSEngine(), IOSCapability.builder());
+            this(new IOSEngine(), IOSCapability.builder());
         }
 
         /**

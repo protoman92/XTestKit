@@ -15,12 +15,11 @@ import org.swiften.xtestkit.base.element.date.BaseDateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.search.BaseSearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.tap.TapType;
-import org.swiften.xtestkit.base.type.EngineErrorType;
-import org.swiften.xtestkit.base.type.PlatformContainerType;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.util.TestMessageType;
@@ -252,11 +251,21 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
         }
     }
 
+    interface TestSearchActionType extends BaseSearchActionType {
+        @NotNull
+        @Override
+        default Flowable<WebElement> rxe_textClear() {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
     static class MockEngine extends Engine<WebDriver> implements
         TestChoiceSelectorType,
         TestDateActionType,
+        TestLocatorType,
         TestKeyboardActionType,
-        TestPlatformContainerType
+        TestPlatformContainerType,
+        TestSearchActionType
     {
         @NotNull
         @Override

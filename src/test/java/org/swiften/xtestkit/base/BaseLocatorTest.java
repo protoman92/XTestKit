@@ -14,6 +14,7 @@ import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.param.TextParam;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
+import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkit.model.MockPlatform;
 import org.swiften.xtestkit.model.MockPlatformView;
 import org.swiften.xtestkit.base.type.BaseViewType;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 5/8/17.
  */
-public class BaseLocatorTest implements BaseLocatorType {
+public class BaseLocatorTest implements TestLocatorType {
     @NotNull private final BaseLocatorTest ENGINE;
     @NotNull private final WebDriver DRIVER;
     @NotNull private final Localizer LOCALIZER;
