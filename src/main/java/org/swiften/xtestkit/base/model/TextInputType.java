@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.base.model;
 
 /**
  * Created by haipham on 5/13/17.

@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.base.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.xpath.Attribute;

@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.element.general.Unidirection;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.model.AndroidChoiceInputType;
+import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -108,7 +108,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
 
     @NotNull
     @Override
-    public Flowable<?> rx_onTargetItemLocated(@NotNull WebElement element) {
+    public Flowable<?> rxa_targetItemLocated(@NotNull WebElement element) {
         assertEquals(element.getText(), selectedChoice());
         return Flowable.just(true);
     }
@@ -128,14 +128,14 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_scrollViewChildItems() {
+    public Flowable<WebElement> rxe_scrollViewChildItems() {
         List<ChoiceInputItem> items = currentItemRange();
         return Flowable.fromIterable(items).map(a -> a.ELEMENT);
     }
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_targetChoiceItem() {
+    public Flowable<WebElement> rxe_targetChoiceItem() {
         List<ChoiceInputItem> items = currentItemRange();
         final String SELECTED = selectedChoice();
 
@@ -148,7 +148,7 @@ public class AndroidChoiceSwipeSelectorTest implements AndroidChoiceSwipeSelecto
 
     @NotNull
     @Override
-    public Engine<?> engine() {
+    public Engine<?> helper() {
         return ENGINE;
     }
 

@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.android.model;
 
 /**
  * Created by haipham on 25/5/17.
@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
 
 /**
  * This interface provides choice-related methods for

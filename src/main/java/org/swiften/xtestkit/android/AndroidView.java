@@ -17,9 +17,9 @@ public class AndroidView extends PlatformView {
         BUTTON,
         EDITTEXT,
         IMAGEVIEW,
-        LINEAR_LAYOUT,
-        LIST_VIEW,
-        NUMBER_PICKER,
+        LINEARLAYOUT,
+        LISTVIEW,
+        NUMBERPICKER,
         TEXTVIEW,
         SWITCH;
 
@@ -36,13 +36,13 @@ public class AndroidView extends PlatformView {
                 case IMAGEVIEW:
                     return "android.widget.ImageView";
 
-                case LINEAR_LAYOUT:
+                case LINEARLAYOUT:
                     return "android.widget.LinearLayout";
 
-                case LIST_VIEW:
+                case LISTVIEW:
                     return "android.widget.ListView";
 
-                case NUMBER_PICKER:
+                case NUMBERPICKER:
                     return "android.widget.NumberPicker";
 
                 case SWITCH:
@@ -61,7 +61,7 @@ public class AndroidView extends PlatformView {
             switch (this) {
                 case BUTTON:
                 case EDITTEXT:
-                case LINEAR_LAYOUT:
+                case LINEARLAYOUT:
                 case TEXTVIEW:
                     return true;
 

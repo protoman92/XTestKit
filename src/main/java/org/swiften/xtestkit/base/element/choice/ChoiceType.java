@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.element.choice;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.model.ChoiceInputType;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
 
 /**
  * Parameter object for {@link BaseChoiceSelectorType#rxa_selectChoice(ChoiceType)}

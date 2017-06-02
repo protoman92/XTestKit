@@ -9,7 +9,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.choice.BaseChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.model.ChoiceInputType;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;

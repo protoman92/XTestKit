@@ -26,6 +26,29 @@ public enum CalendarUnit implements AttributeType<Integer>, BaseErrorType {
     PERIOD;
 
     /**
+     * Get the {@link CalendarUnit} involved in date selection.
+     * @return {@link List} of {@link CalendarUnit}.
+     * @see #YEAR
+     * @see #MONTH
+     * @see #DAY
+     */
+    @NotNull
+    public static List<CalendarUnit> datePickerUnits() {
+        return Arrays.asList(YEAR, MONTH, DAY);
+    }
+
+    /**
+     * Get the {@link CalendarUnit} involved in time selection.
+     * @return {@link List} of {@link CalendarUnit}.
+     * @see #HOUR
+     * @see #MINUTE
+     */
+    @NotNull
+    public static List<CalendarUnit> timePickerUnits() {
+        return Arrays.asList(HOUR, MINUTE);
+    }
+
+    /**
      * Check if the current {@link CalendarUnit} is {@link #DAY}.
      * @return {@link Boolean} value.
      * @see #DAY
@@ -77,18 +100,6 @@ public enum CalendarUnit implements AttributeType<Integer>, BaseErrorType {
      */
     public boolean isPeriod() {
         return equals(PERIOD);
-    }
-
-    /**
-     * Get the {@link CalendarUnit} involved in date selection.
-     * @return {@link List} of {@link CalendarUnit}.
-     * @see #YEAR
-     * @see #MONTH
-     * @see #DAY
-     */
-    @NotNull
-    public static List<CalendarUnit> datePickerUnits() {
-        return Arrays.asList(YEAR, MONTH, DAY);
     }
 
     /**

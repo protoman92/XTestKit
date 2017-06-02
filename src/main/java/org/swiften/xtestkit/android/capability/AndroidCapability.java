@@ -79,7 +79,7 @@ public class AndroidCapability extends MobileCapability {
     /**
      * Builder class for {@link IOSCapability}.
      */
-    public static final class Builder extends MobileCapability.Builder<AndroidCapability> {
+    public static class Builder extends MobileCapability.Builder<AndroidCapability> {
         Builder() {
             super(new AndroidCapability());
         }

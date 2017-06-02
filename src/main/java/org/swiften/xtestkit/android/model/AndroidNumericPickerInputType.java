@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.android.model;
 
 /**
  * Created by haipham on 23/5/17.
@@ -14,7 +14,7 @@ import org.swiften.xtestkit.mobile.Platform;
 /**
  * This interface provides input methods for
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} number pickers.
- * Use this with {@link AndroidView.ViewType#NUMBER_PICKER}.
+ * Use this with {@link AndroidView.ViewType#NUMBERPICKER}.
  */
 public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
@@ -37,7 +37,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
      * @see Platform#ANDROID
-     * @see AndroidView.ViewType#NUMBER_PICKER
+     * @see AndroidView.ViewType#NUMBERPICKER
      * @see #androidScrollablePickerIndex()
      * @see XPath.Builder#atIndex(int)
      * @see XPath.Builder#ofClass(String)
@@ -45,7 +45,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     @NotNull
     @Override
     default XPath androidChoicePickerXPath() {
-        String cls = AndroidView.ViewType.NUMBER_PICKER.className();
+        String cls = AndroidView.ViewType.NUMBERPICKER.className();
         return XPath.builder(Platform.ANDROID).setClass(cls).build();
     }
 
@@ -53,7 +53,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
      * @see Platform#ANDROID
-     * @see AndroidView.ViewType#NUMBER_PICKER
+     * @see AndroidView.ViewType#NUMBERPICKER
      * @see #androidScrollablePickerIndex()
      * @see XPath.Builder#containsID(String)
      * @see XPath.Builder#ofInstance(int)
@@ -65,7 +65,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
         XPath cxp = XPath.builder(platform).build();
 
         return XPath.builder(platform)
-            .setClass(AndroidView.ViewType.NUMBER_PICKER.className())
+            .setClass(AndroidView.ViewType.NUMBERPICKER.className())
             .ofInstance(androidScrollablePickerIndex())
             .addChildXPath(cxp)
             .build();

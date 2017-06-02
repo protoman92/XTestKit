@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.base.model;
 
 /**
  * Created by haipham on 18/5/17.
@@ -44,8 +44,7 @@ public interface ChoiceInputType {
      * @return {@link XPath} instance.
      * @see #choicePickerXPath(PlatformType)
      */
-    @NotNull
-    XPath choicePickerItemXPath(@NotNull PlatformType platform);
+    @NotNull XPath choicePickerItemXPath(@NotNull PlatformType platform);
 
     /**
      * Convert {@link String} value into a numeric value. This is done so that

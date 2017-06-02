@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceSwipeSelectorType;
-import org.swiften.xtestkit.model.ChoiceInputType;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
@@ -33,7 +33,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
     /**
      * @return {@link Engine} instance.
-     * @see AndroidChoiceSwipeSelectorType#engine()
+     * @see AndroidChoiceSwipeSelectorType#helper()
      * @see ObjectUtil#nonNull(Object)
      * @see #mode
      * @see #NOT_AVAILABLE

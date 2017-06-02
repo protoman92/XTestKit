@@ -40,7 +40,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Integer> rx_initialDifference(@NotNull WebElement element) {
+    public Flowable<Integer> rxe_initialDifference(@NotNull WebElement element) {
         return Flowable.just(INITIAL_SWIPE);
     }
 
@@ -52,7 +52,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<WebElement> rx_scrollViewChildItems() {
+    public Flowable<WebElement> rxe_scrollViewChildItems() {
         return Flowable.just(ELEMENT);
     }
 
@@ -70,13 +70,13 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_compareLast(@NotNull WebElement element) {
+    public Flowable<Boolean> rxa_compareLast(@NotNull WebElement element) {
         return Flowable.just(true);
     }
 
     @NotNull
     @Override
-    public Flowable<Boolean> rx_compareFirst(@NotNull WebElement element) {
+    public Flowable<Boolean> rxa_compareFirst(@NotNull WebElement element) {
         return Flowable.just(true);
     }
 
@@ -126,7 +126,7 @@ public class SwipeRepeatComparisonTest implements SwipeRepeatComparisonType {
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_lastVisibleChild();
 
         verify(ENGINE, times(TOTAL_SWIPE * 2 + INITIAL_SWIPE - 1))
-            .rx_scrollViewChildItems();
+            .rxe_scrollViewChildItems();
 
         verify(ENGINE, times(TOTAL_SWIPE + INITIAL_SWIPE - 1))
             .rxa_swipeElement(any(), any(), anyDouble());

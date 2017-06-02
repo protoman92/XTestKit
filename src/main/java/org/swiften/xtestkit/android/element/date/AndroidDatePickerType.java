@@ -22,29 +22,29 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * {@link org.swiften.xtestkit.base.element.general.Unidirection#UP_DOWN}
      * and {@link org.swiften.xtestkit.base.element.general.Unidirection#DOWN_UP}
      * to navigate it.
-     */
-    VERTICAL_CALENDAR,
-
-    /**
+     *
      * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_23} and
      * above, the calendar is scrolled horizontally. Therefore, we need to use
      * {@link org.swiften.xtestkit.base.element.general.Unidirection#LEFT_RIGHT}
      * and {@link org.swiften.xtestkit.base.element.general.Unidirection#RIGHT_LEFT}
      * to navigate it.
      */
-    HORIZONTAL_CALENDAR,
-    SPINNER;
+    CALENDAR,
+
+    /**
+     * This is only relevant for {@link CalendarUnit#HOUR} and
+     * {@link CalendarUnit#MINUTE}.
+     */
+    hh_mm_SPINNER;
 
     /**
      * Check if the current {@link AndroidDatePickerType} is calendar-based.
      * @return {@link Boolean} value.
-     * @see #HORIZONTAL_CALENDAR
-     * @see #VERTICAL_CALENDAR
+     * @see #CALENDAR
      */
     public boolean isCalendarMode() {
         switch (this) {
-            case HORIZONTAL_CALENDAR:
-            case VERTICAL_CALENDAR:
+            case CALENDAR:
                 return true;
 
             default:
@@ -68,6 +68,8 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see #dayFormat()
      * @see #monthFormat()
      * @see #yearFormat()
+     * @see #hourFormat()
+     * @see #minuteFormat()
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -83,29 +85,43 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
             case YEAR:
                 return yearFormat();
 
+            case HOUR:
+                return hourFormat();
+
+            case MINUTE:
+                return minuteFormat();
+
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXPath(CalendarUnit)
-     * @see #xPathBuilder()
-     * @see AndroidView.ViewType#LIST_VIEW
+     * @see AndroidView.ViewType#LISTVIEW
      * @see XPath.Builder#ofClass(String)
+     * @see #CALENDAR
+     * @see #xPathBuilder()
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath pickerViewXPath(@NotNull CalendarUnit unit) {
-        String cls = AndroidView.ViewType.LIST_VIEW.className();
-        return xPathBuilder().ofClass(cls).build();
+        switch (this) {
+            case CALENDAR:
+                String cls = AndroidView.ViewType.LISTVIEW.className();
+                return xPathBuilder().ofClass(cls).build();
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 
     /**
-     * Get the display view {@link XPath} that corresponds to
-     * {@link CalendarUnit}.
+     * Get the display view {@link XPath} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see #dayDisplayViewXPath()
@@ -219,29 +235,87 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the format the day is formatted in.
+     * Get the format {@link CalendarUnit#DAY} is formatted in.
      * @return {@link String} value.
+     * @see #CALENDAR
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     private String dayFormat() {
-        return "d";
+        switch (this) {
+            case CALENDAR:
+                return "d";
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 
     /**
-     * Get the format the month is formatted in.
+     * Get the format {@link CalendarUnit#MONTH} is formatted in.
      * @return {@link String} value.
+     * @see #CALENDAR
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     private String monthFormat() {
-        return "MMM";
+        switch (this) {
+            case CALENDAR:
+                return "MMM";
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 
     /**
-     * Get the format the year is formatted in.
+     * Get the format {@link CalendarUnit#YEAR} is formatted in.
      * @return {@link String} value.
+     * @see #CALENDAR
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     private String yearFormat() {
-        return "yyyy";
+        switch (this) {
+            case CALENDAR:
+                return "yyyy";
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Get the format {@link CalendarUnit#HOUR} is formatted in.
+     * @return {@link String} value.
+     * @see #hh_mm_SPINNER
+     * @see #NOT_AVAILABLE
+     */
+    @NotNull
+    private String hourFormat() {
+        switch (this) {
+            case hh_mm_SPINNER:
+                return "hh";
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Get the format {@link CalendarUnit#MINUTE} is formatted in.
+     * @return {@link String} value.
+     * @see #hh_mm_SPINNER
+     * @see #NOT_AVAILABLE
+     */
+    @NotNull
+    private String minuteFormat() {
+        switch (this) {
+            case hh_mm_SPINNER:
+                return "mm";
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 }

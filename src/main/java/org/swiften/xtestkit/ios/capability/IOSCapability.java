@@ -121,7 +121,7 @@ public class IOSCapability extends MobileCapability {
     /**
      * Builder class for {@link IOSCapability}.
      */
-    public static final class Builder extends MobileCapability.Builder<IOSCapability> {
+    public static class Builder extends MobileCapability.Builder<IOSCapability> {
         Builder() {
             super(new IOSCapability());
         }

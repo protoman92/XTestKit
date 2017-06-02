@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.model;
+package org.swiften.xtestkit.ios.model;
 
 /**
  * Created by haipham on 25/5/17.
@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
 
 /**
  * This interface provides choice-related methods for
@@ -15,7 +16,7 @@ import org.swiften.xtestkit.mobile.Platform;
  * {@link ChoiceInputType} by providing default implementations that can be
  * used in a variety of situations.
  */
-public interface IOSChoiceInputType extends ChoiceInputType {
+public interface IOSChoiceInputType {
     /**
      * Get the index associated with the {@link org.openqa.selenium.WebElement}
      * with which we are selecting a value for the current input.

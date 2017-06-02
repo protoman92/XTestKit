@@ -57,7 +57,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<?> rx_compareFirst(@NotNull WebElement element);
+    Flowable<?> rxa_compareFirst(@NotNull WebElement element);
 
     /**
      * Get the result of the comparison with the last sub-element. If this
@@ -68,7 +68,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<?> rx_compareLast(@NotNull WebElement element);
+    Flowable<?> rxa_compareLast(@NotNull WebElement element);
 
     /**
      * Get the total number of item differences between the first
@@ -78,7 +78,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Integer> rx_initialDifference(@NotNull WebElement first);
+    Flowable<Integer> rxe_initialDifference(@NotNull WebElement first);
 
     /**
      * Get all visible sub-elements in the current scrollable view emitted
@@ -86,41 +86,41 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<WebElement> rx_scrollViewChildItems();
+    Flowable<WebElement> rxe_scrollViewChildItems();
 
     /**
      * Get the first visible {@link WebElement} in the scrollable view emitted
      * be {@link #rxe_scrollableViewToSwipe()}.
      * @return {@link Flowable} instance.
-     * @see #rx_scrollViewChildItems()
+     * @see #rxe_scrollViewChildItems()
      */
     @NotNull
     default Flowable<WebElement> rx_firstVisibleChild() {
-        return rx_scrollViewChildItems().firstElement().toFlowable();
+        return rxe_scrollViewChildItems().firstElement().toFlowable();
     }
 
     /**
      * Get the last visible {@link WebElement} in the scrollable view emitted
      * be {@link #rxe_scrollableViewToSwipe()}.
      * @return {@link Flowable} instance.
-     * @see #rx_scrollViewChildItems()
+     * @see #rxe_scrollViewChildItems()
      */
     @NotNull
     default Flowable<WebElement> rx_lastVisibleChild() {
-        return rx_scrollViewChildItems().lastElement().toFlowable();
+        return rxe_scrollViewChildItems().lastElement().toFlowable();
     }
 
     /**
      * Get the number of child items currently visible on the screen. Override
      * this method to provide custom values for when the number of child
-     * items returned by {@link #rx_scrollViewChildItems()} does not correctly
+     * items returned by {@link #rxe_scrollViewChildItems()} does not correctly
      * reflect the actual number of visible {@link WebElement}.
      * @return {@link Flowable} instance.
-     * @see #rx_scrollViewChildItems()
+     * @see #rxe_scrollViewChildItems()
      */
     @NotNull
     default Flowable<Long> rx_scrollViewChildCount() {
-        return rx_scrollViewChildItems().count().toFlowable();
+        return rxe_scrollViewChildItems().count().toFlowable();
     }
 
     /**
@@ -140,7 +140,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
                 .map(Long::doubleValue),
 
             THIS.rx_firstVisibleChild()
-                .flatMap(THIS::rx_initialDifference)
+                .flatMap(THIS::rxe_initialDifference)
                 .doOnNext(a -> LogUtil.printfThread("%d initial difference", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
@@ -202,7 +202,7 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
      * @see #rxe_scrollableViewToSwipe()
      * @see #rx_directionToSwipe()
      * @see #rx_firstVisibleChild()
-     * @see #rx_initialDifference(WebElement)
+     * @see #rxe_initialDifference(WebElement)
      * @see #rx_initialSwipes(WebElement, Unidirection, int)
      */
     @NotNull
@@ -218,9 +218,9 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
     /**
      * @return {@link Flowable} instance.
      * @see SwipeRepeatType#rx_directionToSwipe()
-     * @see #rx_scrollViewChildItems()
-     * @see #rx_compareFirst(WebElement)
-     * @see #rx_compareLast(WebElement)
+     * @see #rxe_scrollViewChildItems()
+     * @see #rxa_compareFirst(WebElement)
+     * @see #rxa_compareLast(WebElement)
      * @see #firstElementDirection()
      * @see #lastElementDirection()
      * @see #defaultDirection()
@@ -234,11 +234,11 @@ public interface SwipeRepeatComparisonType extends SwipeRepeatType {
         return Flowable
             .mergeArray(
                 THIS.rx_firstVisibleChild()
-                    .flatMap(THIS::rx_compareFirst)
+                    .flatMap(THIS::rxa_compareFirst)
                     .map(a -> THIS.firstElementDirection()),
 
                 THIS.rx_lastVisibleChild()
-                    .flatMap(THIS::rx_compareLast)
+                    .flatMap(THIS::rxa_compareLast)
                     .map(a -> THIS.lastElementDirection())
             )
             .firstElement()
