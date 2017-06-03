@@ -46,9 +46,8 @@ public interface NumberDatePickerType extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateActionType#rxa_select(DateType, CalendarUnit)
-     * @see ChoiceMode#GENERAL
      * @see ChoiceParam.Builder#withInput(ChoiceInputType)
-     * @see ChoiceParam.Builder#withMode(ChoiceMode)
+     * @see ChoiceParam.Builder#withGeneralMode()
      * @see ChoiceParam.Builder#withSelectedChoice(String)
      * @see DateType#datePickerType()
      * @see UnitNumberPickerWrapper.Builder#withCalendarUnit(CalendarUnit)
@@ -67,12 +66,10 @@ public interface NumberDatePickerType extends
 
         String selected = displayString(param, unit);
 
-        ChoiceType choice = ChoiceParam.builder()
+        return rxa_selectChoice(ChoiceParam.builder()
             .withInput(wrapper)
-            .withMode(ChoiceMode.GENERAL)
+            .withGeneralMode()
             .withSelectedChoice(selected)
-            .build();
-
-        return rxa_selectChoice(choice);
+            .build());
     }
 }

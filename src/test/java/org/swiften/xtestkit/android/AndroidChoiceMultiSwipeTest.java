@@ -200,7 +200,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
         @NotNull
         @Override
-        public XPath choicePickerItemXPath(@NotNull PlatformType platform) {
+        public XPath choicePickerItemXP(@NotNull PlatformType platform) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
@@ -218,7 +218,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
         @NotNull
         @Override
-        public XPath androidTargetChoiceItemXP(@NotNull String selected) {
+        public XPath androidTargetItemXP(@NotNull String selected) {
             return XPath.builder(Platform.ANDROID).build();
         }
     }

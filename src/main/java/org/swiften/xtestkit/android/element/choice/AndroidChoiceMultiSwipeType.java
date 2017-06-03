@@ -50,7 +50,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     /**
      * Get the {@link ByXPath} query to locate the target choice item.
      * @return {@link ByXPath} instance.
-     * @see AndroidChoiceInputType#androidTargetChoiceItemXP(String)
+     * @see AndroidChoiceInputType#androidTargetItemXP(String)
      * @see ChoiceHelperType#platform()
      * @see #choiceInput()
      * @see #helper()
@@ -62,7 +62,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         String stringValue = selectedChoice();
 
         return ByXPath.builder()
-            .withXPath(input.androidTargetChoiceItemXP(stringValue))
+            .withXPath(input.androidTargetItemXP(stringValue))
             .withRetries(1)
             .build();
     }
@@ -88,8 +88,9 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * @see MultiSwipeComparisonType#rxe_initialDifference(WebElement)
      * @see ChoiceHelperType#getText(WebElement)
      * @see ChoiceInputType#numericValue(String)
-     * @see #helper()
+     * @see ChoiceInputType#numericValueStep()
      * @see #choiceInput()
+     * @see #helper()
      * @see #selectedChoiceNumericValue()
      */
     @NotNull
@@ -98,11 +99,12 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         final ChoiceHelperType<?> ENGINE = helper();
         final ChoiceInputType INPUT = choiceInput();
         final double NUMERIC_VALUE = selectedChoiceNumericValue();
+        final double STEP = INPUT.numericValueStep();
 
         return Flowable.just(element)
             .map(ENGINE::getText)
             .map(INPUT::numericValue)
-            .map(a -> a - NUMERIC_VALUE)
+            .map(a -> (a - NUMERIC_VALUE) / STEP)
             .map(Double::intValue);
     }
 
@@ -159,7 +161,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxe_scrollViewChildItems()
      * @see ChoiceHelperType#platform()
-     * @see ChoiceInputType#choicePickerItemXPath(PlatformType)
+     * @see ChoiceInputType#choicePickerItemXP(PlatformType)
      * @see #choiceInput()
      * @see #helper()
      */
@@ -169,7 +171,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         ChoiceHelperType<?> engine = helper();
         ChoiceInputType input = choiceInput();
         PlatformType platform = engine.platform();
-        return engine.rxe_withXPath(input.choicePickerItemXPath(platform));
+        return engine.rxe_withXPath(input.choicePickerItemXP(platform));
     }
 
     /**
@@ -209,6 +211,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      *                selected choice.
      * @return {@link Flowable} instance.
      * @see ChoiceHelperType#rxa_click(WebElement)
+     * @see #helper()
      */
     @NotNull
     default Flowable<?> rxa_targetItemLocated(@NotNull WebElement element) {

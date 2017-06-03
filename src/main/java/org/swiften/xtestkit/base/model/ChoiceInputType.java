@@ -33,8 +33,7 @@ public interface ChoiceInputType {
      * @param platform {@link PlatformType} instance.
      * @return {@link XPath} value.
      */
-    @NotNull
-    XPath choicePickerXP(@NotNull PlatformType platform);
+    @NotNull XPath choicePickerXP(@NotNull PlatformType platform);
 
     /**
      * Get the item {@link XPath} for each item found in the
@@ -44,7 +43,7 @@ public interface ChoiceInputType {
      * @return {@link XPath} instance.
      * @see #choicePickerXP(PlatformType)
      */
-    @NotNull XPath choicePickerItemXPath(@NotNull PlatformType platform);
+    @NotNull XPath choicePickerItemXP(@NotNull PlatformType platform);
 
     /**
      * Convert {@link String} value into a numeric value. This is done so that
@@ -77,5 +76,14 @@ public interface ChoiceInputType {
      */
     default double swipeRatio(@NotNull PlatformType platform) {
         return 0.7d;
+    }
+
+    /**
+     * Get the step value which represents the difference between two
+     * consecutive {@link #numericValue(String)}.
+     * @return {@link Double} value.
+     */
+    default double numericValueStep() {
+        return 1;
     }
 }

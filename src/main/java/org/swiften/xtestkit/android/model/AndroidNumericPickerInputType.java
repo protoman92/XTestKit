@@ -32,7 +32,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      */
     @NotNull
     @Override
-    default XPath androidTargetChoiceItemXP(@NotNull String selected) {
+    default XPath androidTargetItemXP(@NotNull String selected) {
         return XPath.builder(Platform.ANDROID)
             .ofClass(AndroidView.ViewType.EDITTEXT.className())
             .hasText(selected)
@@ -72,12 +72,12 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     @NotNull
     @Override
     default XPath androidChoicePickerXP() {
-        Platform p = Platform.ANDROID;
+        Platform platform = Platform.ANDROID;
         String cls = AndroidView.ViewType.NUMBERPICKER.className();
 
-        return XPath.builder(p)
+        return XPath.builder(platform)
             .withXPath(androidChoicePickerParentXP())
-            .addChildXPath(XPath.builder(p).addClass(cls).build())
+            .addChildXPath(XPath.builder(platform).addClass(cls).build())
             .build();
     }
 

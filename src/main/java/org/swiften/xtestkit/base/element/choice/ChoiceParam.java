@@ -106,6 +106,17 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
         }
 
         /**
+         * Set {@link #mode} to be {@link ChoiceMode#GENERAL}.
+         * @return The current {@link Builder} instance.
+         * @see ChoiceMode#GENERAL
+         * @see #withMode(ChoiceMode)
+         */
+        @NotNull
+        public Builder withGeneralMode() {
+            return withMode(ChoiceMode.GENERAL);
+        }
+
+        /**
          * Set the {@link #input} instance.
          * @param input {@link ChoiceInputType} instance.
          * @return The current {@link Builder} instance.

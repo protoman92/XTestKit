@@ -97,12 +97,12 @@ public class UnitNumberPickerWrapper implements
      * Override this method to provide default implementation.
      * @param platform {@link PlatformType} instance.
      * @return {@link XPath} instance.
-     * @see ChoiceInputType#choicePickerItemXPath(PlatformType)
+     * @see ChoiceInputType#choicePickerItemXP(PlatformType)
      * @see #androidChoicePickerItemXP()
      */
     @NotNull
     @Override
-    public XPath choicePickerItemXPath(@NotNull PlatformType platform) {
+    public XPath choicePickerItemXP(@NotNull PlatformType platform) {
         return androidChoicePickerItemXP();
     }
 
