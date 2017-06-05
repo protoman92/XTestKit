@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.capability.MobileCapability;
 
 import java.util.*;

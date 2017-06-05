@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.capability.BaseCapability;
-import org.swiften.xtestkit.base.capability.type.CapabilityType;
+import org.swiften.xtestkit.base.capability.CapabilityType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.DateActionType;

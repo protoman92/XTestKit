@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.model;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -76,7 +76,7 @@ public interface ChoiceInputType {
      * @return {@link Double} value.
      */
     default double swipeRatio(@NotNull PlatformType platform) {
-        return 0.7d;
+        return 1d;
     }
 
     /**

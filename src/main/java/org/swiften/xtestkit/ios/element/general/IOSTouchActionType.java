@@ -5,7 +5,7 @@ import io.appium.java_client.TouchAction;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileTouchActionType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 
 import java.time.Duration;
 

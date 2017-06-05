@@ -8,7 +8,7 @@ import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 
 /**
  * Provide {@link Platform#IOS} {@link BaseViewType}

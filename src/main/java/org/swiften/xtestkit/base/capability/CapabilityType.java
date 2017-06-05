@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.capability.type;
+package org.swiften.xtestkit.base.capability;
 
 /**
  * Created by haipham on 5/7/17.
@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.capability.type;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 

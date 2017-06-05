@@ -7,7 +7,7 @@ package org.swiften.xtestkit.android.model;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**

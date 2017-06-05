@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.type.LocalizerContainerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;

@@ -4,7 +4,7 @@ package org.swiften.xtestkit.android.element.input;
  * Created by haipham on 5/15/17.
  */
 
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 
 /**
  * This interface provides keyboard codes that can be used on a

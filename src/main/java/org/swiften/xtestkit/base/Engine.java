@@ -16,7 +16,7 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.capability.type.CapabilityType;
+import org.swiften.xtestkit.base.capability.CapabilityType;
 import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;

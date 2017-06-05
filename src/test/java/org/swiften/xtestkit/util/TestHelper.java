@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.util;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.DataProvider;
 

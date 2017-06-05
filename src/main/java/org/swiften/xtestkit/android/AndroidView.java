@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android;
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkit.mobile.Platform;
 
 /**
  * Created by haipham on 3/20/17.
