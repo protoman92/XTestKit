@@ -46,14 +46,14 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Unidirection> rx_directionToSwipe();
+    Flowable<Unidirection> rxe_directionToSwipe();
 
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
-     * @see #rx_directionToSwipe()
+     * @see #rxe_directionToSwipe()
      * @see #rxa_swipeElement(WebElement, Unidirection, double)
      * @see #rxa_performAction()
      * @see RxUtil#error()
@@ -67,7 +67,7 @@ public interface MultiSwipeType extends SwipeOnceType {
             .onErrorResumeNext(Flowable
                 .zip(
                     rxe_scrollableViewToSwipe(),
-                    rx_directionToSwipe(),
+                    rxe_directionToSwipe(),
                     rxe_elementSwipeRatio(),
                     THIS::rxa_swipeElement
                 )
@@ -92,6 +92,16 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @param direction {@link Unidirection} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return {@link Flowable} instance.
+     * @see Dimension#getHeight()
+     * @see Dimension#getWidth()
+     * @see Point#getX()
+     * @see Point#getY()
+     * @see SwipeParam.Builder#withStartX(int)
+     * @see SwipeParam.Builder#withStartY(int)
+     * @see SwipeParam.Builder#withEndX(int)
+     * @see SwipeParam.Builder#withEndY(int)
+     * @see WebElement#getLocation()
+     * @see WebElement#getSize()
      * @see #rxa_swipeOnce(SwipeType)
      */
     @NotNull

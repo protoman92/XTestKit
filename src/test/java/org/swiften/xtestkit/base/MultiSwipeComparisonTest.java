@@ -115,15 +115,15 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
         verify(ENGINE, times(TOTAL_SWIPE)).firstElementDirection();
 //        verify(ENGINE, times(TOTAL_SWIPE)).lastElementDirection();
         verify(ENGINE).rxa_performAction();
-        verify(ENGINE).rx_initialSwipes();
-        verify(ENGINE).rx_initialSwipes(any(), any(), anyInt());
-        verify(ENGINE).rx_initialSwipesCount();
+        verify(ENGINE).rxa_swipeInitially();
+        verify(ENGINE).rxa_swipeInitially(any(), any(), anyInt());
+        verify(ENGINE).rxe_initialSwipesCount();
         verify(ENGINE, times(TOTAL_SWIPE)).rxa_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rxv_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_scrollableViewToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_directionToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE + 2)).rx_firstVisibleChild();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rx_lastVisibleChild();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_directionToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE + 2)).rxe_firstVisibleChild();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_lastVisibleChild();
 
         verify(ENGINE, times(TOTAL_SWIPE * 2 + INITIAL_SWIPE - 1))
             .rxe_scrollViewChildItems();

@@ -3,7 +3,7 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.base.type.RepeatType;
 
 import java.util.concurrent.TimeUnit;

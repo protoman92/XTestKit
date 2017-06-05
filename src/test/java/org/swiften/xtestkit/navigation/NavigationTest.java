@@ -9,8 +9,7 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
 
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

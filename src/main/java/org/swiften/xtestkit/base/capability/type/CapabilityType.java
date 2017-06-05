@@ -6,10 +6,10 @@ package org.swiften.xtestkit.base.capability.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.BaseErrorType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 import java.util.Collection;
 import java.util.Map;

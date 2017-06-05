@@ -7,7 +7,8 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -51,8 +52,8 @@ public interface ScreenType {
     /**
      * Get the animation delay when the current {@link ScreenType} is being
      * navigated to. This value should be different for each
-     * {@link org.swiften.xtestkit.base.type.PlatformType}, e.g.
-     * {@link org.swiften.xtestkit.mobile.Platform#IOS} should have a non-zero
+     * {@link PlatformType}, e.g.
+     * {@link Platform#IOS} should have a non-zero
      * return value because we cannot disable animations.
      * @param platform {@link PlatformType} instance.
      * @return {@link Long} value.

@@ -6,13 +6,13 @@ package org.swiften.xtestkit.android.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides choice-related methods for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}. It improves upon
+ * {@link Platform#ANDROID}. It improves upon
  * {@link ChoiceInputType} by providing default implementations that can be
  * used in a variety of situations.
  */

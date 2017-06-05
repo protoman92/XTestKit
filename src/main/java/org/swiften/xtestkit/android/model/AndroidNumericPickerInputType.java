@@ -5,25 +5,24 @@ package org.swiften.xtestkit.android.model;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides input methods for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} number pickers.
- * Use this with {@link AndroidView.ViewType#NUMBERPICKER}.
+ * {@link Platform#ANDROID} number pickers.
+ * Use this with {@link AndroidView.ViewType#NUMBER_PICKER}.
  */
 public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
      * @param selected {@link String} value of the selected choice.
      * @return {@link ByXPath} instance.
-     * @see AndroidView.ViewType#EDITTEXT
+     * @see AndroidView.ViewType#EDIT_TEXT
      * @see BaseViewType#className()
      * @see Platform#ANDROID
      * @see XPath.Builder#addAnyClass()
@@ -34,7 +33,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     @Override
     default XPath androidTargetItemXP(@NotNull String selected) {
         return XPath.builder(Platform.ANDROID)
-            .ofClass(AndroidView.ViewType.EDITTEXT.className())
+            .ofClass(AndroidView.ViewType.EDIT_TEXT.className())
             .hasText(selected)
             .addAnyClass()
             .build();
@@ -59,7 +58,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
      * @see AndroidChoiceInputType#androidChoicePickerXP()
-     * @see AndroidView.ViewType#NUMBERPICKER
+     * @see AndroidView.ViewType#NUMBER_PICKER
      * @see BaseViewType#className()
      * @see Platform#ANDROID
      * @see XPath.Builder#addChildXPath(XPath)
@@ -73,7 +72,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     @Override
     default XPath androidChoicePickerXP() {
         Platform platform = Platform.ANDROID;
-        String cls = AndroidView.ViewType.NUMBERPICKER.className();
+        String cls = AndroidView.ViewType.NUMBER_PICKER.className();
 
         return XPath.builder(platform)
             .withXPath(androidChoicePickerParentXP())
@@ -84,7 +83,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see AndroidView.ViewType#NUMBERPICKER
+     * @see AndroidView.ViewType#NUMBER_PICKER
      * @see BaseViewType#className()
      * @see Platform#ANDROID
      * @see XPath.Builder#addAnyClass()
@@ -100,7 +99,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
         PlatformType platform = Platform.ANDROID;
 
         XPath child = XPath.builder(platform)
-            .addClass(AndroidView.ViewType.NUMBERPICKER.className())
+            .addClass(AndroidView.ViewType.NUMBER_PICKER.className())
 
             /* Need to add 1 since XPath index is 1-based */
             .setIndex(androidScrollablePickerIndex() + 1)

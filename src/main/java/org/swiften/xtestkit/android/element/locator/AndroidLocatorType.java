@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 1/6/17.
@@ -15,7 +16,7 @@ import org.swiften.xtestkit.base.type.BaseViewType;
 
 /**
  * This interface provides methods to locate {@link org.openqa.selenium.WebElement}
- * for {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * for {@link Platform#ANDROID}.
  */
 public interface AndroidLocatorType extends BaseLocatorType<AndroidDriver<AndroidElement>> {
     /**
@@ -44,12 +45,12 @@ public interface AndroidLocatorType extends BaseLocatorType<AndroidDriver<Androi
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see BaseLocatorType#rxe_imageViews()
-     * @see AndroidView.ViewType#IMAGEVIEW
+     * @see AndroidView.ViewType#IMAGE_VIEW
      * @see BaseViewType#className()
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_imageViews() {
-        return rxe_ofClass(AndroidView.ViewType.IMAGEVIEW.className());
+        return rxe_ofClass(AndroidView.ViewType.IMAGE_VIEW.className());
     }
 }

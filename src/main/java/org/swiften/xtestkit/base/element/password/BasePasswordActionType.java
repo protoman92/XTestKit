@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 /**
  * Created by haipham on 5/15/17.
@@ -14,7 +15,7 @@ import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
 /**
  * This interface provides methods to work with password fields. These methods
  * should be individually implemented for each
- * {@link org.swiften.xtestkit.base.type.PlatformType}.
+ * {@link PlatformType}.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface BasePasswordActionType<D extends WebDriver> extends BaseElementPropertyType {

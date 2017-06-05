@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.date;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.property.base.AttributeType;
+import org.swiften.xtestkitcomponents.property.base.AttributeType;
 import org.swiften.xtestkit.base.type.RetryType;
 
 import java.text.SimpleDateFormat;

@@ -8,12 +8,12 @@ import org.swiften.xtestkit.android.model.AndroidNumericPickerInputType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * Created by haipham on 2/6/17.
@@ -108,7 +108,7 @@ public class UnitNumberPickerWrapper implements
 
     /**
      * Override this method to use default
-     * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} index.
+     * {@link Platform#ANDROID} index.
      * @param platform {@link PlatformType} instance.
      * @return {@link Integer} value.
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
@@ -124,7 +124,7 @@ public class UnitNumberPickerWrapper implements
      * @return {@link XPath} instance.
      * @see AndroidNumericPickerInputType#androidChoicePickerParentXP()
      * @see AndroidDatePickerType#hh_mm_TIMEPICKER
-     * @see AndroidView.ViewType#TIMEPICKER
+     * @see AndroidView.ViewType#TIME_PICKER
      * @see BaseViewType#className()
      * @see Platform#ANDROID
      * @see XPath.Builder#addClass(String)
@@ -135,7 +135,7 @@ public class UnitNumberPickerWrapper implements
     public XPath androidChoicePickerParentXP() {
         switch (datePickerType()) {
             case hh_mm_TIMEPICKER:
-                String cls = AndroidView.ViewType.TIMEPICKER.className();
+                String cls = AndroidView.ViewType.TIME_PICKER.className();
                 return XPath.builder(Platform.ANDROID).addClass(cls).build();
 
             default:

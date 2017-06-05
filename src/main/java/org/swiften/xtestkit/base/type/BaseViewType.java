@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 /**
  * Created by haipham on 3/20/17.

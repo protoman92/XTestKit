@@ -15,21 +15,22 @@ import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.base.element.date.*;
 import org.swiften.xtestkit.base.element.general.Unidirection;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.xpath.Attribute;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
-import org.swiften.xtestkit.base.type.PlatformType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * This interface provides common methods to handle date/time selection for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  * This specifically caters to {@link AndroidDatePickerType#isCalendar()}.
  */
 public interface CalendarDateActionType extends
@@ -185,7 +186,7 @@ public interface CalendarDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<Unidirection> rx_directionToSwipe() {
+            public Flowable<Unidirection> rxe_directionToSwipe() {
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rxe_displayedDate(PARAM)

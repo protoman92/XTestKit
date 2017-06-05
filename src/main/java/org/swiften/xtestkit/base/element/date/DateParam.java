@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.element.date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.*;
 

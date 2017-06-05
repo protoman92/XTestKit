@@ -10,7 +10,7 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * Concrete class that implements {@link ChoiceType}.

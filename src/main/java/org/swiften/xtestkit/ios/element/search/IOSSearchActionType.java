@@ -11,10 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * This interface provides methods to handle search in
- * {@link org.swiften.xtestkit.mobile.Platform#IOS}.
+ * {@link Platform#IOS}.
  */
 public interface IOSSearchActionType extends
     SearchActionType,

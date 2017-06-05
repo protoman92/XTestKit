@@ -4,9 +4,11 @@ package org.swiften.xtestkit.android.element.input;
  * Created by haipham on 5/15/17.
  */
 
+import org.swiften.xtestkitcomponents.platform.Platform;
+
 /**
  * This interface provides keyboard codes that can be used on a
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} soft keyboard.
+ * {@link Platform#ANDROID} soft keyboard.
  */
 public interface AndroidKeyboardCodeType {
     int KEYCODE_DPAD_DOWN = 20;

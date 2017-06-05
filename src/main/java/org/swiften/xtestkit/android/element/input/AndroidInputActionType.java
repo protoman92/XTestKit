@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
 import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 5/15/17.
@@ -13,7 +14,7 @@ import org.swiften.xtestkit.base.type.DriverContainerType;
 
 /**
  * This interface provides methods to handle input actions for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  */
 public interface AndroidInputActionType extends
     AndroidKeyboardCodeType,

@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.android.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * Created by haipham on 5/27/17.

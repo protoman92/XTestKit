@@ -17,7 +17,7 @@ import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

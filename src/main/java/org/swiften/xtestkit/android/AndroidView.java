@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android;
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 3/20/17.
@@ -15,13 +15,13 @@ import org.swiften.xtestkit.mobile.Platform;
 public class AndroidView extends PlatformView {
     public enum ViewType implements BaseViewType {
         BUTTON,
-        EDITTEXT,
-        IMAGEVIEW,
-        LINEARLAYOUT,
-        LISTVIEW,
-        NUMBERPICKER,
-        TEXTVIEW,
-        TIMEPICKER,
+        EDIT_TEXT,
+        IMAGE_VIEW,
+        LINEAR_LAYOUT,
+        LIST_VIEW,
+        NUMBER_PICKER,
+        TEXT_VIEW,
+        TIME_PICKER,
         SWITCH;
 
         @NotNull
@@ -31,28 +31,28 @@ public class AndroidView extends PlatformView {
                 case BUTTON:
                     return "android.widget.Button";
 
-                case EDITTEXT:
+                case EDIT_TEXT:
                     return "android.widget.EditText";
 
-                case IMAGEVIEW:
+                case IMAGE_VIEW:
                     return "android.widget.ImageView";
 
-                case LINEARLAYOUT:
+                case LINEAR_LAYOUT:
                     return "android.widget.LinearLayout";
 
-                case LISTVIEW:
+                case LIST_VIEW:
                     return "android.widget.ListView";
 
-                case NUMBERPICKER:
+                case NUMBER_PICKER:
                     return "android.widget.NumberPicker";
 
                 case SWITCH:
                     return "android.widget.Switch";
 
-                case TEXTVIEW:
+                case TEXT_VIEW:
                     return "android.widget.TextView";
 
-                case TIMEPICKER:
+                case TIME_PICKER:
                     return "android.widget.TimePicker";
 
                 default:
@@ -64,9 +64,9 @@ public class AndroidView extends PlatformView {
         public boolean hasText() {
             switch (this) {
                 case BUTTON:
-                case EDITTEXT:
-                case LINEARLAYOUT:
-                case TEXTVIEW:
+                case EDIT_TEXT:
+                case LINEAR_LAYOUT:
+                case TEXT_VIEW:
                     return true;
 
                 default:
@@ -78,8 +78,8 @@ public class AndroidView extends PlatformView {
         public boolean isClickable() {
             switch (this) {
                 case BUTTON:
-                case EDITTEXT:
-                case TEXTVIEW:
+                case EDIT_TEXT:
+                case TEXT_VIEW:
                     return true;
 
                 default:
@@ -90,7 +90,7 @@ public class AndroidView extends PlatformView {
         @Override
         public boolean isEditable() {
             switch (this) {
-                case EDITTEXT:
+                case EDIT_TEXT:
                     return true;
 
                 default:

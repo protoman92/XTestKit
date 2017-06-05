@@ -9,7 +9,6 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType;
-import org.swiften.xtestkit.base.element.choice.ChoiceMode;
 import org.swiften.xtestkit.base.element.choice.ChoiceParam;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
@@ -17,10 +16,11 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * This interface provides common methods to handle date/time selection for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  * This specifically caters to {@link AndroidDatePickerType#isNumberPicker()}.
  */
 public interface NumberDatePickerType extends

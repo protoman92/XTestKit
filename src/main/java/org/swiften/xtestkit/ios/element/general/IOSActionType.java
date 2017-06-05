@@ -10,12 +10,12 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.type.LocalizerContainerType;
 import org.swiften.xtestkit.ios.IOSView;
-import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides actions for
- * {@link org.swiften.xtestkit.mobile.Platform#IOS}.
+ * {@link Platform#IOS}.
  */
 public interface IOSActionType extends
     ClickActionType,

@@ -5,8 +5,8 @@ package org.swiften.xtestkit.base.element.date;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.property.base.AttributeType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.property.base.AttributeType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.Arrays;
 import java.util.Calendar;

@@ -24,7 +24,7 @@ import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 import java.net.MalformedURLException;
 import java.net.URL;

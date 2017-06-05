@@ -6,8 +6,9 @@ package org.swiften.xtestkit.base.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides methods to help interact with choice-based input
@@ -29,7 +30,7 @@ public interface ChoiceInputType {
 
     /**
      * Get the scroll view picker {@link XPath} for
-     * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+     * {@link Platform#ANDROID}.
      * @param platform {@link PlatformType} instance.
      * @return {@link XPath} value.
      */

@@ -15,14 +15,14 @@ import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides general methods to execute actions for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  */
 public interface AndroidActionType extends
     ClickActionType,

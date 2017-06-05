@@ -5,14 +5,14 @@ package org.swiften.xtestkit.ios.model;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.ios.IOSView;
-import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkit.ios.IOSView;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides choice-related methods for
- * {@link org.swiften.xtestkit.mobile.Platform#IOS}. It improves upon
+ * {@link Platform#IOS}. It improves upon
  * {@link ChoiceInputType} by providing default implementations that can be
  * used in a variety of situations.
  */
@@ -30,11 +30,11 @@ public interface IOSChoiceInputType {
      * Get the scroll view picker {@link XPath} for {@link Platform#IOS}.
      * @return {@link XPath} instance.
      * @see Platform#IOS
-     * @see IOSView.ViewType#UI_PICKERWHEEL
+     * @see IOSView.ViewType#UI_PICKER_WHEEL
      */
     @NotNull
     default XPath iOSScrollViewPickerXP() {
-        String cls = IOSView.ViewType.UI_PICKERWHEEL.className();
+        String cls = IOSView.ViewType.UI_PICKER_WHEEL.className();
         return XPath.builder(Platform.IOS).addClass(cls).build();
     }
 }

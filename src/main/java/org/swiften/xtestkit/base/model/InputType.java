@@ -5,8 +5,8 @@ package org.swiften.xtestkit.base.model;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides methods to help interact with input-related
@@ -20,6 +20,5 @@ public interface InputType {
      * @param platform {@link PlatformType} instance.
      * @return {@link XPath} value.
      */
-    @NotNull
-    XPath inputViewXP(@NotNull PlatformType platform);
+    @NotNull XPath inputViewXP(@NotNull PlatformType platform);
 }

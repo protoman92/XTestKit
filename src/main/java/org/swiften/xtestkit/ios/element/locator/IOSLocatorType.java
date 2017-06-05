@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 1/6/17.
@@ -15,7 +16,7 @@ import org.swiften.xtestkit.ios.IOSView;
 
 /**
  * This interface provides methods to locate {@link org.openqa.selenium.WebElement}
- * for {@link org.swiften.xtestkit.mobile.Platform#IOS}.
+ * for {@link Platform#IOS}.
  */
 public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
     /**
@@ -23,13 +24,13 @@ public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see BaseLocatorType#rxe_statusBar()
      * @see BaseViewType#className()
-     * @see IOSView.ViewType#UI_STATUSBAR
+     * @see IOSView.ViewType#UI_STATUS_BAR
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_statusBar() {
         return this
-            .rxe_ofClass(IOSView.ViewType.UI_STATUSBAR.className())
+            .rxe_ofClass(IOSView.ViewType.UI_STATUS_BAR.className())
             .firstElement().toFlowable();
     }
 
@@ -53,12 +54,12 @@ public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see BaseLocatorType#rxe_imageViews()
-     * @see IOSView.ViewType#UI_IMAGEVIEW
+     * @see IOSView.ViewType#UI_IMAGE_VIEW
      * @see BaseViewType#className()
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_imageViews() {
-        return rxe_ofClass(IOSView.ViewType.UI_IMAGEVIEW.className());
+        return rxe_ofClass(IOSView.ViewType.UI_IMAGE_VIEW.className());
     }
 }

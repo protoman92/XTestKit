@@ -13,7 +13,8 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.Arrays;
 
@@ -56,7 +57,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
     /**
      * Toggle the next input, for e.g. by clicking the Next key in a Android
      * keyboard. This method must be individually implemented for each
-     * {@link org.swiften.xtestkit.base.type.PlatformType}.
+     * {@link PlatformType}.
      * @param element The currently active editable {@link WebElement}.
      */
     default void toggleNextInput(@NotNull WebElement element) {

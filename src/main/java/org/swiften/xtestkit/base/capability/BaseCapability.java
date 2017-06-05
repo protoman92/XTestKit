@@ -6,8 +6,8 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.capability.type.CapabilityType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 import java.util.Collection;
 import java.util.Collections;

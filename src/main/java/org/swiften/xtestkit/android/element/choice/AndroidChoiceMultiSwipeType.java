@@ -10,7 +10,8 @@ import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.type.PlatformType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 5/23/17.
@@ -22,10 +23,10 @@ import org.swiften.xtestkit.base.type.PlatformType;
  * some similarities, such as being vertical list views and containing text
  * views that display the choice values. The methods defined here help with
  * the navigation and identification of said choices.
- * For {@link org.swiften.xtestkit.mobile.Platform#IOS}, we can simply call
+ * For {@link Platform#IOS}, we can simply call
  * {@link WebElement#sendKeys(CharSequence...)} to select a choice from a
- * {@link org.swiften.xtestkit.ios.IOSView.ViewType#UI_PICKERWHEEL}.
- * It is only on {@link org.swiften.xtestkit.mobile.Platform#ANDROID} that
+ * {@link org.swiften.xtestkit.ios.IOSView.ViewType#UI_PICKER_WHEEL}.
+ * It is only on {@link Platform#ANDROID} that
  * we have difficulty.
  */
 public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {

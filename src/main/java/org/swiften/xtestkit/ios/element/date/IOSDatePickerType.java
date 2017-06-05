@@ -4,11 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.BaseErrorType;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * Created by haipham on 5/23/17.
@@ -184,7 +184,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see BaseViewType#className()
      * @see Platform#IOS
-     * @see IOSView.ViewType#UI_PICKERWHEEL
+     * @see IOSView.ViewType#UI_PICKER_WHEEL
      * @see XPath.Builder#addClass(String)
      * @see XPath.Builder#setIndex(int)
      * @see #pickerViewIndex(CalendarUnit)
@@ -193,7 +193,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     @Override
     public XPath pickerViewXP(@NotNull CalendarUnit unit) {
         Platform platform = Platform.IOS;
-        String cls = IOSView.ViewType.UI_PICKERWHEEL.className();
+        String cls = IOSView.ViewType.UI_PICKER_WHEEL.className();
 
         /* Add one because XPath index is 1-based */
         int index = pickerViewIndex(unit) + 1;
@@ -216,7 +216,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Since {@link Platform#IOS} uses {@link IOSView.ViewType#UI_PICKERWHEEL}
+     * Since {@link Platform#IOS} uses {@link IOSView.ViewType#UI_PICKER_WHEEL}
      * to pick date/time, there is no need to search for individual picker
      * elements.
      * @param unit {@link CalendarUnit} instance.
@@ -232,7 +232,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Since {@link Platform#IOS} uses {@link IOSView.ViewType#UI_PICKERWHEEL}
+     * Since {@link Platform#IOS} uses {@link IOSView.ViewType#UI_PICKER_WHEEL}
      * to pick date/time, there is no need to search for individual picker
      * elements.
      * @param unit {@link CalendarUnit} instance.
@@ -285,7 +285,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#DAY}.
      * @return {@link Integer} value.
      * @see #MMMM_d_YYYY
@@ -309,7 +309,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#MONTH}.
      * @return {@link Integer} value.
      * @see #MMMM_d_YYYY
@@ -331,7 +331,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#YEAR}.
      * @return {@link Integer} value.
      * @see #MMMM_d_YYYY
@@ -348,7 +348,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#HOUR}.
      * @return {@link Integer} value.
      * @see #MMMd_h_mm_a
@@ -365,7 +365,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#MINUTE}.
      * @return {@link Integer} value.
      * @see #MMMd_h_mm_a
@@ -382,7 +382,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the index of {@link IOSView.ViewType#UI_PICKERWHEEL} that
+     * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#PERIOD}.
      * @return {@link Integer} value.
      * @see #MMMd_h_mm_a

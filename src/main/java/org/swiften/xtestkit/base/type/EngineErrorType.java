@@ -2,6 +2,7 @@ package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * Created by haipham on 3/19/17.

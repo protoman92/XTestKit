@@ -10,12 +10,13 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * This interface provides interaction capabilities for
  * {@link org.openqa.selenium.WebElement}. Accessor methods are defined here,
- * but individual {@link org.swiften.xtestkit.base.type.PlatformType}
+ * but individual {@link PlatformType}
  * subclasses will need its own implementations.
  */
 public interface BaseElementPropertyType extends BaseErrorType {

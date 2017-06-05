@@ -3,8 +3,8 @@ package org.swiften.xtestkit.android.capability;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 import org.swiften.xtestkit.mobile.capability.MobileCapability;
 import org.swiften.xtestkit.ios.capability.IOSCapability;
 
@@ -16,7 +16,7 @@ import java.util.*;
 
 /**
  * This class provides capabilities for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID} and
+ * {@link Platform#ANDROID} and
  * {@link org.swiften.xtestkit.android.AndroidEngine}.
  */
 public class AndroidCapability extends MobileCapability {

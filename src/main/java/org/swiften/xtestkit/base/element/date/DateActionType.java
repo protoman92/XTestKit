@@ -17,9 +17,9 @@ import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

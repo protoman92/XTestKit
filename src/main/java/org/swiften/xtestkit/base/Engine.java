@@ -40,6 +40,7 @@ import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.system.network.NetworkHandler;
 import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.TestListenerType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -131,7 +132,7 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Get the associated {@link org.swiften.xtestkit.base.type.PlatformType}
+     * Get the associated {@link PlatformType}
      * name.
      * @return {@link String} value.
      * @see PlatformType#value()

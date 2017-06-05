@@ -4,7 +4,8 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.type.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 
 /**
  * Created by haipham on 1/6/17.
@@ -12,7 +13,7 @@ import org.swiften.xtestkit.base.type.BaseErrorType;
 
 /**
  * This interface provides methods to handle search for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  */
 public interface AndroidSearchActionType extends BaseErrorType, SearchActionType {
     /**

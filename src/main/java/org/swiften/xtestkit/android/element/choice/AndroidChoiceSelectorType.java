@@ -6,15 +6,15 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
-import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkitcomponents.platform.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * Created by haipham on 25/5/17.
@@ -22,7 +22,7 @@ import org.swiften.xtestkit.mobile.Platform;
 
 /**
  * This interface provides choice selection capabilities for
- * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
+ * {@link Platform#ANDROID}.
  */
 public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDriver<AndroidElement>> {
     /**
@@ -36,6 +36,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
      * @see ChoiceType#selectedChoice()
      * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
      * @see ChoiceHelperType#rxe_withXPath(XPath...)
+     * @see NumberUtil#inverse(Number)
      * @see Platform#ANDROID
      */
     @NotNull
@@ -46,6 +47,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
         final ChoiceInputType INPUT = param.input();
         final String SELECTED = param.selectedChoice();
         final int INDEX = INPUT.scrollablePickerIndex(PLATFORM);
+        final double RATIO = INPUT.swipeRatio(PLATFORM);
 
         MultiSwipeType selector = new AndroidChoiceMultiSwipeType() {
             /**
@@ -65,7 +67,9 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
             public Flowable<Double> rxe_elementSwipeRatio() {
                 /* Customize the swipe ratio so that the picker is scrolled
                  * by one item at a time, to ensure accuracy */
-                return rxe_scrollViewChildCount().map(NumberUtil::inverse);
+                return rxe_scrollViewChildCount()
+                    .map(NumberUtil::inverse)
+                    .map(a -> a * RATIO);
             }
 
             @NotNull

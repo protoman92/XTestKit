@@ -5,8 +5,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.type.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.Platform;
 import org.swiften.xtestkit.mobile.capability.MobileCapability;
 
 import java.util.*;
@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * This class provides capabilities for
- * {@link org.swiften.xtestkit.mobile.Platform#IOS} and
+ * {@link Platform#IOS} and
  * {@link org.swiften.xtestkit.ios.IOSEngine}.
  */
 public class IOSCapability extends MobileCapability {

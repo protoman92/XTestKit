@@ -5,6 +5,8 @@ package org.swiften.xtestkit.base.type;
  */
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * This interface provides {@link PlatformType} for platform-specific
