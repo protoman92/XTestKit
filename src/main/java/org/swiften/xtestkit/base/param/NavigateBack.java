@@ -2,17 +2,21 @@ package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.RepeatType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * Created by haipham on 3/19/17.
  */
 
 /**
- * Parameter object for {@link Engine#rxNavigateBack(NavigateBack)}.
+ * Parameter object for {@link Engine#rxa_navigateBack(RepeatType)}.
  */
 public final class NavigateBack implements RepeatType, RetryType {
+    /**
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();

@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.test;
 
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;

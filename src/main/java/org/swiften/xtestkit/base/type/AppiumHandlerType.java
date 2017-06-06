@@ -13,11 +13,12 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.Address;
 import org.swiften.xtestkit.base.AppiumCommand;
-import org.swiften.xtestkit.system.network.NetworkHandler;
-import org.swiften.xtestkit.system.network.type.NetworkHandlerHolderType;
-import org.swiften.xtestkit.system.network.type.PortType;
-import org.swiften.xtestkit.system.process.ProcessRunner;
-import org.swiften.xtestkit.system.process.ProcessRunnerHolderType;
+import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.network.type.NetworkHandlerHolderType;
+import org.swiften.xtestkitcomponents.system.network.type.PortType;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunnerHolderType;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +30,7 @@ import java.util.function.Predicate;
  * threads.
  */
 public interface AppiumHandlerType extends
-    AddressHolderType,
+    AddressContainerType,
     NetworkHandlerHolderType,
     ProcessRunnerHolderType
 {

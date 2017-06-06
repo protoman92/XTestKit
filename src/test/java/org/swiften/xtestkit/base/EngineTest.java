@@ -19,8 +19,10 @@ import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.type.*;
-import org.swiften.xtestkit.system.network.NetworkHandler;
-import org.swiften.xtestkit.system.process.ProcessRunner;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.swiften.xtestkit.util.TestMessageType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
@@ -34,7 +36,7 @@ import static org.testng.Assert.*;
  * Created by haipham on 3/20/17.
  */
 @SuppressWarnings("MessageMissingOnTestNGAssertion")
-public final class EngineTest implements EngineErrorType, TestMessageType {
+public final class EngineTest implements BaseErrorType, TestMessageType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final CapabilityType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
@@ -103,7 +105,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(INSUFFICIENT_SETTINGS);
+        subscriber.assertErrorMessage(NOT_AVAILABLE);
         subscriber.assertNotComplete();
         verify(ENGINE, never()).driver(any(), any());
         verify(ENGINE).rxa_startDriver(any());
@@ -118,7 +120,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
     public void test_unableToStartDriver_shouldThrow() {
         // Setup
         doReturn(true).when(CAPABILITY).isComplete(any());
-        doThrow(new RuntimeException(DRIVER_UNAVAILABLE)).when(ENGINE).driver(any(), any());
+        doThrow(new RuntimeException(NOT_AVAILABLE)).when(ENGINE).driver(any(), any());
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
@@ -127,7 +129,7 @@ public final class EngineTest implements EngineErrorType, TestMessageType {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(DRIVER_UNAVAILABLE);
+        subscriber.assertErrorMessage(NOT_AVAILABLE);
         subscriber.assertNotComplete();
         verify(ENGINE, times(TRIES + 1)).driver(any(), any());
         verify(ENGINE).rxa_startDriver(any());

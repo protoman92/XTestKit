@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
- * Parameter object for {@link Engine#rxElementsContainingText(TextFormatParam)}.
+ * Parameter object for {@link Engine#rxe_containsText(FormatType[])}.
  */
 public class TextFormatParam implements FormatType, RetryType {
     /**

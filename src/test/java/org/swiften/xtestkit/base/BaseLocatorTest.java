@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.param.TextParam;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
-import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;

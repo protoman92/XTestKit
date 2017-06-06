@@ -4,7 +4,7 @@ package org.swiften.xtestkit.android.param;
  * Created by haipham on 3/23/17.
  */
 
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.type.DeviceUIDType;

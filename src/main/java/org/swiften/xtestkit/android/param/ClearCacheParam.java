@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.android.param;
 
 import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 

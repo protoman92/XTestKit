@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.PlatformView;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 
 /**
  * This interface provides {@link org.swiften.xtestkit.base.PlatformView}

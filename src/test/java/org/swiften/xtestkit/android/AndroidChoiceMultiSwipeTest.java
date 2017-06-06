@@ -11,7 +11,7 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkitcomponents.unidirection.Unidirection;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 import org.testng.annotations.AfterMethod;

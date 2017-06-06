@@ -27,14 +27,14 @@ import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 
 import java.net.MalformedURLException;
 import java.net.URL;

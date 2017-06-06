@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * This interface provides methods to handle taps.

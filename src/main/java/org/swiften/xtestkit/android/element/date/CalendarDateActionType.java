@@ -13,7 +13,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.base.element.date.*;
-import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkitcomponents.unidirection.Unidirection;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;

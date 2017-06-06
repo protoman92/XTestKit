@@ -11,9 +11,9 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.type.DriverContainerType;
-import org.swiften.xtestkit.base.type.DurationType;
-import org.swiften.xtestkit.base.type.RepeatType;
-import org.swiften.xtestkit.base.type.UnidirectionType;
+import org.swiften.xtestkitcomponents.common.DurationType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.xtestkitcomponents.unidirection.UnidirectionContainerType;
 
 /**
  * This interface provides methods to perform swipe gestures.
@@ -45,7 +45,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    default <P extends DurationType & UnidirectionType & SwipeDampenType & RepeatType>
+    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
     Flowable<Boolean> rxa_swipeGeneric(@NotNull Point origin,
                                        @NotNull Dimension size,
                                        @NotNull P param) {
@@ -113,7 +113,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see #rxa_swipeGeneric(Point, Dimension, DurationType)
      */
     @NotNull
-    default <P extends DurationType & UnidirectionType & SwipeDampenType & RepeatType>
+    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
     Flowable<WebElement> rxa_swipeGeneric(@NotNull final WebElement ELEMENT,
                                           @NotNull P param) {
         Point origin = ELEMENT.getLocation();
@@ -134,7 +134,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see #rxa_swipeGeneric(Point, Dimension, DurationType)
      */
     @NotNull
-    default <P extends DurationType & UnidirectionType & SwipeDampenType & RepeatType>
+    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
     Flowable<Boolean> rxa_swipeGeneric(@NotNull P param) {
         WebDriver driver = driver();
         WebDriver.Options options = driver.manage();

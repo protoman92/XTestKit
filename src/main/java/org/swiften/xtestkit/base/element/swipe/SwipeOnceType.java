@@ -4,7 +4,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkit.base.type.RepeatType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
 
 import java.util.concurrent.TimeUnit;
 

@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.localizer.LCFormat;
+import org.swiften.javautilities.localizer.LocalizerContainerType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
@@ -19,12 +20,14 @@ import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.param.*;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
 import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
 import org.swiften.xtestkitcomponents.property.base.StringType;
 import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -203,7 +206,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends OfClassType & RetryType> Flowable<WebElement> rxe_ofClass(@NotNull P...param) {
+    default <P extends OfClassType & RetryType> Flowable<WebElement>
+    rxe_ofClass(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
@@ -275,7 +279,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends ContainsIDType & RetryType> Flowable<WebElement> rxe_containsID(@NotNull P...param) {
+    default <P extends ContainsIDType & RetryType> Flowable<WebElement>
+    rxe_containsID(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable
@@ -353,7 +358,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement> rxe_withText(@NotNull P...param) {
+    default <P extends StringType & RetryType> Flowable<WebElement>
+    rxe_withText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
@@ -428,7 +434,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement> rxe_containsText(@NotNull P...param) {
+    default <P extends StringType & RetryType> Flowable<WebElement>
+    rxe_containsText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
@@ -490,7 +497,8 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends FormatType & RetryType> Flowable<WebElement> rxe_containsText(@NotNull P...param) {
+    default <P extends FormatType & RetryType> Flowable<WebElement>
+    rxe_containsText(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
@@ -582,20 +590,17 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get the status bar {@link WebElement}.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<WebElement> rxe_statusBar();
+    @NotNull Flowable<WebElement> rxe_statusBar();
 
     /**
      * Get the window {@link WebElement}.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<WebElement> rxe_window();
+    @NotNull Flowable<WebElement> rxe_window();
 
     /**
      * Get all image views {@link WebElement}.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<WebElement> rxe_imageViews();
+    @NotNull Flowable<WebElement> rxe_imageViews();
 }

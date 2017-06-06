@@ -5,8 +5,8 @@ package org.swiften.xtestkit.kit.param;
  */
 
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.IndexType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.IndexType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.jetbrains.annotations.NotNull;
 
 /**

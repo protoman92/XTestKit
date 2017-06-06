@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
  */
 public interface ScreenManagerType extends EngineContainerType, ScreenManagerErrorType {
     /**
-     * Register {@link ScreenType} and store its related {@link Node}
-     * in an inner cache.
+     * Register {@link ScreenType} and store its related {@link Node} in an
+     * inner cache.
      * @param SCREEN {@link ScreenType} instance.
      * @see #engine()
      * @see ScreenType#forwardAccessible(Engine)

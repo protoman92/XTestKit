@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.xtestkit.base.type.DelayType;
+import org.swiften.xtestkitcomponents.common.DelayType;
 import org.swiften.xtestkit.base.type.DriverContainerType;
-import org.swiften.xtestkit.base.type.RepeatType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
 
 import java.util.concurrent.TimeUnit;
 

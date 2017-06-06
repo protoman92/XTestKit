@@ -15,7 +15,6 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.capability.CapabilityType;
 import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
@@ -37,8 +36,10 @@ import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
-import org.swiften.xtestkit.system.network.NetworkHandler;
-import org.swiften.xtestkit.system.process.ProcessRunner;
+import org.swiften.xtestkitcomponents.common.DistinctiveType;
+import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.swiften.xtestkit.test.TestListenerType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
@@ -67,7 +68,6 @@ public abstract class Engine<D extends WebDriver> implements
     BaseSwipeType<D>,
     BaseSwitcherActionType,
     BaseVisibilityActionType<D>,
-    EngineErrorType,
     DistinctiveType,
     TestListenerType
 {
@@ -92,11 +92,18 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     //region Getters
+    /**
+     * Get {@link #capability}.
+     * @return {@link CapabilityType} instance.
+     * @see ObjectUtil#nonNull(Object)
+     * @see #capability
+     * @see #NOT_AVAILABLE
+     */
     public CapabilityType capabilityType() {
         if (ObjectUtil.nonNull(capability)) {
             return capability;
         } else {
-            throw new RuntimeException(CAPABILITY_UNAVAILABLE);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
@@ -199,13 +206,14 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link D} {@link #driver}.
      * @see ObjectUtil#nonNull(Object)
      * @see #driver
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public D driver() {
         if (ObjectUtil.nonNull(driver)) {
             return driver;
         } else {
-            throw new RuntimeException(DRIVER_UNAVAILABLE);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
@@ -380,10 +388,11 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Create {@link D} instance in order to navigate UI test.
      * @return {@link D} instance.
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     protected D driver(@NotNull String serverUrl, @NotNull DesiredCapabilities caps) {
-        throw new RuntimeException(DRIVER_UNAVAILABLE);
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
@@ -393,7 +402,9 @@ public abstract class Engine<D extends WebDriver> implements
      * @return {@link Flowable} instance.
      * @see CapabilityType#isComplete(Map)
      * @see CapabilityType#distill(Map)
+     * @see RetryType#retries()
      * @see #driver(String, DesiredCapabilities)
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     public Flowable<Boolean> rxa_startDriver(@NotNull final RetryType PARAM) {
@@ -412,7 +423,7 @@ public abstract class Engine<D extends WebDriver> implements
                 .defaultIfEmpty(true)
                 .retry(PARAM.retries());
         } else {
-            return RxUtil.error(INSUFFICIENT_SETTINGS);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
@@ -427,7 +438,8 @@ public abstract class Engine<D extends WebDriver> implements
     public Flowable<Boolean> rxa_stopDriver() {
         final WebDriver DRIVER = driver();
 
-        return Completable.fromAction(DRIVER::quit)
+        return Completable
+            .fromAction(DRIVER::quit)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
@@ -440,12 +452,12 @@ public abstract class Engine<D extends WebDriver> implements
      */
     public static abstract class Builder<T extends Engine> {
         @NotNull final protected T ENGINE;
-        @NotNull final protected CapabilityType.Builder CAP_BUILDER;
+        @NotNull final protected CapabilityType.Builder CB;
 
         protected Builder(@NotNull T engine,
-                          @NotNull CapabilityType.Builder capBuilder) {
+                          @NotNull CapabilityType.Builder cb) {
             ENGINE = engine;
-            CAP_BUILDER = capBuilder;
+            CB = cb;
         }
 
         /**
@@ -482,13 +494,13 @@ public abstract class Engine<D extends WebDriver> implements
         @NotNull
         public Builder<T> withTestMode(@NotNull TestMode mode) {
             ENGINE.testMode = mode;
-            CAP_BUILDER.withTestMode(mode);
+            CB.withTestMode(mode);
             return this;
         }
 
         @NotNull
         public T build() {
-            ENGINE.capability = CAP_BUILDER.build();
+            ENGINE.capability = CB.build();
             return ENGINE;
         }
     }

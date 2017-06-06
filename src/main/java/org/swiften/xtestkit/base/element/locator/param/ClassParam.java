@@ -3,14 +3,13 @@ package org.swiften.xtestkit.base.element.locator.param;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * Created by haipham on 5/9/17.
  */
 /**
- * Parameter object for
- * {@link Engine#rxElementsOfClass(ClassParam)}.
+ * Parameter object for {@link Engine#rxe_ofClass(OfClassType[])}.
  */
 public class ClassParam implements OfClassType, RetryType {
     /**

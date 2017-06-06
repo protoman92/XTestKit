@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * Created by haipham on 3/25/17.

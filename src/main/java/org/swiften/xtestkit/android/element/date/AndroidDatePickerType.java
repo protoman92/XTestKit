@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.unidirection.Unidirection;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -24,14 +25,14 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_22} and
      * below, the calendar is scrolled vertically. Therefore, we need to use
-     * {@link org.swiften.xtestkit.base.element.general.Unidirection#UP_DOWN}
-     * and {@link org.swiften.xtestkit.base.element.general.Unidirection#DOWN_UP}
+     * {@link Unidirection#UP_DOWN}
+     * and {@link Unidirection#DOWN_UP}
      * to navigate it.
      *
      * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_23} and
      * above, the calendar is scrolled horizontally. Therefore, we need to use
-     * {@link org.swiften.xtestkit.base.element.general.Unidirection#LEFT_RIGHT}
-     * and {@link org.swiften.xtestkit.base.element.general.Unidirection#RIGHT_LEFT}
+     * {@link Unidirection#LEFT_RIGHT}
+     * and {@link Unidirection#RIGHT_LEFT}
      * to navigate it.
      */
     CALENDAR,

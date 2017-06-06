@@ -1,10 +1,9 @@
 package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +15,6 @@ import java.util.stream.Collectors;
  * Subclass this class to provide platform-specific {@link BaseViewType}.
  */
 public abstract class PlatformView {
-    @NotNull
-    public List<BaseViewType> anyView() {
-        return Collections.singletonList(BaseViewType.ANY_VIEW);
-    }
-
     @NotNull
     public List<BaseViewType> allViews() {
         return Arrays.asList(getViews());

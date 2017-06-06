@@ -10,7 +10,7 @@ import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

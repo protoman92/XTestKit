@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.android.param;
 
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.AndroidInstance;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
-import org.swiften.xtestkit.system.network.type.PortType;
+import org.swiften.xtestkitcomponents.system.network.type.PortType;
 import org.jetbrains.annotations.NotNull;
 
 /**

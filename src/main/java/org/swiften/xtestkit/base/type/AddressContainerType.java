@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.Address;
  * This interface provides a {@link org.swiften.xtestkit.base.Address} instance.
  */
 @FunctionalInterface
-public interface AddressHolderType {
+public interface AddressContainerType {
     /**
      * Get the associated {@link Address} instance.
      * @return {@link Address} instance.

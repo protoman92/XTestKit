@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.base.type.RepeatType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
 
 import java.util.concurrent.TimeUnit;
 

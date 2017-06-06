@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.tap;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * Created by haipham on 5/15/17.

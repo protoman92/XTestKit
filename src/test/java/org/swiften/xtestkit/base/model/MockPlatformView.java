@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.PlatformView;
-import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 
 import java.util.Arrays;
 import java.util.Random;

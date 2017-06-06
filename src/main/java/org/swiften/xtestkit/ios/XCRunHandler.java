@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.ios;
 
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.ios.type.XCRunDelayType;
-import org.swiften.xtestkit.system.process.ProcessRunner;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 

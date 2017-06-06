@@ -4,11 +4,11 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.general.Unidirection;
+import org.swiften.xtestkitcomponents.unidirection.Unidirection;
 import org.swiften.xtestkit.base.element.swipe.SwipeDampenType;
-import org.swiften.xtestkit.base.type.DurationType;
-import org.swiften.xtestkit.base.type.RepeatType;
-import org.swiften.xtestkit.base.type.UnidirectionType;
+import org.swiften.xtestkitcomponents.common.DurationType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.xtestkitcomponents.unidirection.UnidirectionContainerType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -22,7 +22,7 @@ public class UnidirectionParam implements
     DurationType,
     RepeatType,
     SwipeDampenType,
-    UnidirectionType
+    UnidirectionContainerType
 {
     /**
      * Get {@link Builder} instance.

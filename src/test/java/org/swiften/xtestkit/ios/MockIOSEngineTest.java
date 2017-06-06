@@ -3,11 +3,11 @@ package org.swiften.xtestkit.ios;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.xtestkit.base.type.EngineErrorType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.ios.capability.IOSCapability;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
-import org.swiften.xtestkit.system.process.ProcessRunner;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,7 +18,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by haipham on 3/31/17.
  */
-public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
+public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSCapability CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
@@ -67,7 +67,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
 
         // Then
         subscriber.assertSubscribed();
-        subscriber.assertErrorMessage(INSUFFICIENT_SETTINGS);
+        subscriber.assertErrorMessage(NOT_AVAILABLE);
         subscriber.assertNotComplete();
         verify(ENGINE).browserName();
         verify(ENGINE).app();
@@ -88,7 +88,7 @@ public final class MockIOSEngineTest implements EngineErrorType, IOSErrorType {
         try {
             ENGINE.driver();
         } catch (Exception e) {
-            assertEquals(e.getMessage(), DRIVER_UNAVAILABLE);
+            assertEquals(e.getMessage(), NOT_AVAILABLE);
         }
     }
     //endregion

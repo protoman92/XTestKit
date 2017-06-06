@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
-import org.swiften.xtestkit.base.type.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerContainerType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

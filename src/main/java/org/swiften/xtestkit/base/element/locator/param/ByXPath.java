@@ -3,7 +3,7 @@ package org.swiften.xtestkit.base.element.locator.param;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorErrorType;
-import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**

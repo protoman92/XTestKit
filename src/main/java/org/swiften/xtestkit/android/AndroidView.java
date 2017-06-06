@@ -2,7 +2,7 @@ package org.swiften.xtestkit.android;
 
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**
@@ -16,13 +16,15 @@ public class AndroidView extends PlatformView {
     public enum ViewType implements BaseViewType {
         BUTTON,
         EDIT_TEXT,
+        FRAME_LAYOUT,
         IMAGE_VIEW,
         LINEAR_LAYOUT,
         LIST_VIEW,
         NUMBER_PICKER,
+        SWITCH,
         TEXT_VIEW,
         TIME_PICKER,
-        SWITCH;
+        VIEW_PAGER;
 
         @NotNull
         @Override
@@ -33,6 +35,9 @@ public class AndroidView extends PlatformView {
 
                 case EDIT_TEXT:
                     return "android.widget.EditText";
+
+                case FRAME_LAYOUT:
+                    return "android.widget.FrameLayout";
 
                 case IMAGE_VIEW:
                     return "android.widget.ImageView";
@@ -54,6 +59,9 @@ public class AndroidView extends PlatformView {
 
                 case TIME_PICKER:
                     return "android.widget.TimePicker";
+
+                case VIEW_PAGER:
+                    return "android.support.v4.view.ViewPager";
 
                 default:
                     throw new RuntimeException();

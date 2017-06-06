@@ -7,8 +7,8 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.type.DurationType;
-import org.swiften.xtestkit.base.type.RepeatType;
+import org.swiften.xtestkitcomponents.common.DurationType;
+import org.swiften.xtestkitcomponents.common.RepeatType;
 
 /**
  * Parameter object for {@link Engine#rxa_swipe(RepeatType)}
