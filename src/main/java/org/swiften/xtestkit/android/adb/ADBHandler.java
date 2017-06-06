@@ -118,16 +118,23 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Restart adb server in order to avoid problem with adb not acknowledging
      * the first command at the start of a test batch.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#toTrue(Object)
+     * @see NetworkHandler#rxa_killWithName(String)
+     * @see ProcessRunner#rxa_execute(String)
+     * @see #networkHandler()
+     * @see #processRunner()
+     * @see #cm_launchAdb()
      */
     @NotNull
     public Flowable<Boolean> rxa_restartAdb() {
+        final ADBHandler THIS = this;
         final ProcessRunner RUNNER = processRunner();
         NetworkHandler handler = networkHandler();
 
         return handler
-            .rxKillWithName("adb")
-            .onErrorResumeNext(Flowable.just(true))
-            .map(a -> cm_launchAdb())
+            .rxa_killWithName("adb")
+            .onErrorReturnItem(true)
+            .map(a -> THIS.cm_launchAdb())
             .flatMap(RUNNER::rxa_execute)
             .map(BooleanUtil::toTrue);
     }

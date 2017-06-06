@@ -1,27 +1,26 @@
 package org.swiften.xtestkit.android;
 
-import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.type.RetryType;
-import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
-import org.swiften.xtestkit.android.param.ClearCacheParam;
-import org.swiften.xtestkit.android.param.StartEmulatorParam;
-import org.swiften.xtestkit.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.android.adb.ADBErrorType;
-import org.swiften.xtestkit.system.network.NetworkHandler;
-import org.swiften.xtestkit.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.xtestkit.android.adb.ADBErrorType;
+import org.swiften.xtestkit.android.adb.ADBHandler;
+import org.swiften.xtestkit.android.param.ClearCacheParam;
+import org.swiften.xtestkit.android.param.StartEmulatorParam;
+import org.swiften.xtestkit.android.param.StopEmulatorParam;
+import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.base.type.RetryType;
+import org.swiften.xtestkit.system.network.NetworkHandler;
+import org.swiften.xtestkit.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -127,8 +126,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             verify(ADB_HANDLER).rxa_restartAdb();
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).networkHandler();
-            verify(NETWORK_HANDLER).rxKillWithName(any());
-            verify(NETWORK_HANDLER).rxKillWithPID(any());
+            verify(NETWORK_HANDLER).rxa_killWithName(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -228,9 +226,16 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertSubscribed();
         subscriber.assertError(Exception.class);
         subscriber.assertNotComplete();
+        verify(ADB_HANDLER).emulatorBootRetryDelay();
+        verify(ADB_HANDLER).emulatorBootTimeout();
+        verify(ADB_HANDLER).processRunner();
+        verify(ADB_HANDLER, atLeastOnce()).cm_AndroidHome();
+        verify(ADB_HANDLER).cm_adb();
+        verify(ADB_HANDLER).cm_adbShell(any());
+        verify(ADB_HANDLER).cm_bootAnim(any());
+        verify(ADB_HANDLER).cm_emulator();
+        verify(ADB_HANDLER).cm_startEmulator(any());
         verify(ADB_HANDLER).rxa_startEmulator(any());
-        verify(ADB_HANDLER).unacceptablePort(anyInt());
-        verify(ADB_HANDLER).isAcceptablePort(anyInt());
         verifyNoMoreInteractions(ADB_HANDLER);
     }
 
@@ -262,7 +267,6 @@ public final class MockADBHandlerTest implements ADBErrorType {
             verify(ADB_HANDLER).cm_emulator();
             verify(ADB_HANDLER).cm_startEmulator(any());
             verify(ADB_HANDLER).processRunner();
-            verify(ADB_HANDLER).isAcceptablePort(anyInt());
             verify(ADB_HANDLER).emulatorBootRetryDelay();
             verify(ADB_HANDLER).emulatorBootTimeout();
             verify(ADB_HANDLER).rxa_startEmulator(any());

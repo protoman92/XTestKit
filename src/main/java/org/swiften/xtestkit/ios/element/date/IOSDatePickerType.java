@@ -8,6 +8,7 @@ import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -179,25 +180,27 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
+     * @see Attribute#empty()
+     * @see Attribute#withClass(String)
+     * @see Attribute#withIndex(Integer)
      * @see BaseViewType#className()
-     * @see Platform#IOS
      * @see IOSView.ViewType#UI_PICKER_WHEEL
-     * @see XPath.Builder#addClass(String)
-     * @see XPath.Builder#setIndex(int)
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #pickerViewIndex(CalendarUnit)
      */
     @NotNull
     @Override
     public XPath pickerViewXP(@NotNull CalendarUnit unit) {
-        Platform platform = Platform.IOS;
         String cls = IOSView.ViewType.UI_PICKER_WHEEL.className();
 
         /* Add one because XPath index is 1-based */
         int index = pickerViewIndex(unit) + 1;
-        return XPath.builder(platform).addClass(cls).setIndex(index).build();
+        Attribute attribute = Attribute.empty().withClass(cls).withIndex(index);
+        return XPath.builder().addAttribute(attribute).build();
     }
 
     /**

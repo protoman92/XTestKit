@@ -8,13 +8,12 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
+import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.general.Unidirection;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
-import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -213,13 +212,13 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
         @NotNull
         @Override
         public XPath androidChoicePickerItemXP() {
-            return XPath.builder(Platform.ANDROID).build();
+            return XPath.builder().build();
         }
 
         @NotNull
         @Override
         public XPath androidTargetItemXP(@NotNull String selected) {
-            return XPath.builder(Platform.ANDROID).build();
+            return XPath.builder().build();
         }
     }
 

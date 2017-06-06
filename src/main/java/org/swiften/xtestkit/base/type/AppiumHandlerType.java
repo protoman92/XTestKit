@@ -83,16 +83,18 @@ public interface AppiumHandlerType extends
     }
 
     /**
-     * Start appium with a specified server uri.
+     * Start appium with a specified uri.
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
+     * @see ProcessRunner#rxa_execute(String)
      * @see RetryType#retries()
+     * @see RxUtil#error()
      * @see StringUtil#isNotNullOrEmpty(String)
      * @see #processRunner()
-     * @see #rxa_startAppiumOnNewThread(String)
      * @see #cm_whichAppium()
      * @see #cm_fallBackAppium()
+     * @see #rxa_startAppiumOnNewThread(String)
      */
     @NotNull
     default Flowable<Boolean> rxa_startLocalAppium(@NotNull RetryType param) {
@@ -114,8 +116,7 @@ public interface AppiumHandlerType extends
     }
 
     /**
-     * Start a new local Appium instance. This will be run in a different
-     * thread.
+     * Start a local Appium instance. This will be run on a different thread.
      * @param CLI The path to Appium CLI. {@link String} value.
      * @return {@link Flowable} instance.
      * @see Address#setPort(int)
@@ -134,9 +135,9 @@ public interface AppiumHandlerType extends
         final AppiumHandlerType THIS = this;
         final ProcessRunner RUNNER = processRunner();
         final Address ADDRESS = address();
-        final NetworkHandler NETWORK_HANDLER = networkHandler();
+        NetworkHandler networkHandler = networkHandler();
 
-        return NETWORK_HANDLER.rxa_checkUntilPortAvailable(ADDRESS)
+        return networkHandler.rxa_checkUntilPortAvailable(ADDRESS)
             .doOnNext(ADDRESS::setPort)
             .flatMap(a -> Flowable.<Boolean>create(o -> {
                 final String COMMAND = THIS.cm_startLocalAppium(CLI, a);
@@ -144,7 +145,6 @@ public interface AppiumHandlerType extends
                 new Thread(() -> {
                     for (;;) {
                         if (AVAILABLE_TO_START_APPIUM.getAndSet(false)) {
-                            LogUtil.println("Executing", COMMAND);
                             /* We need to start a new thread because this
                              * operation blocks */
                             new Thread(() -> {

@@ -11,10 +11,14 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
+import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.base.type.LocalizerContainerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;
@@ -48,13 +52,16 @@ public interface IOSActionType extends
      * @return {@link Flowable} instance.
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
+     * @see Attribute#withClass(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#hasText(String)
+     * @see BaseViewType#className()
      * @see BooleanUtil#toTrue(Object)
      * @see IOSView.ViewType#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see Platform#IOS
-     * @see XPath.Builder#addClass(String)
-     * @see XPath.Builder#hasText(XPath.HasText)
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #alertDismissalDelay()
      * @see #localizer()
      * @see #rxa_click(WebElement)
@@ -65,7 +72,8 @@ public interface IOSActionType extends
     default Flowable<Boolean> rxa_dismissAlert(@NotNull AlertParam param) {
         final IOSActionType THIS = this;
         final Platform PLATFORM = Platform.IOS;
-        final LocalizerType LOCALIZER = localizer();
+        final Attributes ATTRS = Attributes.of(PLATFORM);
+        final LocalizerType LC = localizer();
         final String BTN_CLS = IOSView.ViewType.UI_BUTTON.className();
         String[] titles;
 
@@ -76,9 +84,8 @@ public interface IOSActionType extends
         }
 
         return Flowable.fromArray(titles)
-            .map(a -> XPath.builder(PLATFORM)
-                .addClass(BTN_CLS)
-                .hasText(LOCALIZER.localize(a))
+            .map(a -> XPath.builder()
+                .addAttribute(ATTRS.hasText(LC.localize(a)).withClass(BTN_CLS))
                 .build())
             .toList()
             .map(a -> a.toArray(new XPath[a.size()]))

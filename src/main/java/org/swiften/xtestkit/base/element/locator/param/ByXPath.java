@@ -14,6 +14,10 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
  * Parameter object for {@link Engine#rxe_byXPath(ByXPath)}.
  */
 public class ByXPath implements BaseLocatorErrorType, RetryType {
+    /**
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -29,12 +33,10 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
         retries = RetryType.super.retries();
     }
 
-    //region RetryType.
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
     @NotNull
     public String error() {
@@ -46,6 +48,9 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
         return xPath;
     }
 
+    /**
+     * Builder class for {@link ByXPath}.
+     */
     public static final class Builder {
         @NotNull final ByXPath PARAM;
 
@@ -71,7 +76,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          * The {@link XPath} query that will be used to search for elements.
          * @param xPath {@link XPath} instance.
          * @return The current {@link Builder} instance.
-         * @see XPath#appendClassName(String)
+         * @see XPath#attributes()
          */
         public Builder withXPath(@NotNull XPath xPath) {
             PARAM.xPath = xPath.attribute();

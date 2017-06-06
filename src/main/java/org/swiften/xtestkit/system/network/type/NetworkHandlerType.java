@@ -106,7 +106,7 @@ public interface NetworkHandlerType extends ProcessRunnerHolderType, NetworkHand
      * @see #NO_SUCH_PROCESS
      */
     @NotNull
-    default Flowable<Boolean> rxKillWithPID(@NotNull String pid) {
+    default Flowable<Boolean> rxa_killWithPID(@NotNull String pid) {
         ProcessRunner runner = processRunner();
         String command = cmKillPID(pid);
 
@@ -158,7 +158,7 @@ public interface NetworkHandlerType extends ProcessRunnerHolderType, NetworkHand
             .flatMap(gp -> this
                 .rxGetProcessName(gp)
                 .filter(NP::test)
-                .flatMap(a -> this.rxKillWithPID(gp.pid())))
+                .flatMap(a -> this.rxa_killWithPID(gp.pid())))
             .defaultIfEmpty(true)
             .retry(PARAM.retries())
             .onErrorReturnItem(true)
@@ -173,17 +173,17 @@ public interface NetworkHandlerType extends ProcessRunnerHolderType, NetworkHand
      * @see #processRunner()
      * @see ProcessRunner#rxa_executeStream(String)
      * @see #cmFindPID(String)
-     * @see #rxKillWithPID(String)
+     * @see #rxa_killWithPID(String)
      * @see BooleanUtil#isTrue(boolean)
      */
     @NotNull
-    default Flowable<Boolean> rxKillWithName(@NotNull String name) {
+    default Flowable<Boolean> rxa_killWithName(@NotNull String name) {
         return processRunner()
             .rxa_execute(cmFindPID(name))
             .filter(StringUtil::isNotNullOrEmpty)
             .map(a -> a.split("\n"))
             .flatMap(Flowable::fromArray)
-            .flatMap(this::rxKillWithPID)
+            .flatMap(this::rxa_killWithPID)
             .defaultIfEmpty(true)
             .onErrorReturnItem(true)
             .all(BooleanUtil::isTrue)

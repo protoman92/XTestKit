@@ -6,8 +6,10 @@ package org.swiften.xtestkit.ios.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -29,12 +31,15 @@ public interface IOSChoiceInputType {
     /**
      * Get the scroll view picker {@link XPath} for {@link Platform#IOS}.
      * @return {@link XPath} instance.
-     * @see Platform#IOS
+     * @see Attribute#forClass(String)
+     * @see BaseViewType#className()
      * @see IOSView.ViewType#UI_PICKER_WHEEL
+     * @see XPath.Builder#addAttribute(Attribute)
      */
     @NotNull
     default XPath iOSScrollViewPickerXP() {
         String cls = IOSView.ViewType.UI_PICKER_WHEEL.className();
-        return XPath.builder(Platform.IOS).addClass(cls).build();
+        Attribute attribute = Attribute.forClass(cls);
+        return XPath.builder().addAttribute(attribute).build();
     }
 }

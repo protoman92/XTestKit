@@ -9,8 +9,11 @@ import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.type.BaseViewType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -69,15 +72,6 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * @return {@link XPath.Builder} instance.
-     * @see Platform#ANDROID
-     */
-    @NotNull
-    public XPath.Builder xpathBuilder() {
-        return XPath.builder(Platform.ANDROID);
-    }
-
-    /**
      * Get the {@link String} format for a particular {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
@@ -118,10 +112,12 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see AndroidView.ViewType#LIST_VIEW
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#ofClass(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#ofClass(String)
+     * @see BaseViewType#className()
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #CALENDAR
-     * @see #xpathBuilder()
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -129,8 +125,10 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     public XPath pickerViewXP(@NotNull CalendarUnit unit) {
         switch (this) {
             case CALENDAR:
+                Attributes attrs = Attributes.of(Platform.ANDROID);
                 String cls = AndroidView.ViewType.LIST_VIEW.className();
-                return xpathBuilder().ofClass(cls).addAnyClass().build();
+                Attribute attr = attrs.ofClass(cls);
+                return XPath.builder().addAttribute(attr).build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -165,23 +163,25 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#targetItemXP(CalendarUnit)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#containsID(String)
      * @see CalendarUnit#YEAR
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#containsID(String)
-     * @see #xpathBuilder()
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #NOT_AVAILABLE
      */
     @NotNull
+    @Override
     public XPath targetItemXP(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
-                return xpathBuilder()
-                    .containsID("month_text_view")
-                    .addAnyClass()
-                    .build();
+                Attributes attrs = Attributes.of(Platform.ANDROID);
+                Attribute attr = attrs.containsID("month_text_view");
+                return XPath.builder().addAttribute(attr).build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -189,13 +189,18 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see AndroidView.ViewType#TEXT_VIEW
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#containsID(String)
-     * @see XPath.Builder#ofClass(String)
+     * @see Attributes#containsID(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#ofClass(String)
+     * @see BaseViewType#className()
+     * @see CalendarUnit#YEAR
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -203,10 +208,12 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     public XPath pickerItemXP(@NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
-                return xpathBuilder()
-                    .containsID("month_text_view")
-                    .ofClass(AndroidView.ViewType.TEXT_VIEW.className())
-                    .addAnyClass()
+                Attributes attrs = Attributes.of(Platform.ANDROID);
+                String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+
+                return XPath.builder()
+                    .addAttribute(attrs.containsID("month_text_view"))
+                    .addAttribute(attrs.ofClass(clsName))
                     .build();
 
             default:
@@ -218,17 +225,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the day display view {@link XPath}.
      * @return {@link XPath} instance.
      * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Attributes#containsID(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#containsID(String)
-     * @see XPath.Builder#ofClass(String)
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      */
     @NotNull
     private XPath dayDisplayViewXP() {
-        return xpathBuilder()
-            .containsID("date_picker_day")
-            .ofClass(AndroidView.ViewType.TEXT_VIEW.className())
-            .addAnyClass()
+        Attributes attrs = Attributes.of(Platform.ANDROID);
+        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+
+        return XPath.builder()
+            .addAttribute(attrs.containsID("date_picker_day"))
+            .addAttribute(attrs.ofClass(clsName))
             .build();
     }
 
@@ -236,35 +247,43 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the month display view {@link XPath}.
      * @return {@link XPath} instance.
      * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Attributes#containsID(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#containsID(String)
-     * @see XPath.Builder#ofClass(String)
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      */
     @NotNull
     private XPath monthDisplayViewXPath() {
-        return xpathBuilder()
-            .containsID("date_picker_month")
-            .ofClass(AndroidView.ViewType.TEXT_VIEW.className())
-            .addAnyClass()
+        Attributes attrs = Attributes.of(Platform.ANDROID);
+        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+
+        return XPath.builder()
+            .addAttribute(attrs.containsID("date_picker_month"))
+            .addAttribute(attrs.ofClass(clsName))
             .build();
     }
 
     /**
-     * * Get the year display view {@link XPath}.
+     * Get the year display view {@link XPath}.
      * @return {@link XPath} instance.
      * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Attributes#containsID(String)
+     * @see Attributes#of(PlatformType)
+     * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#containsID(String)
-     * @see XPath.Builder#ofClass(String)
+     * @see Platform#ANDROID
+     * @see XPath.Builder#addAttribute(Attribute)
      */
     @NotNull
     private XPath yearDisplayViewXPath() {
-        return xpathBuilder()
-            .containsID("date_picker_year")
-            .ofClass(AndroidView.ViewType.TEXT_VIEW.className())
-            .addAnyClass()
+        Attributes attrs = Attributes.of(Platform.ANDROID);
+        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+
+        return XPath.builder()
+            .addAttribute(attrs.containsID("date_picker_year"))
+            .addAttribute(attrs.ofClass(clsName))
             .build();
     }
 

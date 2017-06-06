@@ -2,12 +2,14 @@ package org.swiften.xtestkit.mobile;
 
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.AttributeType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,11 +34,20 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
         if (ops.isPresent()) {
             return ops.get();
         } else {
-            throw new RuntimeException(BaseErrorType.NOT_AVAILABLE);
+            throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
-    //region AttributeType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see PlatformType#value()
+     * @see MobilePlatform#ANDROID
+     * @see MobilePlatform#IOS
+     * @see #ANDROID
+     * @see #IOS
+     * @see #NOT_AVAILABLE
+     */
     @NotNull
     @Override
     public String value() {
@@ -48,81 +59,81 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
                 return MobilePlatform.IOS;
 
             default:
-                return "";
+                throw new RuntimeException(NOT_AVAILABLE);
         }
     }
-    //endregion
 
-    //region PlatformType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link List} of {@link String}.
+     * @see PlatformType#classAttribute()
+     */
     @NotNull
     @Override
-    public Attribute classAttribute() {
+    public List<String> classAttribute() {
+        List<String> clsAttributes = PlatformType.super.classAttribute();
+
         switch (this) {
             case IOS:
-                return Attribute.builder()
-                    .addAttribute(PlatformType.super.classAttribute())
-                    .addAttribute("type")
-                    .withMode(Attribute.Mode.OR)
-                    .build();
+                List<String> attrs = new ArrayList<>();
+                attrs.addAll(clsAttributes);
+                attrs.add("type");
+                return attrs;
 
             default:
-                return PlatformType.super.classAttribute();
+                return clsAttributes;
         }
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link List} of {@link String}.
+     * @see PlatformType#idAttribute()
+     * @see CollectionUtil#asList(Object[])
+     * @see #ANDROID
+     * @see #IOS
+     * @see #NOT_AVAILABLE
+     */
     @NotNull
     @Override
-    public Attribute idAttribute() {
-        switch (this) {
-            case ANDROID:
-                return Attribute.single("resource-id");
-
-            case IOS:
-                return Attribute.builder()
-                    .addAttribute("name")
-                    .addAttribute("accessibility")
-                    .withMode(Attribute.Mode.OR)
-                    .build();
-
-            default:
-                return Attribute.BLANK;
-        }
-    }
-
-    @NotNull
-    @Override
-    public Attribute hintAttribute() {
+    public List<String> idAttribute() {
         switch (this) {
             case ANDROID:
-                return Attribute.single("hint");
+                return CollectionUtil.asList("resource-id");
 
             case IOS:
-                return Attribute.single("placeholder");
+                return CollectionUtil.asList("name", "accessibility");
 
             default:
-                return Attribute.BLANK;
+                throw new RuntimeException(NOT_AVAILABLE);
         }
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link List} of {@link String}.
+     * @see PlatformType#textAttribute()
+     * @see CollectionUtil#asList(Object[])
+     * @see #ANDROID
+     * @see #IOS
+     * @see #NOT_AVAILABLE
+     */
     @NotNull
     @Override
-    public Attribute textAttribute() {
+    public List<String> textAttribute() {
         switch (this) {
             case ANDROID:
-                return Attribute.single("text");
+                return CollectionUtil.asList("text");
 
             case IOS:
-                return Attribute.builder()
-                    .addAttribute("title")
-                    .addAttribute("text")
-                    .addAttribute("value")
-                    .addAttribute("label")
-                    .withMode(Attribute.Mode.OR)
-                    .build();
+                return CollectionUtil.asList(
+                    "title",
+                    "text",
+                    "value",
+                    "label");
 
             default:
-                return Attribute.BLANK;
+                throw new RuntimeException(NOT_AVAILABLE);
         }
     }
-    //endregion
 }

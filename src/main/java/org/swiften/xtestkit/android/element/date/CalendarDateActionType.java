@@ -23,6 +23,7 @@ import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.text.SimpleDateFormat;
@@ -101,40 +102,54 @@ public interface CalendarDateActionType extends
      * have brought the picker close to the date we want.
      * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
-     * @see Attribute#single(String)
+     * @see Attribute.Builder#addAttribute(String)
+     * @see Attribute.Builder#withFormatible(Attribute.Formatible)
+     * @see Attribute.Builder#withJoiner(Attribute.Joiner)
+     * @see Attribute.Builder#withValue(Object)
+     * @see Attribute.Builder#withWrapper(Attribute.Wrapper)
+     * @see Attribute.Joiner#OR
+     * @see Attribute.Wrapper#NONE
+     * @see Attribute#withValue(Object)
+     * @see BooleanUtil#isTrue(boolean)
+     * @see ByXPath.Builder#withXPath(XPath)
+     * @see ByXPath.Builder#withRetries(int)
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#value()
      * @see DateType#date()
      * @see DateType#dateString(String)
      * @see DateUtil#notEarlierThan(Date, Date)
      * @see MultiSwipeType#rxa_performAction()
-     * @see XPath.ContainsString#stringFormat()
-     * @see XPath.Builder#addAnyClass()
-     * @see XPath.Builder#appendAttribute(Attribute, String)
-     * @see #platform()
+     * @see Unidirection#vertical(boolean)
+     * @see XPath.Builder#addAttribute(Attribute)
+     * @see #swipeOnce(SwipeType)
+     * @see #rxa_click(WebElement)
+     * @see #rxe_byXPath(ByXPath...)
+     * @see #rxe_displayedDate(DateType)
+     * @see #rxe_pickerView(DateType, CalendarUnit)
+     * @see #rxv_hasDate(DateType)
      */
     @NotNull
     default Flowable<Boolean> rxa_calibrateDate(@NotNull final DateType PARAM) {
         final CalendarDateActionType THIS = this;
         final Date DATE = PARAM.date();
-        PlatformType platform = platform();
 
         /* dd MMMM YYYY is the format accepted by the content-desc property */
         final String DATE_STRING = PARAM.dateString("dd MMMM YYYY");
 
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
-        Attribute attr = Attribute.single("content-desc");
-        String format = ((XPath.ContainsString) () -> DATE_STRING).stringFormat();
-        XPath.ContainsString defFormat = () -> "01";
-
-        XPath xp = XPath.builder(platform)
-            .appendAttribute(attr, format)
-            .addAnyClass()
+        Attribute<String> attr = Attribute.<String>builder()
+            .addAttribute("content-desc")
+            .withFormatible(new Attributes.ContainsString() {})
+            .withValue(DATE_STRING)
+            .withJoiner(Attribute.Joiner.OR)
+            .withWrapper(Attribute.Wrapper.NONE)
             .build();
 
-        XPath dxp = XPath.builder(platform)
-            .appendAttribute(attr, defFormat)
-            .addAnyClass()
-            .build();
+        Attribute<String> defAttr = attr.withValue("01");
+        XPath xp = XPath.builder().addAttribute(attr).build();
+        XPath dxp = XPath.builder().addAttribute(defAttr).build();
 
         final ByXPath QUERY = ByXPath.builder()
             .withXPath(xp)
@@ -208,9 +223,9 @@ public interface CalendarDateActionType extends
      * @param param {@link DateType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
-     * @see #rxe_elementLabel(DateType, CalendarUnit)
+     * @see CalendarUnit#YEAR
      * @see #rxa_click(WebElement)
-     * @see #NOT_AVAILABLE
+     * @see #rxe_elementLabel(DateType, CalendarUnit)
      */
     @NotNull
     default Flowable<Boolean> rxa_openYearPicker(@NotNull DateType param) {
@@ -227,7 +242,11 @@ public interface CalendarDateActionType extends
      * @param PARAM {@link DateType} instance.
      * @param UNIT {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
+     * @see Attributes#containsText(String)
+     * @see Attributes#of(PlatformType)
      * @see BooleanUtil#toTrue(Object)
+     * @see ByXPath.Builder#withXPath(XPath)
+     * @see ByXPath.Builder#withRetries(int)
      * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see DatePickerType#targetItemXP(CalendarUnit)
      * @see DateParam.Builder#withDate(Date)
@@ -235,7 +254,7 @@ public interface CalendarDateActionType extends
      * @see DateType#component(CalendarUnit)
      * @see DateType#datePickerType()
      * @see MultiSwipeType#rxa_performAction()
-     * @see XPath.Builder#containsText(String)
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #displayString(DateType, CalendarUnit)
      * @see #getText(WebElement)
      * @see #platform()
@@ -251,16 +270,22 @@ public interface CalendarDateActionType extends
         String format = PARAM.datePickerType().valueStringFormat(UNIT);
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
 
-        XPath xPath = XPath.builder(platform())
+        PlatformType platform = platform();
+        Attributes attrs = Attributes.of(platform);
+
+        XPath xPath = XPath.builder()
             .withXPath(PARAM.datePickerType().targetItemXP(UNIT))
-            .containsText(CP_STRING)
+            .addAttribute(attrs.containsText(CP_STRING))
             .build();
 
         /* We need a custom ByXPath because we want to limit the retry
          * count. Otherwise, the scroll action will take quite a long time as
          * we need to recursively scroll and check for the existence of the
          * element. Consider this trade-off between time and accuracy */
-        final ByXPath QUERY = ByXPath.builder().withXPath(xPath).withRetries(1).build();
+        final ByXPath QUERY = ByXPath.builder()
+            .withXPath(xPath)
+            .withRetries(1)
+            .build();
 
         /* This method is needed because sometimes Appium cannot correctly
          * detect the {@link WebElement} that contains the text we are looking
@@ -353,7 +378,6 @@ public interface CalendarDateActionType extends
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see AndroidDatePickerType#CALENDAR
      * @see DateType#datePickerType()
      * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see #rxe_withXPath(XPath...)

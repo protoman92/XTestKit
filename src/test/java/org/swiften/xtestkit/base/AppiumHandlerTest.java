@@ -19,12 +19,9 @@ import org.testng.annotations.Test;
 import java.util.Collection;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 /**
  * Created by haipham on 5/28/17.
@@ -111,39 +108,6 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
             verify(ENGINE).rxa_startAppiumOnNewThread(appiumCaptor.capture());
             verifyNoMoreInteractions(ENGINE);
             assertTrue(appiumCaptor.getValue().contains("appium"));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_startAppiumServer_shouldSucceed() {
-        try {
-            // Setup
-            doReturn(Flowable.just(VALID_OUTPUT)).when(PROCESS_RUNNER).rxa_execute(any());
-            doReturn(Flowable.just(true)).when(NETWORK_HANDLER).rxa_checkPortAvailable(any());
-            TestSubscriber subscriber = CustomTestSubscriber.create();
-
-            // When
-            ENGINE.rxa_startLocalAppium(RETRY).subscribe(subscriber);
-            subscriber.awaitTerminalEvent();
-
-            // Then
-            subscriber.assertSubscribed();
-            subscriber.assertNoErrors();
-            subscriber.assertComplete();
-            verify(ENGINE).address();
-            verify(ENGINE).networkHandler();
-            verify(ENGINE).cm_whichAppium();
-            verify(ENGINE).cm_startLocalAppium(any(), anyInt());
-            verify(ENGINE).cm_fallBackAppium();
-            verify(ENGINE).rxa_startLocalAppium(any());
-            verify(ENGINE).rxa_startAppiumOnNewThread(any());
-            verify(ENGINE, times(2)).processRunner();
-            verify(NETWORK_HANDLER, atLeastOnce()).rxa_checkUntilPortAvailable(any());
-            verify(NETWORK_HANDLER).markPortUsed(anyInt());
-            verifyNoMoreInteractions(ENGINE);
         } catch (Exception e) {
             fail(e.getMessage());
         }

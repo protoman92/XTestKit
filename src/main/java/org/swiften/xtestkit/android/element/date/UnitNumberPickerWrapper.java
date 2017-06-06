@@ -13,6 +13,7 @@ import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -125,9 +126,10 @@ public class UnitNumberPickerWrapper implements
      * @see AndroidNumericPickerInputType#androidChoicePickerParentXP()
      * @see AndroidDatePickerType#hh_mm_TIMEPICKER
      * @see AndroidView.ViewType#TIME_PICKER
+     * @see Attribute#forClass(String)
      * @see BaseViewType#className()
      * @see Platform#ANDROID
-     * @see XPath.Builder#addClass(String)
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see #datePickerType()
      */
     @NotNull
@@ -136,7 +138,8 @@ public class UnitNumberPickerWrapper implements
         switch (datePickerType()) {
             case hh_mm_TIMEPICKER:
                 String cls = AndroidView.ViewType.TIME_PICKER.className();
-                return XPath.builder(Platform.ANDROID).addClass(cls).build();
+                Attribute attribute = Attribute.forClass(cls);
+                return XPath.builder().addAttribute(attribute).build();
 
             default:
                 return AndroidNumericPickerInputType.super.androidChoicePickerParentXP();

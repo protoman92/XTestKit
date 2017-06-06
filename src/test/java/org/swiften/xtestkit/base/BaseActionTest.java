@@ -76,6 +76,7 @@ public class BaseActionTest implements BaseActionType {
 
         // When
         ENGINE.rxa_acceptAlert().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
 
         // Then
         subscriber.assertSubscribed();

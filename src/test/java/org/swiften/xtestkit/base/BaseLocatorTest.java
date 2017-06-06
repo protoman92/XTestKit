@@ -12,11 +12,10 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.locator.param.TextParam;
-import org.swiften.xtestkit.base.element.locator.xpath.XPath;
-import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkit.base.type.BaseViewType;
+import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -171,7 +170,7 @@ public class BaseLocatorTest implements TestLocatorType {
         // Setup
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
         List<BaseViewType> views = PLATFORM_VIEWS.allViews();
-        ByXPath param = ByXPath.builder().withXPath(XPath.EMPTY).withError("").build();
+        ByXPath param = ByXPath.builder().build();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
