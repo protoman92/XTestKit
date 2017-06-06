@@ -273,10 +273,8 @@ public interface CalendarDateActionType extends
         PlatformType platform = platform();
         Attributes attrs = Attributes.of(platform);
 
-        XPath xPath = XPath.builder()
-            .withXPath(PARAM.datePickerType().targetItemXP(UNIT))
-            .addAttribute(attrs.containsText(CP_STRING))
-            .build();
+        XPath xPath = PARAM.datePickerType().targetItemXP(UNIT)
+            .addToEach(attrs.containsText(CP_STRING));
 
         /* We need a custom ByXPath because we want to limit the retry
          * count. Otherwise, the scroll action will take quite a long time as

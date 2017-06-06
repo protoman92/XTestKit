@@ -14,6 +14,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
+import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -38,7 +39,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Only relevant for {@link CalendarUnit#HOUR} and {@link CalendarUnit#MINUTE}.
      */
-    hh_mm_TIMEPICKER;
+    hh_mm_TIME_PICKER;
 
     /**
      * Check if the current {@link AndroidDatePickerType} is calendar-based.
@@ -59,11 +60,11 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Check if the current {@link AndroidDatePickerType} is
      * {@link AndroidView.ViewType#NUMBER_PICKER}-based.
      * @return {@link Boolean} value.
-     * @see #hh_mm_TIMEPICKER
+     * @see #hh_mm_TIME_PICKER
      */
     public boolean isNumberPicker() {
         switch (this) {
-            case hh_mm_TIMEPICKER:
+            case hh_mm_TIME_PICKER:
                 return true;
 
             default:
@@ -199,8 +200,9 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
      * @see CalendarUnit#YEAR
+     * @see CompoundAttribute.Builder#addAttribute(Attribute)
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -211,10 +213,12 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
                 Attributes attrs = Attributes.of(Platform.ANDROID);
                 String clsName = AndroidView.ViewType.TEXT_VIEW.className();
 
-                return XPath.builder()
+                CompoundAttribute attribute = CompoundAttribute.builder()
                     .addAttribute(attrs.containsID("month_text_view"))
                     .addAttribute(attrs.ofClass(clsName))
                     .build();
+
+                return XPath.builder().addAttribute(attribute).build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -229,18 +233,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
+     * @see CompoundAttribute.Builder#addAttribute(Attribute)
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      */
     @NotNull
     private XPath dayDisplayViewXP() {
         Attributes attrs = Attributes.of(Platform.ANDROID);
         String clsName = AndroidView.ViewType.TEXT_VIEW.className();
 
-        return XPath.builder()
+        CompoundAttribute attribute = CompoundAttribute.builder()
             .addAttribute(attrs.containsID("date_picker_day"))
             .addAttribute(attrs.ofClass(clsName))
             .build();
+
+        return XPath.builder().addAttribute(attribute).build();
     }
 
     /**
@@ -251,18 +258,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
+     * @see CompoundAttribute.Builder#addAttribute(Attribute)
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      */
     @NotNull
     private XPath monthDisplayViewXPath() {
         Attributes attrs = Attributes.of(Platform.ANDROID);
         String clsName = AndroidView.ViewType.TEXT_VIEW.className();
 
-        return XPath.builder()
+        CompoundAttribute attribute = CompoundAttribute.builder()
             .addAttribute(attrs.containsID("date_picker_month"))
             .addAttribute(attrs.ofClass(clsName))
             .build();
+
+        return XPath.builder().addAttribute(attribute).build();
     }
 
     /**
@@ -273,18 +283,21 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
+     * @see CompoundAttribute.Builder#addAttribute(Attribute)
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      */
     @NotNull
     private XPath yearDisplayViewXPath() {
         Attributes attrs = Attributes.of(Platform.ANDROID);
         String clsName = AndroidView.ViewType.TEXT_VIEW.className();
 
-        return XPath.builder()
+        CompoundAttribute attribute = CompoundAttribute.builder()
             .addAttribute(attrs.containsID("date_picker_year"))
             .addAttribute(attrs.ofClass(clsName))
             .build();
+
+        return XPath.builder().addAttribute(attribute).build();
     }
 
     /**
@@ -341,13 +354,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#HOUR} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_TIMEPICKER
+     * @see #hh_mm_TIME_PICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String hourFormat() {
         switch (this) {
-            case hh_mm_TIMEPICKER:
+            case hh_mm_TIME_PICKER:
                 return "hh";
 
             default:
@@ -358,13 +371,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#MINUTE} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_TIMEPICKER
+     * @see #hh_mm_TIME_PICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String minuteFormat() {
         switch (this) {
-            case hh_mm_TIMEPICKER:
+            case hh_mm_TIME_PICKER:
                 return "mm";
 
             default:

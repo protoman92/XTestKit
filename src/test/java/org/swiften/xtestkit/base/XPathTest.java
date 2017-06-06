@@ -14,7 +14,7 @@ public final class XPathTest {
     public void test_calendarUnitWrapper_shouldUseCorrectXPath() {
         // Setup
         UnitNumberPickerWrapper wrapper = UnitNumberPickerWrapper.builder()
-            .withDatePicker(AndroidDatePickerType.hh_mm_TIMEPICKER)
+            .withDatePicker(AndroidDatePickerType.hh_mm_TIME_PICKER)
             .withCalendarUnit(CalendarUnit.HOUR)
             .build();
 
@@ -22,5 +22,13 @@ public final class XPathTest {
         LogUtil.println(wrapper.androidChoicePickerParentXP());
         LogUtil.println(wrapper.androidChoicePickerXP());
         LogUtil.println(wrapper.androidChoicePickerItemXP());
+    }
+
+    @Test
+    public void test_androidDatePickerType_shouldUseCorrectXPath() {
+        // Setup & When & Then
+        LogUtil.println(AndroidDatePickerType.CALENDAR.pickerItemXP(CalendarUnit.YEAR));
+        LogUtil.println(AndroidDatePickerType.CALENDAR.pickerViewXP(CalendarUnit.YEAR));
+        LogUtil.println(AndroidDatePickerType.CALENDAR.targetItemXP(CalendarUnit.YEAR));
     }
 }

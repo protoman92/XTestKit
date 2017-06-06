@@ -19,6 +19,7 @@ import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
+import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;
@@ -52,11 +53,12 @@ public interface IOSActionType extends
      * @return {@link Flowable} instance.
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
-     * @see Attribute#withClass(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#hasText(String)
      * @see BaseViewType#className()
      * @see BooleanUtil#toTrue(Object)
+     * @see CompoundAttribute#single(Attribute)
+     * @see CompoundAttribute#withClass(String)
      * @see IOSView.ViewType#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
@@ -73,7 +75,7 @@ public interface IOSActionType extends
         final IOSActionType THIS = this;
         final Platform PLATFORM = Platform.IOS;
         final Attributes ATTRS = Attributes.of(PLATFORM);
-        final LocalizerType LC = localizer();
+        final LocalizerType LOCALIZER = localizer();
         final String BTN_CLS = IOSView.ViewType.UI_BUTTON.className();
         String[] titles;
 
@@ -84,9 +86,11 @@ public interface IOSActionType extends
         }
 
         return Flowable.fromArray(titles)
-            .map(a -> XPath.builder()
-                .addAttribute(ATTRS.hasText(LC.localize(a)).withClass(BTN_CLS))
-                .build())
+            .map(LOCALIZER::localize)
+            .map(ATTRS::hasText)
+            .map(CompoundAttribute::single)
+            .map(a -> a.withClass(BTN_CLS))
+            .map(a -> XPath.builder().addAttribute(a).build())
             .toList()
             .map(a -> a.toArray(new XPath[a.size()]))
             .toFlowable()

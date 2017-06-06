@@ -6,9 +6,9 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.type.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -184,12 +184,12 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
-     * @see Attribute#empty()
-     * @see Attribute#withClass(String)
-     * @see Attribute#withIndex(Integer)
+     * @see CompoundAttribute#empty()
+     * @see CompoundAttribute#withClass(String)
+     * @see CompoundAttribute#withIndex(Integer)
      * @see BaseViewType#className()
      * @see IOSView.ViewType#UI_PICKER_WHEEL
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see #pickerViewIndex(CalendarUnit)
      */
     @NotNull
@@ -199,7 +199,11 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
 
         /* Add one because XPath index is 1-based */
         int index = pickerViewIndex(unit) + 1;
-        Attribute attribute = Attribute.empty().withClass(cls).withIndex(index);
+
+        CompoundAttribute attribute = CompoundAttribute.empty()
+            .withClass(cls)
+            .withIndex(index);
+
         return XPath.builder().addAttribute(attribute).build();
     }
 
