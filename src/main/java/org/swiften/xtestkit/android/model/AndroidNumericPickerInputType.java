@@ -30,8 +30,9 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
+     * @see CompoundAttribute.Builder#addAttribute(Attribute)
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(CompoundAttribute)
      */
     @NotNull
     @Override
@@ -39,10 +40,12 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
         Attributes attrs = Attributes.of(Platform.ANDROID);
         String clsName = AndroidView.ViewType.EDIT_TEXT.className();
 
-        return XPath.builder()
+        CompoundAttribute attribute = CompoundAttribute.builder()
             .addAttribute(attrs.ofClass(clsName))
             .addAttribute(attrs.hasText(selected))
             .build();
+
+        return XPath.builder().addAttribute(attribute).build();
     }
 
     /**
