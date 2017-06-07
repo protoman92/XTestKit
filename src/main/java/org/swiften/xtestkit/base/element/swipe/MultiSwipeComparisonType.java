@@ -7,6 +7,7 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkitcomponents.direction.Unidirection;
 
@@ -151,48 +152,21 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
 
     /**
      * Perform initial swipes a number of times.
-     * @param element The scrollable {@link WebElement}.
-     * @param direction {@link Unidirection} instance.
-     * @param time The number of times to swipe. {@link Integer} value.
+     * @param E The scrollable {@link WebElement}.
+     * @param D {@link Unidirection} instance.
+     * @param times The number of times to swipe. {@link Integer} value.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#isTrue(boolean)
      * @see #rxa_swipeElement(WebElement, Unidirection, double)
      */
     @NotNull
-    default Flowable<Boolean> rxa_swipeInitially(@NotNull WebElement element,
-                                                 @NotNull Unidirection direction,
-                                                 final int time) {
-        return rxa_swipeInitially(element, direction, time, 0);
-    }
-
-    /**
-     * Perform initial swipes a number of times.
-     * @param ELEMENT The scrollable {@link WebElement}.
-     * @param DIRECTION {@link Unidirection} instance.
-     * @param TIMES The number of times to swipe. {@link Integer} value.
-     * @param CURRENT_INDEX The current swipe index.
-     * @return {@link Flowable} instance.
-     * @see #rxa_swipeElement(WebElement, Unidirection, double)
-     */
-    @NotNull
-    default Flowable<Boolean> rxa_swipeInitially(
-        @NotNull final WebElement ELEMENT,
-        @NotNull final Unidirection DIRECTION,
-        final int TIMES,
-        final int CURRENT_INDEX
-    ) {
-        final MultiSwipeComparisonType THIS = this;
-
-        if (CURRENT_INDEX < TIMES) {
-            return rxa_swipeElement(ELEMENT, DIRECTION, 0.8d)
-                .flatMap(a -> THIS.rxa_swipeInitially(
-                    ELEMENT,
-                    DIRECTION,
-                    TIMES,
-                    CURRENT_INDEX + 1
-                ));
-        } else {
-            return Flowable.just(true);
-        }
+    default Flowable<Boolean> rxa_swipeInitially(@NotNull final WebElement E,
+                                                 @NotNull final Unidirection D,
+                                                 final int times) {
+        return Flowable.range(0, times)
+            .concatMap(a -> rxa_swipeElement(E, D, 0.8d))
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 
     /**
@@ -219,12 +193,12 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see MultiSwipeType#rxe_directionToSwipe()
+     * @see #defaultDirection()
+     * @see #firstElementDirection()
+     * @see #lastElementDirection()
      * @see #rxa_compareFirst(WebElement)
      * @see #rxa_compareLast(WebElement)
      * @see #rxe_scrollViewChildItems()
-     * @see #firstElementDirection()
-     * @see #lastElementDirection()
-     * @see #defaultDirection()
      */
     @NotNull
     @Override
@@ -234,11 +208,11 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
 
         return Flowable
             .mergeArray(
-                THIS.rxe_firstVisibleChild()
+                rxe_firstVisibleChild()
                     .flatMap(THIS::rxa_compareFirst)
                     .map(a -> THIS.firstElementDirection()),
 
-                THIS.rxe_lastVisibleChild()
+                rxe_lastVisibleChild()
                     .flatMap(THIS::rxa_compareLast)
                     .map(a -> THIS.lastElementDirection())
             )
@@ -258,6 +232,9 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     @Override
     default Flowable<Boolean> rxa_performAction() {
         final MultiSwipeComparisonType THIS = this;
-        return rxa_swipeInitially().flatMap(a -> THIS.rxa_swipeRecursively());
+
+        return rxa_swipeInitially()
+            .defaultIfEmpty(true)
+            .flatMap(a -> THIS.rxa_swipeRecursively());
     }
 }

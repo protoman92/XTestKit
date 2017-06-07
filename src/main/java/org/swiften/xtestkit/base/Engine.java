@@ -75,9 +75,8 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private D driver;
-    @Nullable
-    CapabilityType capability;
-    @Nullable private WeakReference<LocalizerType> localizer;
+    @Nullable CapabilityType capability;
+    @Nullable private LocalizerType localizer;
 
     @NotNull String browserName;
     @NotNull Address address;
@@ -165,15 +164,13 @@ public abstract class Engine<D extends WebDriver> implements
      * Get the associated {@link LocalizerType} instance.
      * @return {@link LocalizerType} instance.
      * @see ObjectUtil#nonNull(Object)
+     * @see #localizer
      * @see #NOT_AVAILABLE
      */
     @NotNull
     public LocalizerType localizer() {
-        WeakReference<LocalizerType> weak = localizer;
-        LocalizerType ref;
-
-        if (ObjectUtil.nonNull(weak) && ObjectUtil.nonNull((ref = weak.get()))) {
-            return ref;
+        if (ObjectUtil.nonNull(localizer)) {
+            return localizer;
         } else {
             throw new RuntimeException(NOT_AVAILABLE);
         }
@@ -240,11 +237,11 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Set {@link #localizer}. Usually this is set when {@link Engine} is
      * added to {@link org.swiften.xtestkit.kit.TestKit}.
-     * @param delegate {@link LocalizerType} instance.
+     * @param localizer {@link LocalizerType} instance.
      * @see #localizer
      */
-    public void setLocalizer(@NotNull LocalizerType delegate) {
-        localizer = new WeakReference<>(delegate);
+    public void setLocalizer(@NotNull LocalizerType localizer) {
+        this.localizer = localizer;
     }
     //endregion
 

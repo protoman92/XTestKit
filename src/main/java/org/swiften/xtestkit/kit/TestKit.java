@@ -1,7 +1,9 @@
 package org.swiften.xtestkit.kit;
 
 import org.swiften.javautilities.localizer.LCFormat;
+import org.swiften.javautilities.localizer.LocalizerContainerType;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkit.mobile.Platform;
@@ -33,8 +35,8 @@ import java.util.*;
  */
 public class TestKit implements
     BaseErrorType,
+    LocalizerContainerType,
     RepeatRunner.IndexConsumer,
-    LocalizerType,
     TestListenerType
 {
     /**
@@ -49,7 +51,7 @@ public class TestKit implements
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final List<Engine> ENGINES;
-    @Nullable private Localizer localizer;
+    @Nullable private LocalizerType localizer;
 
     TestKit() {
         PROCESS_RUNNER = new ProcessRunner();
@@ -128,7 +130,7 @@ public class TestKit implements
             .fromArray(BoxUtil.box(indexes))
             .filter(a -> a >= 0 && a < SIZE)
             .map(ENGINES::get)
-            .filter(Objects::nonNull)
+            .filter(ObjectUtil::nonNull)
             .switchIfEmpty(RxUtil.error(NOT_AVAILABLE));
     }
 
@@ -181,108 +183,6 @@ public class TestKit implements
     }
     //endregion
 
-    //region LocalizerType
-    /**
-     * @param text {@link String} value.
-     * @param locale {@link Locale} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#rxa_localize(LCFormat, Locale)
-     * @see Localizer#rxa_localize(LCFormat, Locale)
-     */
-    @NotNull
-    @Override
-    public Flowable<String> rxa_localize(@NotNull String text, @Nullable Locale locale) {
-        return localizer().rxa_localize(text, locale);
-    }
-
-    /**
-     * @param text {@link String} value.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#rxa_localize(LCFormat)
-     * @see Localizer#rxa_localize(LCFormat)
-     */
-    @Override
-    public Flowable<String> rxa_localize(@NotNull String text) {
-        return localizer().rxa_localize(text);
-    }
-
-    /**
-     * @param text {@link String} value.
-     * @param locale {@link Locale} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#localize(LCFormat, Locale)
-     * @see Localizer#localize(LCFormat, Locale)
-     */
-    @NotNull
-    @Override
-    public String localize(@NotNull String text, @Nullable Locale locale) {
-        return localizer().localize(text, locale);
-    }
-
-    /**
-     * @param text {@link String} value.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#localize(LCFormat, Locale)
-     * @see Localizer#localize(LCFormat, Locale)
-     */
-    @Override
-    public String localize(@NotNull String text) {
-        return localizer().localize(text);
-    }
-
-    /**
-     * @param format {@link LCFormat} instance.
-     * @param locale {@link Locale} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#rxa_localize(LCFormat, Locale)
-     * @see Localizer#rxa_localize(LCFormat, Locale)
-     */
-    @NotNull
-    @Override
-    public Flowable<String> rxa_localize(@NotNull LCFormat format,
-                                         @Nullable Locale locale) {
-        return localizer().rxa_localize(format, locale);
-    }
-
-    /**
-     * @param format {@link LCFormat} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#rxa_localize(LCFormat)
-     * @see Localizer#rxa_localize(LCFormat)
-     */
-    @NotNull
-    @Override
-    public Flowable<String> rxa_localize(@NotNull LCFormat format) {
-        return localizer().rxa_localize(format);
-    }
-
-    /**
-     * @param format {@link LCFormat} instance.
-     * @param locale {@link Locale} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#localize(LCFormat, Locale)
-     * @see Localizer#localize(LCFormat, Locale)
-     */
-    @NotNull
-    @Override
-    public String localize(@NotNull LCFormat format,
-                           @Nullable Locale locale) {
-        return localizer().localize(format, locale);
-    }
-
-    /**
-     * @param format {@link LCFormat} instance.
-     * @return {@link Flowable} instance.
-     * @see LocalizerType#localize(LCFormat, Locale)
-     * @see Localizer#localize(LCFormat, Locale)
-     */
-    @NotNull
-    @Override
-    public String localize(@NotNull LCFormat format) {
-        return localizer().localize(format);
-    }
-    //endregion
-
     //region Getters
     /**
      * Return {@link #PROCESS_RUNNER}.
@@ -317,12 +217,14 @@ public class TestKit implements
     /**
      * Get {@link #localizer}.
      * @return {@link Localizer} instance.
+     * @see ObjectUtil#nonNull(Object)
      * @see #localizer
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public Localizer localizer() {
-        if (Objects.nonNull(localizer)) {
+    @Override
+    public LocalizerType localizer() {
+        if (ObjectUtil.nonNull(localizer)) {
             return localizer;
         } else {
             throw new RuntimeException(NOT_AVAILABLE);
@@ -334,7 +236,7 @@ public class TestKit implements
     /**
      * Get the current active {@link Engine}.
      * @return {@link Engine} instance.
-     * @throws RuntimeException If no non-null {@link Engine} found.
+     * @see ObjectUtil#nonNull(Object)
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -344,7 +246,7 @@ public class TestKit implements
         if (current > -1 && current < engines.size()) {
             Engine engine = engines.get(current);
 
-            if (Objects.nonNull(engine)) {
+            if (ObjectUtil.nonNull(engine)) {
                 return engine;
             }
         }
@@ -552,11 +454,12 @@ public class TestKit implements
         public TestKit build() {
             /* Add default resource bundles */
             addResourceBundle("TestKit", Locale.US);
+            LocalizerType localizer = LOCALIZER_BUILDER.build();
 
             final TestKit KIT = TEST_KIT;
             List<Engine> engines = KIT.engines();
-            engines.forEach(a -> a.setLocalizer(KIT));
-            KIT.localizer = LOCALIZER_BUILDER.build();
+            engines.forEach(a -> a.setLocalizer(localizer));
+            KIT.localizer = localizer;
             return KIT;
         }
     }

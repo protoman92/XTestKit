@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkitcomponents.direction.Unidirection;
 
@@ -22,8 +23,7 @@ public interface MultiSwipeType extends SwipeOnceType {
      * to avoid a full unidirectional swipe.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<Double> rxe_elementSwipeRatio();
+    @NotNull Flowable<Double> rxe_elementSwipeRatio();
 
     /**
      * Check whether the swipe action should be repeated, e.g. when we are
@@ -31,22 +31,19 @@ public interface MultiSwipeType extends SwipeOnceType {
      * that emits true as long as the element is not found yet.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<Boolean> rxv_shouldKeepSwiping();
+    @NotNull Flowable<Boolean> rxv_shouldKeepSwiping();
 
     /**
      * Get the {@link WebElement} to swipe.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<WebElement> rxe_scrollableViewToSwipe();
+    @NotNull Flowable<WebElement> rxe_scrollableViewToSwipe();
 
     /**
      * Get the {@link Unidirection} to swipe towards.
      * @return {@link Flowable} instance.
      */
-    @NotNull
-    Flowable<Unidirection> rxe_directionToSwipe();
+    @NotNull Flowable<Unidirection> rxe_directionToSwipe();
 
     /**
      * Repeat a scroll while a condition is satisfied.
