@@ -32,7 +32,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      * @see WebElement#sendKeys(CharSequence...)
      */
     default void type(@NotNull WebElement element, @NotNull String...text) {
-        LogUtil.printfThread("Sending '%s' to %s", Arrays.toString(text), element);
+        LogUtil.printft("Sending '%s' to %s", Arrays.toString(text), element);
         element.sendKeys(text);
     }
 

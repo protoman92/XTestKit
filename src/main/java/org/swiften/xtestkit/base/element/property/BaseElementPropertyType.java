@@ -29,7 +29,7 @@ public interface BaseElementPropertyType extends BaseErrorType {
     @NotNull
     default String getText(@NotNull WebElement element) {
         String text = element.getText();
-        LogUtil.printfThread("Text '%s' for element %s", text, element);
+        LogUtil.printft("Text '%s' for element %s", text, element);
         return text;
     }
 

@@ -3,7 +3,6 @@ package org.swiften.xtestkit.base.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 
 import java.util.concurrent.Callable;
@@ -39,7 +38,7 @@ public interface DriverContainerType<D extends WebDriver> {
         final DriverContainerType<?> THIS = this;
 
         return Flowable.error(() -> {
-            LogUtil.println(THIS.driver().getPageSource());
+//            LogUtil.println(THIS.driver().getPageSource());
             return new Exception(error);
         });
     }

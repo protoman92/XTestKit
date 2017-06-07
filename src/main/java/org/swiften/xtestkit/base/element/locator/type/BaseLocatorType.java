@@ -71,7 +71,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final String XPATH = param.xPath();
 
         return Flowable.just(XPATH)
-            .doOnNext(a -> LogUtil.printfThread("Searching for %s", a))
+            .doOnNext(a -> LogUtil.printft("Searching for %s", a))
             .concatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */

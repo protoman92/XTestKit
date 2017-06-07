@@ -136,17 +136,17 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
 
         return Flowable.zip(
             THIS.rxe_scrollViewChildCount()
-                .doOnNext(a -> LogUtil.printfThread("%d child items", a))
+                .doOnNext(a -> LogUtil.printft("%d child items", a))
                 .map(Long::doubleValue),
 
             THIS.rxe_firstVisibleChild()
                 .flatMap(THIS::rxe_initialDifference)
-                .doOnNext(a -> LogUtil.printfThread("%d initial difference", a))
+                .doOnNext(a -> LogUtil.printft("%d initial difference", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
             (visible, diff) -> (int)(Math.ceil(diff / visible / 0.8d))
-        ).doOnNext(a -> LogUtil.printfThread("%d initial swipes", a));
+        ).doOnNext(a -> LogUtil.printft("%d initial swipes", a));
     }
 
     /**

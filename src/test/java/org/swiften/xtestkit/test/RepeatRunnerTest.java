@@ -14,7 +14,7 @@ public final class RepeatRunnerTest {
         dataProvider = "dataProvider"
     )
     public RepeatRunnerTest(int index) {
-        LogUtil.printfThread("Starting test %d", index);
+        LogUtil.printft("Starting test %d", index);
         INDEX = index;
     }
 

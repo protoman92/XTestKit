@@ -100,7 +100,7 @@ public interface DateActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxa_selectDate(@NotNull final DateType PARAM) {
-        LogUtil.printfThread("Selecting %s", dateString(PARAM));
+        LogUtil.printft("Selecting %s", dateString(PARAM));
 
         final DateActionType<?> THIS = this;
 

@@ -63,7 +63,7 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      */
     @NotNull
     default Flowable<Boolean> rxa_tap(final int X, final int Y) {
-        LogUtil.printfThread("Tapping at x: %d, y: %d", X, Y);
+        LogUtil.printft("Tapping at x: %d, y: %d", X, Y);
         final BaseTapType<?> THIS = this;
 
         return Completable
