@@ -67,22 +67,23 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see AndroidChoiceInputType#androidChoicePickerXP()
-     * @see AndroidView.ViewType#NUMBER_PICKER
      * @see BaseViewType#className()
-     * @see CompoundAttribute#forClass(String)
+     * @see CompoundAttribute#empty()
+     * @see CompoundAttribute#withClass(String)
+     * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(Attribute)
-     * @see XPath.Builder#withXPath(XPath)
+     * @see AndroidView.ViewType#NUMBER_PICKER
      * @see #androidChoicePickerParentXP()
+     * @see #androidScrollablePickerIndex()
      */
     @NotNull
     @Override
     default XPath androidChoicePickerXP() {
-        String cls = AndroidView.ViewType.NUMBER_PICKER.className();
-
         return XPath.builder()
             .withXPath(androidChoicePickerParentXP())
-            .addAttribute(CompoundAttribute.forClass(cls))
+            .addAttribute(CompoundAttribute.empty()
+                .withClass(AndroidView.ViewType.NUMBER_PICKER.className())
+                .withIndex(androidScrollablePickerIndex() + 1))
             .build();
     }
 
@@ -95,17 +96,14 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see CompoundAttribute#withIndex(Integer)
      * @see BaseViewType#className()
      * @see XPath.Builder#addAttribute(Attribute)
-     * @see #androidChoicePickerParentXP()
-     * @see #androidScrollablePickerIndex()
+     * @see XPath.Builder#addXPath(XPath)
+     * @see #androidChoicePickerXP()
      */
     @NotNull
     @Override
     default XPath androidChoicePickerItemXP() {
         return XPath.builder()
-            .withXPath(androidChoicePickerParentXP())
-            .addAttribute(CompoundAttribute.empty()
-                .withClass(AndroidView.ViewType.NUMBER_PICKER.className())
-                .withIndex(androidScrollablePickerIndex() + 1))
+            .withXPath(androidChoicePickerXP())
             .addAttribute(CompoundAttribute.empty())
             .build();
     }

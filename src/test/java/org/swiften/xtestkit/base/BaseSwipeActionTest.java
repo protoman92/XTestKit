@@ -3,6 +3,7 @@ package org.swiften.xtestkit.base;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
+import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
@@ -56,7 +57,7 @@ public class BaseSwipeActionTest implements BaseSwipeType {
     @SuppressWarnings("unchecked")
     public void test_swipe_shouldSucceed() {
         // Setup
-        int times = NumberTestUtil.randomBetween(1, 5);
+        int times = NumberUtil.randomBetween(1, 5);
 
         SwipeParam param = SwipeParam.builder()
             .withDelay(100)
