@@ -7,10 +7,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.AttributeType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by haipham on 3/20/17.
@@ -65,13 +62,13 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
 
     /**
      * Override this method to provide default implementation.
-     * @return {@link List} of {@link String}.
+     * @return {@link Collection} of {@link String}.
      * @see PlatformType#classAttribute()
      */
     @NotNull
     @Override
-    public List<String> classAttribute() {
-        List<String> clsAttributes = PlatformType.super.classAttribute();
+    public Collection<String> classAttribute() {
+        Collection<String> clsAttributes = PlatformType.super.classAttribute();
 
         switch (this) {
             case IOS:
@@ -87,7 +84,7 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
 
     /**
      * Override this method to provide default implementation.
-     * @return {@link List} of {@link String}.
+     * @return {@link Collection} of {@link String}.
      * @see PlatformType#idAttribute()
      * @see CollectionUtil#asList(Object[])
      * @see #ANDROID
@@ -96,7 +93,7 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
      */
     @NotNull
     @Override
-    public List<String> idAttribute() {
+    public Collection<String> idAttribute() {
         switch (this) {
             case ANDROID:
                 return CollectionUtil.asList("resource-id");
@@ -111,7 +108,7 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
 
     /**
      * Override this method to provide default implementation.
-     * @return {@link List} of {@link String}.
+     * @return {@link Collection} of {@link String}.
      * @see PlatformType#textAttribute()
      * @see CollectionUtil#asList(Object[])
      * @see #ANDROID
@@ -120,7 +117,7 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
      */
     @NotNull
     @Override
-    public List<String> textAttribute() {
+    public Collection<String> textAttribute() {
         switch (this) {
             case ANDROID:
                 return CollectionUtil.asList("text");

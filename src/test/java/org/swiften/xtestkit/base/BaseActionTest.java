@@ -4,7 +4,6 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.number.NumberTestUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.xtestkit.base.element.general.BaseActionType;

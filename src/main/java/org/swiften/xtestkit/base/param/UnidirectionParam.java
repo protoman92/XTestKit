@@ -4,11 +4,11 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.unidirection.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Unidirection;
 import org.swiften.xtestkit.base.element.swipe.SwipeDampenType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.unidirection.UnidirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.UnidirectionContainerType;
 
 /**
  * Created by haipham on 5/8/17.

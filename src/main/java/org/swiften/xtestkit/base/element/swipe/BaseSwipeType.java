@@ -13,7 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.type.DriverContainerType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.unidirection.UnidirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.UnidirectionContainerType;
 
 /**
  * This interface provides methods to perform swipe gestures.

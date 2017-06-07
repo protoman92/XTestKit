@@ -8,7 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkitcomponents.unidirection.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Unidirection;
 
 /**
  * This interface is a more specialized version of {@link MultiSwipeType}.
@@ -145,7 +145,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
-            (visible, diff) -> (int)(Math.ceil(diff / visible))
+            (visible, diff) -> (int)(Math.ceil(diff / visible / 0.8d))
         ).doOnNext(a -> LogUtil.printfThread("%d initial swipes", a));
     }
 
@@ -183,7 +183,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
         final MultiSwipeComparisonType THIS = this;
 
         if (CURRENT_INDEX < TIMES) {
-            return THIS.rxa_swipeElement(ELEMENT, DIRECTION, 0.8d)
+            return rxa_swipeElement(ELEMENT, DIRECTION, 0.8d)
                 .flatMap(a -> THIS.rxa_swipeInitially(
                     ELEMENT,
                     DIRECTION,

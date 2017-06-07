@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkitcomponents.unidirection.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Unidirection;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
