@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkitcomponents.direction.Unidirection;
 
@@ -43,14 +42,14 @@ public interface MultiSwipeType extends SwipeOnceType {
      * Get the {@link Unidirection} to swipe towards.
      * @return {@link Flowable} instance.
      */
-    @NotNull Flowable<Unidirection> rxe_directionToSwipe();
+    @NotNull Flowable<Unidirection> rxe_swipeDirection();
 
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
-     * @see #rxe_directionToSwipe()
+     * @see #rxe_swipeDirection()
      * @see #rxa_swipeElement(WebElement, Unidirection, double)
      * @see #rxa_performAction()
      * @see RxUtil#error()
@@ -64,7 +63,7 @@ public interface MultiSwipeType extends SwipeOnceType {
             .onErrorResumeNext(Flowable
                 .zip(
                     rxe_scrollableViewToSwipe(),
-                    rxe_directionToSwipe(),
+                    rxe_swipeDirection(),
                     rxe_elementSwipeRatio(),
                     THIS::rxa_swipeElement
                 )
@@ -97,6 +96,9 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @see SwipeParam.Builder#withStartY(int)
      * @see SwipeParam.Builder#withEndX(int)
      * @see SwipeParam.Builder#withEndY(int)
+     * @see Unidirection#DOWN_UP
+     * @see Unidirection#NONE
+     * @see Unidirection#UP_DOWN
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
      * @see #rxa_swipeOnce(SwipeType)
@@ -108,34 +110,37 @@ public interface MultiSwipeType extends SwipeOnceType {
         Dimension dimension = element.getSize();
         Point location = element.getLocation();
         double height = dimension.getHeight();
-        int startX = location.getX() + dimension.getWidth() / 2;
-        int startY = 0, endY = 0;
+        int startX = 0, startY = 0, endX = 0, endY = 0;
 
-        /* Depending on the swipe direction, we need to have different
-         * startY and endY values. The direction corresponds to whether the
-         * year being searched is after or before the current selected year */
+        /* The direction corresponds to whether the year being searched is
+         * after or before the current selected year */
         switch (direction) {
             case UP_DOWN:
                 endY = (int)(location.getY() + height);
                 startY = (int)(endY - height * scrollRatio);
+                startX = location.getX() + dimension.getWidth() / 2;
+                endX = startX;
                 break;
 
             case DOWN_UP:
                 endY = location.getY();
                 startY = (int)(endY + height * scrollRatio);
+                startX = location.getX() + dimension.getWidth() / 2;
+                endX = startX;
                 break;
+
+            case NONE:
+                return Flowable.just(true);
 
             default:
                 break;
         }
 
-        SwipeType param = SwipeParam.builder()
+        return rxa_swipeOnce(SwipeParam.builder()
             .withStartX(startX)
-            .withEndX(startX)
+            .withEndX(endX)
             .withStartY(startY)
             .withEndY(endY)
-            .build();
-
-        return rxa_swipeOnce(param);
+            .build());
     }
 }

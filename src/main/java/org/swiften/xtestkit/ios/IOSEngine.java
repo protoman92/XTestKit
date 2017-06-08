@@ -12,7 +12,7 @@ import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.common.RetryType;
-import org.swiften.xtestkit.ios.capability.IOSCapability;
+import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.element.choice.IOSChoiceSelectorType;
 import org.swiften.xtestkit.ios.element.date.IOSDateActionType;
 import org.swiften.xtestkit.ios.element.general.IOSActionType;
@@ -204,17 +204,17 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     public static class Builder extends MobileEngine.Builder<IOSEngine> {
         /**
          * Override this constructor to provide custom {@link IOSEngine}
-         * and {@link IOSCapability.Builder} instances.
+         * and {@link IOSEngineCapability.Builder} instances.
          * @param engine {@link IOSEngine} instance.
-         * @param builder {@link IOSCapability.Builder} instance.
+         * @param builder {@link IOSEngineCapability.Builder} instance.
          */
         protected Builder(@NotNull IOSEngine engine,
-                          @NotNull IOSCapability.Builder builder) {
+                          @NotNull IOSEngineCapability.Builder builder) {
             super(engine, builder);
         }
 
         Builder() {
-            this(new IOSEngine(), IOSCapability.builder());
+            this(new IOSEngine(), IOSEngineCapability.builder());
         }
 
         /**

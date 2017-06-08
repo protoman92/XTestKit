@@ -10,12 +10,13 @@ import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.base.capability.CapabilityType;
+import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
@@ -23,27 +24,26 @@ import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.password.BasePasswordActionType;
+import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.BaseTapType;
 import org.swiften.xtestkit.base.element.visibility.BaseVisibilityActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
-import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.base.type.AppiumHandlerType;
 import org.swiften.xtestkit.kit.param.AfterClassParam;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
+import org.swiften.xtestkit.test.TestListenerType;
 import org.swiften.xtestkitcomponents.common.DistinctiveType;
 import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
-import org.swiften.xtestkit.test.TestListenerType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +75,8 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private D driver;
-    @Nullable CapabilityType capability;
+    @Nullable
+    EngineCapabilityType capability;
     @Nullable private LocalizerType localizer;
 
     @NotNull String browserName;
@@ -93,12 +94,12 @@ public abstract class Engine<D extends WebDriver> implements
     //region Getters
     /**
      * Get {@link #capability}.
-     * @return {@link CapabilityType} instance.
+     * @return {@link EngineCapabilityType} instance.
      * @see ObjectUtil#nonNull(Object)
      * @see #capability
      * @see #NOT_AVAILABLE
      */
-    public CapabilityType capabilityType() {
+    public EngineCapabilityType capabilityType() {
         if (ObjectUtil.nonNull(capability)) {
             return capability;
         } else {
@@ -293,6 +294,8 @@ public abstract class Engine<D extends WebDriver> implements
      * implementations.
      * @param param {@link BeforeClassParam} instance.
      * @return {@link Flowable} instance.
+     * @see Address#isLocalInstance()
+     * @see #address()
      */
     @NotNull
     public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
@@ -311,7 +314,12 @@ public abstract class Engine<D extends WebDriver> implements
      * implementations.
      * @param param {@link AfterClassParam} instance.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#isTrue(boolean)
+     * @see BooleanUtil#toTrue(Object)
      * @see NetworkHandler#markPortAvailable(int)
+     * @see #address()
+     * @see #networkHandler()
+     * @see #rxa_stopLocalAppium()
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -376,7 +384,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Map<String,Object> capabilities() {
         Map<String,Object> capabilities = new HashMap<String,Object>();
-        capabilities.put(org.openqa.selenium.remote.CapabilityType.BROWSER_NAME, browserName());
+        capabilities.put(CapabilityType.BROWSER_NAME, browserName());
         return capabilities;
     }
     //endregion
@@ -393,19 +401,19 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Start the Appium driver. If {@link CapabilityType#isComplete(Map)}
+     * Start the Appium driver. If {@link EngineCapabilityType#isComplete(Map)}
      * returns false, throw {@link Exception}.
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see CapabilityType#isComplete(Map)
-     * @see CapabilityType#distill(Map)
+     * @see EngineCapabilityType#isComplete(Map)
+     * @see EngineCapabilityType#distill(Map)
      * @see RetryType#retries()
      * @see #driver(String, DesiredCapabilities)
      * @see #NOT_AVAILABLE
      */
     @NotNull
     public Flowable<Boolean> rxa_startDriver(@NotNull final RetryType PARAM) {
-        CapabilityType capType = capabilityType();
+        EngineCapabilityType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 
         if (capType.isComplete(caps)) {
@@ -449,10 +457,10 @@ public abstract class Engine<D extends WebDriver> implements
      */
     public static abstract class Builder<T extends Engine> {
         @NotNull final protected T ENGINE;
-        @NotNull final protected CapabilityType.Builder CB;
+        @NotNull final protected EngineCapabilityType.Builder CB;
 
         protected Builder(@NotNull T engine,
-                          @NotNull CapabilityType.Builder cb) {
+                          @NotNull EngineCapabilityType.Builder cb) {
             ENGINE = engine;
             CB = cb;
         }
@@ -486,7 +494,7 @@ public abstract class Engine<D extends WebDriver> implements
          * which test environment to be used.
          * @param mode {@link TestMode} instance.
          * @return The current {@link Builder} instance.
-         * @see CapabilityType.Builder#withTestMode(TestMode)
+         * @see EngineCapabilityType.Builder#withTestMode(TestMode)
          */
         @NotNull
         public Builder<T> withTestMode(@NotNull TestMode mode) {

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 import java.util.Collection;
@@ -16,12 +15,12 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseCapability implements CapabilityType, BaseErrorType {
+public abstract class BaseEngineCapability implements EngineCapabilityType {
     @Nullable TestMode testMode;
 
-    protected BaseCapability() {}
+    protected BaseEngineCapability() {}
 
-    //region CapabilityType
+    //region EngineCapabilityType
     /**
      * Override this method to provide specific {@link PlatformType}.
      * @return {@link PlatformType} instance.
@@ -65,10 +64,12 @@ public abstract class BaseCapability implements CapabilityType, BaseErrorType {
 
     //region Builder
     /**
-     * Builder class for {@link BaseCapability}.
-     * @param <C> Generics that extends {@link BaseCapability}.
+     * Builder class for {@link BaseEngineCapability}.
+     * @param <C> Generics that extends {@link BaseEngineCapability}.
      */
-    public static class Builder<C extends BaseCapability> implements CapabilityType.Builder {
+    public static class Builder<C extends BaseEngineCapability> implements
+        EngineCapabilityType.Builder
+    {
         @NotNull private final C CAPABILITY;
 
         protected Builder(@NotNull C capability) {

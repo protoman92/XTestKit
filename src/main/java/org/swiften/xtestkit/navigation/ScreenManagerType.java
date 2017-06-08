@@ -321,20 +321,20 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
          */
         @NotNull
         static Node dummy(@NotNull ScreenType screen) {
-            ScreenType.NavigationSupplier navigation = a -> Flowable.just(true);
+            NavigationSupplier navigation = a -> Flowable.just(true);
             TimeUnit unit = TimeUnit.MILLISECONDS;
             return new Node(screen, screen, navigation, unit, 0);
         }
 
         @NotNull final ScreenType S1;
         @NotNull final ScreenType S2;
-        @NotNull final ScreenType.NavigationSupplier NAV_SUPPLIER;
+        @NotNull final NavigationSupplier NAV_SUPPLIER;
         @NotNull final TimeUnit TIME_UNIT;
         final long DELAY;
 
         Node(@NotNull ScreenType firstScreen,
              @NotNull ScreenType secondScreen,
-             @NotNull ScreenType.NavigationSupplier navigation,
+             @NotNull NavigationSupplier navigation,
              @NotNull TimeUnit timeUnit,
              long delay) {
             S1 = firstScreen;

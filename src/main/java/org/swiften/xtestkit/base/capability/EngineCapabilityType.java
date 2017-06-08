@@ -18,7 +18,7 @@ import java.util.Map;
  * Implement this interface to selectively provide capabilities for
  * {@link Engine}.
  */
-public interface CapabilityType extends BaseErrorType {
+public interface EngineCapabilityType extends BaseErrorType {
     /**
      * Get the {@link Platform} for which we are getting capabilities.
      * @return {@link Platform} instance.
@@ -65,7 +65,7 @@ public interface CapabilityType extends BaseErrorType {
     Map<String,Object> distill(@NotNull Map<String,Object> capabilities);
 
     /**
-     * Builder class for {@link CapabilityType}.
+     * Builder class for {@link EngineCapabilityType}.
      */
     interface Builder {
         /**
@@ -76,9 +76,9 @@ public interface CapabilityType extends BaseErrorType {
         Builder withTestMode(@NotNull TestMode testMode);
 
         /**
-         * Return {@link CapabilityType} instance.
-         * @return {@link CapabilityType} instance.
+         * Return {@link EngineCapabilityType} instance.
+         * @return {@link EngineCapabilityType} instance.
          */
-        CapabilityType build();
+        EngineCapabilityType build();
     }
 }

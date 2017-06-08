@@ -5,7 +5,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.capability.CapabilityType;
+import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.kit.param.AfterParam;
 import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -35,6 +35,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     @NotNull String deviceName;
     @NotNull String platformVersion;
     boolean autoLaunch;
+    long commandTimeout;
 
     public MobileEngine() {
         app = "";
@@ -43,6 +44,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         deviceName = "";
         platformVersion = "";
         autoLaunch = true;
+        commandTimeout = 100000;
     }
 
     @NotNull
@@ -63,7 +65,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
-     * Return {@link #appiumVersion}.
+     * Get {@link #appiumVersion}.
      * @return {@link String} value.
      * @see #appiumVersion
      */
@@ -73,7 +75,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
-     * Return {@link #appPackage}.
+     * Get {@link #appPackage}.
      * @return {@link String} value.
      * @see #appPackage
      */
@@ -83,8 +85,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
-     * Return {@link #deviceName}. This can be stubbed out for custom
-     * implementation.
+     * Get {@link #deviceName}.
      * @return {@link String} value.
      * @see #deviceName
      */
@@ -94,7 +95,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
-     * Return {@link #platformVersion}.
+     * Get {@link #platformVersion}.
      * @return {@link String} value.
      * @see #platformVersion
      */
@@ -104,12 +105,21 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
-     * Return {@link #autoLaunch}.
+     * Get {@link #autoLaunch}.
      * @return {@link Boolean} value.
      * @see #autoLaunch
      */
     public boolean autoLaunch() {
         return autoLaunch;
+    }
+
+    /**
+     * Get {@link #commandTimeout}.
+     * @return {@link Long} value.
+     * @see #commandTimeout
+     */
+    public long commandTimeout() {
+        return commandTimeout;
     }
 
     /**
@@ -135,11 +145,11 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param param {@link AfterParam} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_afterMethod(AfterParam)
      * @see #rxa_resetApp()
-     * @see #rxa_stopDriver()
      */
     @NotNull
     @Override
@@ -153,13 +163,14 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     /**
      * @return {@link Map} of {@link String} and {@link Object}. Do not
      * set {@link MobileCapabilityType#FULL_RESET} to be true because we
-     * want to start a device and keep it open until all test for one
-     * {@link MobileEngine} has finished. If necessary, we can clear the
+     * want to start a device and keep it open until all tests for one
+     * {@link MobileEngine} have finished. If necessary, we can clear the
      * app's data and uninstall manually.
      * @see Engine#capabilities()
      * @see #app()
      * @see #appiumVersion()
      * @see #automation()
+     * @see #commandTimeout()
      * @see #deviceName()
      * @see #platformName()
      * @see #platformVersion()
@@ -167,14 +178,15 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = super.capabilities();
-        capabilities.put(MobileCapabilityType.APP, app());
-        capabilities.put(MobileCapabilityType.APPIUM_VERSION, appiumVersion());
-        capabilities.put(MobileCapabilityType.AUTOMATION_NAME, automation().value());
-        capabilities.put(MobileCapabilityType.DEVICE_NAME, deviceName());
-        capabilities.put(MobileCapabilityType.PLATFORM_NAME, platformName());
-        capabilities.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
-        return capabilities;
+        Map<String,Object> caps = super.capabilities();
+        caps.put(MobileCapabilityType.APP, app());
+        caps.put(MobileCapabilityType.APPIUM_VERSION, appiumVersion());
+        caps.put(MobileCapabilityType.AUTOMATION_NAME, automation().value());
+        caps.put(MobileCapabilityType.DEVICE_NAME, deviceName());
+        caps.put(MobileCapabilityType.PLATFORM_NAME, platformName());
+        caps.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
+        caps.put(MobileCapabilityType.NEW_COMMAND_TIMEOUT, commandTimeout());
+        return caps;
     }
     //endregion
 
@@ -184,8 +196,8 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @param <T> Generics parameter that extends {@link MobileEngine}.
      */
     public static class Builder<T extends MobileEngine> extends Engine.Builder<T> {
-        protected Builder(@NotNull T engine, @NotNull CapabilityType.Builder capBuilder) {
-            super(engine, capBuilder);
+        protected Builder(@NotNull T engine, @NotNull EngineCapabilityType.Builder cb) {
+            super(engine, cb);
         }
 
         /**
@@ -201,8 +213,8 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #app} value.
-         * @param app The app's file name.
+         * Set {@link #app}.
+         * @param app {@link String} value.
          * @return The current {@link Builder} instance.
          * @see System#getProperty(String)
          * @see Paths#get(String, String...)
@@ -216,7 +228,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #app} value.
+         * Set {@link #app}.
          * @param path {@link Path} instance.
          * @return The current {@link Builder} instance.
          * @see #app
@@ -227,8 +239,8 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #appPackage} value.
-         * @param appPackage The app's package name.
+         * Set {@link #appPackage}.
+         * @param appPackage {@link String} value.
          * @return The current {@link Builder} instance.
          * @see #appPackage
          */
@@ -239,8 +251,20 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #deviceName} value.
-         * @param deviceName The device name on which test will be executed.
+         * Set {@link #commandTimeout}.
+         * @param timeout {@link Long} value.
+         * @return The current {@link Builder} instance.
+         * @see #commandTimeout
+         */
+        @NotNull
+        public Builder<T> withCommandTimeout(long timeout) {
+            ENGINE.commandTimeout = timeout;
+            return this;
+        }
+
+        /**
+         * Set {@link #deviceName}.
+         * @param deviceName {@link String} value.
          * @return The current {@link Builder} instance.
          * @see #deviceName
          */
@@ -251,7 +275,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #platformVersion} value.
+         * Set {@link #platformVersion}.
          * @param version {@link String} value.
          * @return The current {@link Builder} instance.
          * @see #platformVersion
@@ -263,7 +287,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         }
 
         /**
-         * Set the {@link #autoLaunch} value.
+         * Set {@link #autoLaunch}.
          * @param autoLaunch {@link Boolean} value.
          * @return The current {@link Builder} instance.
          * @see #autoLaunch

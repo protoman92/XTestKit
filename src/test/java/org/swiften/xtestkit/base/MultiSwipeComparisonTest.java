@@ -121,7 +121,7 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
         verify(ENGINE, times(TOTAL_SWIPE)).rxa_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rxv_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_scrollableViewToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_directionToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_swipeDirection();
         verify(ENGINE, times(TOTAL_SWIPE + 2)).rxe_firstVisibleChild();
         verify(ENGINE, times(TOTAL_SWIPE + 1)).rxe_lastVisibleChild();
 

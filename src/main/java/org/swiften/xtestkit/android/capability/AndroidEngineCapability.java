@@ -3,10 +3,9 @@ package org.swiften.xtestkit.android.capability;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.mobile.capability.MobileCapability;
-import org.swiften.xtestkit.ios.capability.IOSCapability;
+import org.swiften.xtestkit.mobile.capability.MobileEngineCapability;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 import java.util.*;
 
@@ -19,7 +18,7 @@ import java.util.*;
  * {@link Platform#ANDROID} and
  * {@link org.swiften.xtestkit.android.AndroidEngine}.
  */
-public class AndroidCapability extends MobileCapability {
+public class AndroidEngineCapability extends MobileEngineCapability {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -41,8 +40,9 @@ public class AndroidCapability extends MobileCapability {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @return {@link List} of {@link String}.
-     * @see MobileCapability#requiredCapabilities()
+     * @see MobileEngineCapability#requiredCapabilities()
      */
     @NotNull
     @Override
@@ -58,9 +58,10 @@ public class AndroidCapability extends MobileCapability {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param capabilities {@link Map} instance.
      * @return {@link Map} instance.
-     * @see MobileCapability#distill(Map)
+     * @see MobileEngineCapability#distill(Map)
      * @see TestMode#isTestingOnActualEnvironment()
      * @see #testMode()
      */
@@ -77,11 +78,13 @@ public class AndroidCapability extends MobileCapability {
 
     //region Builder.
     /**
-     * Builder class for {@link IOSCapability}.
+     * Builder class for {@link AndroidEngineCapability}.
      */
-    public static class Builder extends MobileCapability.Builder<AndroidCapability> {
+    public static class Builder extends
+        MobileEngineCapability.Builder<AndroidEngineCapability>
+    {
         Builder() {
-            super(new AndroidCapability());
+            super(new AndroidEngineCapability());
         }
     }
     //endregion

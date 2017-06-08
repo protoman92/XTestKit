@@ -23,16 +23,18 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Get the default {@link Unidirection} in case we cannot detect the
      * direction from the sub-elements.
      * @return {@link Unidirection} instance.
+     * @see Unidirection#NONE
      */
     @NotNull
     default Unidirection defaultDirection() {
-        return Unidirection.UP_DOWN;
+        return Unidirection.NONE;
     }
 
     /**
      * Get the {@link Unidirection} to be used after a successful comparison
      * with the first sub-element.
      * @return {@link Unidirection} instance.
+     * @see Unidirection#UP_DOWN
      */
     @NotNull
     default Unidirection firstElementDirection() {
@@ -43,6 +45,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Get the {@link Unidirection} to be used after a successful comparison
      * with the last sub-element.
      * @return {@link Unidirection} instance.
+     * @see Unidirection#DOWN_UP
      */
     @NotNull
     default Unidirection lastElementDirection() {
@@ -128,8 +131,12 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Get the number of initial swipes to perform to get as close to the
      * target value as possible.
      * @return {@link Flowable} instance.
+     * @see Long#doubleValue()
+     * @see Math#abs(double)
+     * @see Math#ceil(double)
      * @see #rxe_scrollViewChildCount()
      * @see #rxe_firstVisibleChild()
+     * @see #rxe_initialDifference(WebElement)
      */
     @NotNull
     default Flowable<Integer> rxe_initialSwipesCount() {
@@ -142,7 +149,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
 
             THIS.rxe_firstVisibleChild()
                 .flatMap(THIS::rxe_initialDifference)
-                .doOnNext(a -> LogUtil.printft("%d initial difference", a))
+                .doOnNext(a -> LogUtil.printft("%d initial diff.", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
@@ -175,7 +182,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * @return {@link Flowable} instance.
      * @see #rxa_swipeInitially(WebElement, Unidirection, int)
      * @see #rxe_scrollableViewToSwipe()
-     * @see #rxe_directionToSwipe()
+     * @see #rxe_swipeDirection()
      * @see #rxe_firstVisibleChild()
      * @see #rxe_initialDifference(WebElement)
      */
@@ -183,7 +190,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     default Flowable<Boolean> rxa_swipeInitially() {
         return Flowable.zip(
             rxe_scrollableViewToSwipe(),
-            rxe_directionToSwipe(),
+            rxe_swipeDirection(),
             rxe_initialSwipesCount(),
             this::rxa_swipeInitially
         ).flatMap(a -> a);
@@ -192,7 +199,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see MultiSwipeType#rxe_directionToSwipe()
+     * @see MultiSwipeType#rxe_swipeDirection()
      * @see #defaultDirection()
      * @see #firstElementDirection()
      * @see #lastElementDirection()
@@ -203,7 +210,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    default Flowable<Unidirection> rxe_directionToSwipe() {
+    default Flowable<Unidirection> rxe_swipeDirection() {
         final MultiSwipeComparisonType THIS = this;
 
         return Flowable
@@ -232,9 +239,6 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     @Override
     default Flowable<Boolean> rxa_performAction() {
         final MultiSwipeComparisonType THIS = this;
-
-        return rxa_swipeInitially()
-            .defaultIfEmpty(true)
-            .flatMap(a -> THIS.rxa_swipeRecursively());
+        return rxa_swipeInitially().flatMap(a -> THIS.rxa_swipeRecursively());
     }
 }

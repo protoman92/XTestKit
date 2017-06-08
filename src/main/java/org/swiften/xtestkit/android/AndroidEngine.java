@@ -10,7 +10,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.capability.AndroidCapability;
+import org.swiften.xtestkit.android.capability.AndroidEngineCapability;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType;
 import org.swiften.xtestkit.android.element.date.AndroidDateActionType;
 import org.swiften.xtestkit.android.element.general.AndroidActionType;
@@ -352,18 +352,18 @@ public class AndroidEngine extends
 
         /**
          * Override this constructor to provide custom {@link AndroidEngine}
-         * and {@link AndroidCapability.Builder} instances.
+         * and {@link AndroidEngineCapability.Builder} instances.
          * @param engine {@link AndroidEngine} instance.
-         * @param builder {@link AndroidCapability.Builder} instance.
+         * @param builder {@link AndroidEngineCapability.Builder} instance.
          */
         protected Builder(@NotNull AndroidEngine engine,
-                          @NotNull AndroidCapability.Builder builder) {
+                          @NotNull AndroidEngineCapability.Builder builder) {
             super(engine, builder);
             ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
         }
 
         Builder() {
-            this(new AndroidEngine(), AndroidCapability.builder());
+            this(new AndroidEngine(), AndroidEngineCapability.builder());
         }
 
         /**

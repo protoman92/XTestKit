@@ -49,6 +49,7 @@ public interface ClickActionType {
      * @param ELEMENT {@link WebElement} instance.
      * @param param {@link RepeatType} instance.
      * @return {@link Flowable} instance.
+     * @see ObjectUtil#nonNull(Object)
      * @see RepeatType#delay()
      * @see RepeatType#times()
      * @see #rxa_click(WebElement)

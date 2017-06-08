@@ -45,7 +45,7 @@ public class MultiSwipeTest implements MultiSwipeType {
 
     @NotNull
     @Override
-    public Flowable<Unidirection> rxe_directionToSwipe() {
+    public Flowable<Unidirection> rxe_swipeDirection() {
         return Flowable.just(Unidirection.UP_DOWN);
     }
 
@@ -101,7 +101,7 @@ public class MultiSwipeTest implements MultiSwipeType {
         verify(ENGINE, times(TOTAL_SWIPE)).rxa_swipeRecursively();
         verify(ENGINE, times(TOTAL_SWIPE)).rxv_shouldKeepSwiping();
         verify(ENGINE, times(TOTAL_SWIPE)).rxe_scrollableViewToSwipe();
-        verify(ENGINE, times(TOTAL_SWIPE)).rxe_directionToSwipe();
+        verify(ENGINE, times(TOTAL_SWIPE)).rxe_swipeDirection();
         verify(ENGINE, times(TOTAL_SWIPE)).rxe_elementSwipeRatio();
         verify(ENGINE, times(TOTAL_SWIPE - 1)).rxa_swipeElement(any(), any(), anyDouble());
         verifyNoMoreInteractions(ENGINE);

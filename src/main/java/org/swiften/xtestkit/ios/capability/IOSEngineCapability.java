@@ -7,7 +7,7 @@ import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkit.mobile.capability.MobileCapability;
+import org.swiften.xtestkit.mobile.capability.MobileEngineCapability;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * {@link Platform#IOS} and
  * {@link org.swiften.xtestkit.ios.IOSEngine}.
  */
-public class IOSCapability extends MobileCapability {
+public class IOSEngineCapability extends MobileEngineCapability {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -42,8 +42,9 @@ public class IOSCapability extends MobileCapability {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @return {@link List} of {@link String}.
-     * @see MobileCapability#requiredCapabilities()
+     * @see MobileEngineCapability#requiredCapabilities()
      */
     @NotNull
     @Override
@@ -56,9 +57,10 @@ public class IOSCapability extends MobileCapability {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @param caps {@link Map} instance.
      * @return {@link Map} instance.
-     * @see MobileCapability#distill(Map)
+     * @see MobileEngineCapability#distill(Map)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #testMode()
      */
@@ -81,6 +83,7 @@ public class IOSCapability extends MobileCapability {
      * different app extensions.
      * @param capabilities {@link Map} instance.
      * @return {@link Boolean} value.
+     * @see MobileEngineCapability#isComplete(Map)
      * @see StringUtil#isNotNullOrEmpty(String)
      * @see #hasValidAppName(String)
      */
@@ -100,6 +103,8 @@ public class IOSCapability extends MobileCapability {
      * Check whether the app file extension matches {@link #testMode()}.
      * @param appName {@link String} value.
      * @return {@link Boolean} value.
+     * @see TestMode#ACTUAL
+     * @see TestMode#SIMULATED
      * @see #testMode()
      */
     public boolean hasValidAppName(@NotNull String appName) {
@@ -119,11 +124,13 @@ public class IOSCapability extends MobileCapability {
 
     //region Builder.
     /**
-     * Builder class for {@link IOSCapability}.
+     * Builder class for {@link IOSEngineCapability}.
      */
-    public static class Builder extends MobileCapability.Builder<IOSCapability> {
+    public static class Builder extends
+        MobileEngineCapability.Builder<IOSEngineCapability>
+    {
         Builder() {
-            super(new IOSCapability());
+            super(new IOSEngineCapability());
         }
     }
     //endregion

@@ -10,7 +10,6 @@ import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -46,10 +45,9 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
         final Platform PLATFORM = Platform.ANDROID;
         final ChoiceInputType INPUT = param.input();
         final String SELECTED = param.selectedChoice();
-        final int INDEX = INPUT.scrollablePickerIndex(PLATFORM);
         final double RATIO = INPUT.swipeRatio(PLATFORM);
 
-        MultiSwipeType selector = new AndroidChoiceMultiSwipeType() {
+        return new AndroidChoiceMultiSwipeType() {
             /**
              * Since there are might be multiple pickers with identical id,
              * we need to get the element that corresponds to a specified
@@ -59,7 +57,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
             @Override
             public Flowable<WebElement> rxe_scrollableViewToSwipe() {
                 XPath xPath = INPUT.choicePickerXP(PLATFORM);
-                return THIS.rxe_withXPath(xPath).elementAt(INDEX).toFlowable();
+                return THIS.rxe_withXPath(xPath).firstElement().toFlowable();
             }
 
             @NotNull
@@ -89,8 +87,6 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
             public ChoiceHelperType<?> helper() {
                 return THIS;
             }
-        };
-
-        return selector.rxa_performAction();
+        }.rxa_performAction();
     }
 }

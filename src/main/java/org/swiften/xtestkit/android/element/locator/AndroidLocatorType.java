@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -54,7 +52,7 @@ public interface AndroidLocatorType extends BaseLocatorType<AndroidDriver<Androi
             .withIndex(1);
 
         XPath xPath = XPath.builder().addAttribute(cAttr).build();
-        return rxe_withXPath(xPath);
+        return rxe_withXPath(xPath).firstElement().toFlowable();
     }
 
     /**

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RetryType;
-import org.swiften.xtestkit.ios.capability.IOSCapability;
+import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
  */
 public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
-    @NotNull private final IOSCapability CAPABILITY;
+    @NotNull private final IOSEngineCapability CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final RetryType RETRY;
 
@@ -31,7 +31,7 @@ public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
             .build());
 
         /* Return this capability when we call ENGINE.capabilityType() */
-        CAPABILITY = mock(IOSCapability.class);
+        CAPABILITY = mock(IOSEngineCapability.class);
 
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(new ProcessRunner());

@@ -45,9 +45,8 @@ public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
     @NotNull
     @Override
     default Flowable<WebElement> rxe_window() {
-        return this
-            .rxe_ofClass(IOSView.ViewType.UI_WINDOW.className())
-            .firstElement().toFlowable();
+        String clsName = IOSView.ViewType.UI_WINDOW.className();
+        return this.rxe_ofClass(clsName).firstElement().toFlowable();
     }
 
     /**

@@ -7,8 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.base.capability.BaseCapability;
-import org.swiften.xtestkit.base.capability.CapabilityType;
+import org.swiften.xtestkit.base.capability.BaseEngineCapability;
+import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
@@ -38,7 +38,7 @@ import static org.testng.Assert.*;
 @SuppressWarnings("MessageMissingOnTestNGAssertion")
 public final class EngineTest implements BaseErrorType, TestMessageType {
     @NotNull private final WebDriver DRIVER;
-    @NotNull private final CapabilityType CAPABILITY;
+    @NotNull private final EngineCapabilityType CAPABILITY;
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -49,7 +49,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         ENGINE = spy(new MockEngine.Builder().build());
 
         /* Return this capability when we cann ENGINE.capabilityType() */
-        CAPABILITY = mock(CapabilityType.class);
+        CAPABILITY = mock(EngineCapabilityType.class);
 
         /* Return this processRunner when we call ENGINE.processRunner() */
         PROCESS_RUNNER = spy(new ProcessRunner());
@@ -286,21 +286,21 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
 
         static final class Builder extends Engine.Builder<MockEngine> {
             Builder() {
-                super(new MockEngine(), new MockCapability.Builder());
+                super(new MockEngine(), new MockEngineCapability.Builder());
             }
         }
     }
 
-    static class MockCapability extends BaseCapability {
+    static class MockEngineCapability extends BaseEngineCapability {
         @NotNull
         @Override
         public PlatformType platform() {
             return mock(PlatformType.class);
         }
 
-        static final class Builder extends BaseCapability.Builder<MockCapability> {
+        static final class Builder extends BaseEngineCapability.Builder<MockEngineCapability> {
             Builder() {
-                super(new MockCapability());
+                super(new MockEngineCapability());
             }
         }
     }

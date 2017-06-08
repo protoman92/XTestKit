@@ -90,15 +90,4 @@ public interface ScreenType {
             TIME_UNIT = target.animationDelayTimeUnit(platform);
         }
     }
-
-    @FunctionalInterface
-    interface NavigationSupplier {
-        /**
-         * Get a navigation {@link Flowable} based on the previous navigation
-         * result.
-         * @param prev {@link Object} instance.
-         * @return {@link Flowable} instance.
-         */
-        @NotNull Flowable<?> navigation(@NotNull Object prev);
-    }
 }

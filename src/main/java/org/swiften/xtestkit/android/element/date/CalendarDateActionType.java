@@ -161,7 +161,7 @@ public interface CalendarDateActionType extends
             .withRetries(0)
             .build();
 
-        MultiSwipeType repeater = new MultiSwipeType() {
+        return new MultiSwipeType() {
             @NotNull
             @Override
             public Flowable<Double> rxe_elementSwipeRatio() {
@@ -201,7 +201,7 @@ public interface CalendarDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<Unidirection> rxe_directionToSwipe() {
+            public Flowable<Unidirection> rxe_swipeDirection() {
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rxe_displayedDate(PARAM)
@@ -213,9 +213,7 @@ public interface CalendarDateActionType extends
             public void swipeOnce(@NotNull SwipeType param) {
                 THIS.swipeOnce(param);
             }
-        };
-
-        return repeater.rxa_performAction();
+        }.rxa_performAction();
     }
 
     /**
@@ -291,7 +289,7 @@ public interface CalendarDateActionType extends
          * forever. With this method, even if the correct {@link WebElement}
          * is scrolled past, it will again come into focus (even several times
          * if needed), and eventually the element will be detected. */
-        MultiSwipeType repeater = new MultiSwipeComparisonType() {
+        return new MultiSwipeComparisonType() {
             @NotNull
             @Override
             public Flowable<Integer> rxe_initialDifference(@NotNull WebElement element) {
@@ -365,9 +363,7 @@ public interface CalendarDateActionType extends
             public void swipeOnce(@NotNull SwipeType param) {
                 THIS.swipeOnce(param);
             }
-        };
-
-        return repeater.rxa_performAction();
+        }.rxa_performAction();
     }
 
     /**

@@ -7,7 +7,6 @@ package org.swiften.xtestkit.base.element.choice;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.rx.RxUtil;
 
 /**
  * This interface provides methods to select choices from various
@@ -19,8 +18,8 @@ public interface ChoiceSelectorType<D extends WebDriver> extends ChoiceHelperTyp
      * Select a choice using {@link ChoiceType}.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see ChoiceMode#GENERAL
      * @see ChoiceType#mode()
+     * @see ChoiceMode#GENERAL
      * @see #rxa_selectGeneralChoice(ChoiceType)
      * @see #NOT_AVAILABLE
      */

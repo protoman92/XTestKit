@@ -38,11 +38,10 @@ public interface AndroidActionType extends
      * is not absolutely critical.
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
-     * @see AlertParam#shouldAccept()
      * @see BaseActionType#rxa_dismissAlert(AlertParam)
+     * @see AlertParam#shouldAccept()
      * @see BooleanUtil#toTrue(Object)
      * @see #alertDismissalDelay()
-     * @see #driver()
      * @see #rxa_click(WebElement)
      * @see #rxe_containsID(String...)
      */
