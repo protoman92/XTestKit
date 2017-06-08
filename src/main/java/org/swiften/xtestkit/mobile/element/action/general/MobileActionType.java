@@ -31,7 +31,7 @@ public interface MobileActionType<D extends MobileDriver> extends BaseActionType
      * @see D#launchApp()
      */
     @NotNull
-    default Flowable<Boolean> rxLaunchApp() {
+    default Flowable<Boolean> rxa_launchApp() {
         return Completable
             .fromAction(driver()::launchApp)
             .<Boolean>toFlowable()

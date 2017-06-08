@@ -283,8 +283,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     rxe_containsID(@NotNull P...param) {
         final BaseLocatorType<?> THIS = this;
 
-        return Flowable
-            .fromArray(param)
+        return Flowable.fromArray(param)
             .map(THIS::containsIDQuery)
             .toList().map(a -> a.toArray(new ByXPath[a.size()]))
             .toFlowable()

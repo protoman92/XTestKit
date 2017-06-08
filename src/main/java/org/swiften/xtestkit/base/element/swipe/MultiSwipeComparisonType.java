@@ -131,6 +131,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Get the number of initial swipes to perform to get as close to the
      * target value as possible.
      * @return {@link Flowable} instance.
+     * @see Integer#doubleValue()
      * @see Long#doubleValue()
      * @see Math#abs(double)
      * @see Math#ceil(double)

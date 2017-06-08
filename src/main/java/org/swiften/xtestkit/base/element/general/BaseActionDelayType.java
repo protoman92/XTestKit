@@ -13,7 +13,7 @@ public interface BaseActionDelayType {
      * it disappears from the screen.
      * @return {@link Long} value.
      */
-    default long alertDismissalDelay() {
+    default long alertDismissDelay() {
         return 2000;
     }
 }

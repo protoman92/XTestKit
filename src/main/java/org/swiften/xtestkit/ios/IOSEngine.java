@@ -11,7 +11,6 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.element.choice.IOSChoiceSelectorType;
 import org.swiften.xtestkit.ios.element.date.IOSDateActionType;
@@ -20,11 +19,10 @@ import org.swiften.xtestkit.ios.element.locator.IOSLocatorType;
 import org.swiften.xtestkit.ios.element.search.IOSSearchActionType;
 import org.swiften.xtestkit.ios.type.IOSDelayType;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -128,15 +126,16 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
 
     //region Test Setup
     /**
-     * @param param {@link BeforeClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see Engine#rxa_beforeClass(RetryType)
      * @see BooleanUtil#isTrue(boolean)
-     * @see Engine#rxa_beforeClass(BeforeClassParam)
      * @see #rxa_startDriver(RetryType)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryType param) {
         return Flowable
             .concat(super.rxa_beforeClass(param), rxa_startDriver(param))
             .all(BooleanUtil::isTrue)
@@ -144,9 +143,11 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     }
 
     /**
-     * @param param {@link AfterClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterClass(AfterClassParam)
+     * @see Engine#rxa_afterClass(RetryType)
+     * @see BooleanUtil#isTrue(boolean)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see XCRunHandler#rxa_stopSimulator(RetryType)
      * @see #testMode()
@@ -154,7 +155,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
         Flowable<Boolean> source;
         TestMode testMode = testMode();
 

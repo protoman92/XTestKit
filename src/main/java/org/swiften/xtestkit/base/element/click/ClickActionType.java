@@ -5,10 +5,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkitcomponents.common.RepeatType;
-
-import java.util.concurrent.TimeUnit;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**
  * Created by haipham on 5/15/17.
@@ -17,14 +14,21 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to click on {@link WebElement}.
  */
-public interface ClickActionType {
+public interface ClickActionType extends BaseErrorType {
     /**
      * Perform a click action for {@link WebElement}.
      * @param element {@link WebElement} instance.
      * @see WebElement#click()
+     * @see #NOT_AVAILABLE
      */
     default void click(@NotNull WebElement element) {
-        element.click();
+        if (element.isDisplayed()) {
+            LogUtil.printft("Clicking on %s", element);
+            element.click();
+        } else {
+            LogUtil.printft("Unable to click %s", element);
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
     }
 
     /**
@@ -36,36 +40,9 @@ public interface ClickActionType {
      */
     @NotNull
     default Flowable<WebElement> rxa_click(@NotNull final WebElement ELEMENT) {
-        LogUtil.printft("Clicking on %s", ELEMENT);
-
         return Completable
             .fromAction(() -> this.click(ELEMENT))
             .<WebElement>toFlowable()
             .defaultIfEmpty(ELEMENT);
-    }
-
-    /**
-     * Send a click event multiple times to {@link WebElement}.
-     * @param ELEMENT {@link WebElement} instance.
-     * @param param {@link RepeatType} instance.
-     * @return {@link Flowable} instance.
-     * @see ObjectUtil#nonNull(Object)
-     * @see RepeatType#delay()
-     * @see RepeatType#times()
-     * @see #rxa_click(WebElement)
-     */
-    @NotNull
-    default Flowable<WebElement> rxa_click(@NotNull final WebElement ELEMENT,
-                                           @NotNull RepeatType param) {
-        final ClickActionType THIS = this;
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = TimeUnit.MILLISECONDS;
-
-        return Flowable
-            .range(0, param.times())
-            .concatMap(a -> THIS.rxa_click(ELEMENT).delay(DELAY, UNIT))
-            .all(ObjectUtil::nonNull)
-            .map(a -> ELEMENT)
-            .toFlowable();
     }
 }

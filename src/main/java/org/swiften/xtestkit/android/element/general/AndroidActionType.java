@@ -41,7 +41,7 @@ public interface AndroidActionType extends
      * @see BaseActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
      * @see BooleanUtil#toTrue(Object)
-     * @see #alertDismissalDelay()
+     * @see #alertDismissDelay()
      * @see #rxa_click(WebElement)
      * @see #rxe_containsID(String...)
      */
@@ -63,7 +63,7 @@ public interface AndroidActionType extends
             .toFlowable()
             .flatMap(THIS::rxa_click)
             .map(BooleanUtil::toTrue)
-            .delay(alertDismissalDelay(), TimeUnit.MILLISECONDS)
+            .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);
     }
 }

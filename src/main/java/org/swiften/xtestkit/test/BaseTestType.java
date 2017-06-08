@@ -5,7 +5,6 @@ package org.swiften.xtestkit.test;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.kit.TestKit;
 import org.swiften.xtestkit.util.EngineContainerType;
 
@@ -18,25 +17,4 @@ public interface BaseTestType extends EngineContainerType {
      * @return {@link TestKit} instance.
      */
     @NotNull TestKit testKit();
-
-    /**
-     * Get the current {@link Engine} index.
-     * @return {@link Integer} value.
-     */
-    int currentIndex();
-
-    /**
-     * Get the currently active {@link Engine}.
-     * @return {@link Engine} instance.
-     * @see #testKit()
-     * @see #currentIndex()
-     * @see TestKit#engine(int)
-     */
-    @NotNull
-    @Override
-    default Engine<?> engine() {
-        TestKit testKit = testKit();
-        int index = currentIndex();
-        return testKit.engine(index);
-    }
 }

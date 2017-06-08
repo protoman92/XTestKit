@@ -27,13 +27,10 @@ import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkitcomponents.common.RetryType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 
 import java.net.MalformedURLException;
@@ -179,14 +176,15 @@ public class AndroidEngine extends
 
     //region Test Setup
     /**
-     * @param PARAM {@link BeforeClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see Engine#rxa_beforeClass(RetryType)
      * @see ADBHandler#rxa_disableEmulatorAnimations(DeviceUIDType)
      * @see ADBHandler#rxa_startEmulator(StartEmulatorParam)
      * @see ADBHandler#rxe_availablePort(RetryType)
      * @see AndroidInstance#setPort(int)
      * @see BooleanUtil#isTrue(boolean)
-     * @see Engine#rxa_beforeClass(BeforeClassParam)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
@@ -196,7 +194,7 @@ public class AndroidEngine extends
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_beforeClass(@NotNull final BeforeClassParam PARAM) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull final RetryType PARAM) {
         final ADBHandler HANDLER = adbHandler();
         final AndroidInstance ANDROID_INSTANCE = androidInstance();
         final Flowable<Boolean> START_APP = rxa_startDriver(PARAM);
@@ -233,12 +231,13 @@ public class AndroidEngine extends
     }
 
     /**
-     * @param param {@link AfterClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see Engine#rxa_afterClass(RetryType)
      * @see ADBHandler#rxa_stopEmulator(StopEmulatorParam)
      * @see AndroidInstance#port()
      * @see BooleanUtil#isTrue(boolean)
-     * @see Engine#rxa_afterClass(AfterClassParam)
      * @see NetworkHandler#markPortAvailable(int)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
@@ -250,7 +249,7 @@ public class AndroidEngine extends
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
         AndroidInstance androidInstance = androidInstance();
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
@@ -276,18 +275,20 @@ public class AndroidEngine extends
     }
 
     /**
-     * @param param {@link AfterParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see Engine#rxa_afterMethod(RetryType)
      * @see ADBHandler#rxa_clearCache(AppPackageType)
-     * @see Engine#rxa_afterMethod(AfterParam)
+     * @see BooleanUtil#isTrue(boolean)
      * @see #adbHandler()
      * @see #androidInstance()
      * @see #appPackage()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
-        final ADBHandler ADB_HANDLER = adbHandler();
+    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
+        final ADBHandler HANDLER = adbHandler();
 
         ClearCacheParam CC_PARAM = ClearCacheParam.builder()
             .withAppPackage(appPackage())
@@ -297,9 +298,9 @@ public class AndroidEngine extends
 
         /* Clear cached data such as SharedPreferences. If the app is not
          * found in the active device/emulator, throw an error */
-        Flowable<Boolean> clearCache = ADB_HANDLER
+        Flowable<Boolean> clearCache = HANDLER
             .rxe_appInstalled(CC_PARAM)
-            .flatMap(a -> ADB_HANDLER.rxa_clearCache(CC_PARAM));
+            .flatMap(a -> HANDLER.rxa_clearCache(CC_PARAM));
 
         return Flowable
             .concat(super.rxa_afterMethod(param), clearCache)
@@ -310,6 +311,7 @@ public class AndroidEngine extends
 
     //region Appium Setup
     /**
+     * Override this method to provide default implementation.
      * @return {@link Map} of capabilities.
      * @see MobileEngine#capabilities()
      * @see #appPackage()
@@ -327,6 +329,7 @@ public class AndroidEngine extends
     }
 
     /**
+     * Override this method to provide default implementation.
      * @return {@link AndroidDriver} instance.
      * @see Engine#driver(String, DesiredCapabilities)
      */
@@ -348,7 +351,7 @@ public class AndroidEngine extends
      * Builder for {@link AndroidEngine}.
      */
     public static class Builder extends MobileEngine.Builder<AndroidEngine> {
-        @NotNull private final AndroidInstance.Builder ANDROID_INSTANCE_BUILDER;
+        @NotNull private final AndroidInstance.Builder INSTANCE_BUILDER;
 
         /**
          * Override this constructor to provide custom {@link AndroidEngine}
@@ -359,7 +362,7 @@ public class AndroidEngine extends
         protected Builder(@NotNull AndroidEngine engine,
                           @NotNull AndroidEngineCapability.Builder builder) {
             super(engine, builder);
-            ANDROID_INSTANCE_BUILDER = AndroidInstance.builder();
+            INSTANCE_BUILDER = AndroidInstance.builder();
         }
 
         Builder() {
@@ -375,7 +378,7 @@ public class AndroidEngine extends
         @NotNull
         @Override
         public MobileEngine.Builder<AndroidEngine> withDeviceName(@NotNull String name) {
-            ANDROID_INSTANCE_BUILDER.withDeviceName(name);
+            INSTANCE_BUILDER.withDeviceName(name);
             return super.withDeviceName(name);
         }
 
@@ -388,7 +391,7 @@ public class AndroidEngine extends
         @NotNull
         @Override
         public Engine.Builder<AndroidEngine> withTestMode(@NotNull TestMode mode) {
-            ANDROID_INSTANCE_BUILDER.withTestMode(mode);
+            INSTANCE_BUILDER.withTestMode(mode);
             return super.withTestMode(mode);
         }
 
@@ -409,7 +412,7 @@ public class AndroidEngine extends
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
-            ANDROID_INSTANCE_BUILDER.withDeviceUID(uid);
+            INSTANCE_BUILDER.withDeviceUID(uid);
             return this;
         }
 
@@ -427,10 +430,16 @@ public class AndroidEngine extends
             return this;
         }
 
+        /**
+         * Get {@link #ENGINE}.
+         * @return {@link Engine} instance.
+         * @see #ENGINE
+         * @see #androidInstance
+         */
         @NotNull
         @Override
         public AndroidEngine build() {
-            ENGINE.androidInstance = ANDROID_INSTANCE_BUILDER.build();
+            ENGINE.androidInstance = INSTANCE_BUILDER.build();
             return super.build();
         }
     }

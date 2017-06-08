@@ -113,11 +113,6 @@ sourceCompatibility = 1.8
 dependencies {
     compile project(':JavaUtilities')
     compile project(':XTestKitComponents')
-
-    compile "org.apache.commons:commons-exec:+"
-    compile "commons-io:commons-io:+"
-    compile "org.testng:testng:+"
-    compile "org.mockito:mockito-core:+"
 }
 
 /* Get Gradle home directory to set up Gradle project */

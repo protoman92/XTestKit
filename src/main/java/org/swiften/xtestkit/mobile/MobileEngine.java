@@ -6,13 +6,12 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionType;
 import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
+import org.swiften.xtestkitcomponents.common.RetryType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -132,28 +131,29 @@ public abstract class MobileEngine<D extends MobileDriver> extends
 
     //region Test Setup
     /**
-     * @param param {@link BeforeParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeMethod(BeforeParam)
-     * @see #rxLaunchApp()
+     * @see Engine#rxa_beforeMethod(RetryType)
+     * @see #rxa_launchApp()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
-        final Flowable<Boolean> SOURCE = rxLaunchApp();
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryType param) {
+        final Flowable<Boolean> SOURCE = rxa_launchApp();
         return super.rxa_beforeMethod(param).flatMap(a -> SOURCE);
     }
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link AfterParam} instance.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterMethod(AfterParam)
+     * @see Engine#rxa_afterMethod(RetryType)
      * @see #rxa_resetApp()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
         final Flowable<Boolean> QUIT_APP = rxa_resetApp();
         return super.rxa_afterMethod(param).flatMap(a -> QUIT_APP);
     }
@@ -161,6 +161,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
 
     //region Appium Setup
     /**
+     * Override this method to provide default implementation.
      * @return {@link Map} of {@link String} and {@link Object}. Do not
      * set {@link MobileCapabilityType#FULL_RESET} to be true because we
      * want to start a device and keep it open until all tests for one

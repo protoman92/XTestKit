@@ -64,7 +64,7 @@ public interface IOSActionType extends
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see Platform#IOS
      * @see XPath.Builder#addAttribute(Attribute)
-     * @see #alertDismissalDelay()
+     * @see #alertDismissDelay()
      * @see #localizer()
      * @see #rxa_click(WebElement)
      * @see #rxe_withXPath(XPath...)
@@ -99,7 +99,7 @@ public interface IOSActionType extends
             .toFlowable()
             .flatMap(THIS::rxa_click)
             .map(BooleanUtil::toTrue)
-            .delay(alertDismissalDelay(), TimeUnit.MILLISECONDS)
+            .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);
     }
 }

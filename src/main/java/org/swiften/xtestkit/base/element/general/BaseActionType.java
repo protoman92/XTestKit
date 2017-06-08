@@ -93,7 +93,8 @@ public interface BaseActionType<D extends WebDriver> extends
      * @see AlertParam#shouldAccept()
      * @see WebDriver#switchTo()
      * @see WebDriver.TargetLocator#alert()
-     * @see #alertDismissalDelay()
+     * @see #alertDismissDelay()
+     * @see #driver()
      */
     @NotNull
     default Flowable<Boolean> rxa_dismissAlert(@NotNull final AlertParam PARAM) {
@@ -110,7 +111,7 @@ public interface BaseActionType<D extends WebDriver> extends
             .onErrorComplete()
             .<Boolean>toFlowable()
             .defaultIfEmpty(true)
-            .delay(alertDismissalDelay(), TimeUnit.MILLISECONDS);
+            .delay(alertDismissDelay(), TimeUnit.MILLISECONDS);
     }
 
     /**

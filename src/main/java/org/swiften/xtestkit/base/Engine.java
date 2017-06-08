@@ -10,7 +10,6 @@ import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
@@ -33,13 +32,10 @@ import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.BaseTapType;
 import org.swiften.xtestkit.base.element.visibility.BaseVisibilityActionType;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkit.test.TestListenerType;
 import org.swiften.xtestkitcomponents.common.DistinctiveType;
 import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.lifecycle.TestLifecycleType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
@@ -69,24 +65,22 @@ public abstract class Engine<D extends WebDriver> implements
     BaseSwitcherActionType,
     BaseVisibilityActionType<D>,
     DistinctiveType,
-    TestListenerType
+    TestListenerType,
+    TestLifecycleType
 {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
 
     @Nullable private D driver;
-    @Nullable
-    EngineCapabilityType capability;
+    @Nullable EngineCapabilityType capability;
     @Nullable private LocalizerType localizer;
 
-    @NotNull String browserName;
     @NotNull Address address;
     @NotNull TestMode testMode;
 
     public Engine() {
         PROCESS_RUNNER = new ProcessRunner();
         NETWORK_HANDLER = new NetworkHandler();
-        browserName = "";
         testMode = TestMode.SIMULATED;
         address = Address.defaultInstance();
     }
@@ -126,16 +120,6 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public String serverUri() {
         return address().uri();
-    }
-
-    /**
-     * Return {@link #browserName}.
-     * @return {@link String} value.
-     * @see #browserName
-     */
-    @NotNull
-    public String browserName() {
-        return browserName;
     }
 
     /**
@@ -287,18 +271,17 @@ public abstract class Engine<D extends WebDriver> implements
 
     //region Test Setup
     /**
-     * Convenience method for {@link org.testng.annotations.BeforeClass}.
-     * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxa_beforeClass(BeforeClassParam)}.
-     * Subclasses of {@link Engine} should provide their own
-     * implementations.
-     * @param param {@link BeforeClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see TestLifecycleType#rxa_beforeClass(RetryType)
      * @see Address#isLocalInstance()
      * @see #address()
+     * @see #rxa_startLocalAppium(RetryType)
      */
     @NotNull
-    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
+    @Override
+    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryType param) {
         if (address().isLocalInstance()) {
             return rxa_startLocalAppium(param);
         } else {
@@ -307,13 +290,10 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Convenience method for {@link org.testng.annotations.AfterClass}.
-     * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxa_afterClass(AfterClassParam)}.
-     * Subclasses of {@link Engine} should provide their own
-     * implementations.
-     * @param param {@link AfterClassParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see TestLifecycleType#rxa_afterClass(RetryType)
      * @see BooleanUtil#isTrue(boolean)
      * @see BooleanUtil#toTrue(Object)
      * @see NetworkHandler#markPortAvailable(int)
@@ -323,7 +303,7 @@ public abstract class Engine<D extends WebDriver> implements
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
         NetworkHandler HANDLER = networkHandler();
         Address ADDRESS = address();
 
@@ -348,30 +328,24 @@ public abstract class Engine<D extends WebDriver> implements
     }
 
     /**
-     * Convenience method for {@link org.testng.annotations.BeforeMethod}.
-     * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxa_beforeMethod(BeforeParam)}.
-     * Subclasses of {@link Engine} should provide their own
-     * implementations.
-     * @param param {@link BeforeParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see TestLifecycleType#rxa_beforeMethod(RetryType)
      */
     @NotNull
-    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryType param) {
         return Flowable.just(true);
     }
 
     /**
-     * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * This method will be called by
-     * {@link org.swiften.xtestkit.kit.TestKit#rxAfterMethod(AfterParam)}.
-     * Subclasses of {@link Engine} should provide their own
-     * implementations.
-     * @param param {@link AfterParam} instance.
+     * Override this method to provide default implementation.
+     * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
+     * @see TestLifecycleType#rxa_afterMethod(RetryType)
      */
     @NotNull
-    public Flowable<Boolean> rxa_afterMethod(@NotNull AfterParam param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
         return Flowable.just(true);
     }
     //endregion
@@ -383,9 +357,7 @@ public abstract class Engine<D extends WebDriver> implements
      */
     @NotNull
     public Map<String,Object> capabilities() {
-        Map<String,Object> capabilities = new HashMap<String,Object>();
-        capabilities.put(CapabilityType.BROWSER_NAME, browserName());
-        return capabilities;
+        return new HashMap<>();
     }
     //endregion
 
@@ -463,18 +435,6 @@ public abstract class Engine<D extends WebDriver> implements
                           @NotNull EngineCapabilityType.Builder cb) {
             ENGINE = engine;
             CB = cb;
-        }
-
-        /**
-         * Set the {@link #ENGINE#browserName} value. This is useful for
-         * Web app testing.
-         * @param name {@link String} value.
-         * @return The current {@link Builder} instance.
-         */
-        @NotNull
-        public Builder<T> withBrowserName(@NotNull String name) {
-            ENGINE.browserName = name;
-            return this;
         }
 
         /**

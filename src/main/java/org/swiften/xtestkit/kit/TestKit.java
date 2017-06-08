@@ -1,21 +1,5 @@
 package org.swiften.xtestkit.kit;
 
-import org.swiften.javautilities.localizer.LCFormat;
-import org.swiften.javautilities.localizer.LocalizerContainerType;
-import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.RetryType;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.kit.param.BeforeParam;
-import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
-import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
-import org.swiften.xtestkit.test.RepeatRunner;
-import org.swiften.xtestkit.test.TestListenerType;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +7,20 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.box.BoxUtil;
 import org.swiften.javautilities.localizer.Localizer;
+import org.swiften.javautilities.localizer.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.AndroidEngine;
+import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkit.test.RepeatRunner;
+import org.swiften.xtestkit.test.TestListenerType;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
+import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 
 import java.util.*;
 
@@ -256,7 +250,6 @@ public class TestKit implements
     //endregion
 
     //region Test Setup
-
     /**
      * Convenience method for {@link org.testng.annotations.BeforeSuite}.
      * @return {@link Flowable} instance.
@@ -278,117 +271,23 @@ public class TestKit implements
     }
 
     /**
-     * Convenience method for {@link org.testng.annotations.BeforeClass}.
-     * @param param {@link BeforeClassParam} instance.
-     * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeClass(BeforeClassParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxa_beforeClass(@NotNull BeforeClassParam param) {
-        return engine(param.index()).rxa_beforeClass(param);
-    }
-
-    /**
-     * Convenience method for {@link org.testng.annotations.AfterClass}.
-     * @param param {@link AfterClassParam} instance.
-     * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterClass(AfterClassParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxa_afterClass(@NotNull AfterClassParam param) {
-        return engine(param.index()).rxa_afterClass(param);
-    }
-
-    /**
-     * Convenience method for {@link org.testng.annotations.BeforeMethod}.
-     * @param param {@link BeforeParam} instance.
-     * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeMethod(BeforeParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxa_beforeMethod(@NotNull BeforeParam param) {
-        return engine(param.index()).rxa_beforeMethod(param);
-    }
-
-    /**
-     * Convenience method for {@link org.testng.annotations.AfterMethod}.
-     * @param param {@link RetryType} instance.
-     * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterMethod(AfterParam)
-     */
-    @NotNull
-    public Flowable<Boolean> rxAfterMethod(@NotNull AfterParam param) {
-        return engine(param.index()).rxa_afterMethod(param);
-    }
-
-    /**
+     * Convenience execution for {@link org.testng.annotations.BeforeSuite}.
      * @see #rxa_beforeSuite()
      */
     public void beforeSuite() {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxa_beforeSuite().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
     }
 
     /**
+     * Convenience execution for {@link org.testng.annotations.AfterSuite}.
      * @see #rxa_afterSuite()
      */
     public void afterSuite() {
         TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
         rxa_afterSuite().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-    }
-
-    /**
-     * @param param {@link BeforeClassParam} instance.
-     * @see #rxa_beforeClass(BeforeClassParam)
-     */
-    public void beforeClass(@NotNull BeforeClassParam param) {
-        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxa_beforeClass(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-    }
-
-    /**
-     * @param param {@link BeforeParam} instance.
-     * @see #rxa_beforeMethod(BeforeParam)
-     */
-    public void beforeMethod(@NotNull BeforeParam param) {
-        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxa_beforeMethod(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-    }
-
-    /**
-     * @param param {@link AfterClassParam} instance.
-     * @see #rxa_afterClass(AfterClassParam)
-     */
-    public void afterClass(@NotNull AfterClassParam param) {
-        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxa_afterClass(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-    }
-
-    /**
-     * @param param {@link AfterParam} instance.
-     * @see #rxAfterMethod(AfterParam)
-     */
-    public void afterMethod(@NotNull AfterParam param) {
-        TestSubscriber<Boolean> subscriber = CustomTestSubscriber.create();
-        rxAfterMethod(param).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
     }
     //endregion
 
