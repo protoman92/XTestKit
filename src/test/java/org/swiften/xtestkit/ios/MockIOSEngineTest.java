@@ -69,7 +69,6 @@ public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(NOT_AVAILABLE);
         subscriber.assertNotComplete();
-        verify(ENGINE).browserName();
         verify(ENGINE).app();
         verify(ENGINE).appiumVersion();
         verify(ENGINE).automation();

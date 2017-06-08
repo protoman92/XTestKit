@@ -14,7 +14,7 @@ public final class XPathTest {
     public void test_calendarUnitWrapper_shouldUseCorrectXPath() {
         // Setup
         UnitNumberPickerWrapper wrapper = UnitNumberPickerWrapper.builder()
-            .withDatePicker(AndroidDatePickerType.hh_mm_TIME_PICKER)
+            .withDatePicker(AndroidDatePickerType.HH_mm_TIME_PICKER)
             .withCalendarUnit(CalendarUnit.HOUR)
             .build();
 

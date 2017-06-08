@@ -4,10 +4,6 @@ import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.AndroidEngine;
 import org.swiften.xtestkit.ios.IOSEngine;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
-import org.swiften.xtestkit.kit.param.BeforeParam;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import io.reactivex.Flowable;
@@ -274,98 +270,6 @@ public final class MockTestKitTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
-    }
-    //endregion
-
-    //region BeforeClass
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_beforeClass_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        TEST_KIT.rxa_beforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxa_beforeClass(any());
-        verify(ENGINE).rxa_beforeClass(any());
-        verifyNoMoreInteractions(TEST_KIT);
-    }
-    //endregion
-
-    //region BeforeMethod
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_beforeMethod_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        TEST_KIT.rxa_beforeMethod(BeforeParam.DEFAULT).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxa_beforeMethod(any());
-        verify(ENGINE).rxa_beforeMethod(any());
-        verifyNoMoreInteractions(TEST_KIT);
-    }
-    //endregion
-
-    //region AfterClass
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_afterClass_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        TEST_KIT.rxa_afterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxa_afterClass(any());
-        verify(ENGINE).rxa_afterClass(any());
-        verifyNoMoreInteractions(TEST_KIT);
-    }
-    //endregion
-
-    //region After
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test_afterMethod_shouldSucceed() {
-        // Setup
-        TestSubscriber subscriber = CustomTestSubscriber.create();
-
-        // When
-        TEST_KIT.rxAfterMethod(AfterParam.DEFAULT).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        // Then
-        subscriber.assertSubscribed();
-        subscriber.assertNoErrors();
-        subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
-        verify(TEST_KIT).engine(anyInt());
-        verify(TEST_KIT).rxAfterMethod(any());
-        verify(ENGINE).rxa_afterMethod(any());
-        verifyNoMoreInteractions(TEST_KIT);
     }
     //endregion
 }

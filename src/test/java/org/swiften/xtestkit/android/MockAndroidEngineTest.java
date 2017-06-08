@@ -7,9 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
-import org.swiften.xtestkit.kit.param.AfterClassParam;
-import org.swiften.xtestkit.kit.param.AfterParam;
-import org.swiften.xtestkit.kit.param.BeforeClassParam;
+import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -80,7 +78,7 @@ public final class MockAndroidEngineTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxa_beforeClass(BeforeClassParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxa_beforeClass(RetryType.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -120,7 +118,7 @@ public final class MockAndroidEngineTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxa_afterClass(AfterClassParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxa_afterClass(RetryType.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then
@@ -153,7 +151,7 @@ public final class MockAndroidEngineTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ENGINE.rxa_afterMethod(AfterParam.DEFAULT).subscribe(subscriber);
+        ENGINE.rxa_afterMethod(RetryType.DEFAULT).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         // Then

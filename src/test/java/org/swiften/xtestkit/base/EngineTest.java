@@ -111,7 +111,6 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
-        verify(ENGINE).browserName();
         verifyNoMoreInteractions(ENGINE);
     }
 
@@ -135,7 +134,6 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).capabilityType();
         verify(ENGINE).capabilities();
-        verify(ENGINE).browserName();
         verify(ENGINE).address();
         verify(ENGINE).serverUri();
         verifyNoMoreInteractions(ENGINE);
@@ -164,7 +162,6 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         verify(ENGINE).driver(any(), any());
         verify(ENGINE).capabilities();
         verify(ENGINE).capabilityType();
-        verify(ENGINE).browserName();
         verifyNoMoreInteractions(ENGINE);
     }
     //endregion

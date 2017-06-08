@@ -6,6 +6,9 @@ import org.swiften.xtestkit.android.element.date.UnitNumberPickerWrapper;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,5 +68,17 @@ public final class ScrapTest {
         try {
             TimeUnit.MILLISECONDS.sleep(2000);
         } catch (Exception e) {}
+    }
+
+    @Test
+    public void test_dateFormat_shouldWork() {
+        // Setup
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        Date date = calendar.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+
+        // When && Then
+        LogUtil.println(formatter.format(date));
     }
 }

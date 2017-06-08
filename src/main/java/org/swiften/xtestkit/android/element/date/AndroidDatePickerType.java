@@ -40,7 +40,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Only relevant for {@link CalendarUnit#HOUR} and {@link CalendarUnit#MINUTE}.
      */
-    hh_mm_TIME_PICKER;
+    HH_mm_TIME_PICKER;
 
     /**
      * Check if the current {@link AndroidDatePickerType} is calendar-based.
@@ -61,11 +61,11 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Check if the current {@link AndroidDatePickerType} is
      * {@link AndroidView.ViewType#NUMBER_PICKER}-based.
      * @return {@link Boolean} value.
-     * @see #hh_mm_TIME_PICKER
+     * @see #HH_mm_TIME_PICKER
      */
     public boolean isNumberPicker() {
         switch (this) {
-            case hh_mm_TIME_PICKER:
+            case HH_mm_TIME_PICKER:
                 return true;
 
             default:
@@ -355,14 +355,14 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#HOUR} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_TIME_PICKER
+     * @see #HH_mm_TIME_PICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String hourFormat() {
         switch (this) {
-            case hh_mm_TIME_PICKER:
-                return "hh";
+            case HH_mm_TIME_PICKER:
+                return "HH";
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -372,13 +372,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
      * Get the format {@link CalendarUnit#MINUTE} is formatted in.
      * @return {@link String} value.
-     * @see #hh_mm_TIME_PICKER
+     * @see #HH_mm_TIME_PICKER
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String minuteFormat() {
         switch (this) {
-            case hh_mm_TIME_PICKER:
+            case HH_mm_TIME_PICKER:
                 return "mm";
 
             default:
