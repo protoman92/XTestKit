@@ -11,7 +11,7 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 import org.testng.annotations.AfterMethod;
@@ -91,7 +91,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
     @NotNull
     @Override
-    public Unidirection firstElementDirection() {
+    public Direction firstElementDirection() {
         LogUtil.println("First direction");
         currentIndex -= 1;
         return AndroidChoiceMultiSwipeType.super.firstElementDirection();
@@ -99,7 +99,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
     @NotNull
     @Override
-    public Unidirection lastElementDirection() {
+    public Direction lastElementDirection() {
         LogUtil.println("Last direction");
         currentIndex += 1;
         return AndroidChoiceMultiSwipeType.super.lastElementDirection();
@@ -114,7 +114,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
     @NotNull
     public Flowable<Boolean> rxa_swipeElement(@NotNull WebElement element,
-                                              @NotNull Unidirection direction,
+                                              @NotNull Direction direction,
                                               double scrollRatio) {
         return Flowable.just(true);
     }

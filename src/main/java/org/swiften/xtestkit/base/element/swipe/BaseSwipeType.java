@@ -13,7 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.type.DriverContainerType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.direction.UnidirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
 
 /**
  * This interface provides methods to perform swipe gestures.
@@ -41,14 +41,22 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see SwipeParam.Builder#withEndY(int)
      * @see SwipeParam.Builder#withRepeatableType(RepeatType)
      * @see SwipeParam.Builder#withDurationType(DurationType)
+     * @see org.swiften.xtestkitcomponents.direction.Direction#DOWN_UP
+     * @see org.swiften.xtestkitcomponents.direction.Direction#LEFT_RIGHT
+     * @see org.swiften.xtestkitcomponents.direction.Direction#RIGHT_LEFT
+     * @see org.swiften.xtestkitcomponents.direction.Direction#UP_DOWN
      * @see #rxa_swipe(RepeatType)
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
-    Flowable<Boolean> rxa_swipeGeneric(@NotNull Point origin,
-                                       @NotNull Dimension size,
-                                       @NotNull P param) {
+    default <P extends
+        DirectionContainerType &
+        DurationType &
+        RepeatType &
+        SwipeDampenType> Flowable<Boolean>
+    rxa_swipeGeneric(@NotNull Point origin,
+                     @NotNull Dimension size,
+                     @NotNull P param) {
         double height = size.getHeight(), width = size.getWidth();
         int originX = origin.getX(), originY = origin.getY();
         int startX, endX, startY, endY;
@@ -110,12 +118,15 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @return {@link Flowable} instance.
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
-     * @see #rxa_swipeGeneric(Point, Dimension, DurationType)
+     * @see #rxa_swipeGeneric(Point, Dimension, DirectionContainerType)
      */
     @NotNull
-    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
-    Flowable<WebElement> rxa_swipeGeneric(@NotNull final WebElement ELEMENT,
-                                          @NotNull P param) {
+    default <P extends
+        DirectionContainerType &
+        DurationType &
+        RepeatType &
+        SwipeDampenType> Flowable<WebElement>
+    rxa_swipeGeneric(@NotNull final WebElement ELEMENT, @NotNull P param) {
         Point origin = ELEMENT.getLocation();
         Dimension size = ELEMENT.getSize();
         return rxa_swipeGeneric(origin, size, param).map(a -> ELEMENT);
@@ -131,11 +142,15 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see WebDriver.Window#getPosition()
      * @see WebDriver.Window#getSize()
      * @see #driver()
-     * @see #rxa_swipeGeneric(Point, Dimension, DurationType)
+     * @see #rxa_swipeGeneric(Point, Dimension, DirectionContainerType)
      */
     @NotNull
-    default <P extends DurationType & UnidirectionContainerType & SwipeDampenType & RepeatType>
-    Flowable<Boolean> rxa_swipeGeneric(@NotNull P param) {
+    default <P extends
+        DirectionContainerType &
+        DurationType &
+        RepeatType &
+        SwipeDampenType> Flowable<Boolean>
+    rxa_swipeGeneric(@NotNull P param) {
         WebDriver driver = driver();
         WebDriver.Options options = driver.manage();
         WebDriver.Window window = options.window();

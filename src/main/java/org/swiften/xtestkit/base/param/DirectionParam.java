@@ -4,11 +4,11 @@ import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.SwipeDampenType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.direction.UnidirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -18,11 +18,11 @@ import org.swiften.xtestkitcomponents.direction.UnidirectionContainerType;
  * Parameter object for {@link Engine#rxa_swipeGeneric(WebElement, DurationType)}.
  * Use this to perform unidirectional swipe actions.
  */
-public class UnidirectionParam implements
+public class DirectionParam implements
     DurationType,
     RepeatType,
     SwipeDampenType,
-    UnidirectionContainerType
+    DirectionContainerType
 {
     /**
      * Get {@link Builder} instance.
@@ -33,13 +33,14 @@ public class UnidirectionParam implements
         return new Builder();
     }
 
-    @NotNull Unidirection direction;
+    @NotNull
+    Direction direction;
     private double startRatio, endRatio;
     private int times, duration;
     private long delay;
 
-    UnidirectionParam() {
-        direction = Unidirection.LEFT_RIGHT;
+    DirectionParam() {
+        direction = Direction.LEFT_RIGHT;
         delay = RepeatType.super.delay();
         times = 1;
         startRatio = SwipeDampenType.super.startRatio();
@@ -49,7 +50,7 @@ public class UnidirectionParam implements
     //region Getters
     @NotNull
     @Override
-    public Unidirection direction() {
+    public Direction direction() {
         return direction;
     }
 
@@ -81,26 +82,38 @@ public class UnidirectionParam implements
 
     //region Builder
     /**
-     * Builder class for {@link UnidirectionParam}.
+     * Builder class for {@link DirectionParam}.
      */
     public static final class Builder {
         @NotNull
-        private final UnidirectionParam PARAM;
+        private final DirectionParam PARAM;
 
         Builder() {
-            PARAM = new UnidirectionParam();
+            PARAM = new DirectionParam();
         }
 
         /**
          * Set the {@link #direction} instance.
-         * @param direction {@link Unidirection} instance.
+         * @param direction {@link Direction} instance.
          * @return The current {@link Builder} instance.
          * @see #direction
          */
         @NotNull
-        public Builder withDirection(@NotNull Unidirection direction) {
+        public Builder withDirection(@NotNull Direction direction) {
             PARAM.direction = direction;
             return this;
+        }
+
+        /**
+         * Set the {@link #direction} instance.
+         * @param param {@link DirectionContainerType} instance.
+         * @return The current {@link Builder} instance.
+         * @see DirectionContainerType#direction()
+         * @see #withDirection(Direction)
+         */
+        @NotNull
+        public Builder withDirectionContainer(@NotNull DirectionContainerType param) {
+            return withDirection(param.direction());
         }
 
         /**
@@ -202,7 +215,7 @@ public class UnidirectionParam implements
         }
 
         @NonNull
-        public UnidirectionParam build() {
+        public DirectionParam build() {
             return PARAM;
         }
     }

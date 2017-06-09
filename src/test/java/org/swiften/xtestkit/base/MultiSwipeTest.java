@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.testng.annotations.BeforeMethod;
@@ -45,8 +45,8 @@ public class MultiSwipeTest implements MultiSwipeType {
 
     @NotNull
     @Override
-    public Flowable<Unidirection> rxe_swipeDirection() {
-        return Flowable.just(Unidirection.UP_DOWN);
+    public Flowable<Direction> rxe_swipeDirection() {
+        return Flowable.just(Direction.UP_DOWN);
     }
 
     @NotNull
@@ -77,7 +77,7 @@ public class MultiSwipeTest implements MultiSwipeType {
     @Override
     public Flowable<Boolean> rxa_swipeElement(
         @NotNull WebElement element,
-        @NotNull Unidirection direction,
+        @NotNull Direction direction,
         double scrollRatio
     ) {
         return Flowable.just(true);

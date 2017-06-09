@@ -10,7 +10,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 
 /**
  * This interface provides methods to repeatedly scroll a scrollable view so
@@ -39,10 +39,10 @@ public interface MultiSwipeType extends SwipeOnceType {
     @NotNull Flowable<WebElement> rxe_scrollableViewToSwipe();
 
     /**
-     * Get the {@link Unidirection} to swipe towards.
+     * Get the {@link Direction} to swipe towards.
      * @return {@link Flowable} instance.
      */
-    @NotNull Flowable<Unidirection> rxe_swipeDirection();
+    @NotNull Flowable<Direction> rxe_swipeDirection();
 
     /**
      * Repeat a scroll while a condition is satisfied.
@@ -50,7 +50,7 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()
-     * @see #rxa_swipeElement(WebElement, Unidirection, double)
+     * @see #rxa_swipeElement(WebElement, Direction, double)
      * @see #rxa_performAction()
      * @see RxUtil#error()
      */
@@ -85,7 +85,7 @@ public interface MultiSwipeType extends SwipeOnceType {
     /**
      * Scroll the picker list view to a new page or the previous page.
      * @param element The calendar list view {@link WebElement}.
-     * @param direction {@link Unidirection} instance.
+     * @param direction {@link Direction} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return {@link Flowable} instance.
      * @see Dimension#getHeight()
@@ -96,16 +96,16 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @see SwipeParam.Builder#withStartY(int)
      * @see SwipeParam.Builder#withEndX(int)
      * @see SwipeParam.Builder#withEndY(int)
-     * @see Unidirection#DOWN_UP
-     * @see Unidirection#NONE
-     * @see Unidirection#UP_DOWN
+     * @see Direction#DOWN_UP
+     * @see Direction#NONE
+     * @see Direction#UP_DOWN
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
      * @see #rxa_swipeOnce(SwipeType)
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeElement(@NotNull WebElement element,
-                                               @NotNull Unidirection direction,
+                                               @NotNull Direction direction,
                                                double scrollRatio) {
         Dimension dimension = element.getSize();
         Point location = element.getLocation();

@@ -13,7 +13,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.base.element.date.*;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
@@ -120,7 +120,7 @@ public interface CalendarDateActionType extends
      * @see DateType#dateString(String)
      * @see DateUtil#notEarlierThan(Date, Date)
      * @see MultiSwipeType#rxa_performAction()
-     * @see Unidirection#vertical(boolean)
+     * @see Direction#vertical(boolean)
      * @see XPath.Builder#addAttribute(Attribute)
      * @see #swipeOnce(SwipeType)
      * @see #rxa_click(WebElement)
@@ -201,12 +201,12 @@ public interface CalendarDateActionType extends
 
             @NotNull
             @Override
-            public Flowable<Unidirection> rxe_swipeDirection() {
+            public Flowable<Direction> rxe_swipeDirection() {
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rxe_displayedDate(PARAM)
                     .map(a -> DateUtil.notEarlierThan(a, DATE, CalendarUnit.DAY.value()))
-                    .map(Unidirection::vertical);
+                    .map(Direction::vertical);
             }
 
             @Override

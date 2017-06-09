@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.testng.annotations.Test;
@@ -90,7 +90,7 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
     @Override
     public Flowable<Boolean> rxa_swipeElement(
         @NotNull WebElement element,
-        @NotNull Unidirection direction,
+        @NotNull Direction direction,
         double scrollRatio
     ) {
         return Flowable.just(true);

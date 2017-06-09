@@ -3,6 +3,7 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 
@@ -43,6 +44,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#isTrue(boolean)
      * @see P#delay()
      * @see P#times()
      * @see P#timeUnit()
@@ -55,8 +57,9 @@ public interface SwipeOnceType extends BaseErrorType {
         final long DELAY = PARAM.delay();
         final TimeUnit UNIT = PARAM.timeUnit();
 
-        return Flowable.range(0, TIMES).concatMap(a ->
-            THIS.rxa_swipeOnce(PARAM).delay(DELAY, UNIT)
-        );
+        return Flowable.range(0, TIMES)
+            .concatMap(a -> THIS.rxa_swipeOnce(PARAM).delay(DELAY, UNIT))
+            .all(BooleanUtil::isTrue)
+            .toFlowable();
     }
 }

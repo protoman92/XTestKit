@@ -9,47 +9,47 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkitcomponents.direction.Unidirection;
+import org.swiften.xtestkitcomponents.direction.Direction;
 
 /**
  * This interface is a more specialized version of {@link MultiSwipeType}.
  * It gets the first and last sub-elements of the scrollable view, compare
  * their values with a pre-determined value to get the swipe
- * {@link Unidirection}.
+ * {@link Direction}.
  * Note that this interface is very opinionated.
  */
 public interface MultiSwipeComparisonType extends MultiSwipeType {
     /**
-     * Get the default {@link Unidirection} in case we cannot detect the
+     * Get the default {@link Direction} in case we cannot detect the
      * direction from the sub-elements.
-     * @return {@link Unidirection} instance.
-     * @see Unidirection#NONE
+     * @return {@link Direction} instance.
+     * @see Direction#NONE
      */
     @NotNull
-    default Unidirection defaultDirection() {
-        return Unidirection.NONE;
+    default Direction defaultDirection() {
+        return Direction.NONE;
     }
 
     /**
-     * Get the {@link Unidirection} to be used after a successful comparison
+     * Get the {@link Direction} to be used after a successful comparison
      * with the first sub-element.
-     * @return {@link Unidirection} instance.
-     * @see Unidirection#UP_DOWN
+     * @return {@link Direction} instance.
+     * @see Direction#UP_DOWN
      */
     @NotNull
-    default Unidirection firstElementDirection() {
-        return Unidirection.UP_DOWN;
+    default Direction firstElementDirection() {
+        return Direction.UP_DOWN;
     }
 
     /**
-     * Get the {@link Unidirection} to be used after a successful comparison
+     * Get the {@link Direction} to be used after a successful comparison
      * with the last sub-element.
-     * @return {@link Unidirection} instance.
-     * @see Unidirection#DOWN_UP
+     * @return {@link Direction} instance.
+     * @see Direction#DOWN_UP
      */
     @NotNull
-    default Unidirection lastElementDirection() {
-        return Unidirection.DOWN_UP;
+    default Direction lastElementDirection() {
+        return Direction.DOWN_UP;
     }
 
     /**
@@ -161,15 +161,15 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     /**
      * Perform initial swipes a number of times.
      * @param E The scrollable {@link WebElement}.
-     * @param D {@link Unidirection} instance.
+     * @param D {@link Direction} instance.
      * @param times The number of times to swipe. {@link Integer} value.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
-     * @see #rxa_swipeElement(WebElement, Unidirection, double)
+     * @see #rxa_swipeElement(WebElement, Direction, double)
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeInitially(@NotNull final WebElement E,
-                                                 @NotNull final Unidirection D,
+                                                 @NotNull final Direction D,
                                                  final int times) {
         return Flowable.range(0, times)
             .concatMap(a -> rxa_swipeElement(E, D, 0.8d))
@@ -181,7 +181,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Perform initial swipes to get us as close to the target value as
      * possible.
      * @return {@link Flowable} instance.
-     * @see #rxa_swipeInitially(WebElement, Unidirection, int)
+     * @see #rxa_swipeInitially(WebElement, Direction, int)
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()
      * @see #rxe_firstVisibleChild()
@@ -211,7 +211,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    default Flowable<Unidirection> rxe_swipeDirection() {
+    default Flowable<Direction> rxe_swipeDirection() {
         final MultiSwipeComparisonType THIS = this;
 
         return Flowable
