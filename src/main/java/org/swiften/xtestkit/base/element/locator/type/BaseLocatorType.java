@@ -162,6 +162,38 @@ public interface BaseLocatorType<D extends WebDriver> extends
             .toFlowable()
             .flatMap(THIS::rxe_byXPath);
     }
+
+    /**
+     * Get {@link XPath} from {@link Attribute}.
+     * @param attribute {@link Attribute} instance.
+     * @return {@link XPath} instance.
+     * @see XPath.Builder#addAttribute(Attribute)
+     */
+    @NotNull
+    default XPath withAttributeQuery(@NotNull Attribute<?> attribute) {
+        return XPath.builder().addAttribute(attribute).build();
+    }
+
+    /**
+     * Find all {@link WebElement} that satisfy some {@link Attribute}. Beware
+     * that each {@link Attribute} will be wrapped in a separate {@link XPath},
+     * not used together.
+     * @param attrs Varargs of {@link Attribute}.
+     * @return {@link Flowable} instance.
+     * @see #withAttributeQuery(Attribute)
+     * @see #rxe_withXPath(XPath...)
+     */
+    @NotNull
+    default Flowable<WebElement> rxe_withAttributes(@NotNull Attribute<?>... attrs) {
+        final BaseLocatorType<?> THIS = this;
+
+        return Flowable.fromArray(attrs)
+            .map(THIS::withAttributeQuery)
+            .toList().map(a -> a.toArray(new XPath[a.size()]))
+            .toFlowable()
+            .flatMap(THIS::rxe_withXPath);
+
+    }
     //endregion
 
     //region With Class
