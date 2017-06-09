@@ -15,6 +15,7 @@ import org.swiften.xtestkit.mobile.Platform;
 public class AndroidView extends PlatformView {
     public enum ViewType implements BaseViewType {
         BUTTON,
+        CHECKED_TEXT_VIEW,
         EDIT_TEXT,
         FRAME_LAYOUT,
         IMAGE_VIEW,
@@ -32,6 +33,9 @@ public class AndroidView extends PlatformView {
             switch (this) {
                 case BUTTON:
                     return "android.widget.Button";
+
+                case CHECKED_TEXT_VIEW:
+                    return "android.widget.CheckedTextView";
 
                 case EDIT_TEXT:
                     return "android.widget.EditText";

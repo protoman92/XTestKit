@@ -4,6 +4,7 @@ package org.swiften.xtestkit.base.element.property;
  * Created by haipham on 5/9/17.
  */
 
+import net.sourceforge.htmlunit.corejs.javascript.tools.debugger.Dim;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -74,11 +75,31 @@ public interface BaseElementPropertyType extends BaseErrorType {
      * @see Dimension#getHeight()
      */
     @NotNull
-    default Point getMiddleCoordinate(@NotNull WebElement element) {
+    default Point middleCoordinate(@NotNull WebElement element) {
         Point origin = element.getLocation();
         Dimension size = element.getSize();
         int x = origin.getX() + size.getWidth() / 2;
         int y = origin.getY() + size.getHeight() / 2;
+        return new Point(x, y);
+    }
+
+    /**
+     * Get the top right coordinate of {@link WebElement} instance.
+     * @param element {@link WebElement} instance.
+     * @return {@link Point} instance.
+     * @see WebElement#getLocation()
+     * @see WebElement#getSize()
+     * @see Point#getX()
+     * @see Point#getY()
+     * @see Dimension#getWidth()
+     * @see Dimension#getHeight()
+     */
+    @NotNull
+    default Point topRightCoordinate(@NotNull WebElement element) {
+        Point origin = element.getLocation();
+        Dimension size = element.getSize();
+        int x = origin.getX() + size.getWidth();
+        int y = origin.getY();
         return new Point(x, y);
     }
 }

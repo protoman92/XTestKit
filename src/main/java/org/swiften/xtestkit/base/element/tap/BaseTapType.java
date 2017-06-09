@@ -90,12 +90,12 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
      * Tap the middle of {@link WebElement}.
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see #getMiddleCoordinate(WebElement)
+     * @see #middleCoordinate(WebElement)
      * @see #rxa_tap(Point)
      */
     @NotNull
     default Flowable<Boolean> rxa_tapMiddle(@NotNull WebElement element) {
-        Point coordinate = getMiddleCoordinate(element);
+        Point coordinate = middleCoordinate(element);
         return rxa_tap(coordinate);
     }
 }
