@@ -8,6 +8,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.log.LogUtil;
 
 /**
  * This interface provides methods to handle switcher
@@ -20,27 +21,29 @@ public interface BaseSwitcherActionType {
      * @return {@link String} value.
      * @see WebElement#getAttribute(String)
      */
-    @NotNull
-    default String getSwitcherValue(@NotNull WebElement element) {
-        return element.getAttribute("value");
-    }
+    @NotNull String switcherValue(@NotNull WebElement element);
 
     /**
      * Get the switcher's associated value when it is off.
      * @return {@link String} value.
      */
-    @NotNull
-    default String switcherOffValue() {
-        return "0";
-    }
+    @NotNull String switcherOffValue();
 
     /**
      * Get the switcher's associated value when it is on.
      * @return {@link String} value.
      */
-    @NotNull
-    default String switcherOnValue() {
-        return "1";
+    @NotNull String switcherOnValue();
+
+    /**
+     * Check if a switch is on/off.
+     * @param element {@link WebElement} instance.
+     * @return {@link Boolean} value.
+     * @see #switcherOnValue()
+     * @see #switcherValue(WebElement)
+     */
+    default boolean isSwitchOn(@NotNull WebElement element) {
+        return switcherValue(element).equals(switcherOnValue());
     }
 
     /**
@@ -49,13 +52,14 @@ public interface BaseSwitcherActionType {
      * @param element {@link WebElement} instance.
      * @param on {@link Boolean} value.
      * @see WebElement#click()
-     * @see #getSwitcherValue(WebElement)
+     * @see #switcherValue(WebElement)
      * @see #switcherOffValue()
      * @see #switcherOnValue()
      */
     default void toggleSwitch(@NotNull WebElement element, boolean on) {
-        String currentValue = getSwitcherValue(element);
+        String currentValue = switcherValue(element);
         String target = on ? switcherOnValue() : switcherOffValue();
+        LogUtil.printft("Switcher value: %s, target: %s", currentValue, target);
 
         if (!currentValue.equals(target)) {
             element.click();

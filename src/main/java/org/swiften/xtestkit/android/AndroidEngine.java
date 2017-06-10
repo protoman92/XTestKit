@@ -19,6 +19,7 @@ import org.swiften.xtestkit.android.element.input.AndroidKeyboardActionType;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.android.element.password.AndroidPasswordActionType;
 import org.swiften.xtestkit.android.element.search.AndroidSearchActionType;
+import org.swiften.xtestkit.android.element.switcher.AndroidSwitcherActionType;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
@@ -53,7 +54,8 @@ public class AndroidEngine extends
     AndroidLocatorType,
     AndroidKeyboardActionType,
     AndroidPasswordActionType,
-    AndroidSearchActionType
+    AndroidSearchActionType,
+    AndroidSwitcherActionType
 {
     @NotNull
     public static Builder builder() {

@@ -22,6 +22,7 @@ public class IOSView extends PlatformView {
         UI_PICKER_WHEEL,
         UI_SEARCH_BAR,
         UI_SECURE_TEXT_FIELD,
+        UI_SEGMENTED_CONTROL,
         UI_SCROLL_VIEW,
         UI_STATIC_TEXT,
         UI_STATUS_BAR,
@@ -65,6 +66,9 @@ public class IOSView extends PlatformView {
 
                 case UI_SCROLL_VIEW:
                     return "XCUIElementTypeScrollView";
+
+                case UI_SEGMENTED_CONTROL:
+                    return "XCUIElementTypeSegmentedControl";
 
                 case UI_STATIC_TEXT:
                     return "XCUIElementTypeStaticText";
