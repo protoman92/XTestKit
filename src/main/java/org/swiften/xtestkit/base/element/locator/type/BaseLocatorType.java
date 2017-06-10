@@ -139,10 +139,14 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param xPath {@link XPath} instance.
      * @return {@link ByXPath} instance.
      * @see ByXPath.Builder#withXPath(XPath)
+     * @see XPath#attribute()
+     * @see #noSuchElement(String)
      */
     @NotNull
     default ByXPath withXPathQuery(@NotNull XPath xPath) {
-        return ByXPath.builder().withXPath(xPath).build();
+        String query = xPath.attribute();
+        String error = noSuchElement(query);
+        return ByXPath.builder().withXPath(xPath).withError(error).build();
     }
 
     /**

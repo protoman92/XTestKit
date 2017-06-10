@@ -19,16 +19,10 @@ public interface ClickActionType extends BaseErrorType {
      * Perform a click action for {@link WebElement}.
      * @param element {@link WebElement} instance.
      * @see WebElement#click()
-     * @see #NOT_AVAILABLE
      */
     default void click(@NotNull WebElement element) {
-        if (element.isDisplayed()) {
-            LogUtil.printft("Clicking on %s", element);
-            element.click();
-        } else {
-            LogUtil.printft("Unable to click %s", element);
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        LogUtil.printft("Clicking on %s", element);
+        element.click();
     }
 
     /**

@@ -187,6 +187,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         caps.put(MobileCapabilityType.PLATFORM_NAME, platformName());
         caps.put(MobileCapabilityType.PLATFORM_VERSION, platformVersion());
         caps.put(MobileCapabilityType.NEW_COMMAND_TIMEOUT, commandTimeout());
+        caps.put("fastReset", true);
         return caps;
     }
     //endregion

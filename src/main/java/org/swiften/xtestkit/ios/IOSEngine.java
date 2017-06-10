@@ -173,6 +173,14 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     //endregion
 
     //region Appium Setup
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Map} instance.
+     * @see MobileEngine#capabilities()
+     * @see #appPackage()
+     * @see #deviceUID()
+     * @see #launchTimeout()
+     */
     @NotNull
     @Override
     public Map<String,Object> capabilities() {
@@ -180,7 +188,6 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         capabilities.put(IOSMobileCapabilityType.BUNDLE_ID, appPackage());
         capabilities.put(IOSMobileCapabilityType.LAUNCH_TIMEOUT, launchTimeout());
         capabilities.put(MobileCapabilityType.UDID, deviceUID());
-        capabilities.put("fastReset", true);
         capabilities.put("autoLaunch", true);
         return capabilities;
     }

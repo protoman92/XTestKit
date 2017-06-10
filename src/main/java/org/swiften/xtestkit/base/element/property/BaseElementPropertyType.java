@@ -4,13 +4,13 @@ package org.swiften.xtestkit.base.element.property;
  * Created by haipham on 5/9/17.
  */
 
-import net.sourceforge.htmlunit.corejs.javascript.tools.debugger.Dim;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
@@ -64,42 +64,30 @@ public interface BaseElementPropertyType extends BaseErrorType {
     }
 
     /**
-     * Get the middle coordinate of {@link WebElement} instance.
+     * Get {@link Point} coordinate relative to {@link WebElement}.
      * @param element {@link WebElement} instance.
+     * @param horizontalRatio {@link RLPositionType} instance.
+     * @param verticalRatio {@link RLPositionType} instance.
      * @return {@link Point} instance.
+     * @see Dimension#getHeight()
+     * @see Dimension#getWidth()
+     * @see RLPositionType#dimensionRatio()
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
-     * @see Point#getX()
-     * @see Point#getY()
-     * @see Dimension#getWidth()
-     * @see Dimension#getHeight()
      */
     @NotNull
-    default Point middleCoordinate(@NotNull WebElement element) {
-        Point origin = element.getLocation();
+    default Point coordinate(@NotNull WebElement element,
+                             @NotNull RLPositionType horizontalRatio,
+                             @NotNull RLPositionType verticalRatio) {
+        Point point = element.getLocation();
         Dimension size = element.getSize();
-        int x = origin.getX() + size.getWidth() / 2;
-        int y = origin.getY() + size.getHeight() / 2;
-        return new Point(x, y);
-    }
-
-    /**
-     * Get the top right coordinate of {@link WebElement} instance.
-     * @param element {@link WebElement} instance.
-     * @return {@link Point} instance.
-     * @see WebElement#getLocation()
-     * @see WebElement#getSize()
-     * @see Point#getX()
-     * @see Point#getY()
-     * @see Dimension#getWidth()
-     * @see Dimension#getHeight()
-     */
-    @NotNull
-    default Point topRightCoordinate(@NotNull WebElement element) {
-        Point origin = element.getLocation();
-        Dimension size = element.getSize();
-        int x = origin.getX() + size.getWidth();
-        int y = origin.getY();
-        return new Point(x, y);
+        int x = point.getX(), y = point.getY();
+        int width = size.getWidth(), height = size.getHeight();
+        double hRatio = horizontalRatio.dimensionRatio();
+        double vRatio = verticalRatio.dimensionRatio();
+        int offsetWidth = (int)(width * hRatio);
+        int offsetHeight = (int)(height * vRatio);
+        int newX = x + offsetWidth, newY = y + offsetHeight;
+        return new Point(newX, newY);
     }
 }

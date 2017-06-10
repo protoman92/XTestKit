@@ -99,7 +99,7 @@ public enum Platform implements BaseErrorType, PlatformType, AttributeType<Strin
                 return CollectionUtil.asList("resource-id");
 
             case IOS:
-                return CollectionUtil.asList("name", "accessibility");
+                return CollectionUtil.asList("name");
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);

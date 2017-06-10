@@ -85,17 +85,4 @@ public interface BaseTapType<D extends WebDriver> extends BaseElementPropertyTyp
         int x = point.getX(), y = point.getY();
         return rxa_tap(x, y);
     }
-
-    /**
-     * Tap the middle of {@link WebElement}.
-     * @param element {@link WebElement} instance.
-     * @return {@link Flowable} instance.
-     * @see #middleCoordinate(WebElement)
-     * @see #rxa_tap(Point)
-     */
-    @NotNull
-    default Flowable<Boolean> rxa_tapMiddle(@NotNull WebElement element) {
-        Point coordinate = middleCoordinate(element);
-        return rxa_tap(coordinate);
-    }
 }

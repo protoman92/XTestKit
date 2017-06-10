@@ -39,7 +39,7 @@ public interface DriverContainerType<D extends WebDriver> {
         final DriverContainerType<?> THIS = this;
 
         return Flowable.error(() -> {
-            LogUtil.println(THIS.driver().getPageSource());
+//            LogUtil.println(THIS.driver().getPageSource());
             return new Exception(error);
         });
     }
