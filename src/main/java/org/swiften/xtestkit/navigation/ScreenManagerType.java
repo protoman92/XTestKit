@@ -8,6 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.util.EngineContainerType;
 
@@ -173,12 +174,14 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
                                 @NotNull ScreenType dest,
                                 @NotNull List<Node> originNodes) {
         List<Node> navigations = Collections.emptyList();
+
         int minimum = 0;
 
         for (Node node : originNodes) {
             List<Node> nav1 = new LinkedList<>(shortest(origin, dest, node.S2));
+            int size = nav1.size();
 
-            if (minimum == 0 || nav1.size() < minimum) {
+            if ((minimum == 0 || size < minimum) && size > 0) {
                 /* If nav1 is empty (not including the originating node),
                  * that means we cannot access the second screen from the
                  * first screen */
@@ -220,8 +223,6 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
                 .stream().filter(a -> !a.S2.equals(ORIGIN))
                 .collect(Collectors.toCollection(LinkedList::new));
 
-            List<Node> forwardShortest = shortest(ORIGIN, dest, forwardNodes);
-
             if (forwardNodes.isEmpty()) {
                 List<Node> backwardNodes = backwardNodes(current);
 
@@ -229,7 +230,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
                  * in order to avoid StackOverflow */
                 return shortest(current, dest, backwardNodes);
             } else {
-                return forwardShortest;
+                return shortest(ORIGIN, dest, forwardNodes);
             }
         } else {
             /* If the current screen is the same as the destination screen,
@@ -261,11 +262,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
 
                 /* If nodes is empty, that means the chain is cut off. We
                  * cannot navigate from start to finish */
-                if (nodes.isEmpty()) {
-                    break;
-                } else {
-                    nav.addAll(nodes);
-                }
+                if (nodes.isEmpty()) break; else nav.addAll(nodes);
             }
         }
 
@@ -275,11 +272,11 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     /**
      * Navigate sequentially from the first {@link Node} to the last.
      * @param initial The initial argument to pass to
-     *                {@link ScreenType.NavigationSupplier#navigation(Object)}
+     *                {@link NavigationSupplier#navigation(Object)}
      * @param screens A varargs of {@link ScreenType}.
      * @return {@link Flowable} instance.
+     * @see NavigationSupplier#navigation(Object)
      * @see ScreenType.Direction#NAVIGATION
-     * @see ScreenType.NavigationSupplier#navigation(Object)
      * @see ScreenType#rxa_onInitialized()
      * @see #multiNodes(ScreenType...)
      */
@@ -312,6 +309,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
      * Each {@link Node} represents a navigation from one {@link ScreenType}
      * to another.
      */
+    @SuppressWarnings("WeakerAccess")
     final class Node {
         /**
          * Get a {@link Node} that does no navigation, i.e. {@link #S1} and
@@ -326,10 +324,10 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
             return new Node(screen, screen, navigation, unit, 0);
         }
 
-        @NotNull final ScreenType S1;
-        @NotNull final ScreenType S2;
-        @NotNull final NavigationSupplier NAV_SUPPLIER;
-        @NotNull final TimeUnit TIME_UNIT;
+        @NotNull public final ScreenType S1;
+        @NotNull public final ScreenType S2;
+        @NotNull public final NavigationSupplier NAV_SUPPLIER;
+        @NotNull public final TimeUnit TIME_UNIT;
         final long DELAY;
 
         Node(@NotNull ScreenType firstScreen,
