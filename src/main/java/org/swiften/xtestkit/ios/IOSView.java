@@ -19,6 +19,7 @@ public class IOSView extends PlatformView {
         UI_IMAGE_VIEW,
         UI_LABEL,
         UI_LINK,
+        UI_PICKER,
         UI_PICKER_WHEEL,
         UI_SEARCH_BAR,
         UI_SECURE_TEXT_FIELD,
@@ -32,7 +33,8 @@ public class IOSView extends PlatformView {
         UI_TEXT_FIELD,
         UI_TEXT_VIEW,
         UI_TOOLBAR,
-        UI_WINDOW;
+        UI_WINDOW,
+        UNDEFINED;
 
         /**
          * @return {@link String} value.
@@ -54,6 +56,9 @@ public class IOSView extends PlatformView {
 
                 case UI_LINK:
                     return "XCUIElementTypeLink";
+
+                case UI_PICKER:
+                    return "XCUIElementTypePicker";
 
                 case UI_PICKER_WHEEL:
                     return "XCUIElementTypePickerWheel";
@@ -96,6 +101,9 @@ public class IOSView extends PlatformView {
 
                 case UI_WINDOW:
                     return "XCUIElementTypeWindow";
+
+                case UNDEFINED:
+                    return "XCUIElementTypeOther";
 
                 default:
                     throw new RuntimeException(NOT_AVAILABLE);

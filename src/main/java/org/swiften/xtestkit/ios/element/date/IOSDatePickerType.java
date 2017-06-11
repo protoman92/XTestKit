@@ -8,6 +8,8 @@ import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -184,27 +186,29 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
-     * @see CompoundAttribute#empty()
-     * @see CompoundAttribute#withClass(String)
-     * @see CompoundAttribute#withIndex(Integer)
      * @see BaseViewType#className()
-     * @see IOSView.ViewType#UI_PICKER_WHEEL
+     * @see CompoundAttribute#forClass(String)
+     * @see CompoundAttribute#withIndex(Integer)
+     * @see XPath.Builder#addAttribute(Attribute)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
+     * @see CompoundAttribute.Path#DIRECT
+     * @see IOSView.ViewType#UI_PICKER
+     * @see IOSView.ViewType#UNDEFINED
      * @see #pickerViewIndex(CalendarUnit)
      */
     @NotNull
     @Override
     public XPath pickerViewXP(@NotNull CalendarUnit unit) {
-        String cls = IOSView.ViewType.UI_PICKER_WHEEL.className();
+        Attributes attrs = Attributes.of(Platform.IOS);
 
-        /* Add one because XPath index is 1-based */
-        int index = pickerViewIndex(unit) + 1;
-
-        CompoundAttribute attribute = CompoundAttribute.empty()
-            .withClass(cls)
-            .withIndex(index);
-
-        return XPath.builder().addAttribute(attribute).build();
+        return XPath.builder()
+            .addAttribute(attrs.ofClass(IOSView.ViewType.UNDEFINED.className()))
+            .addAttribute(CompoundAttribute.builder()
+                .withPath(CompoundAttribute.Path.DIRECT)
+                .withClass(IOSView.ViewType.UI_PICKER_WHEEL.className())
+                .withIndex(pickerViewIndex(unit) + 1)
+                .build())
+            .build();
     }
 
     /**
