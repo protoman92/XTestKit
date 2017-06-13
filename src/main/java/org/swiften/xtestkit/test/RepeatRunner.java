@@ -292,7 +292,7 @@ public class RepeatRunner implements
         /**
          * Add a test {@link Class} to be passed to {@link #RUNNER#TEST_RUNNER}.
          * @param cls {@link Class} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder addTestClass(@NotNull Class<?> cls) {
@@ -303,7 +303,7 @@ public class RepeatRunner implements
         /**
          * Set {@link TestNG#m_verbose} level to control the level of logging.
          * @param level {@link Integer} value.
-         * @return THe current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withVerboseLevel(int level) {
@@ -314,7 +314,7 @@ public class RepeatRunner implements
         /**
          * Set the {@link Pagination#retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -326,7 +326,7 @@ public class RepeatRunner implements
          * Set the {@link Pagination#partitionSize} value. This batches the test
          * runners into sets of test.
          * @param partition {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPartitionSize(int partition) {
@@ -337,7 +337,7 @@ public class RepeatRunner implements
         /**
          * Set the {@link #RUNNER#indexConsumer} instance.
          * @param consumer {@link IndexConsumer} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withParameterConsumer(@NotNull IndexConsumer consumer) {
@@ -348,7 +348,7 @@ public class RepeatRunner implements
         /**
          * Add {@link TestListenerType} instance to {@link #RUNNER#LISTENERS}.
          * @param listener {@link TestListenerType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder addListener(@NotNull TestListenerType listener) {

@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.element.date;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.property.base.AttributeType;
+import org.swiften.xtestkitcomponents.property.base.ValueType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.List;
  * {@link DateActionType}
  * for better code reuse.
  */
-public enum CalendarUnit implements AttributeType<Integer>, BaseErrorType {
+public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
     DAY,
     MONTH,
     YEAR,

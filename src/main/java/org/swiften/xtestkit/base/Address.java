@@ -140,7 +140,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
         /**
          * Set the {@link #SERVER#mode} instance.
          * @param mode {@link Mode} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withMode(@NotNull Mode mode) {
@@ -151,7 +151,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
         /**
          * Set the {@link #SERVER#uri} value.
          * @param uri {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withUri(@NotNull String uri) {
@@ -162,7 +162,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
         /**
          * Set the {@link #SERVER#port} value.
          * @param port {@link Integer} value.
-         * @return THe current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {

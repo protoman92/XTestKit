@@ -92,7 +92,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #startX} value.
          * @param startX {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withStartX(int startX) {
@@ -103,7 +103,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #startY} value.
          * @param startY {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withStartY(int startY) {
@@ -114,7 +114,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #endX} value.
          * @param endX {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NonNull
         public Builder withEndX(int endX) {
@@ -125,7 +125,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #endY} value.
          * @param endY {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NonNull
         public Builder withEndY(int endY) {
@@ -136,7 +136,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #duration} value.
          * @param duration {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NonNull
         public Builder withDuration(int duration) {
@@ -147,7 +147,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #times} value.
          * @param times {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NonNull
         public Builder withTimes(int times) {
@@ -158,7 +158,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set the {@link #delay} value.
          * @param delay {@link Long} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDelay(long delay) {
@@ -169,7 +169,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set {@link #times} and {@link #delay}.
          * @param type {@link RepeatType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRepeatableType(@NotNull RepeatType type) {
@@ -179,7 +179,7 @@ public class SwipeParam implements RepeatType, SwipeType {
         /**
          * Set {@link #duration}.
          * @param type {@link DurationType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDurationType(@NotNull DurationType type) {

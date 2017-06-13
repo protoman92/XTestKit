@@ -50,7 +50,7 @@ public class AlertParam implements RetryType {
          * Set the {@link #PARAM#accept} value. This specifies whether to
          * accept or reject to dialog message.
          * @param accept {@link Boolean} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder shouldAccept(boolean accept) {
@@ -60,7 +60,7 @@ public class AlertParam implements RetryType {
 
         /**
          * Same as above, but defaults to true.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #shouldAccept(boolean)
          */
         public Builder accept() {
@@ -69,7 +69,7 @@ public class AlertParam implements RetryType {
 
         /**
          * Same as above, but defaults to false.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #shouldAccept(boolean)
          */
         public Builder reject() {

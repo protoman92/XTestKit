@@ -374,7 +374,7 @@ public class AndroidEngine extends
         /**
          * Override to set {@link AndroidInstance#deviceName}.
          * @param name {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see MobileEngine.Builder#withDeviceName(String)
          */
         @NotNull
@@ -387,7 +387,7 @@ public class AndroidEngine extends
         /**
          * Override to set {@link AndroidInstance#mode}.
          * @param mode {@link TestMode} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see MobileEngine.Builder#withTestMode(TestMode)
          */
         @NotNull
@@ -400,7 +400,7 @@ public class AndroidEngine extends
         /**
          * Set {@link #appActivity}.
          * @param appActivity {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         public Builder withAppActivity(@NotNull String appActivity) {
             ENGINE.appActivity = appActivity;
@@ -410,7 +410,7 @@ public class AndroidEngine extends
         /**
          * Set the {@link AndroidInstance#uid} value.
          * @param uid {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {

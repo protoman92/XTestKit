@@ -68,7 +68,7 @@ public class TextFormatParam implements FormatType, RetryType {
         /**
          * Set the {@link #format} value.
          * @param format The text to be used to query elements.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withLCFormat(@NotNull LCFormat format) {
@@ -79,7 +79,7 @@ public class TextFormatParam implements FormatType, RetryType {
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -90,7 +90,7 @@ public class TextFormatParam implements FormatType, RetryType {
         /**
          * Set the {@link #ignoreCase} value.
          * @param ignore {@link Boolean} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder shouldIgnoreCase(boolean ignore) {

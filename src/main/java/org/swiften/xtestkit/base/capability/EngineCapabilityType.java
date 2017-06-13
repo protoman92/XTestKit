@@ -71,7 +71,7 @@ public interface EngineCapabilityType extends BaseErrorType {
         /**
          * Set the {@link #testMode} instance.
          * @param testMode {@link TestMode} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         Builder withTestMode(@NotNull TestMode testMode);
 

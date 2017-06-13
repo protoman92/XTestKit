@@ -63,7 +63,7 @@ public class AppiumCommand {
         /**
          * Append -p PORT to {@link #COMMAND#command}.
          * @param port {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {
@@ -74,7 +74,7 @@ public class AppiumCommand {
         /**
          * Prepend a base path to {@link #COMMAND#command}.
          * @param base {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         public Builder withBase(@NotNull String base) {
             COMMAND.prependBase(base);

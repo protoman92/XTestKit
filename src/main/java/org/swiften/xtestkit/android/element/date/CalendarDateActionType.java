@@ -13,20 +13,18 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.base.element.date.*;
-import org.swiften.xtestkit.ios.element.locator.AndroidXMLAttribute;
-import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.ios.element.locator.AndroidXMLAttribute;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
-import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
-import org.swiften.xtestkitcomponents.xpath.XPath;
+import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -106,9 +104,9 @@ public interface CalendarDateActionType extends
      * @return {@link Flowable} instance.
      * @see Attribute.Builder#addAttribute(String)
      * @see Attribute.Builder#withFormatible(Attribute.Formatible)
-     * @see Attribute.Builder#withJoiner(Attribute.Joiner)
+     * @see Attribute.Builder#withJoiner(Joiner)
      * @see Attribute.Builder#withValue(Object)
-     * @see Attribute.Builder#withWrapper(Attribute.Wrapper)
+     * @see Attribute.Builder#withWrapper(Wrapper)
      * @see Attribute#withValue(Object)
      * @see BooleanUtil#isTrue(boolean)
      * @see ByXPath.Builder#withXPath(XPath)
@@ -124,8 +122,8 @@ public interface CalendarDateActionType extends
      * @see XMLAttributeType#value()
      * @see XPath.Builder#addAttribute(Attribute)
      * @see AndroidXMLAttribute#CONTENT_DESC
-     * @see Attribute.Joiner#OR
-     * @see Attribute.Wrapper#NONE
+     * @see Joiner#OR
+     * @see Wrapper#NONE
      * @see #swipeOnce(SwipeType)
      * @see #rxa_click(WebElement)
      * @see #rxe_byXPath(ByXPath...)
@@ -147,8 +145,8 @@ public interface CalendarDateActionType extends
             .addAttribute(AndroidXMLAttribute.CONTENT_DESC.value())
             .withFormatible(new Attributes.ContainsString() {})
             .withValue(DATE_STRING)
-            .withJoiner(Attribute.Joiner.OR)
-            .withWrapper(Attribute.Wrapper.NONE)
+            .withJoiner(Joiner.OR)
+            .withWrapper(Wrapper.NONE)
             .build();
 
         Attribute<String> defAttr = attr.withValue("01");

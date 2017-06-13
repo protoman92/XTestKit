@@ -318,7 +318,7 @@ public class TestKit implements
         /**
          * Set the {@link #TEST_KIT#ENGINES} {@link Engine}.
          * @param engines {@link Collection} of {@link Engine}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withEngines(@NotNull Collection<? extends Engine> engines) {
@@ -329,7 +329,7 @@ public class TestKit implements
         /**
          * Add {@link Engine} to {@link #TEST_KIT#ENGINES}.
          * @param engine {@link Engine} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder addEngine(@NotNull Engine engine) {
@@ -341,7 +341,7 @@ public class TestKit implements
          * Add a new {@link ResourceBundle} to {@link #TEST_KIT#localizer}.
          * @param name The name of the {@link ResourceBundle}.
          * @param locale The {@link Locale} of the {@link ResourceBundle}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see Localizer.Builder#addBundle(String, Locale)
          */
         public Builder addResourceBundle(@NotNull String name, @NotNull Locale locale) {

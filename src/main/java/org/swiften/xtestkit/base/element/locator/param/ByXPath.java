@@ -64,7 +64,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
          * find an element.
          * @param error The error {@link String} to be thrown when no elements
          *              are found.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withError(@NotNull String error) {
@@ -75,7 +75,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
         /**
          * The {@link XPath} query that will be used to search for elements.
          * @param xPath {@link XPath} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see XPath#compoundAttributes()
          */
         public Builder withXPath(@NotNull XPath xPath) {
@@ -86,7 +86,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
         /**
          * Set {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -97,7 +97,7 @@ public class ByXPath implements BaseLocatorErrorType, RetryType {
         /**
          * Set {@link #retries} value.
          * @param type {@link RetryType} instance.
-         * @return THe current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryType(@NotNull RetryType type) {

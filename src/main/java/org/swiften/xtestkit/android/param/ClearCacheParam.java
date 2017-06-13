@@ -64,7 +64,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #appPackage} value.
          * @param appPackage {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withAppPackage(@NotNull String appPackage) {
@@ -75,7 +75,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #appPackage} value.
          * @param param {@link AppPackageType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withAppPackage(String)
          */
         @NotNull
@@ -86,7 +86,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #deviceUID} value.
          * @param deviceUID {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String deviceUID) {
@@ -97,7 +97,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #deviceUID} value.
          * @param param {@link DeviceUIDType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withDeviceUID(String)
          */
         @NotNull
@@ -108,7 +108,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -119,7 +119,7 @@ public class ClearCacheParam implements
         /**
          * Set the {@link #retries} value.
          * @param param {@link RetryType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetryType(@NotNull RetryType param) {

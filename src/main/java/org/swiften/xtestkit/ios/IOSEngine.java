@@ -231,7 +231,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
          * Set the {@link #deviceUID} value. This value will be used to start
          * the correct simulator.
          * @param uid {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
@@ -242,7 +242,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
         /**
          * Set the {@link #launchTimeout} value.
          * @param timeout {@link Long} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withLaunchTimeout(long timeout) {

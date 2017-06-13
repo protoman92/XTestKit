@@ -68,7 +68,7 @@ public class TextParam implements StringType, RetryType {
         /**
          * Set the {@link #text} value.
          * @param text The text to be used to query elements.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withText(@NotNull String text) {
@@ -79,7 +79,7 @@ public class TextParam implements StringType, RetryType {
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -90,7 +90,7 @@ public class TextParam implements StringType, RetryType {
         /**
          * Set {@link #retries} value.
          * @param param {@link RetryType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull
@@ -101,7 +101,7 @@ public class TextParam implements StringType, RetryType {
         /**
          * Set the {@link #ignoreCase} value.
          * @param ignore {@link Boolean} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder shouldIgnoreCase(boolean ignore) {
@@ -123,7 +123,7 @@ public class TextParam implements StringType, RetryType {
         /**
          * Set {@link #text} and {@link #ignoreCase}.
          * @param type {@link StringType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withText(String)
          * @see #shouldIgnoreCase(boolean)
          */

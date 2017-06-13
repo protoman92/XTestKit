@@ -12,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
 public interface TextInputType extends InputType {
     /**
      * Get a random {@link String} input.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link String} value.
      */
-    @NotNull String randomInput();
+    @NotNull String randomInput(@NotNull InputHelperType helper);
 }

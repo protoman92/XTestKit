@@ -73,7 +73,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
          * Set the {@link #PARAM#nameSpace} value. Can be one of
          * 'system', 'secure', 'global'.
          * @param nameSpace {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withNameSpace(@NotNull String nameSpace) {
@@ -83,7 +83,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
 
         /**
          * Same as above, but uses 'global' name space.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withGlobalNameSpace() {
@@ -94,7 +94,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
          * Set {@link #PARAM#key} value. Specifies the argument (option) to be
          * changed
          * @param key {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withKey(@NotNull String key) {
@@ -107,7 +107,7 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
          * settings specified by {@link #PARAM#key}.
          * @param value {@link Object} that will be converted to a
          *              {@link String}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withValue(@NotNull Object value) {

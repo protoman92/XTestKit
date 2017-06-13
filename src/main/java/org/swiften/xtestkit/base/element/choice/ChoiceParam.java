@@ -96,7 +96,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
         /**
          * Set the {@link #mode} instance.
          * @param mode {@link Engine} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #mode
          */
         @NotNull
@@ -107,7 +107,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
         /**
          * Set {@link #mode} to be {@link ChoiceMode#GENERAL}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see ChoiceMode#GENERAL
          * @see #withMode(ChoiceMode)
          */
@@ -119,7 +119,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
         /**
          * Set the {@link #input} instance.
          * @param input {@link ChoiceInputType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #input
          */
         @NotNull
@@ -131,7 +131,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
         /**
          * Set the {@link #selected} value.
          * @param selected {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #selected
          */
         @NotNull

@@ -80,7 +80,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
         /**
          * Set the {@link #deviceName} value.
          * @param name {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceName(@NotNull String name) {
@@ -91,7 +91,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
         /**
          * Set the {@link #uid} value.
          * @param uid {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
@@ -102,7 +102,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
         /**
          * Set the {@link #INSTANCE#port} value.
          * @param port {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {
@@ -113,7 +113,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
         /**
          * Set the {@link #mode} instance.
          * @param mode {@link TestMode} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withTestMode(@NotNull TestMode mode) {

@@ -205,7 +205,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set the {@link #appiumVersion} value.
          * @param version The Appium version that will run the test.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #appiumVersion
          */
         @NotNull
@@ -217,7 +217,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #app}.
          * @param app {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see System#getProperty(String)
          * @see Paths#get(String, String...)
          * @see #withApp(Path)
@@ -232,7 +232,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #app}.
          * @param path {@link Path} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #app
          */
         public Builder<T> withApp(@NotNull Path path) {
@@ -243,7 +243,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #appPackage}.
          * @param appPackage {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #appPackage
          */
         @NotNull
@@ -255,7 +255,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #commandTimeout}.
          * @param timeout {@link Long} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #commandTimeout
          */
         @NotNull
@@ -267,7 +267,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #deviceName}.
          * @param deviceName {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #deviceName
          */
         @NotNull
@@ -279,7 +279,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #platformVersion}.
          * @param version {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #platformVersion
          */
         @NotNull
@@ -291,7 +291,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
         /**
          * Set {@link #autoLaunch}.
          * @param autoLaunch {@link Boolean} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #autoLaunch
          */
         @NotNull

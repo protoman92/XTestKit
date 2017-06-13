@@ -56,7 +56,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
          * Set the {@link #PARAM#enable} value. Specifies whether connection
          * should be enabled/disabled.
          * @param enable {@link Boolean} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder shouldEnable(boolean enable) {
@@ -67,7 +67,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
         /**
          * Set the {@link #PARAM#deviceUID} value.
          * @param uid {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
@@ -79,7 +79,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
          * Set {@link #PARAM#deviceUID} with {@link DeviceUIDType}
          * instance.
          * @param param {@link DeviceUIDType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {

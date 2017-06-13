@@ -49,7 +49,7 @@ public class ClassParam implements OfClassType, RetryType {
         /**
          * Set the {@link #clsName} value.
          * @param clsName The clsName to be used to query elements.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withClass(@NotNull String clsName) {

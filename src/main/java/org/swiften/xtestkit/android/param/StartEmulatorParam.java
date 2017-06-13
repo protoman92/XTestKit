@@ -92,7 +92,7 @@ public class StartEmulatorParam implements
         /**
          * Set the {@link #deviceName} value.
          * @param name {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceName(@NotNull String name) {
@@ -103,7 +103,7 @@ public class StartEmulatorParam implements
         /**
          * Set the {@link #deviceUID} value.
          * @param uid {@link String} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUID(@NotNull String uid) {
@@ -114,7 +114,7 @@ public class StartEmulatorParam implements
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -125,7 +125,7 @@ public class StartEmulatorParam implements
         /**
          * Set the {@link #port} value.
          * @param port {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {
@@ -147,7 +147,7 @@ public class StartEmulatorParam implements
          * Set {@link #PARAM#deviceUID} from {@link DeviceUIDType}
          * instance.
          * @param param {@link DeviceUIDType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withDeviceUIDType(@NotNull DeviceUIDType param) {

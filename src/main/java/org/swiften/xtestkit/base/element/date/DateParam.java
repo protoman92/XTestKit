@@ -91,7 +91,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Set the {@link #date} instance.
          * @param date {@link Date} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #date
          */
         @NotNull
@@ -103,7 +103,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Add {@link CalendarUnit} to {@link #UNITS}.
          * @param units {@link List} of {@link CalendarUnit}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #UNITS
          */
         @NotNull
@@ -115,7 +115,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Add {@link CalendarUnit} to {@link #UNITS}.
          * @param units Varargs of {@link CalendarUnit}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #addCalendarUnits(List)
          */
         @NotNull
@@ -126,7 +126,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Set the {@link #pickerType} instance.
          * @param pickerType {@link DatePickerType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #pickerType
          */
         @NotNull
@@ -138,7 +138,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Replace all {@link CalendarUnit} within {@link #UNITS}.
          * @param units {@link List} of {@link CalendarUnit}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #UNITS
          */
         @NotNull
@@ -151,7 +151,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Replace all {@link CalendarUnit} within {@link #UNITS}.
          * @param units Varargs of {@link CalendarUnit}.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withCalendarUnits(List)
          */
         @NotNull
@@ -161,7 +161,7 @@ public class DateParam implements DateType, BaseErrorType {
 
         /**
          * Set up {@link #UNITS} for date selection.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see CalendarUnit#datePickerUnits()
          * @see #withCalendarUnits(List)
          */
@@ -173,7 +173,7 @@ public class DateParam implements DateType, BaseErrorType {
         /**
          * Set the {@link #date} instance and {@link #UNITS}.
          * @param type {@link DateType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withCalendarUnits(List)
          * @see #withDate(Date)
          */

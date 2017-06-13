@@ -137,7 +137,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #direction} instance.
          * @param direction {@link Direction} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #direction
          */
         @NotNull
@@ -149,7 +149,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #direction} instance.
          * @param param {@link DirectionContainerType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see DirectionContainerType#direction()
          * @see #withDirection(Direction)
          */
@@ -161,7 +161,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #times} value.
          * @param times {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #times
          */
         @NonNull
@@ -173,7 +173,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #duration} value.
          * @param duration {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #duration
          */
         @NotNull
@@ -185,7 +185,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #delay} value.
          * @param delay {@link Long} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #delay
          */
         @NotNull
@@ -197,7 +197,7 @@ public class DirectionParam implements
         /**
          * Set {@link #times} and {@link #delay}.
          * @param type {@link RepeatType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see RepeatType#times()
          * @see RepeatType#delay()
          */
@@ -209,7 +209,7 @@ public class DirectionParam implements
         /**
          * Set {@link #duration}.
          * @param type {@link DurationType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see DurationType#duration()
          * @see #withDuration(int)
          */
@@ -221,7 +221,7 @@ public class DirectionParam implements
         /**
          * Set {@link #startRatio}.
          * @param startRatio {@link Double} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #startRatio
          */
         @NotNull
@@ -233,7 +233,7 @@ public class DirectionParam implements
         /**
          * Set {@link #endRatio}.
          * @param endRatio {@link Double} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #endRatio
          */
         @NotNull
@@ -245,7 +245,7 @@ public class DirectionParam implements
         /**
          * Set {@link #anchorRatio}.
          * @param anchorRatio {@link Double} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #anchorRatio
          */
         @NotNull
@@ -257,7 +257,7 @@ public class DirectionParam implements
         /**
          * Set the {@link #startRatio} and {@link #endRatio} values.
          * @param type {@link RelativeSwipePositionType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see RelativeSwipePositionType#anchorRatio()
          * @see RelativeSwipePositionType#endRatio()
          * @see RelativeSwipePositionType#startRatio()

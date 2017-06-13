@@ -58,7 +58,7 @@ public class StopEmulatorParam implements RetryType, PortType {
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -69,7 +69,7 @@ public class StopEmulatorParam implements RetryType, PortType {
         /**
          * Set the {@link #port} value.
          * @param port {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withPort(int port) {
@@ -80,7 +80,7 @@ public class StopEmulatorParam implements RetryType, PortType {
         /**
          * Set {@link #retries} value.
          * @param param {@link RetryType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull
@@ -91,7 +91,7 @@ public class StopEmulatorParam implements RetryType, PortType {
         /**
          * Set {@link #port}.
          * @param param {@link PortType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withPort(int)
          */
         @NotNull

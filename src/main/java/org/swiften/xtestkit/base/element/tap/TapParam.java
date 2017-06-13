@@ -59,7 +59,7 @@ public class TapParam implements TapType, RetryType {
         /**
          * Set the {@link #x} value.
          * @param x {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withX(int x) {
@@ -70,7 +70,7 @@ public class TapParam implements TapType, RetryType {
         /**
          * Set the {@link #y} value.
          * @param y {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withY(int y) {
@@ -81,7 +81,7 @@ public class TapParam implements TapType, RetryType {
         /**
          * Set the {@link #x} and {@link #y} values.
          * @param type {@link RetryType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withX(int)
          * @see #withY(int)
          */
@@ -93,7 +93,7 @@ public class TapParam implements TapType, RetryType {
         /**
          * Set the {@link #retries} value.
          * @param retries {@link Integer} value.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -104,7 +104,7 @@ public class TapParam implements TapType, RetryType {
         /**
          * Set the {@link #retries} value.
          * @param type {@link RetryType} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull

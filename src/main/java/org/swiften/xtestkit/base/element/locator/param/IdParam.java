@@ -50,7 +50,7 @@ public class IdParam implements ContainsIDType, RetryType {
         /**
          * Set the {@link #id} value.
          * @param id The id to be used to query elements.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder withId(@NotNull String id) {

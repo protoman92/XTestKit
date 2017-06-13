@@ -4,14 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
-import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
-import org.swiften.xtestkitcomponents.xpath.XPath;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
  * Created by haipham on 5/23/17.
@@ -191,9 +188,9 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(Attribute)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
-     * @see CompoundAttribute.Path#DIRECT
      * @see IOSView.ViewType#UI_PICKER
      * @see IOSView.ViewType#UNDEFINED
+     * @see Path#DIRECT
      * @see #pickerViewIndex(CalendarUnit)
      */
     @NotNull
@@ -204,7 +201,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
         return XPath.builder()
             .addAttribute(attrs.ofClass(IOSView.ViewType.UNDEFINED.className()))
             .addAttribute(CompoundAttribute.builder()
-                .withPath(CompoundAttribute.Path.DIRECT)
+                .withPath(Path.DIRECT)
                 .withClass(IOSView.ViewType.UI_PICKER_WHEEL.className())
                 .withIndex(pickerViewIndex(unit) + 1)
                 .build())

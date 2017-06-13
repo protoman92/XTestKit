@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.date;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.property.base.AttributeType;
+import org.swiften.xtestkitcomponents.property.base.ValueType;
 import org.swiften.xtestkitcomponents.common.RetryType;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +41,7 @@ public interface DateType extends RetryType {
     /**
      * Get {@link Calendar} instance.
      * @return {@link Calendar} instance.
-     * @see AttributeType#value()
+     * @see ValueType#value()
      */
     @NotNull
     default Calendar calendar() {

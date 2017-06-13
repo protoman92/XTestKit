@@ -443,7 +443,7 @@ public abstract class Engine<D extends WebDriver> implements
          * Set the {@link #ENGINE#address}. This {@link String} represents
          * the Appium server address.
          * @param address {@link Address} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          */
         @NotNull
         public Builder<T> withServerUrl(@NotNull Address address) {
@@ -455,7 +455,7 @@ public abstract class Engine<D extends WebDriver> implements
          * Set the {@link #ENGINE#testMode} value. This variable specifies
          * which test environment to be used.
          * @param mode {@link TestMode} instance.
-         * @return The current {@link Builder} instance.
+         * @return {@link Builder} instance.
          * @see EngineCapabilityType.Builder#withTestMode(TestMode)
          */
         @NotNull
