@@ -10,6 +10,7 @@ import org.swiften.xtestkit.base.element.input.BaseInputActionType;
 import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.base.type.PlatformContainerType;
 
 /**
@@ -23,4 +24,5 @@ public interface ChoiceHelperType<D extends WebDriver> extends
     BaseInputActionType<D>,
     BaseLocatorType<D>,
     BaseSwipeType<D>,
+    InputHelperType,
     PlatformContainerType {}

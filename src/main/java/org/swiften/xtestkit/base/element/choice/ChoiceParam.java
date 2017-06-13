@@ -33,7 +33,7 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
 
     /**
      * @return {@link Engine} instance.
-     * @see AndroidChoiceMultiSwipeType#helper()
+     * @see AndroidChoiceMultiSwipeType#choiceHelper()
      * @see ObjectUtil#nonNull(Object)
      * @see #mode
      * @see #NOT_AVAILABLE

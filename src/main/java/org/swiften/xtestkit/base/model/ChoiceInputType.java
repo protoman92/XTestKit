@@ -21,30 +21,30 @@ public interface ChoiceInputType {
      * return 0.
      * This is useful when there are multiple choice pickers side-by-side
      * with the same id/accessibility.
-     * @param platform {@link PlatformType} instance.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link Integer} value.
      */
-    default int scrollablePickerIndex(@NotNull PlatformType platform) {
+    default int scrollablePickerIndex(@NotNull InputHelperType helper) {
         return 0;
     }
 
     /**
      * Get the scroll view picker {@link XPath} for
      * {@link Platform#ANDROID}.
-     * @param platform {@link PlatformType} instance.
+     * @param helper {@link PlatformType} instance.
      * @return {@link XPath} value.
      */
-    @NotNull XPath choicePickerXP(@NotNull PlatformType platform);
+    @NotNull XPath choicePickerXP(@NotNull InputHelperType helper);
 
     /**
      * Get the item {@link XPath} for each item found in the
      * {@link org.openqa.selenium.WebElement} whose {@link XPath} is the
-     * {@link #choicePickerXP(PlatformType)}.
-     * @param platform {@link PlatformType} instance.
+     * {@link #choicePickerXP(InputHelperType)}.
+     * @param helper {@link PlatformType} instance.
      * @return {@link XPath} instance.
-     * @see #choicePickerXP(PlatformType)
+     * @see #choicePickerXP(InputHelperType)
      */
-    @NotNull XPath choicePickerItemXP(@NotNull PlatformType platform);
+    @NotNull XPath choicePickerItemXP(@NotNull InputHelperType helper);
 
     /**
      * Convert {@link String} value into a numeric value. This is done so that
@@ -52,39 +52,43 @@ public interface ChoiceInputType {
      * are needed. Even if the {@link String} values are not directly
      * convertible into a {@link Number}, we need to find a way to do so (e.g.
      * for an {@link Enum}, use the index of each {@link Enum} case).
+     * @param helper {@link InputHelperType} instance.
      * @param value {@link String} value.
      * @return {@link Double} value.
      */
-    default double numericValue(@NotNull String value) {
+    default double numericValue(@NotNull InputHelperType helper,
+                                @NotNull String value) {
         return Double.valueOf(value);
     }
 
     /**
      * Get the numeric value's {@link String} representation.
+     * @param helper {@link InputHelperType} instance.
      * @param value {@link Double} value.
      * @return {@link String} value.
      */
     @NotNull
-    default String stringValue(double value) {
+    default String stringValue(@NotNull InputHelperType helper, double value) {
         return String.valueOf(value);
     }
 
     /**
      * Get the swipe ratio to use with
      * {@link AndroidChoiceMultiSwipeType#rxe_elementSwipeRatio()}.
-     * @param platform {@link PlatformType} instance.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link Double} value.
      */
-    default double swipeRatio(@NotNull PlatformType platform) {
+    default double swipeRatio(@NotNull InputHelperType helper) {
         return 1d;
     }
 
     /**
      * Get the step value which represents the difference between two
-     * consecutive {@link #numericValue(String)}.
+     * consecutive {@link #numericValue(InputHelperType, String)}.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link Double} value.
      */
-    default double numericValueStep() {
+    default double numericValueStep(@NotNull InputHelperType helper) {
         return 1;
     }
 }

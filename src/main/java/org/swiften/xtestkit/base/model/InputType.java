@@ -17,8 +17,8 @@ public interface InputType {
      * Get the {@link XPath} instance for the input view
      * {@link org.openqa.selenium.WebElement} that corresponds to
      * {@link PlatformType}.
-     * @param platform {@link PlatformType} instance.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link XPath} value.
      */
-    @NotNull XPath inputViewXP(@NotNull PlatformType platform);
+    @NotNull XPath inputViewXP(@NotNull InputHelperType helper);
 }

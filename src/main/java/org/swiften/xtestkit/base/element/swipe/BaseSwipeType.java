@@ -33,8 +33,9 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see Dimension#getWidth()
      * @see Point#getX()
      * @see Point#getY()
-     * @see P#startRatio()
+     * @see P#anchorRatio()
      * @see P#endRatio()
+     * @see P#startRatio()
      * @see SwipeParam.Builder#withStartX(int)
      * @see SwipeParam.Builder#withEndX(int)
      * @see SwipeParam.Builder#withStartY(int)
@@ -53,20 +54,22 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
         DirectionContainerType &
         DurationType &
         RepeatType &
-        SwipeDampenType> Flowable<Boolean>
+        RelativeSwipePositionType> Flowable<Boolean>
     rxa_swipeGeneric(@NotNull Point origin,
                      @NotNull Dimension size,
                      @NotNull P param) {
         double height = size.getHeight(), width = size.getWidth();
         int originX = origin.getX(), originY = origin.getY();
         int startX, endX, startY, endY;
-        double startRatio = param.startRatio(), endRatio = param.endRatio();
+        double startRatio = param.startRatio();
+        double endRatio = param.endRatio();
+        double anchorRatio = param.anchorRatio();
 
         int lowX = (int)(originX + width * startRatio);
-        int midX = (int)(originX + width / 2);
+        int midX = (int)(originX + width * anchorRatio);
         int highX = (int)(originX + width * endRatio);
         int lowY = (int)(originY + height * startRatio);
-        int midY = (int)(originY + height / 2);
+        int midY = (int)(originY + height * anchorRatio);
         int highY = (int)(originY + height * endRatio);
 
         switch (param.direction()) {
@@ -125,7 +128,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
         DirectionContainerType &
         DurationType &
         RepeatType &
-        SwipeDampenType> Flowable<WebElement>
+        RelativeSwipePositionType> Flowable<WebElement>
     rxa_swipeGeneric(@NotNull final WebElement ELEMENT, @NotNull P param) {
         Point origin = ELEMENT.getLocation();
         Dimension size = ELEMENT.getSize();
@@ -149,7 +152,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
         DirectionContainerType &
         DurationType &
         RepeatType &
-        SwipeDampenType> Flowable<Boolean>
+        RelativeSwipePositionType> Flowable<Boolean>
     rxa_swipeGeneric(@NotNull P param) {
         WebDriver driver = driver();
         WebDriver.Options options = driver.manage();

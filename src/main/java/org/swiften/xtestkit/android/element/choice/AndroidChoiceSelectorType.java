@@ -11,8 +11,8 @@ import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -23,7 +23,10 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
  * This interface provides choice selection capabilities for
  * {@link Platform#ANDROID}.
  */
-public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDriver<AndroidElement>> {
+public interface AndroidChoiceSelectorType extends
+    ChoiceSelectorType<AndroidDriver<AndroidElement>>,
+    InputHelperType
+{
     /**
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
@@ -33,7 +36,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
      * @see AndroidChoiceMultiSwipeType#rxe_scrollViewChildCount()
      * @see ChoiceType#input()
      * @see ChoiceType#selectedChoice()
-     * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
+     * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
      * @see ChoiceHelperType#rxe_withXPath(XPath...)
      * @see NumberUtil#inverse(Number)
      * @see Platform#ANDROID
@@ -42,10 +45,9 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
     @Override
     default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
         final AndroidChoiceSelectorType THIS = this;
-        final Platform PLATFORM = Platform.ANDROID;
         final ChoiceInputType INPUT = param.input();
         final String SELECTED = param.selectedChoice();
-        final double RATIO = INPUT.swipeRatio(PLATFORM);
+        final double RATIO = INPUT.swipeRatio(this);
 
         return new AndroidChoiceMultiSwipeType() {
             /**
@@ -56,7 +58,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
             @NotNull
             @Override
             public Flowable<WebElement> rxe_scrollableViewToSwipe() {
-                XPath xPath = INPUT.choicePickerXP(PLATFORM);
+                XPath xPath = INPUT.choicePickerXP(THIS);
                 return THIS.rxe_withXPath(xPath).firstElement().toFlowable();
             }
 
@@ -84,7 +86,7 @@ public interface AndroidChoiceSelectorType extends ChoiceSelectorType<AndroidDri
 
             @NotNull
             @Override
-            public ChoiceHelperType<?> helper() {
+            public ChoiceHelperType<?> choiceHelper() {
                 return THIS;
             }
         }.rxa_performAction();

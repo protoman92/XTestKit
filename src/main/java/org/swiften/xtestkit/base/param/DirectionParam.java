@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.direction.Direction;
-import org.swiften.xtestkit.base.element.swipe.SwipeDampenType;
+import org.swiften.xtestkit.base.element.swipe.RelativeSwipePositionType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
@@ -15,14 +15,15 @@ import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
  */
 
 /**
- * Parameter object for {@link Engine#rxa_swipeGeneric(WebElement, DurationType)}.
+ * Parameter object for
+ * {@link Engine#rxa_swipeGeneric(WebElement, DirectionContainerType)}.
  * Use this to perform unidirectional swipe actions.
  */
 public class DirectionParam implements
     DurationType,
-    RepeatType,
-    SwipeDampenType,
-    DirectionContainerType
+    DirectionContainerType,
+    RelativeSwipePositionType,
+    RepeatType
 {
     /**
      * Get {@link Builder} instance.
@@ -35,7 +36,7 @@ public class DirectionParam implements
 
     @NotNull
     Direction direction;
-    private double startRatio, endRatio;
+    private double startRatio, endRatio, anchorRatio;
     private int times, duration;
     private long delay;
 
@@ -43,40 +44,81 @@ public class DirectionParam implements
         direction = Direction.LEFT_RIGHT;
         delay = RepeatType.super.delay();
         times = 1;
-        startRatio = SwipeDampenType.super.startRatio();
-        endRatio = SwipeDampenType.super.endRatio();
+        startRatio = RelativeSwipePositionType.super.startRatio();
+        endRatio = RelativeSwipePositionType.super.endRatio();
+        anchorRatio = RelativeSwipePositionType.super.anchorRatio();
     }
 
     //region Getters
+    /**
+     * Get {@link #direction}.
+     * @return {@link Direction} instance.
+     * @see #direction
+     */
     @NotNull
     @Override
     public Direction direction() {
         return direction;
     }
 
+    /**
+     * Get {@link #times}.
+     * @return {@link Integer} value.
+     * @see #times
+     */
     @Override
     public int times() {
         return times;
     }
 
+    /**
+     * Get {@link #delay}.
+     * @return {@link Long} value.
+     * @see #delay
+     */
     @Override
     public long delay() {
         return delay;
     }
 
+    /**
+     * Get {@link #duration}.
+     * @return {@link Integer} value.
+     * @see #duration
+     */
     @Override
     public int duration() {
         return duration;
     }
 
+    /**
+     * Get {@link #startRatio}.
+     * @return {@link Double} value.
+     * @see #startRatio
+     */
     @Override
     public double startRatio() {
         return startRatio;
     }
 
+    /**
+     * Get {@link #endRatio}.
+     * @return {@link Double} value.
+     * @see #endRatio
+     */
     @Override
     public double endRatio() {
         return endRatio;
+    }
+
+    /**
+     * Get {@link #anchorRatio}.
+     * @return {@link Double} value.
+     * @see #anchorRatio
+     */
+    @Override
+    public double anchorRatio() {
+        return anchorRatio;
     }
     //endregion
 
@@ -165,7 +207,7 @@ public class DirectionParam implements
         }
 
         /**
-         * Set the {@link #duration} value.
+         * Set {@link #duration}.
          * @param type {@link DurationType} instance.
          * @return The current {@link Builder} instance.
          * @see DurationType#duration()
@@ -177,7 +219,7 @@ public class DirectionParam implements
         }
 
         /**
-         * Set the {@link #startRatio} value.
+         * Set {@link #startRatio}.
          * @param startRatio {@link Double} value.
          * @return The current {@link Builder} instance.
          * @see #startRatio
@@ -189,7 +231,7 @@ public class DirectionParam implements
         }
 
         /**
-         * Set the {@link #endRatio} value.
+         * Set {@link #endRatio}.
          * @param endRatio {@link Double} value.
          * @return The current {@link Builder} instance.
          * @see #endRatio
@@ -201,17 +243,34 @@ public class DirectionParam implements
         }
 
         /**
-         * Set the {@link #startRatio} and {@link #endRatio} values.
-         * @param type {@link SwipeDampenType} instance.
+         * Set {@link #anchorRatio}.
+         * @param anchorRatio {@link Double} value.
          * @return The current {@link Builder} instance.
-         * @see SwipeDampenType#startRatio()
-         * @see SwipeDampenType#endRatio()
-         * @see #withStartRatio(double)
-         * @see #withEndRatio(double)
+         * @see #anchorRatio
          */
         @NotNull
-        public Builder withSwipeDampenType(@NotNull SwipeDampenType type) {
-            return withStartRatio(type.startRatio()).withEndRatio(type.endRatio());
+        public Builder withAnchorRatio(double anchorRatio) {
+            PARAM.anchorRatio = anchorRatio;
+            return this;
+        }
+
+        /**
+         * Set the {@link #startRatio} and {@link #endRatio} values.
+         * @param type {@link RelativeSwipePositionType} instance.
+         * @return The current {@link Builder} instance.
+         * @see RelativeSwipePositionType#anchorRatio()
+         * @see RelativeSwipePositionType#endRatio()
+         * @see RelativeSwipePositionType#startRatio()
+         * @see #withAnchorRatio(double)
+         * @see #withEndRatio(double)
+         * @see #withStartRatio(double)
+         */
+        @NotNull
+        public Builder withSwipeDampenType(@NotNull RelativeSwipePositionType type) {
+            return this
+                .withStartRatio(type.startRatio())
+                .withEndRatio(type.endRatio())
+                .withAnchorRatio(type.anchorRatio());
         }
 
         @NonNull

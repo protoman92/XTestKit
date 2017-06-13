@@ -31,6 +31,7 @@ import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.BaseTapType;
 import org.swiften.xtestkit.base.element.visibility.BaseVisibilityActionType;
+import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
 import org.swiften.xtestkit.test.TestListenerType;
 import org.swiften.xtestkitcomponents.common.DistinctiveType;
@@ -65,6 +66,7 @@ public abstract class Engine<D extends WebDriver> implements
     BaseSwitcherActionType,
     BaseVisibilityActionType<D>,
     DistinctiveType,
+    InputHelperType,
     TestListenerType,
     TestLifecycleType
 {

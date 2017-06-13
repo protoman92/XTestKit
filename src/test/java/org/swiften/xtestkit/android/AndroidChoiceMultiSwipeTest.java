@@ -147,7 +147,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
     @NotNull
     @Override
-    public Engine<?> helper() {
+    public Engine<?> choiceHelper() {
         return ENGINE;
     }
 

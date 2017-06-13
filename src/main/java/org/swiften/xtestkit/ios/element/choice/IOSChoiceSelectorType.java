@@ -9,14 +9,22 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.base.model.ChoiceInputType;import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkit.base.model.ChoiceInputType;
+import org.swiften.xtestkit.base.model.InputHelperType;
+import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * Created by haipham on 25/5/17.
  */
-public interface IOSChoiceSelectorType extends ChoiceSelectorType<IOSDriver<IOSElement>> {
+
+/**
+ * This interface provides choice selector capabilities for {@link Platform#IOS}.
+ */
+public interface IOSChoiceSelectorType extends
+    ChoiceSelectorType<IOSDriver<IOSElement>>,
+    InputHelperType
+{
     /**
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
@@ -25,8 +33,8 @@ public interface IOSChoiceSelectorType extends ChoiceSelectorType<IOSDriver<IOSE
      * @see Platform#IOS
      * @see ChoiceType#selectedChoice()
      * @see ChoiceType#input()
-     * @see ChoiceInputType#scrollablePickerIndex(PlatformType)
-     * @see ChoiceInputType#choicePickerXP(PlatformType)
+     * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
+     * @see ChoiceInputType#choicePickerXP(InputHelperType)
      * @see ChoiceHelperType#rxa_type(WebElement, String...)
      * @see BooleanUtil#toTrue(Object)
      */
@@ -36,8 +44,8 @@ public interface IOSChoiceSelectorType extends ChoiceSelectorType<IOSDriver<IOSE
         final String SELECTED = param.selectedChoice();
         Platform platform = Platform.IOS;
         ChoiceInputType input = param.input();
-        int index = input.scrollablePickerIndex(platform);
-        XPath xPath = input.choicePickerXP(platform);
+        int index = input.scrollablePickerIndex(this);
+        XPath xPath = input.choicePickerXP(this);
 
         return ENGINE
             .rxe_withXPath(xPath)

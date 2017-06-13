@@ -283,6 +283,7 @@ public interface ScreenManagerType extends EngineContainerType, ScreenManagerErr
     @NotNull
     default Flowable<?> rxa_navigate(@NotNull Object initial,
                                      @NotNull ScreenType...screens) {
+        LogUtil.printft("Navigating %s", Arrays.toString(screens));
         final List<Node> NODES = multiNodes(screens);
         final int LENGTH = NODES.size();
 

@@ -13,6 +13,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.base.element.date.*;
+import org.swiften.xtestkit.ios.element.locator.AndroidXMLAttribute;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
@@ -22,6 +23,7 @@ import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -107,8 +109,6 @@ public interface CalendarDateActionType extends
      * @see Attribute.Builder#withJoiner(Attribute.Joiner)
      * @see Attribute.Builder#withValue(Object)
      * @see Attribute.Builder#withWrapper(Attribute.Wrapper)
-     * @see Attribute.Joiner#OR
-     * @see Attribute.Wrapper#NONE
      * @see Attribute#withValue(Object)
      * @see BooleanUtil#isTrue(boolean)
      * @see ByXPath.Builder#withXPath(XPath)
@@ -121,7 +121,11 @@ public interface CalendarDateActionType extends
      * @see DateUtil#notEarlierThan(Date, Date)
      * @see MultiSwipeType#rxa_performAction()
      * @see Direction#vertical(boolean)
+     * @see XMLAttributeType#value()
      * @see XPath.Builder#addAttribute(Attribute)
+     * @see AndroidXMLAttribute#CONTENT_DESC
+     * @see Attribute.Joiner#OR
+     * @see Attribute.Wrapper#NONE
      * @see #swipeOnce(SwipeType)
      * @see #rxa_click(WebElement)
      * @see #rxe_byXPath(ByXPath...)
@@ -140,7 +144,7 @@ public interface CalendarDateActionType extends
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
         Attribute<String> attr = Attribute.<String>builder()
-            .addAttribute("content-desc")
+            .addAttribute(AndroidXMLAttribute.CONTENT_DESC.value())
             .withFormatible(new Attributes.ContainsString() {})
             .withValue(DATE_STRING)
             .withJoiner(Attribute.Joiner.OR)

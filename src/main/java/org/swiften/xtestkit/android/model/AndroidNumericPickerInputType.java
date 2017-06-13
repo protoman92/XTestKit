@@ -7,9 +7,10 @@ package org.swiften.xtestkit.android.model;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
@@ -23,6 +24,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
 public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
+     * @param helper {@link InputHelperType} instance.
      * @param selected {@link String} value of the selected choice.
      * @return {@link ByXPath} instance.
      * @see AndroidView.ViewType#EDIT_TEXT
@@ -36,7 +38,8 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      */
     @NotNull
     @Override
-    default XPath androidTargetItemXP(@NotNull String selected) {
+    default XPath androidTargetItemXP(@NotNull InputHelperType helper,
+                                      @NotNull String selected) {
         Attributes attrs = Attributes.of(Platform.ANDROID);
         String clsName = AndroidView.ViewType.EDIT_TEXT.className();
 
@@ -50,17 +53,19 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
 
     /**
      * Get the parent {@link XPath} to use with
-     * {@link #androidChoicePickerXP()} in order to narrow down the
-     * {@link java.util.List} of located {@link org.openqa.selenium.WebElement}.
-     * Prepend this in front of {@link #androidChoicePickerXP()}.
+     * {@link #androidChoicePickerXP(InputHelperType)} in order to narrow down
+     * the {@link java.util.List} of located
+     * {@link org.openqa.selenium.WebElement}.
+     * Prepend this in front of {@link #androidChoicePickerXP(InputHelperType)}.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link XPath} instance.
      * @see CompoundAttribute#empty()
      * @see Platform#ANDROID
      * @see XPath.Builder#addAttribute(Attribute)
-     * @see #androidChoicePickerXP()
+     * @see #androidChoicePickerXP(InputHelperType)
      */
     @NotNull
-    default XPath androidChoicePickerParentXP() {
+    default XPath androidChoicePickerParentXP(@NotNull InputHelperType helper) {
         return XPath.builder().addAttribute(CompoundAttribute.empty()).build();
     }
 
@@ -73,17 +78,17 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(Attribute)
      * @see AndroidView.ViewType#NUMBER_PICKER
-     * @see #androidChoicePickerParentXP()
-     * @see #androidScrollablePickerIndex()
+     * @see #androidChoicePickerParentXP(InputHelperType)
+     * @see #androidScrollablePickerIndex(InputHelperType)
      */
     @NotNull
     @Override
-    default XPath androidChoicePickerXP() {
+    default XPath androidChoicePickerXP(@NotNull InputHelperType helper) {
         return XPath.builder()
-            .withXPath(androidChoicePickerParentXP())
+            .withXPath(androidChoicePickerParentXP(helper))
             .addAttribute(CompoundAttribute.empty()
                 .withClass(AndroidView.ViewType.NUMBER_PICKER.className())
-                .withIndex(androidScrollablePickerIndex() + 1))
+                .withIndex(androidScrollablePickerIndex(helper) + 1))
             .build();
     }
 
@@ -97,13 +102,13 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see BaseViewType#className()
      * @see XPath.Builder#addAttribute(Attribute)
      * @see XPath.Builder#addXPath(XPath)
-     * @see #androidChoicePickerXP()
+     * @see #androidChoicePickerXP(InputHelperType)
      */
     @NotNull
     @Override
-    default XPath androidChoicePickerItemXP() {
+    default XPath androidChoicePickerItemXP(@NotNull InputHelperType helper) {
         return XPath.builder()
-            .withXPath(androidChoicePickerXP())
+            .withXPath(androidChoicePickerXP(helper))
             .addAttribute(CompoundAttribute.empty())
             .build();
     }
