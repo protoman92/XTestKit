@@ -14,8 +14,8 @@ import org.swiften.xtestkit.base.element.general.BaseActionType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 import org.swiften.xtestkit.android.AndroidInstance;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.type.ADBHandlerContainerType;
-import org.swiften.xtestkit.android.type.AndroidInstanceContainerType;
+import org.swiften.xtestkit.android.type.ADBHandlerProviderType;
+import org.swiften.xtestkit.android.type.AndroidInstanceProviderType;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionType;
 
@@ -23,8 +23,8 @@ import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionT
  * This interface provides methods to work with Android keyboards.
  */
 public interface AndroidKeyboardActionType extends
-    ADBHandlerContainerType,
-    AndroidInstanceContainerType,
+    ADBHandlerProviderType,
+    AndroidInstanceProviderType,
     BaseActionType<AndroidDriver<AndroidElement>>,
     MobileKeyboardActionType<AndroidDriver<AndroidElement>>
 {

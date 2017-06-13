@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.Engine;
  * This interface provides an {@link Engine} instance.
  */
 @FunctionalInterface
-public interface EngineContainerType {
+public interface EngineProviderType {
     /**
      * Get the associated {@link Engine} instance.
      * @return An {@link Engine} instance.

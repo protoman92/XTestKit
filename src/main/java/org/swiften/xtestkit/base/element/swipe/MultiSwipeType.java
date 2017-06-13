@@ -102,6 +102,7 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
      * @see #rxa_swipeOnce(SwipeType)
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeElement(@NotNull WebElement element,
@@ -109,8 +110,8 @@ public interface MultiSwipeType extends SwipeOnceType {
                                                double scrollRatio) {
         Dimension dimension = element.getSize();
         Point location = element.getLocation();
-        double height = dimension.getHeight();
-        int startX = 0, startY = 0, endX = 0, endY = 0;
+        double height = dimension.getHeight(), width = dimension.getWidth();
+        int startX, startY, endX, endY;
 
         /* The direction corresponds to whether the year being searched is
          * after or before the current selected year */
@@ -118,22 +119,36 @@ public interface MultiSwipeType extends SwipeOnceType {
             case UP_DOWN:
                 endY = (int)(location.getY() + height);
                 startY = (int)(endY - height * scrollRatio);
-                startX = location.getX() + dimension.getWidth() / 2;
+                startX = (int)(location.getX() + width / 2);
                 endX = startX;
                 break;
 
             case DOWN_UP:
                 endY = location.getY();
                 startY = (int)(endY + height * scrollRatio);
-                startX = location.getX() + dimension.getWidth() / 2;
+                startX = (int)(location.getX() + width / 2);
                 endX = startX;
+                break;
+
+            case LEFT_RIGHT:
+                endX = (int)(location.getX() + width);
+                startX = (int)(endX - width * scrollRatio);
+                startY = (int)(location.getY() + height / 2);
+                endY = startY;
+                break;
+
+            case RIGHT_LEFT:
+                endX = location.getX();
+                startX = (int)(endX + width * scrollRatio);
+                startY = (int)(location.getY() + height / 2);
+                endY = startY;
                 break;
 
             case NONE:
                 return Flowable.just(true);
 
             default:
-                break;
+                throw new RuntimeException(NOT_AVAILABLE);
         }
 
         return rxa_swipeOnce(SwipeParam.builder()

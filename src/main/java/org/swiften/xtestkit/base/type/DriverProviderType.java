@@ -3,7 +3,6 @@ package org.swiften.xtestkit.base.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 
 import java.util.concurrent.Callable;
@@ -17,7 +16,7 @@ import java.util.concurrent.Callable;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 @FunctionalInterface
-public interface DriverContainerType<D extends WebDriver> {
+public interface DriverProviderType<D extends WebDriver> {
     /**
      * Get the associated {@link D} instance.
      * @return {@link D} instance.
@@ -36,7 +35,7 @@ public interface DriverContainerType<D extends WebDriver> {
      */
     @NotNull
     default  <T> Flowable<T> rxv_errorWithPageSource(@NotNull String error) {
-        final DriverContainerType<?> THIS = this;
+        final DriverProviderType<?> THIS = this;
 
         return Flowable.error(() -> {
 //            LogUtil.println(THIS.driver().getPageSource());

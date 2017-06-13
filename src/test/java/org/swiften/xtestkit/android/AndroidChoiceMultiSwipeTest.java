@@ -11,6 +11,7 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -193,31 +194,32 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
         @NotNull
         @Override
-        public XPath choicePickerXP(@NotNull PlatformType platform) {
+        public XPath choicePickerXP(@NotNull InputHelperType helper) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        public XPath choicePickerItemXP(@NotNull PlatformType platform) {
+        public XPath choicePickerItemXP(@NotNull InputHelperType helper) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        public XPath androidChoicePickerXP() {
+        public XPath androidChoicePickerXP(@NotNull InputHelperType helper) {
             return CHOICE_LIST_VIEW_XPATH;
         }
 
         @NotNull
         @Override
-        public XPath androidChoicePickerItemXP() {
+        public XPath androidChoicePickerItemXP(@NotNull InputHelperType helper) {
             return XPath.builder().build();
         }
 
         @NotNull
         @Override
-        public XPath androidTargetItemXP(@NotNull String selected) {
+        public XPath androidTargetItemXP(@NotNull InputHelperType helper,
+                                         @NotNull String selected) {
             return XPath.builder().build();
         }
     }

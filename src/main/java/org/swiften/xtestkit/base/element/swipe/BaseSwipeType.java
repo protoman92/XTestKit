@@ -10,15 +10,15 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 
 /**
  * This interface provides methods to perform swipe gestures.
  */
-public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<D>, SwipeOnceType {
+public interface BaseSwipeType<D extends WebDriver> extends DriverProviderType<D>, SwipeOnceType {
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
      * full swipe is required.
@@ -51,7 +51,7 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      */
     @NotNull
     default <P extends
-        DirectionContainerType &
+        DirectionProviderType &
         DurationType &
         RepeatType &
         RelativeSwipePositionType> Flowable<Boolean>
@@ -121,11 +121,11 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @return {@link Flowable} instance.
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
-     * @see #rxa_swipeGeneric(Point, Dimension, DirectionContainerType)
+     * @see #rxa_swipeGeneric(Point, Dimension, DirectionProviderType)
      */
     @NotNull
     default <P extends
-        DirectionContainerType &
+        DirectionProviderType &
         DurationType &
         RepeatType &
         RelativeSwipePositionType> Flowable<WebElement>
@@ -145,11 +145,11 @@ public interface BaseSwipeType<D extends WebDriver> extends DriverContainerType<
      * @see WebDriver.Window#getPosition()
      * @see WebDriver.Window#getSize()
      * @see #driver()
-     * @see #rxa_swipeGeneric(Point, Dimension, DirectionContainerType)
+     * @see #rxa_swipeGeneric(Point, Dimension, DirectionProviderType)
      */
     @NotNull
     default <P extends
-        DirectionContainerType &
+        DirectionProviderType &
         DurationType &
         RepeatType &
         RelativeSwipePositionType> Flowable<Boolean>

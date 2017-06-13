@@ -26,6 +26,7 @@ public class AndroidInstance implements DeviceUIDType, PortType {
 
     AndroidInstance() {
         deviceName = "";
+        uid = "";
         mode = TestMode.SIMULATED;
     }
 

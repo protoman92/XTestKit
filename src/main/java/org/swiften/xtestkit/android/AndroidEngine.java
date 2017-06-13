@@ -44,19 +44,24 @@ import java.util.Map;
  */
 public class AndroidEngine extends
     MobileEngine<AndroidDriver<AndroidElement>> implements
-    ADBHandlerContainerType,
+    ADBHandlerProviderType,
     AndroidActionType,
     AndroidChoiceSelectorType,
     AndroidDateActionType,
     AndroidErrorType,
     AndroidInputActionType,
-    AndroidInstanceContainerType,
+    AndroidInstanceProviderType,
     AndroidLocatorType,
     AndroidKeyboardActionType,
     AndroidPasswordActionType,
     AndroidSearchActionType,
+    AndroidSDKProviderType,
     AndroidSwitcherActionType
 {
+    /**
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -420,13 +425,13 @@ public class AndroidEngine extends
 
         /**
          * Set {@link #platformVersion}.
-         * @param sdk {@link AndroidVersion} instance.
+         * @param sdk {@link AndroidSDK} instance.
          * @return {@link Builder} instance.
-         * @see AndroidVersion#version()
+         * @see AndroidSDK#version()
          * @see #withPlatformVersion(String)
          */
         @NotNull
-        public Builder withSDK(@NotNull AndroidVersion sdk) {
+        public Builder withSDK(@NotNull AndroidSDK sdk) {
             String version = sdk.version();
             withPlatformVersion(version);
             return this;

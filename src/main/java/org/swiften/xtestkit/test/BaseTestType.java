@@ -6,12 +6,12 @@ package org.swiften.xtestkit.test;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.kit.TestKit;
-import org.swiften.xtestkit.util.EngineContainerType;
+import org.swiften.xtestkit.util.EngineProviderType;
 
 /**
  * UI tests should implement this interface to access some convenient methods.
  */
-public interface BaseTestType extends EngineContainerType {
+public interface BaseTestType extends EngineProviderType {
     /**
      * Get the currently active {@link TestKit}.
      * @return {@link TestKit} instance.

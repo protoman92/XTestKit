@@ -10,7 +10,7 @@ import org.swiften.xtestkit.android.adb.ADBHandler;
  * This interface provides a
  * {@link org.swiften.xtestkit.android.adb.ADBHandler} instance.
  */
-public interface ADBHandlerContainerType {
+public interface ADBHandlerProviderType {
     /**
      * Get {@link ADBHandler} instance.
      * @return {@link ADBHandler} instance.

@@ -8,7 +8,7 @@ import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.RelativeSwipePositionType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
+import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -16,12 +16,12 @@ import org.swiften.xtestkitcomponents.direction.DirectionContainerType;
 
 /**
  * Parameter object for
- * {@link Engine#rxa_swipeGeneric(WebElement, DirectionContainerType)}.
+ * {@link Engine#rxa_swipeGeneric(WebElement, DirectionProviderType)}.
  * Use this to perform unidirectional swipe actions.
  */
 public class DirectionParam implements
     DurationType,
-    DirectionContainerType,
+    DirectionProviderType,
     RelativeSwipePositionType,
     RepeatType
 {
@@ -148,13 +148,13 @@ public class DirectionParam implements
 
         /**
          * Set the {@link #direction} instance.
-         * @param param {@link DirectionContainerType} instance.
+         * @param param {@link DirectionProviderType} instance.
          * @return {@link Builder} instance.
-         * @see DirectionContainerType#direction()
+         * @see DirectionProviderType#direction()
          * @see #withDirection(Direction)
          */
         @NotNull
-        public Builder withDirectionContainer(@NotNull DirectionContainerType param) {
+        public Builder withDirectionContainer(@NotNull DirectionProviderType param) {
             return withDirection(param.direction());
         }
 

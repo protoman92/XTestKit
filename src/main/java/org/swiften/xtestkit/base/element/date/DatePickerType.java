@@ -33,18 +33,16 @@ public interface DatePickerType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      */
-    @NotNull
-    XPath unitLabelViewXPath(@NotNull CalendarUnit unit);
+    @NotNull XPath unitLabelViewXPath(@NotNull CalendarUnit unit);
 
     /**
      * Get the target item view {@link XPath} that corresponds to
-     * {@link CalendarUnit}. This view should be the one displaying
-     * the component we are interested in.
+     * {@link CalendarUnit}. This view should be the one displaying the
+     * component we are interested in.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      */
-    @NotNull
-    XPath targetItemXP(@NotNull CalendarUnit unit);
+    @NotNull XPath targetItemXP(@NotNull CalendarUnit unit);
 
     /**
      * Get the list view's item {@link XPath} that corresponds to a
@@ -52,6 +50,5 @@ public interface DatePickerType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      */
-    @NotNull
-    XPath pickerItemXP(@NotNull CalendarUnit unit);
+    @NotNull XPath pickerItemXP(@NotNull CalendarUnit unit);
 }

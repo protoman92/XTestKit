@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.util.EngineContainerType;
+import org.swiften.xtestkit.util.EngineProviderType;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * This interface provides methods to manager {@link ScreenType} and calculate
  * the short routes between any 2 {@link ScreenType}.
  */
-public interface ScreenManagerType extends EngineContainerType, ScreenManagerErrorType {
+public interface ScreenManagerType extends EngineProviderType, ScreenManagerErrorType {
     /**
      * Register {@link ScreenType} and store its related {@link Node} in an
      * inner cache.

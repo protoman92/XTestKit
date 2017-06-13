@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.localizer.LCFormat;
-import org.swiften.javautilities.localizer.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
@@ -21,6 +21,7 @@ import org.swiften.xtestkit.base.element.locator.param.*;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
@@ -29,6 +30,7 @@ import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
+import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -41,12 +43,12 @@ import java.util.List;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface BaseLocatorType<D extends WebDriver> extends
-    DriverContainerType<D>,
-    LocalizerContainerType,
+    DriverProviderType<D>,
+    LocalizerProviderType,
     BaseElementPropertyType,
     BaseLocatorErrorType,
-    PlatformContainerType,
-    PlatformViewContainerType
+    PlatformProviderType,
+    PlatformViewProviderType
 {
     //region By XPath
     /**
@@ -171,7 +173,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * Get {@link XPath} from {@link Attribute}.
      * @param attribute {@link Attribute} instance.
      * @return {@link XPath} instance.
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      */
     @NotNull
     default XPath withAttributeQuery(@NotNull Attribute<?> attribute) {
@@ -206,20 +208,19 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see Attributes#ofClass(String)
      * @see ByXPath.Builder#withError(String)
      * @see ByXPath.Builder#withRetryType(RetryType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see P#value()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #noElementsWithClass(String)
      * @see #platform()
      */
     @NotNull
     default <P extends OfClassType & RetryType> ByXPath ofClassQuery(@NotNull P param) {
-        PlatformType platform = platform();
-        Attributes attrs = Attributes.of(platform);
+        Attributes attrs = Attributes.of(this);
 
         XPath xPath = XPath.builder()
             .addAttribute(attrs.ofClass(param.value()))
@@ -279,20 +280,19 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see Attributes#containsID(String)
      * @see ByXPath.Builder#withError(String)
      * @see ByXPath.Builder#withRetryType(RetryType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see P#value()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #noElementsWithId(String)
      * @see #platform()
      */
     @NotNull
     default <P extends ContainsIDType & RetryType> ByXPath containsIDQuery(@NotNull P param) {
-        PlatformType platform = platform();
-        Attributes attrs = Attributes.of(platform);
+        Attributes attrs = Attributes.of(this);
 
         XPath xPath = XPath.builder()
             .addAttribute(attrs.containsID(param.value()))
@@ -353,13 +353,13 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
      * @see Attributes#hasText(String)
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see ByXPath.Builder#withError(String)
      * @see ByXPath.Builder#withRetryType(RetryType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see LocalizerType#localize(String)
      * @see P#value()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #localizer()
      * @see #noElementsWithText(String)
      * @see #platform()
@@ -368,8 +368,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     default <P extends StringType & RetryType> ByXPath hasTextQuery(@NotNull P param) {
         LocalizerType localizer = localizer();
         String localized = localizer.localize(param.value());
-        PlatformType platform = platform();
-        Attributes attrs = Attributes.of(platform);
+        Attributes attrs = Attributes.of(this);
 
         XPath xPath = XPath.builder()
             .addAttribute(attrs.hasText(localized))
@@ -429,13 +428,14 @@ public interface BaseLocatorType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link ByXPath} instance.
+     * @see Attributes#of(PlatformProviderType)
      * @see ByXPath.Builder#withError(String)
      * @see ByXPath.Builder#withRetryType(RetryType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see LocalizerType#localize(String)
      * @see P#value()
      * @see TextParam.Builder#withText(String)
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #localizer()
      * @see #noElementsContainingText(String)
      * @see #platform()
@@ -444,8 +444,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     default <P extends StringType & RetryType> ByXPath containsTextQuery(@NotNull P param) {
         LocalizerType localizer = localizer();
         String localized = localizer.localize(param.value());
-        PlatformType platform = platform();
-        Attributes attrs = Attributes.of(platform);
+        Attributes attrs = Attributes.of(this);
 
         XPath xPath = XPath.builder()
             .addAttribute(attrs.containsText(localized))
@@ -566,12 +565,12 @@ public interface BaseLocatorType<D extends WebDriver> extends
     /**
      * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
      * @see ByXPath.Builder#withXPath(XPath)
      * @see PlatformView#isEditable()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #platform()
      * @see #platformView()
      * @see #rxe_byXPath(ByXPath...)
@@ -579,8 +578,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @NotNull
     default Flowable<WebElement> rxe_editables() {
         List<? extends BaseViewType> views = platformView().isEditable();
-        PlatformType platform = platform();
-        final Attributes ATTRS = Attributes.of(platform);
+        final Attributes ATTRS = Attributes.of(this);
 
         ByXPath[] queries = views.stream()
             .map(BaseViewType::className)

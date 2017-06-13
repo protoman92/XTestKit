@@ -12,6 +12,8 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
+import org.swiften.xtestkit.android.type.AndroidSDK;
+import org.swiften.xtestkit.android.type.AndroidSDKProviderType;
 import org.swiften.xtestkit.base.element.date.*;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
@@ -22,11 +24,13 @@ import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkitcomponents.direction.Direction;
+import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -36,6 +40,7 @@ import java.util.Date;
  */
 public interface CalendarDateActionType extends
     AndroidLocatorType,
+    AndroidSDKProviderType,
     DateActionType<AndroidDriver<AndroidElement>>,
     MobileActionType<AndroidDriver<AndroidElement>>,
     MobileSwipeType<AndroidDriver<AndroidElement>>
@@ -102,6 +107,7 @@ public interface CalendarDateActionType extends
      * have brought the picker close to the date we want.
      * @param PARAM {@link DateType} instance.
      * @return {@link Flowable} instance.
+     * @see AndroidSDK#isAtLeastM()
      * @see Attribute.Builder#addAttribute(String)
      * @see Attribute.Builder#withFormatible(Attribute.Formatible)
      * @see Attribute.Builder#withJoiner(Joiner)
@@ -118,12 +124,14 @@ public interface CalendarDateActionType extends
      * @see DateType#dateString(String)
      * @see DateUtil#notEarlierThan(Date, Date)
      * @see MultiSwipeType#rxa_performAction()
+     * @see Direction#horizontal(boolean)
      * @see Direction#vertical(boolean)
      * @see XMLAttributeType#value()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidXMLAttribute#CONTENT_DESC
      * @see Joiner#OR
      * @see Wrapper#NONE
+     * @see #androidSDK()
      * @see #swipeOnce(SwipeType)
      * @see #rxa_click(WebElement)
      * @see #rxe_byXPath(ByXPath...)
@@ -152,16 +160,9 @@ public interface CalendarDateActionType extends
         Attribute<String> defAttr = attr.withValue("01");
         XPath xp = XPath.builder().addAttribute(attr).build();
         XPath dxp = XPath.builder().addAttribute(defAttr).build();
-
-        final ByXPath QUERY = ByXPath.builder()
-            .withXPath(xp)
-            .withRetries(0)
-            .build();
-
-        final ByXPath DEF_QUERY = ByXPath.builder()
-            .withXPath(dxp)
-            .withRetries(0)
-            .build();
+        final ByXPath Q = ByXPath.builder().withXPath(xp).withRetries(0).build();
+        final ByXPath DQ = ByXPath.builder().withXPath(dxp).withRetries(0).build();
+        final boolean AT_LEAST_M = androidSDK().isAtLeastM();
 
         return new MultiSwipeType() {
             @NotNull
@@ -185,11 +186,11 @@ public interface CalendarDateActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rxe_displayedDate to check */
-                return THIS.rxe_byXPath(DEF_QUERY)
+                return THIS.rxe_byXPath(DQ)
                     .firstElement()
                     .toFlowable()
                     .flatMap(THIS::rxa_click)
-                    .flatMap(a -> THIS.rxe_byXPath(QUERY))
+                    .flatMap(a -> THIS.rxe_byXPath(Q))
                     .flatMap(THIS::rxa_click)
                     .flatMap(a -> rxv_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
@@ -204,11 +205,19 @@ public interface CalendarDateActionType extends
             @NotNull
             @Override
             public Flowable<Direction> rxe_swipeDirection() {
+                final int DAY = CalendarUnit.DAY.value();
+
                 /* We use month to compare because the month and day views
                  * are intertwined in CALENDAR mode */
                 return rxe_displayedDate(PARAM)
-                    .map(a -> DateUtil.notEarlierThan(a, DATE, CalendarUnit.DAY.value()))
-                    .map(Direction::vertical);
+                    .map(a -> DateUtil.notEarlierThan(a, DATE, DAY))
+                    .map(a -> {
+                        if (AT_LEAST_M) {
+                            return Direction.horizontal(a);
+                        } else {
+                            return Direction.vertical(a);
+                        }
+                    });
             }
 
             @Override
@@ -243,7 +252,7 @@ public interface CalendarDateActionType extends
      * @param UNIT {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see Attributes#containsText(String)
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see BooleanUtil#toTrue(Object)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see ByXPath.Builder#withRetries(int)
@@ -254,7 +263,7 @@ public interface CalendarDateActionType extends
      * @see DateType#component(CalendarUnit)
      * @see DateType#datePickerType()
      * @see MultiSwipeType#rxa_performAction()
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #displayString(DateType, CalendarUnit)
      * @see #getText(WebElement)
      * @see #platform()
@@ -269,9 +278,7 @@ public interface CalendarDateActionType extends
         final int COMPONENT = PARAM.component(UNIT);
         String format = PARAM.datePickerType().valueStringFormat(UNIT);
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
-
-        PlatformType platform = platform();
-        Attributes attrs = Attributes.of(platform);
+        Attributes attrs = Attributes.of(this);
 
         XPath xPath = PARAM.datePickerType().targetItemXP(UNIT)
             .addToEach(attrs.containsText(CP_STRING));

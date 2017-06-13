@@ -186,7 +186,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @see BaseViewType#className()
      * @see CompoundAttribute#forClass(String)
      * @see CompoundAttribute#withIndex(Integer)
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see IOSView.ViewType#UI_PICKER
      * @see IOSView.ViewType#UNDEFINED

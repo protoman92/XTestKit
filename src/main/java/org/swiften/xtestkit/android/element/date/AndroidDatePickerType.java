@@ -4,8 +4,11 @@ package org.swiften.xtestkit.android.element.date;
  * Created by haipham on 5/23/17.
  */
 
+import org.apache.tools.ant.taskdefs.condition.And;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.AndroidView;
+import org.swiften.xtestkit.android.type.AndroidSDK;
+import org.swiften.xtestkit.android.type.AndroidSDKProviderType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkitcomponents.direction.Direction;
@@ -13,29 +16,25 @@ import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
-import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
-import org.swiften.xtestkitcomponents.xpath.XPath;
+import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
  * Represents the available types of calendar views for {@link Platform#ANDROID}.
  */
 public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     /**
-     * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_22} and
-     * below, the calendar is scrolled vertically. Therefore, we need to use
-     * {@link Direction#UP_DOWN}
-     * and {@link Direction#DOWN_UP}
-     * to navigate it.
-     *
-     * On {@link org.swiften.xtestkit.android.type.AndroidVersion#SDK_23} and
-     * above, the calendar is scrolled horizontally. Therefore, we need to use
-     * {@link Direction#LEFT_RIGHT}
-     * and {@link Direction#RIGHT_LEFT}
-     * to navigate it.
+     * On {@link AndroidSDK#SDK_22} and below, the calendar is scrolled
+     * vertically. Therefore, we need to use {@link Direction#UP_DOWN} and
+     * {@link Direction#DOWN_UP} to navigate it.
      */
     CALENDAR,
+
+    /**
+     * On {@link AndroidSDK#SDK_23} and above, the calendar is scrolled
+     * horizontally. Therefore, we need to use {@link Direction#LEFT_RIGHT}
+     * and {@link Direction#RIGHT_LEFT} to navigate it.
+     */
+    CALENDAR_M,
 
     /**
      * Only relevant for {@link CalendarUnit#HOUR} and {@link CalendarUnit#MINUTE}.
@@ -43,13 +42,39 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     HH_mm_TIME_PICKER;
 
     /**
+     * Get the default calendar picker for a particular {@link AndroidSDK}.
+     * @param sdk {@link AndroidSDK} instance.
+     * @return {@link AndroidDatePickerType} instance.
+     * @see #CALENDAR
+     * @see #CALENDAR_M
+     */
+    @NotNull
+    public static AndroidDatePickerType calendar(@NotNull AndroidSDK sdk) {
+        return sdk.isAtLeastM() ? CALENDAR_M : CALENDAR;
+    }
+
+    /**
+     * Same as above, but uses {@link AndroidSDKProviderType}.
+     * @param type {@link AndroidSDKProviderType} instance.
+     * @return {@link AndroidDatePickerType} instance.
+     * @see AndroidSDKProviderType#androidSDK()
+     * @see #calendar(AndroidSDK)
+     */
+    @NotNull
+    public static AndroidDatePickerType calendar(@NotNull AndroidSDKProviderType type) {
+        return calendar(type.androidSDK());
+    }
+
+    /**
      * Check if the current {@link AndroidDatePickerType} is calendar-based.
      * @return {@link Boolean} value.
      * @see #CALENDAR
+     * @see #CALENDAR_M
      */
     public boolean isCalendar() {
         switch (this) {
             case CALENDAR:
+            case CALENDAR_M:
                 return true;
 
             default:
@@ -113,13 +138,15 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
-     * @see AndroidView.ViewType#LIST_VIEW
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
+     * @see XPath.Builder#addAttribute(AttributeType)
+     * @see AndroidView.ViewType#LIST_VIEW
+     * @see Joiner#OR
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
      * @see #CALENDAR
+     * @see #CALENDAR_M
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -127,10 +154,18 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     public XPath pickerViewXP(@NotNull CalendarUnit unit) {
         switch (this) {
             case CALENDAR:
+            case CALENDAR_M:
                 Attributes attrs = Attributes.of(Platform.ANDROID);
-                String cls = AndroidView.ViewType.LIST_VIEW.className();
-                Attribute attr = attrs.ofClass(cls);
-                return XPath.builder().addAttribute(attr).build();
+                String lvc = AndroidView.ViewType.LIST_VIEW.className();
+                String vpc = "com.android.internal.widget.ViewPager";
+
+                AttributeBlock block = AttributeBlock.builder()
+                    .addAttribute(attrs.ofClass(lvc))
+                    .addAttribute(attrs.ofClass(vpc))
+                    .withJoiner(Joiner.OR)
+                    .build();
+
+                return XPath.builder().addAttribute(block).build();
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -169,25 +204,45 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#targetItemXP(CalendarUnit)
+     * @see AttributeBlock.Builder#addAttribute(AttributeType)
+     * @see AttributeBlock.Builder#withJoiner(Joiner)
      * @see Attributes#of(PlatformType)
      * @see Attributes#containsID(String)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see CalendarUnit#YEAR
+     * @see Joiner#OR
      * @see Platform#ANDROID
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see #CALENDAR
+     * @see #CALENDAR_M
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath targetItemXP(@NotNull CalendarUnit unit) {
-        switch (unit) {
-            case YEAR:
-                Attributes attrs = Attributes.of(Platform.ANDROID);
-                Attribute attr = attrs.containsID("month_text_view");
-                return XPath.builder().addAttribute(attr).build();
+        switch (this) {
+            case CALENDAR:
+            case CALENDAR_M:
+                switch (unit) {
+                    case YEAR:
+                        Attributes attrs = Attributes.of(Platform.ANDROID);
+
+                        AttributeBlock block = AttributeBlock.builder()
+                            .addAttribute(attrs.containsID("month_text_view"))
+                            .addAttribute(attrs.containsID("text1"))
+                            .withJoiner(Joiner.OR)
+                            .build();
+
+                        return XPath.builder().addAttribute(block).build();
+
+                    default:
+                        break;
+                }
 
             default:
-                throw new RuntimeException(NOT_AVAILABLE);
+                break;
         }
+
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
@@ -195,116 +250,188 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerItemXP(CalendarUnit)
-     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see AttributeBlock.Builder#addAttribute(AttributeType)
+     * @see AttributeBlock.Builder#withJoiner(Joiner)
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see CalendarUnit#YEAR
-     * @see CompoundAttribute.Builder#addAttribute(Attribute)
-     * @see Platform#ANDROID
+     * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
+     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see CalendarUnit#YEAR
+     * @see Platform#ANDROID
+     * @see #CALENDAR
+     * @see #CALENDAR_M
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
     public XPath pickerItemXP(@NotNull CalendarUnit unit) {
-        switch (unit) {
-            case YEAR:
-                Attributes attrs = Attributes.of(Platform.ANDROID);
-                String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+        switch (this) {
+            case CALENDAR:
+            case CALENDAR_M:
+                switch (unit) {
+                    case YEAR:
+                        Attributes attrs = Attributes.of(Platform.ANDROID);
 
-                CompoundAttribute attribute = CompoundAttribute.builder()
-                    .addAttribute(attrs.containsID("month_text_view"))
-                    .addAttribute(attrs.ofClass(clsName))
-                    .build();
+                        AttributeBlock block = AttributeBlock.builder()
+                            .addAttribute(attrs.containsID("month_text_view"))
+                            .addAttribute(attrs.containsID("text1"))
+                            .withJoiner(Joiner.OR)
+                            .build();
 
-                return XPath.builder().addAttribute(attribute).build();
+                        return XPath.builder().addAttribute(block).build();
+
+                    default:
+                        break;
+                }
 
             default:
-                throw new RuntimeException(NOT_AVAILABLE);
+                break;
         }
+
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the day display view {@link XPath}.
      * @return {@link XPath} instance.
-     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see AttributeBlock.Builder#addAttribute(AttributeType)
+     * @see AttributeBlock.Builder#withJoiner(Joiner)
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see CompoundAttribute.Builder#addAttribute(Attribute)
-     * @see Platform#ANDROID
+     * @see CompoundAttribute.Builder#addAttribute(AttributeType)
+     * @see CompoundAttribute.Builder#withClass(String)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
+     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Joiner#OR
+     * @see Platform#ANDROID
+     * @see #CALENDAR
+     * @see #CALENDAR_M
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     private XPath dayDisplayViewXP() {
-        Attributes attrs = Attributes.of(Platform.ANDROID);
-        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+        switch (this) {
+            case CALENDAR:
+            case CALENDAR_M:
+                Attributes attrs = Attributes.of(Platform.ANDROID);
 
-        CompoundAttribute attribute = CompoundAttribute.builder()
-            .addAttribute(attrs.containsID("date_picker_day"))
-            .addAttribute(attrs.ofClass(clsName))
-            .build();
+                AttributeBlock block = AttributeBlock.builder()
+                    .addAttribute(attrs.containsID("date_picker_day"))
+                    .addAttribute(attrs.containsID("date_picker_header_date"))
+                    .withJoiner(Joiner.OR)
+                    .build();
 
-        return XPath.builder().addAttribute(attribute).build();
+                CompoundAttribute attribute = CompoundAttribute.builder()
+                    .addAttribute(block)
+                    .withClass(AndroidView.ViewType.TEXT_VIEW.className())
+                    .build();
+
+                return XPath.builder().addAttribute(attribute).build();
+
+            default:
+                break;
+        }
+
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the month display view {@link XPath}.
      * @return {@link XPath} instance.
-     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see AttributeBlock.Builder#addAttribute(AttributeType)
+     * @see AttributeBlock.Builder#withJoiner(Joiner)
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see CompoundAttribute.Builder#addAttribute(Attribute)
-     * @see Platform#ANDROID
+     * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
+     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Platform#ANDROID
+     * @see #CALENDAR
+     * @see #CALENDAR_M
      */
     @NotNull
     private XPath monthDisplayViewXPath() {
-        Attributes attrs = Attributes.of(Platform.ANDROID);
-        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+        switch (this) {
+            case CALENDAR:
+            case CALENDAR_M:
+                Attributes attrs = Attributes.of(Platform.ANDROID);
 
-        CompoundAttribute attribute = CompoundAttribute.builder()
-            .addAttribute(attrs.containsID("date_picker_month"))
-            .addAttribute(attrs.ofClass(clsName))
-            .build();
+                AttributeBlock block = AttributeBlock.builder()
+                    .addAttribute(attrs.containsID("date_picker_month"))
+                    .addAttribute(attrs.containsID("date_picker_header_date"))
+                    .withJoiner(Joiner.OR)
+                    .build();
 
-        return XPath.builder().addAttribute(attribute).build();
+                CompoundAttribute attribute = CompoundAttribute.builder()
+                    .addAttribute(block)
+                    .withClass(AndroidView.ViewType.TEXT_VIEW.className())
+                    .build();
+
+                return XPath.builder().addAttribute(attribute).build();
+
+            default:
+                break;
+        }
+
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the year display view {@link XPath}.
      * @return {@link XPath} instance.
-     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see AttributeBlock.Builder#addAttribute(AttributeType)
+     * @see AttributeBlock.Builder#withJoiner(Joiner)
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
-     * @see CompoundAttribute.Builder#addAttribute(Attribute)
-     * @see Platform#ANDROID
+     * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
+     * @see AndroidView.ViewType#TEXT_VIEW
+     * @see Platform#ANDROID
+     * @see #CALENDAR
+     * @see #CALENDAR_M
+     * @see #NOT_AVAILABLE
      */
     @NotNull
     private XPath yearDisplayViewXPath() {
-        Attributes attrs = Attributes.of(Platform.ANDROID);
-        String clsName = AndroidView.ViewType.TEXT_VIEW.className();
+        switch (this) {
+            case CALENDAR:
+            case CALENDAR_M:
+                Attributes attrs = Attributes.of(Platform.ANDROID);
 
-        CompoundAttribute attribute = CompoundAttribute.builder()
-            .addAttribute(attrs.containsID("date_picker_year"))
-            .addAttribute(attrs.ofClass(clsName))
-            .build();
+                AttributeBlock block = AttributeBlock.builder()
+                    .addAttribute(attrs.containsID("date_picker_year"))
+                    .addAttribute(attrs.containsID("date_picker_header_year"))
+                    .withJoiner(Joiner.OR)
+                    .build();
 
-        return XPath.builder().addAttribute(attribute).build();
+                CompoundAttribute attribute = CompoundAttribute.builder()
+                    .addAttribute(block)
+                    .withClass(AndroidView.ViewType.TEXT_VIEW.className())
+                    .build();
+
+                return XPath.builder().addAttribute(attribute).build();
+
+            default:
+                break;
+        }
+
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Get the format {@link CalendarUnit#DAY} is formatted in.
      * @return {@link String} value.
      * @see #CALENDAR
+     * @see #CALENDAR_M
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -312,6 +439,9 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
         switch (this) {
             case CALENDAR:
                 return "d";
+
+            case CALENDAR_M:
+                return "EEE, MMM d";
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -322,6 +452,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the format {@link CalendarUnit#MONTH} is formatted in.
      * @return {@link String} value.
      * @see #CALENDAR
+     * @see #CALENDAR_M
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -329,6 +460,9 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
         switch (this) {
             case CALENDAR:
                 return "MMM";
+
+            case CALENDAR_M:
+                return "EEE, MMM d";
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -345,6 +479,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     private String yearFormat() {
         switch (this) {
             case CALENDAR:
+            case CALENDAR_M:
                 return "yyyy";
 
             default:

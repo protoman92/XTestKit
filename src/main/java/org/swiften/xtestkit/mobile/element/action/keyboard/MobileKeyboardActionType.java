@@ -6,7 +6,7 @@ package org.swiften.xtestkit.mobile.element.action.keyboard;
 
 import io.appium.java_client.MobileDriver;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
-import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.DriverProviderType;
 
 /**
  * This interface provides methods to handle keyboard actions in mobile
@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.type.DriverContainerType;
  */
 public interface MobileKeyboardActionType<D extends MobileDriver> extends
     BaseKeyboardActionType<D>,
-    DriverContainerType<D>
+    DriverProviderType<D>
 {
     /**
      * Override this method to provide default implementation.

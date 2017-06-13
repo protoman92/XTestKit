@@ -11,7 +11,7 @@ import org.swiften.xtestkit.android.AndroidInstance;
  * This interface provides a
  * {@link org.swiften.xtestkit.android.AndroidInstance}.
  */
-public interface AndroidInstanceContainerType {
+public interface AndroidInstanceProviderType {
     /**
      * Get {@link AndroidInstance}.
      * @return {@link AndroidInstance}.

@@ -18,8 +18,6 @@ public interface AndroidDateActionType extends CalendarDateActionType, NumberDat
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateActionType#rxa_openPicker(DateType, CalendarUnit)
-     * @see CalendarDateActionType#rxa_openPicker(DateType, CalendarUnit)
-     * @see NumberDatePickerType#rxa_openPicker(DateType, CalendarUnit)
      * @see AndroidDatePickerType#isCalendar()
      * @see AndroidDatePickerType#isNumberPicker()
      * @see #NOT_AVAILABLE
@@ -49,8 +47,6 @@ public interface AndroidDateActionType extends CalendarDateActionType, NumberDat
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateActionType#rxa_select(DateType, CalendarUnit)
-     * @see CalendarDateActionType#rxa_select(DateType, CalendarUnit)
-     * @see NumberDatePickerType#rxa_select(DateType, CalendarUnit)
      * @see AndroidDatePickerType#isCalendar()
      * @see AndroidDatePickerType#isNumberPicker()
      * @see DateType#datePickerType()

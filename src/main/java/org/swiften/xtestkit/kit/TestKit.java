@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.box.BoxUtil;
 import org.swiften.javautilities.localizer.Localizer;
-import org.swiften.javautilities.localizer.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class TestKit implements
     BaseErrorType,
-    LocalizerContainerType,
+    LocalizerProviderType,
     RepeatRunner.IndexConsumer,
     TestListenerType
 {

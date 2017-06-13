@@ -13,7 +13,7 @@ import org.swiften.xtestkitcomponents.view.BaseViewType;
  * for {@link BaseViewType}-related operations.
  */
 @FunctionalInterface
-public interface PlatformViewContainerType {
+public interface PlatformViewProviderType {
     /**
      * Get the associated {@link PlatformView} instance.
      * @return {@link PlatformView} instance.

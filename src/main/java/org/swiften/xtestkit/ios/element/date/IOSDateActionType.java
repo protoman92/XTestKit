@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
-import org.swiften.javautilities.localizer.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +25,7 @@ import java.util.Date;
 public interface IOSDateActionType extends
     DateActionType<IOSDriver<IOSElement>>,
     BaseInputActionType<IOSDriver<IOSElement>>,
-    LocalizerContainerType
+    LocalizerProviderType
 {
     /**
      * Override this method to provide default implementation.

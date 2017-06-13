@@ -17,10 +17,12 @@ import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.swiften.xtestkit.util.TestMessageType;
@@ -221,7 +223,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
-    interface TestPlatformContainerType extends PlatformContainerType {
+    interface TestPlatformProviderType extends PlatformProviderType {
         @NotNull
         @Override
         default PlatformType platform() {
@@ -258,13 +260,34 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
+    interface TestSwitcherActionType extends BaseSwitcherActionType {
+        @NotNull
+        @Override
+        default String switcherOnValue() {
+            return "1";
+        }
+
+        @NotNull
+        @Override
+        default String switcherOffValue() {
+            return "0";
+        }
+
+        @NotNull
+        @Override
+        default String switcherValue(@NotNull WebElement element) {
+            return element.getAttribute("value");
+        }
+    }
+
     static class MockEngine extends Engine<WebDriver> implements
         TestChoiceSelectorType,
         TestDateActionType,
         TestLocatorType,
         TestKeyboardActionType,
-        TestPlatformContainerType,
-        TestSearchActionType
+        TestPlatformProviderType,
+        TestSearchActionType,
+        TestSwitcherActionType
     {
         @NotNull
         @Override

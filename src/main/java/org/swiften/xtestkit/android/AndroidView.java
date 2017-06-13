@@ -2,6 +2,7 @@ package org.swiften.xtestkit.android;
 
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -12,7 +13,7 @@ import org.swiften.xtestkit.mobile.Platform;
 /**
  * Provide {@link Platform#ANDROID} {@link BaseViewType}.
  */
-public class AndroidView extends PlatformView {
+public class AndroidView extends PlatformView implements BaseErrorType {
     public enum ViewType implements BaseViewType {
         BUTTON,
         CHECKED_TEXT_VIEW,
@@ -68,7 +69,7 @@ public class AndroidView extends PlatformView {
                     return "android.support.v4.view.ViewPager";
 
                 default:
-                    throw new RuntimeException();
+                    throw new RuntimeException(NOT_AVAILABLE);
             }
         }
 

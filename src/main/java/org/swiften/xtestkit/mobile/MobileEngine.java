@@ -11,6 +11,7 @@ import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionT
 import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
+import org.swiften.xtestkit.mobile.type.PlatformVersionProviderType;
 import org.swiften.xtestkitcomponents.common.RetryType;
 
 import java.nio.file.Path;
@@ -26,7 +27,8 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     MobileKeyboardActionType<D>,
     MobilePasswordActionType<D>,
     MobileTapType<D>,
-    MobileSwipeType<D>
+    MobileSwipeType<D>,
+    PlatformVersionProviderType
 {
     @NotNull String app;
     @NotNull String appPackage;

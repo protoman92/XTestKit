@@ -11,7 +11,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkitcomponents.common.DelayType;
-import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 
 import java.util.concurrent.TimeUnit;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface BaseActionType<D extends WebDriver> extends
     BaseActionDelayType,
-    DriverContainerType<D>
+    DriverProviderType<D>
 {
     /**
      * Implicitly wait before search for elements.

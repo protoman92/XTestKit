@@ -11,16 +11,14 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
+import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
-import org.swiften.javautilities.localizer.LocalizerContainerType;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
-import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
-import org.swiften.xtestkitcomponents.xpath.XPath;
+import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public interface IOSActionType extends
     ClickActionType,
     BaseLocatorType<IOSDriver<IOSElement>>,
-    LocalizerContainerType,
+    LocalizerProviderType,
     MobileActionType<IOSDriver<IOSElement>>
 {
     @NotNull
@@ -53,17 +51,16 @@ public interface IOSActionType extends
      * @return {@link Flowable} instance.
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
-     * @see Attributes#of(PlatformType)
+     * @see Attributes#of(PlatformProviderType)
      * @see Attributes#hasText(String)
      * @see BaseViewType#className()
      * @see BooleanUtil#toTrue(Object)
-     * @see CompoundAttribute#single(Attribute)
+     * @see CompoundAttribute#single(AttributeType)
      * @see CompoundAttribute#withClass(String)
      * @see IOSView.ViewType#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
-     * @see Platform#IOS
-     * @see XPath.Builder#addAttribute(Attribute)
+     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #alertDismissDelay()
      * @see #localizer()
      * @see #rxa_click(WebElement)
@@ -73,8 +70,7 @@ public interface IOSActionType extends
     @Override
     default Flowable<Boolean> rxa_dismissAlert(@NotNull AlertParam param) {
         final IOSActionType THIS = this;
-        final Platform PLATFORM = Platform.IOS;
-        final Attributes ATTRS = Attributes.of(PLATFORM);
+        final Attributes ATTRS = Attributes.of(this);
         final LocalizerType LOCALIZER = localizer();
         final String BTN_CLS = IOSView.ViewType.UI_BUTTON.className();
         String[] titles;

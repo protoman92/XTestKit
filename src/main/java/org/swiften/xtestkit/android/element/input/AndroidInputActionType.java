@@ -5,7 +5,7 @@ import io.appium.java_client.android.AndroidElement;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.input.BaseInputActionType;
-import org.swiften.xtestkit.base.type.DriverContainerType;
+import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**
@@ -19,7 +19,7 @@ import org.swiften.xtestkit.mobile.Platform;
 public interface AndroidInputActionType extends
     AndroidKeyboardCodeType,
     BaseInputActionType<AndroidDriver<AndroidElement>>,
-    DriverContainerType<AndroidDriver<AndroidElement>>
+    DriverProviderType<AndroidDriver<AndroidElement>>
 {
     /**
      * Override this method to provide default implementation.

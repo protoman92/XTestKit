@@ -30,7 +30,7 @@ import java.util.function.Predicate;
  * threads.
  */
 public interface AppiumHandlerType extends
-    AddressContainerType,
+    AddressProviderType,
     NetworkHandlerHolderType,
     ProcessRunnerHolderType
 {
