@@ -20,7 +20,7 @@ public final class XPathTest {
 
         UnitNumberPickerWrapper wrapper = UnitNumberPickerWrapper.builder()
             .withDatePicker(AndroidDatePickerType.TIME_NUMBER_PICKER_HH_mm)
-            .withCalendarUnit(CalendarUnit.HOUR)
+            .withCalendarUnit(CalendarUnit.HOUR_12)
             .build();
 
         // When & Then

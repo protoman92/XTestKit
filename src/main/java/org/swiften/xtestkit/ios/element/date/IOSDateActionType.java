@@ -68,7 +68,7 @@ public interface IOSDateActionType extends
      * Override this method to take care of a few special cases whereby
      * {@link String} format with {@link SimpleDateFormat} is not enough.
      * For example, if {@link DateType#datePickerType()} is
-     * {@link IOSDatePickerType#MMMd_h_mm_a}, the month-day {@link String} will
+     * {@link IOSDatePickerType#PICKER_WHEEL_MMMd_h_mm_a}, the month-day {@link String} will
      * be "Today" if the {@link Date} is the current day.
      * @param param {@link DateType} instance.
      * @param unit {@link CalendarUnit} instance.
@@ -82,14 +82,14 @@ public interface IOSDateActionType extends
      * @see DateType#datePickerType()
      * @see DateUtil#sameAs(Date, Date, int)
      * @see LocalizerType#localize(String)
-     * @see IOSDatePickerType#MMMd_h_mm_a
+     * @see IOSDatePickerType#PICKER_WHEEL_MMMd_h_mm_a
      * @see #localizer()
      */
     @NotNull
     @Override
     default String displayString(@NotNull DateType param, @NotNull CalendarUnit unit) {
         DatePickerType picker = param.datePickerType();
-        DatePickerType target = IOSDatePickerType.MMMd_h_mm_a;
+        DatePickerType target = IOSDatePickerType.PICKER_WHEEL_MMMd_h_mm_a;
 
         if (picker.equals(target) && (unit.isMonth() || unit.isDay())) {
             LocalizerType localizer = localizer();

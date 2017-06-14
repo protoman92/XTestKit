@@ -4,6 +4,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
@@ -131,12 +132,13 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     default Flowable<?> rxa_compareFirst(@NotNull WebElement element) {
         final ChoiceHelperType<?> HELPER = choiceHelper();
         final ChoiceInputType INPUT = choiceInput();
-        final double NUMERIC_VALUE = selectedChoiceNumericValue();
+        final double NUMERIC = selectedChoiceNumericValue();
 
         return Flowable.just(element)
             .map(HELPER::getText)
             .map(a -> INPUT.numericValue(HELPER, a))
-            .filter(a -> a >= NUMERIC_VALUE);
+            .doOnNext(a -> LogUtil.printft("Comparing %s and %s", a, NUMERIC))
+            .filter(a -> a >= NUMERIC);
     }
 
     /**
@@ -155,12 +157,13 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     default Flowable<?> rxa_compareLast(@NotNull WebElement element) {
         final ChoiceHelperType<?> HELPER = choiceHelper();
         final ChoiceInputType INPUT = choiceInput();
-        final double NUMERIC_VALUE = selectedChoiceNumericValue();
+        final double NUMERIC = selectedChoiceNumericValue();
 
         return Flowable.just(element)
             .map(HELPER::getText)
             .map(a -> INPUT.numericValue(HELPER, a))
-            .filter(a -> a <= NUMERIC_VALUE);
+            .doOnNext(a -> LogUtil.printft("Comparing %s and %s", a, NUMERIC))
+            .filter(a -> a <= NUMERIC);
     }
 
     /**

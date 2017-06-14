@@ -83,10 +83,16 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format for a particular {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#HOUR_12
+     * @see CalendarUnit#HOUR_24
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#MINUTE
+     * @see CalendarUnit#YEAR
      * @see #dayFormat()
      * @see #monthFormat()
      * @see #yearFormat()
-     * @see #hourFormat()
+     * @see #hour24Format()
      * @see #minuteFormat()
      * @see #NOT_AVAILABLE
      */
@@ -103,8 +109,8 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
             case YEAR:
                 return yearFormat();
 
-            case HOUR:
-                return hourFormat();
+            case HOUR_24:
+                return hour24Format();
 
             case MINUTE:
                 return minuteFormat();
@@ -157,6 +163,9 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * Get the display view {@link XPath} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#YEAR
      * @see #dayDisplayViewXP()
      * @see #monthDisplayViewXPath()
      * @see #yearDisplayViewXPath()
@@ -480,13 +489,13 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
     }
 
     /**
-     * Get the format {@link CalendarUnit#HOUR} is formatted in.
+     * Get the format {@link CalendarUnit#HOUR_24} is formatted in.
      * @return {@link String} value.
      * @see #TIME_NUMBER_PICKER_HH_mm
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    private String hourFormat() {
+    private String hour24Format() {
         switch (this) {
             case TIME_NUMBER_PICKER_HH_mm:
                 return "HH";

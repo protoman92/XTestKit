@@ -19,17 +19,24 @@ import org.swiften.xtestkitcomponents.xpath.*;
  * {@link Platform#IOS}.
  */
 public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
-    MMMM_d_YYYY,
-    MMMd_h_mm_a;
+    PICKER_WHEEL_MMMM_d_yyyy,
+    PICKER_WHEEL_MMMd_h_mm_a;
 
     /**
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
      * @see DatePickerType#valueStringFormat(CalendarUnit)
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#HOUR_12
+     * @see CalendarUnit#HOUR_24
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#MINUTE
+     * @see CalendarUnit#PERIOD
+     * @see CalendarUnit#YEAR
      * @see #dayStringFormat()
      * @see #monthStringFormat()
      * @see #yearStringFormat()
-     * @see #hourStringFormat()
+     * @see #hour12StringFormat()
      * @see #minuteStringFormat()
      * @see #periodStringFormat()
      * @see #NOT_AVAILABLE
@@ -47,8 +54,8 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
             case YEAR:
                 return yearStringFormat();
 
-            case HOUR:
-                return hourStringFormat();
+            case HOUR_12:
+                return hour12StringFormat();
 
             case MINUTE:
                 return minuteStringFormat();
@@ -65,17 +72,17 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format that corresponds to
      * {@link CalendarUnit#DAY}.
      * @return {@link String} value.
-     * @see #MMMM_d_YYYY
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String dayStringFormat() {
         switch (this) {
-            case MMMM_d_YYYY:
+            case PICKER_WHEEL_MMMM_d_yyyy:
                 return "d";
 
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return "MMM d";
 
             default:
@@ -87,18 +94,18 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format that corresponds to
      * {@link CalendarUnit#MONTH}.
      * @return {@link String} value.
-     * @see #MMMM_d_YYYY
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #dayStringFormat()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String monthStringFormat() {
         switch (this) {
-            case MMMM_d_YYYY:
+            case PICKER_WHEEL_MMMM_d_yyyy:
                 return "MMMM";
 
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return dayStringFormat();
 
             default:
@@ -110,14 +117,14 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format that corresponds to
      * {@link CalendarUnit#YEAR}.
      * @return {@link String} value.
-     * @see #MMMM_d_YYYY
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String yearStringFormat() {
         switch (this) {
-            case MMMM_d_YYYY:
-                return "YYYY";
+            case PICKER_WHEEL_MMMM_d_yyyy:
+                return "yyyy";
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -126,15 +133,15 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
 
     /**
      * Get the {@link String} format that corresponds to
-     * {@link CalendarUnit#HOUR}.
+     * {@link CalendarUnit#HOUR_12}.
      * @return {@link String} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    private String hourStringFormat() {
+    private String hour12StringFormat() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return "h";
 
             default:
@@ -146,13 +153,13 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format that corresponds to
      * {@link CalendarUnit#MINUTE}.
      * @return {@link String} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String minuteStringFormat() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return "mm";
 
             default:
@@ -164,13 +171,13 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the {@link String} format that corresponds to
      * {@link CalendarUnit#PERIOD}.
      * @return {@link String} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     @NotNull
     private String periodStringFormat() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return "a";
 
             default:
@@ -259,6 +266,13 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Integer} value.
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#HOUR_12
+     * @see CalendarUnit#HOUR_24
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#MINUTE
+     * @see CalendarUnit#PERIOD
+     * @see CalendarUnit#YEAR
      * @see #dayPickerIndex()
      * @see #monthPickerIndex()
      * @see #yearPickerIndex()
@@ -278,7 +292,8 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
             case YEAR:
                 return yearPickerIndex();
 
-            case HOUR:
+            case HOUR_12:
+            case HOUR_24:
                 return hourPickerIndex();
 
             case MINUTE:
@@ -296,16 +311,16 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#DAY}.
      * @return {@link Integer} value.
-     * @see #MMMM_d_YYYY
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     private int dayPickerIndex() {
         switch (this) {
-            case MMMM_d_YYYY:
+            case PICKER_WHEEL_MMMM_d_yyyy:
                 return 1;
 
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 /* In this case, the day picker and the month picker share
                  * the same index - they are grouped together into one
                  * compound value */
@@ -320,17 +335,17 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#MONTH}.
      * @return {@link Integer} value.
-     * @see #MMMM_d_YYYY
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #dayPickerIndex()
      * @see #NOT_AVAILABLE
      */
     private int monthPickerIndex() {
         switch (this) {
-            case MMMM_d_YYYY:
+            case PICKER_WHEEL_MMMM_d_yyyy:
                 return 0;
 
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return dayPickerIndex();
 
             default:
@@ -342,12 +357,12 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#YEAR}.
      * @return {@link Integer} value.
-     * @see #MMMM_d_YYYY
+     * @see #PICKER_WHEEL_MMMM_d_yyyy
      * @see #NOT_AVAILABLE
      */
     private int yearPickerIndex() {
         switch (this) {
-            case MMMM_d_YYYY:
+            case PICKER_WHEEL_MMMM_d_yyyy:
                 return 2;
 
             default:
@@ -357,14 +372,14 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
 
     /**
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
-     * corresponds to {@link CalendarUnit#HOUR}.
+     * corresponds to {@link CalendarUnit#HOUR_12}.
      * @return {@link Integer} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     private int hourPickerIndex() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return 1;
 
             default:
@@ -376,12 +391,12 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#MINUTE}.
      * @return {@link Integer} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     private int minutePickerIndex() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return 2;
 
             default:
@@ -393,12 +408,12 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * Get the index of {@link IOSView.ViewType#UI_PICKER_WHEEL} that
      * corresponds to {@link CalendarUnit#PERIOD}.
      * @return {@link Integer} value.
-     * @see #MMMd_h_mm_a
+     * @see #PICKER_WHEEL_MMMd_h_mm_a
      * @see #NOT_AVAILABLE
      */
     private int periodPickerIndex() {
         switch (this) {
-            case MMMd_h_mm_a:
+            case PICKER_WHEEL_MMMd_h_mm_a:
                 return 3;
 
             default:

@@ -21,7 +21,8 @@ public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
     DAY,
     MONTH,
     YEAR,
-    HOUR,
+    HOUR_12,
+    HOUR_24,
     MINUTE,
     PERIOD;
 
@@ -35,17 +36,6 @@ public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
     @NotNull
     public static List<CalendarUnit> datePickerUnits() {
         return Arrays.asList(YEAR, MONTH, DAY);
-    }
-
-    /**
-     * Get the {@link CalendarUnit} involved in time selection.
-     * @return {@link List} of {@link CalendarUnit}.
-     * @see #HOUR
-     * @see #MINUTE
-     */
-    @NotNull
-    public static List<CalendarUnit> timePickerUnits() {
-        return Arrays.asList(HOUR, MINUTE);
     }
 
     /**
@@ -76,12 +66,12 @@ public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
     }
 
     /**
-     * Check if the current {@link CalendarUnit} is {@link #HOUR}.
+     * Check if the current {@link CalendarUnit} is {@link #HOUR_12}.
      * @return {@link Boolean} value.
-     * @see #HOUR
+     * @see #HOUR_12
      */
     public boolean isHour() {
-        return equals(HOUR);
+        return equals(HOUR_12);
     }
 
     /**
@@ -106,6 +96,13 @@ public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
      * Get the {@link Calendar} constant that corresponds to this
      * {@link CalendarUnit}.
      * @return {@link Integer} instance.
+     * @see #DAY
+     * @see #HOUR_12
+     * @see #HOUR_24
+     * @see #MONTH
+     * @see #MINUTE
+     * @see #PERIOD
+     * @see #YEAR
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -120,8 +117,11 @@ public enum CalendarUnit implements ValueType<Integer>, BaseErrorType {
             case YEAR:
                 return Calendar.YEAR;
 
-            case HOUR:
+            case HOUR_12:
                 return Calendar.HOUR;
+
+            case HOUR_24:
+                return Calendar.HOUR_OF_DAY;
 
             case MINUTE:
                 return Calendar.MINUTE;

@@ -109,6 +109,7 @@ public class UnitNumberPickerWrapper implements
         CalendarUnit unit = calendarUnit();
         String format = pickerType.valueStringFormat(unit);
         SimpleDateFormat formatter = new SimpleDateFormat(format);
+        LogUtil.printft("Formatting %s with %s", value, format);
 
         try {
             Date date = formatter.parse(value);
@@ -145,6 +146,7 @@ public class UnitNumberPickerWrapper implements
         Date date = calendar.getTime();
         String format = pickerType.valueStringFormat(unit);
         SimpleDateFormat formatter = new SimpleDateFormat(format);
+        LogUtil.printft("Formatting %s with %s", value, format);
         return formatter.format(date);
     }
 
@@ -225,8 +227,12 @@ public class UnitNumberPickerWrapper implements
      * instances, based on {@link #calendarUnit()}.
      * @param helper {@link InputHelperType} instance.
      * @return {@link Integer} value.
-     * @see CalendarUnit#HOUR
+     * @see CalendarUnit#DAY
+     * @see CalendarUnit#HOUR_12
+     * @see CalendarUnit#HOUR_24
      * @see CalendarUnit#MINUTE
+     * @see CalendarUnit#MONTH
+     * @see CalendarUnit#YEAR
      * @see #calendarUnit()
      * @see #dayPickerIndex(InputHelperType)
      * @see #hourPickerIndex(InputHelperType)
@@ -247,7 +253,8 @@ public class UnitNumberPickerWrapper implements
             case DAY:
                 return dayPickerIndex(helper);
 
-            case HOUR:
+            case HOUR_12:
+            case HOUR_24:
                 return hourPickerIndex(helper);
 
             case MINUTE:
@@ -313,7 +320,7 @@ public class UnitNumberPickerWrapper implements
     }
 
     /**
-     * Get the picker index that corresponds to {@link CalendarUnit#HOUR}.
+     * Get the picker index that corresponds to {@link CalendarUnit#HOUR_12}.
      * @param helper {@link InputHelperType} instance.
      * @return {@link Integer} value.
      * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm

@@ -142,8 +142,8 @@ public interface CalendarDateActionType extends
         final CalendarDateActionType THIS = this;
         final Date DATE = PARAM.date();
 
-        /* dd MMMM YYYY is the format accepted by the content-desc property */
-        final String DATE_STRING = PARAM.dateString("dd MMMM YYYY");
+        /* dd MMMM yyyy is the format accepted by the content-desc property */
+        final String DATE_STRING = PARAM.dateString("dd MMMM yyyy");
 
         /* Weirdly enough, the individual view element that contains the day
          * values use content description to store the day */
