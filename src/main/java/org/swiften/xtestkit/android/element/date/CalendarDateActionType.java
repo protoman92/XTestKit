@@ -25,12 +25,10 @@ import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -186,12 +184,14 @@ public interface CalendarDateActionType extends
                  * is scrolled to a new page/the previous page, click on the
                  * first day element in order to update the displayed date.
                  * We can then use rxe_displayedDate to check */
-                return THIS.rxe_byXPath(DQ)
-                    .firstElement()
+                return Flowable
+                    .concat(
+                        THIS.rxe_byXPath(DQ).firstElement().toFlowable(),
+                        THIS.rxe_byXPath(Q).firstElement().toFlowable()
+                    )
+                    .concatMap(THIS::rxa_click)
+                    .lastElement()
                     .toFlowable()
-                    .flatMap(THIS::rxa_click)
-                    .flatMap(a -> THIS.rxe_byXPath(Q))
-                    .flatMap(THIS::rxa_click)
                     .flatMap(a -> rxv_hasDate(PARAM))
                     .filter(BooleanUtil::isTrue);
             }
