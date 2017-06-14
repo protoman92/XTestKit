@@ -208,7 +208,7 @@ public interface CalendarDateActionType extends
                 final int DAY = CalendarUnit.DAY.value();
 
                 /* We use month to compare because the month and day views
-                 * are intertwined in CALENDAR mode */
+                 * are intertwined in calendar mode */
                 return rxe_displayedDate(PARAM)
                     .map(a -> DateUtil.notEarlierThan(a, DATE, DAY))
                     .map(a -> {

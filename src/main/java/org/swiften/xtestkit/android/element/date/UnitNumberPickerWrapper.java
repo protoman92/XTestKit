@@ -2,6 +2,7 @@ package org.swiften.xtestkit.android.element.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.android.model.AndroidNumericPickerInputType;
@@ -13,10 +14,14 @@ import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
-import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by haipham on 2/6/17.
@@ -29,11 +34,12 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
  * {@link org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType}
  * when we select dates using
  * {@link AndroidDateActionType#rxa_selectDate(DateType)} with
- * {@link AndroidDatePickerType#HH_mm_TIME_PICKER}.
+ * {@link AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm}.
  */
 public class UnitNumberPickerWrapper implements
     AndroidNumericPickerInputType,
-    BaseErrorType, ChoiceInputType
+    BaseErrorType,
+    ChoiceInputType
 {
     /**
      * Get {@link Builder} instance.
@@ -86,6 +92,65 @@ public class UnitNumberPickerWrapper implements
     /**
      * Override this method to provide default implementation.
      * @param helper {@link InputHelperType} instance.
+     * @param value {@link String} value.
+     * @return {@link Double} value.
+     * @see ChoiceInputType#numericValue(InputHelperType, String)
+     * @see CalendarUnit#value()
+     * @see DatePickerType#valueStringFormat(CalendarUnit)
+     * @see #calendarUnit()
+     * @see #datePickerType()
+     * @see #NOT_AVAILABLE
+     */
+    @Override
+    @SuppressWarnings("MagicConstant")
+    public double numericValue(@NotNull InputHelperType helper,
+                               @NotNull String value) {
+        DatePickerType pickerType = datePickerType();
+        CalendarUnit unit = calendarUnit();
+        String format = pickerType.valueStringFormat(unit);
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+
+        try {
+            Date date = formatter.parse(value);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int unitValue = unit.value();
+            return calendar.get(unitValue);
+        } catch (ParseException e) {
+            LogUtil.printft("Error parsing %s", value);
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @param helper {@link InputHelperType} instance.
+     * @param value {@link Double} value.
+     * @return {@link String} value.
+     * @see ChoiceInputType#stringValue(InputHelperType, double)
+     * @see CalendarUnit#value()
+     * @see DatePickerType#valueStringFormat(CalendarUnit)
+     * @see #calendarUnit()
+     * @see #datePickerType()
+     */
+    @NotNull
+    @Override
+    @SuppressWarnings("MagicConstant")
+    public String stringValue(@NotNull InputHelperType helper, double value) {
+        DatePickerType pickerType = datePickerType();
+        CalendarUnit unit = calendarUnit();
+        int unitValue = unit.value();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(unitValue, (int)value);
+        Date date = calendar.getTime();
+        String format = pickerType.valueStringFormat(unit);
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @param helper {@link InputHelperType} instance.
      * @return {@link XPath} instance.
      * @see ChoiceInputType#choicePickerXP(InputHelperType)
      * @see #androidChoicePickerXP(InputHelperType)
@@ -129,7 +194,9 @@ public class UnitNumberPickerWrapper implements
      * @see BaseViewType#className()
      * @see CompoundAttribute#forClass(String)
      * @see XPath.Builder#addAttribute(AttributeType)
-     * @see AndroidDatePickerType#HH_mm_TIME_PICKER
+     * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
+     * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm
+     * @see AndroidView.ViewType#DATE_PICKER
      * @see AndroidView.ViewType#TIME_PICKER
      * @see Platform#ANDROID
      * @see #datePickerType()
@@ -138,10 +205,15 @@ public class UnitNumberPickerWrapper implements
     @Override
     public XPath androidChoicePickerParentXP(@NotNull InputHelperType helper) {
         switch (datePickerType()) {
-            case HH_mm_TIME_PICKER:
-                String cls = AndroidView.ViewType.TIME_PICKER.className();
-                CompoundAttribute attribute = CompoundAttribute.forClass(cls);
-                return XPath.builder().addAttribute(attribute).build();
+            case DATE_NUMBER_PICKER_MMM_dd_yyyy:
+                String dp = AndroidView.ViewType.DATE_PICKER.className();
+                CompoundAttribute dpAttr = CompoundAttribute.forClass(dp);
+                return XPath.builder().addAttribute(dpAttr).build();
+
+            case TIME_NUMBER_PICKER_HH_mm:
+                String tp = AndroidView.ViewType.TIME_PICKER.className();
+                CompoundAttribute tpAttr = CompoundAttribute.forClass(tp);
+                return XPath.builder().addAttribute(tpAttr).build();
 
             default:
                 return AndroidNumericPickerInputType.super.androidChoicePickerParentXP(helper);
@@ -156,13 +228,25 @@ public class UnitNumberPickerWrapper implements
      * @see CalendarUnit#HOUR
      * @see CalendarUnit#MINUTE
      * @see #calendarUnit()
+     * @see #dayPickerIndex(InputHelperType)
      * @see #hourPickerIndex(InputHelperType)
      * @see #minutePickerIndex(InputHelperType)
+     * @see #monthPickerIndex(InputHelperType)
+     * @see #yearPickerIndex(InputHelperType)
      * @see #NOT_AVAILABLE
      */
     @Override
     public int androidScrollablePickerIndex(@NotNull InputHelperType helper) {
         switch (calendarUnit()) {
+            case YEAR:
+                return yearPickerIndex(helper);
+
+            case MONTH:
+                return monthPickerIndex(helper);
+
+            case DAY:
+                return dayPickerIndex(helper);
+
             case HOUR:
                 return hourPickerIndex(helper);
 
@@ -175,16 +259,70 @@ public class UnitNumberPickerWrapper implements
     }
 
     /**
+     * Get the picker index that corresponds to {@link CalendarUnit#YEAR}.
+     * @param helper {@link InputHelperType} instance.
+     * @return {@link Integer} value.
+     * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
+     * @see #datePickerType()
+     * @see #NOT_AVAILABLE
+     */
+    private int yearPickerIndex(@NotNull InputHelperType helper) {
+        switch (datePickerType()) {
+            case DATE_NUMBER_PICKER_MMM_dd_yyyy:
+                return 2;
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Get the picker index that corresponds to {@link CalendarUnit#MONTH}.
+     * @param helper {@link InputHelperType} instance.
+     * @return {@link Integer} value.
+     * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
+     * @see #datePickerType()
+     * @see #NOT_AVAILABLE
+     */
+    private int monthPickerIndex(@NotNull InputHelperType helper) {
+        switch (datePickerType()) {
+            case DATE_NUMBER_PICKER_MMM_dd_yyyy:
+                return 0;
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
+     * Get the picker index that corresponds to {@link CalendarUnit#DAY}.
+     * @param helper {@link InputHelperType} instance.
+     * @return {@link Integer} value.
+     * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
+     * @see #datePickerType()
+     * @see #NOT_AVAILABLE
+     */
+    private int dayPickerIndex(@NotNull InputHelperType helper) {
+        switch (datePickerType()) {
+            case DATE_NUMBER_PICKER_MMM_dd_yyyy:
+                return 1;
+
+            default:
+                throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    /**
      * Get the picker index that corresponds to {@link CalendarUnit#HOUR}.
      * @param helper {@link InputHelperType} instance.
      * @return {@link Integer} value.
-     * @see AndroidDatePickerType#HH_mm_TIME_PICKER
+     * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm
      * @see #datePickerType()
      * @see #NOT_AVAILABLE
      */
     private int hourPickerIndex(@NotNull InputHelperType helper) {
         switch (datePickerType()) {
-            case HH_mm_TIME_PICKER:
+            case TIME_NUMBER_PICKER_HH_mm:
                 return 0;
 
             default:
@@ -196,13 +334,13 @@ public class UnitNumberPickerWrapper implements
      * Get the picker index that corresponds to {@link CalendarUnit#MINUTE}.
      * @param helper {@link InputHelperType} instance.
      * @return {@link Integer} value.
-     * @see AndroidDatePickerType#HH_mm_TIME_PICKER
+     * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm
      * @see #datePickerType()
      * @see #NOT_AVAILABLE
      */
     private int minutePickerIndex(@NotNull InputHelperType helper) {
         switch (datePickerType()) {
-            case HH_mm_TIME_PICKER:
+            case TIME_NUMBER_PICKER_HH_mm:
                 return 1;
 
             default:

@@ -18,6 +18,7 @@ public class AndroidView extends PlatformView implements BaseErrorType {
         BUTTON,
         CHECKED_TEXT_VIEW,
         EDIT_TEXT,
+        DATE_PICKER,
         FRAME_LAYOUT,
         IMAGE_VIEW,
         LINEAR_LAYOUT,
@@ -37,6 +38,9 @@ public class AndroidView extends PlatformView implements BaseErrorType {
 
                 case CHECKED_TEXT_VIEW:
                     return "android.widget.CheckedTextView";
+
+                case DATE_PICKER:
+                    return "android.widget.DatePicker";
 
                 case EDIT_TEXT:
                     return "android.widget.EditText";

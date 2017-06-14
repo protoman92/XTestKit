@@ -12,6 +12,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
  * {@link org.swiften.xtestkit.android.AndroidEngine#platformVersion}.
  */
 public enum AndroidSDK implements BaseErrorType {
+    SDK_18,
     SDK_22,
     SDK_23;
 
@@ -38,11 +39,17 @@ public enum AndroidSDK implements BaseErrorType {
     /**
      * Get the SDK version {@link String}.
      * @return {@link String} value.
+     * @see #SDK_18
+     * @see #SDK_22
+     * @see #SDK_23
      * @see #NOT_AVAILABLE
      */
     @NotNull
     public String version() {
         switch (this) {
+            case SDK_18:
+                return "4.3";
+
             case SDK_22:
                 return "5.1";
 
@@ -61,6 +68,23 @@ public enum AndroidSDK implements BaseErrorType {
      */
     public boolean isAtLeastM() {
         switch (this) {
+            case SDK_23:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Check if the version is at least Lollipop.
+     * @return {@link Boolean} value.
+     * @see #SDK_22
+     * @see #SDK_23
+     */
+    public boolean isAtLeastLollipop() {
+        switch (this) {
+            case SDK_22:
             case SDK_23:
                 return true;
 
