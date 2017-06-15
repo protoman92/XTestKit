@@ -4,12 +4,12 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 
 /**
  * Created by haipham on 2/6/17.
  */
-public interface TestLocatorType extends BaseLocatorType<WebDriver> {
+public interface TestLocatorType extends LocatorType<WebDriver> {
     @NotNull
     @Override
     default Flowable<WebElement> rxe_statusBar() {

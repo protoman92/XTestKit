@@ -2,6 +2,7 @@ package org.swiften.xtestkit.base.element.search;
 
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 
@@ -11,8 +12,9 @@ import org.swiften.xtestkit.base.element.click.ClickActionType;
 
 /**
  * This interface provides methods to handle search.
+ * @param <D> Generics parameter.
  */
-public interface SearchActionType extends ClickActionType {
+public interface SearchActionType<D extends WebDriver> extends ClickActionType<D> {
     /**
      * Get the clear text button, a press upon which deletes the displayed
      * search query.
@@ -29,7 +31,7 @@ public interface SearchActionType extends ClickActionType {
      */
     @NotNull
     default Flowable<WebElement> rxa_clearSearchBar() {
-        final ClickActionType THIS = this;
+        final SearchActionType<?> THIS = this;
         return rxe_textClear().flatMap(THIS::rxa_click);
     }
 }

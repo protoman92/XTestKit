@@ -8,7 +8,7 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.testng.annotations.Test;
 
 import java.util.Random;
@@ -82,7 +82,7 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
 
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
+    public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeParamType param) {
         return Flowable.just(true);
     }
 

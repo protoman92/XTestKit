@@ -177,12 +177,15 @@ public interface AppiumHandlerType extends
      * Stop all local appium instances.
      * @return {@link Flowable} instance.
      * @see NetworkHandler#rxa_killWithPort(RetryType, Predicate)
+     * @see #address()
+     * @see #networkHandler()
      * @see #isAppiumProcess(String)
      */
     @NotNull
     default Flowable<Boolean> rxa_stopLocalAppium() {
+        final AppiumHandlerType THIS = this;
         NetworkHandler handler = networkHandler();
         Address address = address();
-        return handler.rxa_killWithPort(address, this::isAppiumProcess);
+        return handler.rxa_killWithPort(address, THIS::isAppiumProcess);
     }
 }

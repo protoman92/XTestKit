@@ -4,6 +4,7 @@ package org.swiften.xtestkit.base;
  * Created by haipham on 3/19/17.
  */
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -20,17 +21,17 @@ import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
-import org.swiften.xtestkit.base.element.general.BaseActionType;
-import org.swiften.xtestkit.base.element.input.BaseInputActionType;
-import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.password.BasePasswordActionType;
-import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkit.base.element.general.ActionType;
+import org.swiften.xtestkit.base.element.input.InputActionType;
+import org.swiften.xtestkit.base.element.input.KeyboardActionType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.password.PasswordActionType;
+import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
-import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
-import org.swiften.xtestkit.base.element.tap.BaseTapType;
-import org.swiften.xtestkit.base.element.visibility.BaseVisibilityActionType;
+import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
+import org.swiften.xtestkit.base.element.tap.TapType;
+import org.swiften.xtestkit.base.element.visibility.VisibilityActionType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
 import org.swiften.xtestkit.test.TestListenerType;
@@ -50,25 +51,25 @@ import java.util.Map;
  */
 public abstract class Engine<D extends WebDriver> implements
     AppiumHandlerType,
-    BaseActionType<D>,
-    ClickActionType,
+    ActionType<D>,
+    CheckBoxActionType<D>,
     ChoiceSelectorType<D>,
-    CheckBoxActionType,
+    ClickActionType<D>,
     DateActionType<D>,
-    BaseElementPropertyType,
-    BaseInputActionType<D>,
-    BaseLocatorType<D>,
-    BaseKeyboardActionType<D>,
-    BasePasswordActionType<D>,
-    BaseTapType<D>,
-    SearchActionType,
-    BaseSwipeType<D>,
-    BaseSwitcherActionType,
-    BaseVisibilityActionType<D>,
     DistinctiveType,
+    ElementPropertyType,
+    InputActionType<D>,
     InputHelperType,
+    LocatorType<D>,
+    KeyboardActionType<D>,
+    PasswordActionType<D>,
+    SearchActionType<D>,
+    SwipeType<D>,
+    SwitcherActionType,
+    TapType<D>,
     TestListenerType,
-    TestLifecycleType
+    TestLifecycleType,
+    VisibilityActionType<D>
 {
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
@@ -296,9 +297,11 @@ public abstract class Engine<D extends WebDriver> implements
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * @see TestLifecycleType#rxa_afterClass(RetryType)
-     * @see BooleanUtil#isTrue(boolean)
+     * @see Address#isLocalInstance()
+     * @see Address#port()
      * @see BooleanUtil#toTrue(Object)
      * @see NetworkHandler#markPortAvailable(int)
+     * @see ObjectUtil#nonNull(Object)
      * @see #address()
      * @see #networkHandler()
      * @see #rxa_stopLocalAppium()
@@ -306,26 +309,28 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
+        final Engine<?> THIS = this;
         NetworkHandler HANDLER = networkHandler();
-        Address ADDRESS = address();
-
-        Flowable<Boolean> reusePort = Completable
-            .fromAction(() -> HANDLER.markPortAvailable(ADDRESS.port()))
-            .toFlowable()
-            .map(BooleanUtil::toTrue)
-            .defaultIfEmpty(true);
-
-        Flowable<Boolean> stopServer;
-
-        if (ADDRESS.isLocalInstance()) {
-            stopServer = rxa_stopLocalAppium();
-        } else {
-            stopServer = Flowable.just(true);
-        }
+        final Address ADDRESS = address();
+        final int PORT = ADDRESS.port();
 
         return Flowable
-            .concatArray(reusePort, stopServer)
-            .all(BooleanUtil::isTrue)
+            .concatArray(
+                Completable
+                    .fromAction(() -> HANDLER.markPortAvailable(PORT))
+                    .toFlowable()
+                    .map(BooleanUtil::toTrue)
+                    .defaultIfEmpty(true),
+
+                Flowable.create(obs -> {
+                    if (ADDRESS.isLocalInstance()) {
+                        obs.onNext(true);
+                    }
+
+                    obs.onComplete();
+                }, BackpressureStrategy.BUFFER
+                ).flatMap(a -> THIS.rxa_stopLocalAppium()))
+            .all(ObjectUtil::nonNull)
             .toFlowable();
     }
 
@@ -416,7 +421,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxa_stopDriver() {
         final WebDriver DRIVER = driver();
-        LogUtil.printlnt("Stopping driver %s", DRIVER);
+        LogUtil.printft("Stopping driver %s", DRIVER);
 
         return Completable
             .fromAction(DRIVER::quit)

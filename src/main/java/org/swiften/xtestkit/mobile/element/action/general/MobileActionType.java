@@ -4,7 +4,7 @@ import io.appium.java_client.MobileDriver;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.element.general.BaseActionType;
+import org.swiften.xtestkit.base.element.general.ActionType;
 
 /**
  * Created by haipham on 5/8/17.
@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.element.general.BaseActionType;
  * This interface provides actions for mobile driver.
  * @param <D> Generics parameter that extends {@link MobileDriver}.
  */
-public interface MobileActionType<D extends MobileDriver> extends BaseActionType<D> {
+public interface MobileActionType<D extends MobileDriver> extends ActionType<D> {
     /**
      * Get {@link MobileTouchActionType} to perform touch actions on mobile
      * apps. Override this to provide custom subclasses.

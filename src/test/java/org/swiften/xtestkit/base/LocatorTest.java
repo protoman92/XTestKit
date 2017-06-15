@@ -32,8 +32,8 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 5/8/17.
  */
-public class BaseLocatorTest implements TestLocatorType {
-    @NotNull private final BaseLocatorTest ENGINE;
+public class LocatorTest implements TestLocatorType {
+    @NotNull private final LocatorTest ENGINE;
     @NotNull private final WebDriver DRIVER;
     @NotNull private final Localizer LOCALIZER;
     @NotNull private final String LOCALIZED_TEXT;

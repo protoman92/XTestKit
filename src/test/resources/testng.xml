@@ -20,8 +20,8 @@
 
     <test name="Base Engine Action Test">
         <classes>
-            <class name="org.swiften.xtestkit.base.BaseActionTest"/>
-            <class name="org.swiften.xtestkit.base.BaseSwipeActionTest"/>
+            <class name="org.swiften.xtestkit.base.ActionTest"/>
+            <class name="org.swiften.xtestkit.base.SwipeActionTest"/>
             <class name="org.swiften.xtestkit.base.MultiSwipeTest"/>
             <class name="org.swiften.xtestkit.base.MultiSwipeComparisonTest"/>
         </classes>
@@ -29,7 +29,7 @@
 
     <test name="Base Engine Locator Test">
         <classes>
-            <class name="org.swiften.xtestkit.base.BaseLocatorTest"/>
+            <class name="org.swiften.xtestkit.base.LocatorTest"/>
             <class name="org.swiften.xtestkit.base.XPathTest"/>
         </classes>
     </test>

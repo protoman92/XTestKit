@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
@@ -17,7 +17,6 @@ import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.util.concurrent.TimeUnit;
@@ -31,8 +30,8 @@ import java.util.concurrent.TimeUnit;
  * {@link Platform#IOS}.
  */
 public interface IOSActionType extends
-    ClickActionType,
-    BaseLocatorType<IOSDriver<IOSElement>>,
+    ClickActionType<IOSDriver<IOSElement>>,
+    LocatorType<IOSDriver<IOSElement>>,
     LocalizerProviderType,
     MobileActionType<IOSDriver<IOSElement>>
 {

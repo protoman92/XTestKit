@@ -5,7 +5,7 @@ package org.swiften.xtestkit.base.element.general;
  */
 
 /**
- * This interface provides delay duration for {@link BaseActionType}.
+ * This interface provides delay duration for {@link ActionType}.
  */
 public interface BaseActionDelayType {
     /**

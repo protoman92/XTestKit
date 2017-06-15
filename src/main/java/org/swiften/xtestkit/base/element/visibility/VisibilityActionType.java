@@ -9,7 +9,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 
 /**
  * This interface provides methods to handle view visibility, such as polling
@@ -17,7 +17,7 @@ import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
  * network operation completes.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocatorType<D> {
+public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D> {
     /**
      * Watch {@link WebDriver} until it disappears from the screen, by
      * repeatedly checking its visibility.
@@ -39,7 +39,7 @@ public interface BaseVisibilityActionType<D extends WebDriver> extends BaseLocat
      */
     @NotNull
     default Flowable<Boolean> rxa_watchUntilHidden(@NotNull final WebElement ELEMENT) {
-        final BaseVisibilityActionType THIS = this;
+        final VisibilityActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.watchUntilHidden(ELEMENT))

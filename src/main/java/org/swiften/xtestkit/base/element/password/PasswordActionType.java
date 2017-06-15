@@ -5,7 +5,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 /**
@@ -18,7 +18,7 @@ import org.swiften.xtestkitcomponents.platform.PlatformType;
  * {@link PlatformType}.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BasePasswordActionType<D extends WebDriver> extends BaseElementPropertyType {
+public interface PasswordActionType<D extends WebDriver> extends ElementPropertyType {
     /**
      * Toggle password mask to show/hide password.
      * @param element {@link WebElement} instance.
@@ -35,7 +35,7 @@ public interface BasePasswordActionType<D extends WebDriver> extends BaseElement
      */
     @NotNull
     default Flowable<WebElement> rxa_togglePasswordMask(@NotNull final WebElement ELEMENT) {
-        final BasePasswordActionType THIS = this;
+        final PasswordActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.togglePasswordMask(ELEMENT))

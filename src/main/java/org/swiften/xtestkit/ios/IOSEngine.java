@@ -8,6 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
@@ -69,8 +70,8 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Get {@link Platform#IOS}
      * @return {@link Platform} instance.
-     * @see Platform#IOS
      * @see Engine#platform()
+     * @see Platform#IOS
      */
     @NotNull
     @Override
@@ -92,8 +93,8 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Get {@link Automation#XC_UI_TEST}.
      * @return {@link Automation} instance.
-     * @see Automation#XC_UI_TEST
      * @see MobileEngine#automation()
+     * @see Automation#XC_UI_TEST
      */
     @NotNull
     public Automation automation() {
@@ -103,6 +104,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Return {@link #XC_HANDLER}.
      * @return {@link XCRunHandler} instance.
+     * @see #XC_HANDLER
      */
     @NotNull
     public XCRunHandler xcRunHandler() {
@@ -112,6 +114,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Return {@link #deviceUID}.
      * @return {@link String} value.
+     * @see #deviceUID
      */
     @NotNull
     public String deviceUID() {
@@ -121,6 +124,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     /**
      * Return {@link #launchTimeout}.
      * @return {@link Long} value.
+     * @see #launchTimeout
      */
     public long launchTimeout() {
         return launchTimeout;
@@ -149,7 +153,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_afterClass(RetryType)
-     * @see BooleanUtil#isTrue(boolean)
+     * @see ObjectUtil#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see XCRunHandler#rxa_stopSimulator(RetryType)
      * @see #testMode()
@@ -169,7 +173,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
 
         return Flowable
             .concat(super.rxa_afterClass(param), source, rxa_stopDriver())
-            .all(BooleanUtil::isTrue)
+            .all(ObjectUtil::nonNull)
             .toFlowable();
     }
     //endregion

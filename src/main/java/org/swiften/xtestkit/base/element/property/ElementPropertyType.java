@@ -20,7 +20,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
  * but individual {@link PlatformType}
  * subclasses will need its own implementations.
  */
-public interface BaseElementPropertyType extends BaseErrorType {
+public interface ElementPropertyType extends BaseErrorType {
     /**
      * Get text from {@link WebElement}, assuming that this {@link WebElement}
      * is capable of displaying a text.

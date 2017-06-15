@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkitcomponents.direction.Direction;
 
@@ -47,12 +48,13 @@ public interface MultiSwipeType extends SwipeOnceType {
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
+     * @see ObjectUtil#eq(Object)
+     * @see RxUtil#error()
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()
      * @see #rxa_swipeElement(WebElement, Direction, double)
      * @see #rxa_performAction()
-     * @see RxUtil#error()
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeRecursively() {
@@ -101,7 +103,7 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @see Direction#UP_DOWN
      * @see WebElement#getLocation()
      * @see WebElement#getSize()
-     * @see #rxa_swipeOnce(SwipeType)
+     * @see #rxa_swipeOnce(SwipeParamType)
      * @see #NOT_AVAILABLE
      */
     @NotNull

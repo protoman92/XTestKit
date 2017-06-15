@@ -7,13 +7,15 @@ package org.swiften.xtestkit.base.element.checkbox;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 
 /**
  * This interface provides methods to work with checkboxes.
+ * @param <D> Generics parameter.
  */
-public interface CheckBoxActionType extends ClickActionType {
+public interface CheckBoxActionType<D extends WebDriver> extends ClickActionType<D> {
     /**
      * Check if a check box is checked.
      * @param element {@link WebElement} instance.

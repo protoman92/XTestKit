@@ -1,5 +1,7 @@
 package org.swiften.xtestkit.android.element.search;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
@@ -15,7 +17,7 @@ import org.swiften.xtestkit.mobile.Platform;
  * This interface provides methods to handle search for
  * {@link Platform#ANDROID}.
  */
-public interface AndroidSearchActionType extends BaseErrorType, SearchActionType {
+public interface AndroidSearchActionType extends SearchActionType<AndroidDriver<AndroidElement>> {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.

@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.base.element.general.BaseActionType;
+import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
 import org.testng.annotations.AfterMethod;
@@ -23,8 +23,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 5/8/17.
  */
-public class BaseActionTest implements BaseActionType {
-    @NotNull private final BaseActionType ENGINE;
+public class ActionTest implements ActionType {
+    @NotNull private final ActionType ENGINE;
     @NotNull private final WebDriver DRIVER;
     @NotNull private final Alert ALERT;
     @NotNull private final WebDriver.Navigation NAVIGATION;

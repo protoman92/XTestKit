@@ -14,7 +14,7 @@ import org.swiften.javautilities.log.LogUtil;
  * This interface provides methods to handle switcher
  * {@link org.openqa.selenium.WebElement}.
  */
-public interface BaseSwitcherActionType {
+public interface SwitcherActionType {
     /**
      * Get the switcher's current value.
      * @param element {@link WebElement} instance.
@@ -76,7 +76,7 @@ public interface BaseSwitcherActionType {
     @NotNull
     default Flowable<WebElement> rxa_toggleSwitch(@NotNull final WebElement ELEMENT,
                                                   final boolean ON) {
-        final BaseSwitcherActionType THIS = this;
+        final SwitcherActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.toggleSwitch(ELEMENT, ON))

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
-import org.swiften.xtestkit.base.element.tap.TapType;
+import org.swiften.xtestkit.base.element.tap.TapParamType;
 import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionType;
 
 /**
@@ -17,7 +17,7 @@ public interface AndroidPasswordActionType extends
 {
     /**
      * Override this method to provide a default
-     * {@link TapType}
+     * {@link TapParamType}
      * to locate the password mask toggle.
      * @param element {@link WebElement} instance.
      * @see MobilePasswordActionType#togglePasswordMask(WebElement)

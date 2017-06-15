@@ -4,21 +4,23 @@ package org.swiften.xtestkit.android.element.switcher;
  * Created by haipham on 6/10/17.
  */
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
+import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
 
 /**
  * This interface provides methods to handle switcher
  * {@link org.openqa.selenium.WebElement} for
  * {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
  */
-public interface AndroidSwitcherActionType extends BaseSwitcherActionType {
+public interface AndroidSwitcherActionType extends SwitcherActionType {
     /**
      * Override this method to provide default implementation.
      * @param element {@link WebElement} instance.
      * @return {@link String} value.
-     * @see BaseSwitcherActionType#switcherValue(WebElement)
+     * @see SwitcherActionType#switcherValue(WebElement)
      * @see WebElement#getAttribute(String)
      */
     @NotNull
@@ -30,7 +32,7 @@ public interface AndroidSwitcherActionType extends BaseSwitcherActionType {
     /**
      * Override this method to provide default implementation.
      * @return {@link String} value.
-     * @see BaseSwitcherActionType#switcherOnValue()
+     * @see SwitcherActionType#switcherOnValue()
      */
     @NotNull
     @Override
@@ -41,7 +43,7 @@ public interface AndroidSwitcherActionType extends BaseSwitcherActionType {
     /**
      * Override this method to provide default implementation.
      * @return {@link String} value.
-     * @see BaseSwitcherActionType#switcherOffValue()
+     * @see SwitcherActionType#switcherOffValue()
      */
     @NotNull
     @Override

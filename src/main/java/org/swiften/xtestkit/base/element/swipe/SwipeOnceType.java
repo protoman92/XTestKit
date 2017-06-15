@@ -19,20 +19,20 @@ import java.util.concurrent.TimeUnit;
 public interface SwipeOnceType extends BaseErrorType {
     /**
      * Perform a swipe action.
-     * @param param {@link SwipeType} instance.
+     * @param param {@link SwipeParamType} instance.
      */
-    default void swipeOnce(@NotNull SwipeType param) {
+    default void swipeOnce(@NotNull SwipeParamType param) {
         throw new RuntimeException(NOT_AVAILABLE);
     }
 
     /**
      * Perform a swipe action.
-     * @param PARAM {@link SwipeType} instance.
+     * @param PARAM {@link SwipeParamType} instance.
      * @return {@link Flowable} instance.
-     * @see #swipeOnce(SwipeType)
+     * @see #swipeOnce(SwipeParamType)
      */
     @NotNull
-    default Flowable<Boolean> rxa_swipeOnce(@NotNull final SwipeType PARAM) {
+    default Flowable<Boolean> rxa_swipeOnce(@NotNull final SwipeParamType PARAM) {
         return Completable
             .fromAction(() -> this.swipeOnce(PARAM))
             .<Boolean>toFlowable()
@@ -48,10 +48,10 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see P#delay()
      * @see P#times()
      * @see P#timeUnit()
-     * @see #rxa_swipeOnce(SwipeType)
+     * @see #rxa_swipeOnce(SwipeParamType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeType> Flowable<Boolean> rxa_swipe(@NotNull final P PARAM) {
+    default <P extends RepeatType & SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull final P PARAM) {
         final SwipeOnceType THIS = this;
         final int TIMES = PARAM.times();
         final long DELAY = PARAM.delay();

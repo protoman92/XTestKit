@@ -5,7 +5,7 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
@@ -18,11 +18,11 @@ import org.swiften.xtestkit.mobile.Platform;
  * This interface provides methods to locate {@link org.openqa.selenium.WebElement}
  * for {@link Platform#IOS}.
  */
-public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
+public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see BaseLocatorType#rxe_statusBar()
+     * @see LocatorType#rxe_statusBar()
      * @see BaseViewType#className()
      * @see IOSView.ViewType#UI_STATUS_BAR
      */
@@ -37,7 +37,7 @@ public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see BaseLocatorType#rxe_window()
+     * @see LocatorType#rxe_window()
      * @see BaseViewType#className()
      * @see IOSView.ViewType#UI_WINDOW
      * @see #rxe_ofClass(String...)
@@ -52,7 +52,7 @@ public interface IOSLocatorType extends BaseLocatorType<IOSDriver<IOSElement>> {
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see BaseLocatorType#rxe_imageViews()
+     * @see LocatorType#rxe_imageViews()
      * @see IOSView.ViewType#UI_IMAGE_VIEW
      * @see BaseViewType#className()
      */

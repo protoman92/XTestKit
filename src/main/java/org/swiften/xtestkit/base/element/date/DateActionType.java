@@ -14,10 +14,10 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
-import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
  * These methods assume that the user is in a calendar view.
  */
 public interface DateActionType<D extends WebDriver> extends
-    ClickActionType,
+    ClickActionType<D>,
     DateActionErrorType,
-    BaseElementPropertyType,
+    ElementPropertyType,
     BaseErrorType,
-    BaseLocatorType<D>,
-    BaseSwipeType<D>
+    LocatorType<D>,
+    SwipeType<D>
 {
     /**
      * Open the picker view that corresponds to {@link CalendarUnit}.

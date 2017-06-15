@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**
@@ -18,8 +18,8 @@ import org.swiften.xtestkit.mobile.Platform;
  * {@link Platform#IOS}.
  */
 public interface IOSSearchActionType extends
-    SearchActionType,
-    BaseLocatorType<IOSDriver<IOSElement>>
+    SearchActionType<IOSDriver<IOSElement>>,
+    LocatorType<IOSDriver<IOSElement>>
 {
     /**
      * Override this method to provide default implementation.

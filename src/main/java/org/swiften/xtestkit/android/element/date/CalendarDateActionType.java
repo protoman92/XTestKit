@@ -18,7 +18,7 @@ import org.swiften.xtestkit.base.element.date.*;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.ios.element.locator.AndroidXMLAttribute;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -130,7 +130,7 @@ public interface CalendarDateActionType extends
      * @see Joiner#OR
      * @see Wrapper#NONE
      * @see #androidSDK()
-     * @see #swipeOnce(SwipeType)
+     * @see #swipeOnce(SwipeParamType)
      * @see #rxa_click(WebElement)
      * @see #rxe_byXPath(ByXPath...)
      * @see #rxe_displayedDate(DateType)
@@ -221,7 +221,7 @@ public interface CalendarDateActionType extends
             }
 
             @Override
-            public void swipeOnce(@NotNull SwipeType param) {
+            public void swipeOnce(@NotNull SwipeParamType param) {
                 THIS.swipeOnce(param);
             }
         }.rxa_performAction();
@@ -369,7 +369,7 @@ public interface CalendarDateActionType extends
             }
 
             @Override
-            public void swipeOnce(@NotNull SwipeType param) {
+            public void swipeOnce(@NotNull SwipeParamType param) {
                 THIS.swipeOnce(param);
             }
         }.rxa_performAction();

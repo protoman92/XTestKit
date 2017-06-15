@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
@@ -22,8 +22,8 @@ import java.util.Arrays;
  * This interface provides methods to handle input views.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseInputActionType<D extends WebDriver> extends
-    BaseErrorType, BaseInputActionDelayType, BaseLocatorType<D>
+public interface InputActionType<D extends WebDriver> extends
+    BaseErrorType, BaseInputActionDelayType, LocatorType<D>
 {
     /**
      * Send {@link String} keys to {@link WebElement}.
@@ -46,7 +46,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
     @NotNull
     default Flowable<WebElement> rxa_type(@NotNull final WebElement ELEMENT,
                                           @NotNull final String...TEXT) {
-        final BaseInputActionType THIS = this;
+        final InputActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.type(ELEMENT, TEXT))
@@ -72,7 +72,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxa_toggleNextInput(@NotNull final WebElement ELEMENT) {
-        final BaseInputActionType<?> THIS = this;
+        final InputActionType<?> THIS = this;
 
         return Completable
             .fromAction(() -> THIS.toggleNextInput(ELEMENT))
@@ -98,7 +98,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxa_finishInput(@NotNull final WebElement ELEMENT) {
-        final BaseInputActionType<?> THIS = this;
+        final InputActionType<?> THIS = this;
 
         return Completable
             .fromAction(() -> THIS.endInput(ELEMENT))
@@ -117,7 +117,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxv_isLastInput(@NotNull final WebElement ELEMENT) {
-        final BaseInputActionType<?> THIS = this;
+        final InputActionType<?> THIS = this;
         return rxe_editables()
             .lastElement()
             .toFlowable()
@@ -140,7 +140,7 @@ public interface BaseInputActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxa_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
-        final BaseInputActionType<?> THIS = this;
+        final InputActionType<?> THIS = this;
 
         return rxv_isLastInput(ELEMENT)
             .filter(BooleanUtil::isTrue)

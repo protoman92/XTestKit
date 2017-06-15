@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.element.locator.type;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +19,7 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.param.*;
-import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
+import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.base.type.PlatformViewProviderType;
 import org.swiften.xtestkitcomponents.common.RetryType;
@@ -43,10 +44,10 @@ import java.util.Optional;
  * This interface provides general locator capabilities.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseLocatorType<D extends WebDriver> extends
+public interface LocatorType<D extends WebDriver> extends
     DriverProviderType<D>,
     LocalizerProviderType,
-    BaseElementPropertyType,
+    ElementPropertyType,
     BaseLocatorErrorType,
     PlatformProviderType,
     PlatformViewProviderType
@@ -102,7 +103,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default <T> Flowable<T> rxe_xPathQueryFailure(@NotNull ByXPath...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(ByXPath::error)
@@ -126,7 +127,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @NotNull
     @SuppressWarnings("unchecked")
     default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .flatMap(a -> THIS.rxe_byXPath(a)
@@ -163,7 +164,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_withXPath(@NotNull XPath...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::withXPathQuery)
@@ -194,7 +195,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_withAttributes(@NotNull Attribute<?>... attrs) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(attrs)
             .map(THIS::withAttributeQuery)
@@ -248,7 +249,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @SuppressWarnings("unchecked")
     default <P extends OfClassType & RetryType> Flowable<WebElement>
     rxe_ofClass(@NotNull P...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::ofClassQuery)
@@ -266,7 +267,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_ofClass(@NotNull String...cls) {
-        final BaseLocatorType THIS = this;
+        final LocatorType THIS = this;
 
         return Flowable
             .fromArray(cls)
@@ -320,7 +321,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @SuppressWarnings("unchecked")
     default <P extends ContainsIDType & RetryType> Flowable<WebElement>
     rxe_containsID(@NotNull P...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::containsIDQuery)
@@ -339,7 +340,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_containsID(@NotNull String...id) {
-        final BaseLocatorType THIS = this;
+        final LocatorType THIS = this;
 
         return Flowable.fromArray(id)
             .map(a -> IdParam.builder().withId(a).build())
@@ -397,7 +398,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @SuppressWarnings("unchecked")
     default <P extends StringType & RetryType> Flowable<WebElement>
     rxe_withText(@NotNull P...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::hasTextQuery)
@@ -415,7 +416,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_withText(@NotNull String...text) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(text)
             .map(a -> TextParam.builder().withText(a).build())
@@ -473,7 +474,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @SuppressWarnings("unchecked")
     default <P extends StringType & RetryType> Flowable<WebElement>
     rxe_containsText(@NotNull P...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::containsTextQuery)
@@ -492,7 +493,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_containsText(@NotNull String...text) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
         return Flowable.fromArray(text)
             .map(a -> TextParam.builder().withText(a).build())
             .toList().map(a -> a.toArray(new TextParam[a.size()]))
@@ -536,7 +537,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
     @SuppressWarnings("unchecked")
     default <P extends FormatType & RetryType> Flowable<WebElement>
     rxe_containsText(@NotNull P...param) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
             .map(THIS::containsTextQuery)
@@ -554,7 +555,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_containsText(@NotNull LCFormat...format) {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(format)
             .map(a -> TextFormatParam.builder().withLCFormat(a).build())
@@ -614,7 +615,7 @@ public interface BaseLocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_currentlyFocusedEditable() {
-        final BaseLocatorType<?> THIS = this;
+        final LocatorType<?> THIS = this;
 
         return rxe_editables()
             .filter(THIS::isFocused)

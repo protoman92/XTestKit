@@ -9,10 +9,10 @@ import org.swiften.xtestkitcomponents.common.RetryType;
 
 /**
  * Parameter object for
- * {@link BaseTapType#tap(TapType)}
+ * {@link TapType#tap(TapParamType)}
  */
 @SuppressWarnings("WeakerAccess")
-public class TapParam implements TapType, RetryType {
+public class TapParam implements TapParamType, RetryType {
     /**
      * Get a new {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -86,7 +86,7 @@ public class TapParam implements TapType, RetryType {
          * @see #withY(int)
          */
         @NotNull
-        public Builder withTapType(@NotNull TapType type) {
+        public Builder withTapType(@NotNull TapParamType type) {
             return withX(type.x()).withY(type.y());
         }
 

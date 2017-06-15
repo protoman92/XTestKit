@@ -15,7 +15,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
  * This interface provides methods to interact with the keyboard.
  * * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseKeyboardActionType<D extends WebDriver> extends BaseErrorType {
+public interface KeyboardActionType<D extends WebDriver> extends BaseErrorType {
     /**
      * Hide the currently active keyboard.
      */

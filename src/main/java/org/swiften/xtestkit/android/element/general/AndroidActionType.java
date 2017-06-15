@@ -12,8 +12,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.general.BaseActionType;
-import org.swiften.xtestkit.base.element.locator.type.BaseLocatorType;
+import org.swiften.xtestkit.base.element.general.ActionType;
+import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
  * {@link Platform#ANDROID}.
  */
 public interface AndroidActionType extends
-    ClickActionType,
-    BaseActionType<AndroidDriver<AndroidElement>>,
-    BaseLocatorType<AndroidDriver<AndroidElement>>,
+    ClickActionType<AndroidDriver<AndroidElement>>,
+    ActionType<AndroidDriver<AndroidElement>>,
+    LocatorType<AndroidDriver<AndroidElement>>,
     MobileActionType<AndroidDriver<AndroidElement>>
 {
     /**
@@ -38,7 +38,7 @@ public interface AndroidActionType extends
      * is not absolutely critical.
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
-     * @see BaseActionType#rxa_dismissAlert(AlertParam)
+     * @see ActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
      * @see BooleanUtil#toTrue(Object)
      * @see #alertDismissDelay()

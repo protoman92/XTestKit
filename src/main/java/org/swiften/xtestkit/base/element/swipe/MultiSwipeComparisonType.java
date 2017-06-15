@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkitcomponents.direction.Direction;
 
 /**
@@ -181,6 +182,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Perform initial swipes to get us as close to the target value as
      * possible.
      * @return {@link Flowable} instance.
+     * @see ObjectUtil#eq(Object)
      * @see #rxa_swipeInitially(WebElement, Direction, int)
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()

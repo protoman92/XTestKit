@@ -14,11 +14,11 @@ import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateType;
-import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
-import org.swiften.xtestkit.base.element.switcher.BaseSwitcherActionType;
-import org.swiften.xtestkit.base.element.tap.TapType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
+import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
+import org.swiften.xtestkit.base.element.tap.TapParamType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RetryType;
@@ -245,7 +245,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
-    interface TestKeyboardActionType extends BaseKeyboardActionType<WebDriver> {
+    interface TestKeyboardActionType extends KeyboardActionType<WebDriver> {
         @Override
         default void hideKeyboard() {
             throw new RuntimeException(NOT_AVAILABLE);
@@ -260,7 +260,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
-    interface TestSwitcherActionType extends BaseSwitcherActionType {
+    interface TestSwitcherActionType extends SwitcherActionType {
         @NotNull
         @Override
         default String switcherOnValue() {
@@ -296,11 +296,11 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
 
         @Override
-        public <P extends TapType & RetryType> void tap(@NotNull P param) {}
+        public <P extends TapParamType & RetryType> void tap(@NotNull P param) {}
 
         @NotNull
         @Override
-        public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
+        public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeParamType param) {
             return Flowable.empty();
         }
 

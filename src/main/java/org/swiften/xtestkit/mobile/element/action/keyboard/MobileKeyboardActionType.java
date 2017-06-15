@@ -5,7 +5,7 @@ package org.swiften.xtestkit.mobile.element.action.keyboard;
  */
 
 import io.appium.java_client.MobileDriver;
-import org.swiften.xtestkit.base.element.input.BaseKeyboardActionType;
+import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 
 /**
@@ -14,12 +14,12 @@ import org.swiften.xtestkit.base.type.DriverProviderType;
  * @param <D> Generics parameter that extends {@link MobileDriver}.
  */
 public interface MobileKeyboardActionType<D extends MobileDriver> extends
-    BaseKeyboardActionType<D>,
+    KeyboardActionType<D>,
     DriverProviderType<D>
 {
     /**
      * Override this method to provide default implementation.
-     * @see BaseKeyboardActionType#hideKeyboard()
+     * @see KeyboardActionType#hideKeyboard()
      */
     @Override
     default void hideKeyboard() {

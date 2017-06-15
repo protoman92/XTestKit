@@ -6,8 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxTestUtil;
-import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParam;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -22,8 +22,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 5/11/17.
  */
-public class BaseSwipeActionTest implements BaseSwipeType {
-    @NotNull private final BaseSwipeType ENGINE;
+public class SwipeActionTest implements SwipeType {
+    @NotNull private final SwipeType ENGINE;
     @NotNull private final WebDriver DRIVER;
 
     {
@@ -50,7 +50,7 @@ public class BaseSwipeActionTest implements BaseSwipeType {
     }
 
     @Override
-    public void swipeOnce(@NotNull SwipeType param) {}
+    public void swipeOnce(@NotNull SwipeParamType param) {}
 
     //region Swipe
     @Test

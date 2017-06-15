@@ -13,7 +13,7 @@ import org.swiften.xtestkitcomponents.common.RepeatType;
 /**
  * Parameter object for {@link Engine#rxa_swipe(RepeatType)}
  */
-public class SwipeParam implements RepeatType, SwipeType {
+public class SwipeParam implements RepeatType, SwipeParamType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -33,7 +33,7 @@ public class SwipeParam implements RepeatType, SwipeType {
 
     SwipeParam() {
         delay = RepeatType.super.delay();
-        duration = SwipeType.super.duration();
+        duration = SwipeParamType.super.duration();
     }
 
     @Override

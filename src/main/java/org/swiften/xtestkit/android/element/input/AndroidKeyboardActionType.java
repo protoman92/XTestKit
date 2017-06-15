@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Keys;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkit.base.element.general.BaseActionType;
+import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 import org.swiften.xtestkit.android.AndroidInstance;
 import org.swiften.xtestkit.android.adb.ADBHandler;
@@ -25,7 +25,7 @@ import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionT
 public interface AndroidKeyboardActionType extends
     ADBHandlerProviderType,
     AndroidInstanceProviderType,
-    BaseActionType<AndroidDriver<AndroidElement>>,
+    ActionType<AndroidDriver<AndroidElement>>,
     MobileKeyboardActionType<AndroidDriver<AndroidElement>>
 {
     @Override

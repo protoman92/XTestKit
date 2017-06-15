@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * This interface provides general actions, such as back/swipe navigation.
  * * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface BaseActionType<D extends WebDriver> extends
+public interface ActionType<D extends WebDriver> extends
     BaseActionDelayType,
     DriverProviderType<D>
 {
@@ -71,7 +71,7 @@ public interface BaseActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxa_navigateBack(@NotNull RepeatType param) {
-        final BaseActionType<?> THIS = this;
+        final ActionType<?> THIS = this;
         final int TIMES = param.times();
         final long DELAY = param.delay();
         final TimeUnit UNIT = TimeUnit.MILLISECONDS;

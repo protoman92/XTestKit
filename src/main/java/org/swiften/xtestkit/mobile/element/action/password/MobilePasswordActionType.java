@@ -5,7 +5,7 @@ package org.swiften.xtestkit.mobile.element.action.password;
  */
 
 import io.appium.java_client.MobileDriver;
-import org.swiften.xtestkit.base.element.password.BasePasswordActionType;
+import org.swiften.xtestkit.base.element.password.PasswordActionType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
 
 /**
@@ -13,5 +13,5 @@ import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
  * @param <D> Generics parameter that extends {@link MobileDriver}.
  */
 public interface MobilePasswordActionType<D extends MobileDriver> extends
-    BasePasswordActionType<D>,
+    PasswordActionType<D>,
     MobileTapType<D> {}

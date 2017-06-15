@@ -9,7 +9,7 @@ import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
@@ -271,15 +271,15 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link SwipeType} instance.
+     * @param param {@link SwipeParamType} instance.
      * @return {@link Flowable} instance.
-     * @see MultiSwipeComparisonType#rxa_swipeOnce(SwipeType)
-     * @see ChoiceHelperType#rxa_swipeOnce(SwipeType)
+     * @see MultiSwipeComparisonType#rxa_swipeOnce(SwipeParamType)
+     * @see ChoiceHelperType#rxa_swipeOnce(SwipeParamType)
      * @see #choiceHelper()
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeType param) {
+    default Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeParamType param) {
         return choiceHelper().rxa_swipeOnce(param);
     }
 }

@@ -3,8 +3,8 @@ package org.swiften.xtestkit.mobile.element.action.swipe;
 import io.appium.java_client.MobileDriver;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.element.swipe.BaseSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileTouchActionType;
 
@@ -17,17 +17,17 @@ import org.swiften.xtestkit.mobile.element.action.general.MobileTouchActionType;
  * @param <D> Generics parameter that extends {@link MobileDriver}.
  */
 public interface MobileSwipeType<D extends MobileDriver> extends
-    BaseSwipeType<D>, MobileActionType<D>
+    SwipeType<D>, MobileActionType<D>
 {
     /**
-     * @param PARAM {@link SwipeType} instance.
+     * @param PARAM {@link SwipeParamType} instance.
      * @see #driver()
      * @see #touchAction()
-     * @see BaseSwipeType#swipeOnce(SwipeType)
-     * @see MobileTouchActionType#swipe(MobileDriver, SwipeType)
+     * @see SwipeType#swipeOnce(SwipeParamType)
+     * @see MobileTouchActionType#swipe(MobileDriver, SwipeParamType)
      */
     @Override
-    default void swipeOnce(@NotNull final SwipeType PARAM) {
+    default void swipeOnce(@NotNull final SwipeParamType PARAM) {
         LogUtil.printft("Swiping with %s", PARAM);
         final MobileDriver<?> DRIVER = driver();
         final MobileTouchActionType action = touchAction();
