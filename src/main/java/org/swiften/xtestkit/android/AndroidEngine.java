@@ -3,6 +3,7 @@ package org.swiften.xtestkit.android;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -187,54 +188,77 @@ public class AndroidEngine extends
      * @param PARAM {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_beforeClass(RetryType)
-     * @see ADBHandler#rxa_disableEmulatorAnimations(DeviceUIDType)
+     * @see ADBHandler#rxa_disableAnimations(DeviceUIDType)
      * @see ADBHandler#rxa_startEmulator(StartEmulatorParam)
+     * @see ADBHandler#rxa_clearCache(AppPackageType)
      * @see ADBHandler#rxe_availablePort(RetryType)
+     * @see ADBHandler#rxe_appInstalled(AppPackageType)
      * @see AndroidInstance#setPort(int)
-     * @see BooleanUtil#isTrue(boolean)
+     * @see ClearCacheParam.Builder#withAppPackage(String)
+     * @see ClearCacheParam.Builder#withDeviceUIDType(DeviceUIDType)
+     * @see ClearCacheParam.Builder#withRetryType(RetryType)
+     * @see ObjectUtil#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
+     * @see #appPackage()
      * @see #deviceName()
      * @see #testMode()
      * @see #rxa_startDriver(RetryType)
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_beforeClass(@NotNull final RetryType PARAM) {
+        final AndroidEngine THIS = this;
         final ADBHandler HANDLER = adbHandler();
-        final AndroidInstance ANDROID_INSTANCE = androidInstance();
-        final Flowable<Boolean> START_APP = rxa_startDriver(PARAM);
+        final AndroidInstance A_INSTANCE = androidInstance();
+        final String APP_PACKAGE = appPackage();
         Flowable<Boolean> source;
         TestMode testMode = testMode();
 
         if (testMode.isTestingOnSimulatedEnvironment()) {
             source = HANDLER.rxe_availablePort(PARAM)
-                .doOnNext(ANDROID_INSTANCE::setPort)
+                .doOnNext(A_INSTANCE::setPort)
                 .map(a -> StartEmulatorParam.builder()
                     .withDeviceName(deviceName())
-                    .withAndroidInstance(ANDROID_INSTANCE)
+                    .withAndroidInstance(A_INSTANCE)
                     .withRetries(100)
                     .build())
-                .flatMap(HANDLER::rxa_startEmulator);
+                .flatMap(HANDLER::rxa_startEmulator)
+                .onErrorReturnItem(true);
         } else {
             /* Assuming the device is already started up */
             source = Flowable.just(true);
         }
 
         return Flowable
-            .concat(super.rxa_beforeClass(PARAM), source)
-            .all(BooleanUtil::toTrue)
+            .concatArray(super.rxa_beforeClass(PARAM), source)
+            .all(ObjectUtil::nonNull)
             .toFlowable()
+            .flatMap(a -> Flowable.concatArray(
+                HANDLER.rxa_disableAnimations(A_INSTANCE).onErrorReturnItem(true),
 
-            /* Disable animations to avoid erratic behaviors */
-            .flatMap(a -> HANDLER
-                .rxa_disableEmulatorAnimations(ANDROID_INSTANCE)
+                /* Clear cached data such as SharedPreferences. If the app is
+                 * not found in the active device/emulator, throw an error */
+                Flowable.<ClearCacheParam>create(obs -> {
+                    /* At this time, the AndroidInstance should already have
+                     * information about the device port */
+                    ClearCacheParam ccParam = ClearCacheParam.builder()
+                        .withAppPackage(APP_PACKAGE)
+                        .withDeviceUIDType(A_INSTANCE)
+                        .withRetryType(PARAM)
+                        .build();
 
-                /* This is not absolutely crucial, so even if there is an
-                 * error, we proceed anyway */
-                .onErrorResumeNext(Flowable.just(true)))
-            .flatMap(a -> START_APP);
+                    obs.onNext(ccParam);
+                    obs.onComplete();
+                }, BackpressureStrategy.BUFFER).flatMap(b ->
+                    Flowable.concatArray(
+                        HANDLER.rxe_appInstalled(b),
+                        HANDLER.rxa_clearCache(b)
+                    ))
+            ).all(ObjectUtil::nonNull).toFlowable())
+            .flatMap(a -> THIS.rxa_startDriver(PARAM));
     }
 
     /**
@@ -279,40 +303,6 @@ public class AndroidEngine extends
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .doOnNext(a -> HANDLER.markPortAvailable(PORT));
-    }
-
-    /**
-     * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
-     * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterMethod(RetryType)
-     * @see ADBHandler#rxa_clearCache(AppPackageType)
-     * @see BooleanUtil#isTrue(boolean)
-     * @see #adbHandler()
-     * @see #androidInstance()
-     * @see #appPackage()
-     */
-    @NotNull
-    @Override
-    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
-        final ADBHandler HANDLER = adbHandler();
-
-        ClearCacheParam CC_PARAM = ClearCacheParam.builder()
-            .withAppPackage(appPackage())
-            .withDeviceUIDType(androidInstance())
-            .withRetryType(param)
-            .build();
-
-        /* Clear cached data such as SharedPreferences. If the app is not
-         * found in the active device/emulator, throw an error */
-        Flowable<Boolean> clearCache = HANDLER
-            .rxe_appInstalled(CC_PARAM)
-            .flatMap(a -> HANDLER.rxa_clearCache(CC_PARAM));
-
-        return Flowable
-            .concat(super.rxa_afterMethod(param), clearCache)
-            .all(BooleanUtil::isTrue)
-            .toFlowable();
     }
     //endregion
 

@@ -268,7 +268,10 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @see #unableToClearCache(String)
      */
     @NotNull
-    public <T extends AppPackageType & DeviceUIDType & RetryType>
+    public <T extends
+        AppPackageType &
+        DeviceUIDType &
+        RetryType>
     Flowable<Boolean> rxa_clearCache(@NotNull T param) {
         ProcessRunner runner = processRunner();
         final String APP = param.appPackage();
@@ -501,7 +504,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_disableEmulatorAnimations(@NotNull DeviceUIDType param) {
+    public Flowable<Boolean> rxa_disableAnimations(@NotNull DeviceUIDType param) {
         return Flowable
             .mergeArray(
                 rxa_disableWindowAnimationScale(param),

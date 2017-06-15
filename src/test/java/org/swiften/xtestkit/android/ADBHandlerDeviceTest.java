@@ -125,7 +125,7 @@ public final class ADBHandlerDeviceTest {
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When
-        ADB_HANDLER.rxa_disableEmulatorAnimations(DUID_PARAM)
+        ADB_HANDLER.rxa_disableAnimations(DUID_PARAM)
             .filter(BooleanUtil::isTrue)
             .switchIfEmpty(RxUtil.error())
             .subscribe(subscriber);

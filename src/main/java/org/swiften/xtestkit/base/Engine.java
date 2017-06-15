@@ -394,7 +394,7 @@ public abstract class Engine<D extends WebDriver> implements
             final Map<String,Object> distilled = capType.distill(caps);
             final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
-            LogUtil.println(distilled);
+            LogUtil.printft("Starting driver with %s and %s", SERVER_URL, CAPS);
 
             return Completable
                 .fromAction(() -> driver = driver(SERVER_URL, CAPS))
@@ -416,6 +416,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxa_stopDriver() {
         final WebDriver DRIVER = driver();
+        LogUtil.printlnt("Stopping driver %s", DRIVER);
 
         return Completable
             .fromAction(DRIVER::quit)

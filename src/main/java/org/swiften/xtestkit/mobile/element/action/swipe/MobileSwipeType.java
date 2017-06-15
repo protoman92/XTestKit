@@ -28,7 +28,7 @@ public interface MobileSwipeType<D extends MobileDriver> extends
      */
     @Override
     default void swipeOnce(@NotNull final SwipeType PARAM) {
-        LogUtil.printf("Swiping with %s", PARAM);
+        LogUtil.printft("Swiping with %s", PARAM);
         final MobileDriver<?> DRIVER = driver();
         final MobileTouchActionType action = touchAction();
         action.swipe(DRIVER, PARAM);

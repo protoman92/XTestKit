@@ -693,7 +693,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxa_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rxa_disableAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -715,7 +715,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxa_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rxa_disableAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -732,7 +732,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             verify(ADB_HANDLER).rxa_disableWindowAnimationScale(any());
             verify(ADB_HANDLER).rxa_disableTransitionAnimationScale(any());
             verify(ADB_HANDLER).rxa_disableAnimatorDurationScale(any());
-            verify(ADB_HANDLER).rxa_disableEmulatorAnimations(any());
+            verify(ADB_HANDLER).rxa_disableAnimations(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxa_changeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {
@@ -750,7 +750,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
-            ADB_HANDLER.rxa_disableEmulatorAnimations(DUID_PARAM).subscribe(subscriber);
+            ADB_HANDLER.rxa_disableAnimations(DUID_PARAM).subscribe(subscriber);
             subscriber.awaitTerminalEvent();
 
             // Then
@@ -768,7 +768,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             verify(ADB_HANDLER).rxa_disableWindowAnimationScale(any());
             verify(ADB_HANDLER).rxa_disableTransitionAnimationScale(any());
             verify(ADB_HANDLER).rxa_disableAnimatorDurationScale(any());
-            verify(ADB_HANDLER).rxa_disableEmulatorAnimations(any());
+            verify(ADB_HANDLER).rxa_disableAnimations(any());
             verify(ADB_HANDLER, times(ANIM_DISABLE_CMD_COUNT)).rxa_changeSettings(any());
             verifyNoMoreInteractions(ADB_HANDLER);
         } catch (Exception e) {

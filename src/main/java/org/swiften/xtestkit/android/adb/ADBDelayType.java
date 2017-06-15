@@ -32,7 +32,7 @@ public interface ADBDelayType {
     /**
      * Use this timeout for operations that change device/emulator settings,
      * such as
-     * {@link ADBHandler#rxa_disableEmulatorAnimations(DeviceUIDType)}.
+     * {@link ADBHandler#rxa_disableAnimations(DeviceUIDType)}.
      * @return {@link Long} value.
      */
     default long emulatorSettingTimeout() {

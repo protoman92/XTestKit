@@ -73,7 +73,7 @@ public final class MockAndroidEngineTest {
         doReturn(correctPort).when(ANDROID_INSTANCE).port();
         doReturn(Flowable.just(correctPort)).when(ADB_HANDLER).rxe_availablePort(any());
         doReturn(Flowable.just(true)).when(ADB_HANDLER).rxa_startEmulator(any());
-        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxa_disableEmulatorAnimations(any());
+        doReturn(Flowable.just(true)).when(ADB_HANDLER).rxa_disableAnimations(any());
         ArgumentCaptor<StartEmulatorParam> SE_CAPTOR = ArgumentCaptor.forClass(StartEmulatorParam.class);
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
@@ -101,7 +101,7 @@ public final class MockAndroidEngineTest {
         verify(ENGINE).rxa_beforeClass(any());
         verify(ADB_HANDLER).rxe_availablePort(any());
         verify(ADB_HANDLER).rxa_startEmulator(SE_CAPTOR.capture());
-        verify(ADB_HANDLER).rxa_disableEmulatorAnimations(any());
+        verify(ADB_HANDLER).rxa_disableAnimations(any());
         verify(ANDROID_INSTANCE).setPort(anyInt());
         verifyNoMoreInteractions(ENGINE);
         assertEquals(ANDROID_INSTANCE.port(), SE_CAPTOR.getValue().port());

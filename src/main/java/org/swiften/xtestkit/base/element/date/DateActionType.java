@@ -92,10 +92,10 @@ public interface DateActionType<D extends WebDriver> extends
      * @see BooleanUtil#isTrue(boolean)
      * @see DateType#units()
      * @see ObjectUtil#nonNull(Object)
+     * @see RxUtil#error(String)
      * @see #rxa_openPicker(DateType, CalendarUnit)
      * @see #rxa_select(DateType, CalendarUnit)
      * @see #rxv_hasDate(DateType)
-     * @see RxUtil#error(String)
      * @see #DATES_NOT_MATCHED
      */
     @NotNull

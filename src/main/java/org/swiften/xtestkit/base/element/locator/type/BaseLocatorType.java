@@ -19,10 +19,10 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.locator.param.*;
 import org.swiften.xtestkit.base.element.property.BaseElementPropertyType;
-import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.base.type.DriverProviderType;
+import org.swiften.xtestkit.base.type.PlatformViewProviderType;
 import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
 import org.swiften.xtestkitcomponents.property.base.StringType;
@@ -37,6 +37,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This interface provides general locator capabilities.
@@ -128,9 +129,11 @@ public interface BaseLocatorType<D extends WebDriver> extends
         final BaseLocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
-            .flatMap(a -> THIS.rxe_byXPath(a).onErrorResumeNext(Flowable.empty()))
-            .toList().toFlowable()
-            .flatMap(Flowable::fromIterable)
+            .flatMap(a -> THIS.rxe_byXPath(a)
+                .map(Optional::of)
+                .onErrorReturnItem(Optional.empty()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .switchIfEmpty(rxe_xPathQueryFailure(param));
     }
     //endregion

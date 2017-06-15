@@ -4,6 +4,7 @@ import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -151,13 +152,17 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @param param {@link RetryType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_afterMethod(RetryType)
+     * @see ObjectUtil#nonNull(Object)
      * @see #rxa_resetApp()
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
-        final Flowable<Boolean> QUIT_APP = rxa_resetApp();
-        return super.rxa_afterMethod(param).flatMap(a -> QUIT_APP);
+        return Flowable
+            .concatArray(super.rxa_afterMethod(param), rxa_resetApp())
+            .all(ObjectUtil::nonNull)
+            .toFlowable();
     }
     //endregion
 
