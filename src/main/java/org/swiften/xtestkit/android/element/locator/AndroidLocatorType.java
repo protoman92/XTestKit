@@ -41,14 +41,14 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * @see CompoundAttribute#withClass(String)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
-     * @see AndroidView.ViewType#FRAME_LAYOUT
+     * @see AndroidView.Type#FRAME_LAYOUT
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_window() {
         CompoundAttribute cAttr = CompoundAttribute.empty()
-            .withClass(AndroidView.ViewType.FRAME_LAYOUT.className())
+            .withClass(AndroidView.Type.FRAME_LAYOUT.className())
             .withIndex(1);
 
         XPath xPath = XPath.builder().addAttribute(cAttr).build();
@@ -59,12 +59,12 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_imageViews()
-     * @see AndroidView.ViewType#IMAGE_VIEW
+     * @see AndroidView.Type#IMAGE_VIEW
      * @see BaseViewType#className()
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_imageViews() {
-        return rxe_ofClass(AndroidView.ViewType.IMAGE_VIEW.className());
+        return rxe_ofClass(AndroidView.Type.IMAGE_VIEW.className());
     }
 }

@@ -56,7 +56,7 @@ public interface IOSActionType extends
      * @see BooleanUtil#toTrue(Object)
      * @see CompoundAttribute#single(AttributeType)
      * @see CompoundAttribute#withClass(String)
-     * @see IOSView.ViewType#UI_BUTTON
+     * @see IOSView.Type#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see XPath.Builder#addAttribute(AttributeType)
@@ -71,7 +71,7 @@ public interface IOSActionType extends
         final IOSActionType THIS = this;
         final Attributes ATTRS = Attributes.of(this);
         final LocalizerType LOCALIZER = localizer();
-        final String BTN_CLS = IOSView.ViewType.UI_BUTTON.className();
+        final String BTN_CLS = IOSView.Type.UI_BUTTON.className();
         String[] titles;
 
         if (param.shouldAccept()) {

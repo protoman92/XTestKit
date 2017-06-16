@@ -24,14 +24,13 @@ public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_statusBar()
      * @see BaseViewType#className()
-     * @see IOSView.ViewType#UI_STATUS_BAR
+     * @see IOSView.Type#UI_STATUS_BAR
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_statusBar() {
-        return this
-            .rxe_ofClass(IOSView.ViewType.UI_STATUS_BAR.className())
-            .firstElement().toFlowable();
+        String clsName = IOSView.Type.UI_STATUS_BAR.className();
+        return this.rxe_ofClass(clsName).firstElement().toFlowable();
     }
 
     /**
@@ -39,26 +38,26 @@ public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_window()
      * @see BaseViewType#className()
-     * @see IOSView.ViewType#UI_WINDOW
+     * @see IOSView.Type#UI_WINDOW
      * @see #rxe_ofClass(String...)
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_window() {
-        String clsName = IOSView.ViewType.UI_WINDOW.className();
-        return this.rxe_ofClass(clsName).firstElement().toFlowable();
+        String clsName = IOSView.Type.UI_WINDOW.className();
+        return rxe_ofClass(clsName).firstElement().toFlowable();
     }
 
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_imageViews()
-     * @see IOSView.ViewType#UI_IMAGE_VIEW
+     * @see IOSView.Type#UI_IMAGE_VIEW
      * @see BaseViewType#className()
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_imageViews() {
-        return rxe_ofClass(IOSView.ViewType.UI_IMAGE_VIEW.className());
+        return rxe_ofClass(IOSView.Type.UI_IMAGE_VIEW.className());
     }
 }

@@ -14,7 +14,7 @@ import org.swiften.xtestkit.mobile.Platform;
  * Provide {@link Platform#IOS} {@link BaseViewType}
  */
 public class IOSView extends PlatformView {
-    public enum ViewType implements BaseViewType, BaseErrorType {
+    public enum Type implements BaseViewType, BaseErrorType {
         UI_BUTTON,
         UI_IMAGE_VIEW,
         UI_LABEL,
@@ -167,6 +167,6 @@ public class IOSView extends PlatformView {
     @NotNull
     @Override
     public BaseViewType[] getViews() {
-        return IOSView.ViewType.values();
+        return Type.values();
     }
 }

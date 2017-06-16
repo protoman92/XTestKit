@@ -12,6 +12,7 @@ import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
+import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -27,7 +28,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
  * the navigation and identification of said choices.
  * For {@link Platform#IOS}, we can simply call
  * {@link WebElement#sendKeys(CharSequence...)} to select a choice from a
- * {@link org.swiften.xtestkit.ios.IOSView.ViewType#UI_PICKER_WHEEL}.
+ * {@link IOSView.Type#UI_PICKER_WHEEL}.
  * It is only on {@link Platform#ANDROID} that
  * we have difficulty.
  */

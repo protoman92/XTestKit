@@ -10,14 +10,13 @@ import org.swiften.xtestkit.base.element.locator.param.ByXPath;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
  * This interface provides input methods for
  * {@link Platform#ANDROID} number pickers.
- * Use this with {@link AndroidView.ViewType#NUMBER_PICKER}.
+ * Use this with {@link AndroidView.Type#NUMBER_PICKER}.
  */
 public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
@@ -30,7 +29,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see Attributes#ofClass(String)
      * @see BaseViewType#className()
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
-     * @see AndroidView.ViewType#EDIT_TEXT
+     * @see AndroidView.Type#EDIT_TEXT
      * @see Platform#ANDROID
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      */
@@ -39,7 +38,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     default XPath androidTargetItemXP(@NotNull InputHelperType helper,
                                       @NotNull String selected) {
         Attributes attrs = Attributes.of(Platform.ANDROID);
-        String clsName = AndroidView.ViewType.EDIT_TEXT.className();
+        String clsName = AndroidView.Type.EDIT_TEXT.className();
 
         CompoundAttribute attribute = CompoundAttribute.builder()
             .addAttribute(attrs.ofClass(clsName))
@@ -75,7 +74,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see CompoundAttribute#withClass(String)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(AttributeType)
-     * @see AndroidView.ViewType#NUMBER_PICKER
+     * @see AndroidView.Type#NUMBER_PICKER
      * @see #androidChoicePickerParentXP(InputHelperType)
      * @see #androidScrollablePickerIndex(InputHelperType)
      */
@@ -85,7 +84,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
         return XPath.builder()
             .withXPath(androidChoicePickerParentXP(helper))
             .addAttribute(CompoundAttribute.empty()
-                .withClass(AndroidView.ViewType.NUMBER_PICKER.className())
+                .withClass(AndroidView.Type.NUMBER_PICKER.className())
                 .withIndex(androidScrollablePickerIndex(helper) + 1))
             .build();
     }
@@ -93,7 +92,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see AndroidView.ViewType#NUMBER_PICKER
+     * @see AndroidView.Type#NUMBER_PICKER
      * @see CompoundAttribute#empty()
      * @see CompoundAttribute#withClass(String)
      * @see CompoundAttribute#withIndex(Integer)

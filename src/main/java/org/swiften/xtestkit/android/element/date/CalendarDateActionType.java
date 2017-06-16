@@ -107,7 +107,7 @@ public interface CalendarDateActionType extends
      * @return {@link Flowable} instance.
      * @see AndroidSDK#isAtLeastM()
      * @see Attribute.Builder#addAttribute(String)
-     * @see Attribute.Builder#withFormatible(Attribute.Formatible)
+     * @see Attribute.Builder#withFormatible(Formatible)
      * @see Attribute.Builder#withJoiner(Joiner)
      * @see Attribute.Builder#withValue(Object)
      * @see Attribute.Builder#withWrapper(Wrapper)
@@ -121,9 +121,10 @@ public interface CalendarDateActionType extends
      * @see DateType#date()
      * @see DateType#dateString(String)
      * @see DateUtil#notEarlierThan(Date, Date)
-     * @see MultiSwipeType#rxa_performAction()
      * @see Direction#horizontal(boolean)
      * @see Direction#vertical(boolean)
+     * @see Formatibles#containsString()
+     * @see MultiSwipeType#rxa_performAction()
      * @see XMLAttributeType#value()
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidXMLAttribute#CONTENT_DESC
@@ -149,7 +150,7 @@ public interface CalendarDateActionType extends
          * values use content description to store the day */
         Attribute<String> attr = Attribute.<String>builder()
             .addAttribute(AndroidXMLAttribute.CONTENT_DESC.value())
-            .withFormatible(new Attributes.ContainsString() {})
+            .withFormatible(Formatibles.containsString())
             .withValue(DATE_STRING)
             .withJoiner(Joiner.OR)
             .withWrapper(Wrapper.NONE)

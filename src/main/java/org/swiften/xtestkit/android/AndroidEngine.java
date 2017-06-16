@@ -280,6 +280,7 @@ public class AndroidEngine extends
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
         AndroidInstance androidInstance = androidInstance();
         final NetworkHandler HANDLER = networkHandler();
@@ -299,7 +300,7 @@ public class AndroidEngine extends
 //        }
 
         return Flowable
-            .concat(super.rxa_afterClass(param), rxa_stopDriver(), source)
+            .concatArray(super.rxa_afterClass(param), rxa_stopDriver(), source)
             .all(BooleanUtil::isTrue)
             .toFlowable()
             .doOnNext(a -> HANDLER.markPortAvailable(PORT));

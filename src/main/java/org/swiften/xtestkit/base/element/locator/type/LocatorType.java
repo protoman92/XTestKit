@@ -6,7 +6,6 @@ package org.swiften.xtestkit.base.element.locator.type;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

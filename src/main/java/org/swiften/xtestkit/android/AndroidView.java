@@ -14,7 +14,7 @@ import org.swiften.xtestkit.mobile.Platform;
  * Provide {@link Platform#ANDROID} {@link BaseViewType}.
  */
 public class AndroidView extends PlatformView implements BaseErrorType {
-    public enum ViewType implements BaseViewType {
+    public enum Type implements BaseViewType {
         BUTTON,
         CHECKED_TEXT_VIEW,
         EDIT_TEXT,
@@ -119,6 +119,6 @@ public class AndroidView extends PlatformView implements BaseErrorType {
     @NotNull
     @Override
     protected BaseViewType[] getViews() {
-        return AndroidView.ViewType.values();
+        return Type.values();
     }
 }

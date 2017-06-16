@@ -198,8 +198,8 @@ public class UnitNumberPickerWrapper implements
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
      * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm
-     * @see AndroidView.ViewType#DATE_PICKER
-     * @see AndroidView.ViewType#TIME_PICKER
+     * @see AndroidView.Type#DATE_PICKER
+     * @see AndroidView.Type#TIME_PICKER
      * @see Platform#ANDROID
      * @see #datePickerType()
      */
@@ -208,12 +208,12 @@ public class UnitNumberPickerWrapper implements
     public XPath androidChoicePickerParentXP(@NotNull InputHelperType helper) {
         switch (datePickerType()) {
             case DATE_NUMBER_PICKER_MMM_dd_yyyy:
-                String dp = AndroidView.ViewType.DATE_PICKER.className();
+                String dp = AndroidView.Type.DATE_PICKER.className();
                 CompoundAttribute dpAttr = CompoundAttribute.forClass(dp);
                 return XPath.builder().addAttribute(dpAttr).build();
 
             case TIME_NUMBER_PICKER_HH_mm:
-                String tp = AndroidView.ViewType.TIME_PICKER.className();
+                String tp = AndroidView.Type.TIME_PICKER.className();
                 CompoundAttribute tpAttr = CompoundAttribute.forClass(tp);
                 return XPath.builder().addAttribute(tpAttr).build();
 
