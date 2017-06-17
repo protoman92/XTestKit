@@ -35,35 +35,31 @@ public class DateParam implements DateType, BaseErrorType {
     /**
      * @return {@link Date} instance.
      * @see DateType#date()
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #date
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public Date date() {
-        if (ObjectUtil.nonNull(date)) {
-            return date;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(date, NOT_AVAILABLE);
+        return date;
     }
 
     /**
      * @return {@link DatePickerType} instance.
      * @see DateType#datePickerType()
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #pickerType
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public DatePickerType datePickerType() {
-        if (ObjectUtil.nonNull(pickerType)) {
-            return pickerType;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(pickerType, NOT_AVAILABLE);
+        return pickerType;
     }
 
     /**

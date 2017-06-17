@@ -49,7 +49,6 @@ public class AndroidEngine extends
     AndroidActionType,
     AndroidChoiceSelectorType,
     AndroidDateActionType,
-    AndroidErrorType,
     AndroidInputActionType,
     AndroidInstanceProviderType,
     AndroidLocatorType,
@@ -152,6 +151,7 @@ public class AndroidEngine extends
     /**
      * Return {@link #ADB_HANDLER}.
      * @return {@link ADBHandler} instance.
+     * @see #ADB_HANDLER
      */
     @NotNull
     public ADBHandler adbHandler() {
@@ -162,6 +162,7 @@ public class AndroidEngine extends
      * Return {@link #appActivity}. This can be stubbed out for custom
      * implementation.
      * @return {@link String} value.
+     * @see #appActivity
      */
     @NotNull
     public String appActivity() {
@@ -171,14 +172,15 @@ public class AndroidEngine extends
     /**
      * Return {@link #androidInstance}.
      * @return {@link AndroidInstance} instance.
+     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see #androidInstance
+     * @see #NOT_AVAILABLE
      */
     @NotNull
+    @SuppressWarnings("ConstantConditions")
     public AndroidInstance androidInstance() {
-        if (ObjectUtil.nonNull(androidInstance)) {
-            return androidInstance;
-        } else {
-            throw new RuntimeException(ANDROID_INSTANCE_UNAVAILABLE);
-        }
+        ObjectUtil.requireNotNull(androidInstance, NOT_AVAILABLE);
+        return androidInstance;
     }
     //endregion
 
@@ -252,12 +254,11 @@ public class AndroidEngine extends
 
                     obs.onNext(ccParam);
                     obs.onComplete();
-                }, BackpressureStrategy.BUFFER).flatMap(b ->
-                    Flowable.concatArray(
-                        HANDLER.rxe_appInstalled(b),
-                        HANDLER.rxa_clearCache(b)
-                    ))
-            ).all(ObjectUtil::nonNull).toFlowable())
+                }, BackpressureStrategy.BUFFER
+                ).flatMap(b -> Flowable.concatArray(
+                    HANDLER.rxe_appInstalled(b),
+                    HANDLER.rxa_clearCache(b)
+                ))).all(ObjectUtil::nonNull).toFlowable())
             .flatMap(a -> THIS.rxa_startDriver(PARAM));
     }
 

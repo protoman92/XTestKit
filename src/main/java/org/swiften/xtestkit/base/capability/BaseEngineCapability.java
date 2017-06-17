@@ -31,12 +31,10 @@ public abstract class BaseEngineCapability implements EngineCapabilityType {
 
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public TestMode testMode() {
-        if (ObjectUtil.nonNull(testMode)) {
-            return testMode;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(testMode, NOT_AVAILABLE);
+        return testMode;
     }
 
     @NotNull

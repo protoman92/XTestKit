@@ -63,13 +63,10 @@ public class UnitNumberPickerWrapper implements
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"WeakerAccess", "ConstantConditions"})
     public AndroidDatePickerType datePickerType() {
-        if (ObjectUtil.nonNull(pickerType)) {
-            return pickerType;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(pickerType, NOT_AVAILABLE);
+        return pickerType;
     }
 
     /**
@@ -80,13 +77,10 @@ public class UnitNumberPickerWrapper implements
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"WeakerAccess", "ConstantConditions"})
     public CalendarUnit calendarUnit() {
-        if (ObjectUtil.nonNull(unit)) {
-            return unit;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(unit, NOT_AVAILABLE);
+        return unit;
     }
 
     /**
@@ -397,6 +391,7 @@ public class UnitNumberPickerWrapper implements
          * Set the {@link #unit} instance.
          * @param unit {@link CalendarUnit} instance.
          * @return {@link Builder} instance.
+         * @see ObjectUtil#requireNotNull(Object, String)
          * @see #unit
          */
         @NotNull

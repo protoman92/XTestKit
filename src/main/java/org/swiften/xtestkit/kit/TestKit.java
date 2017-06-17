@@ -211,18 +211,16 @@ public class TestKit implements
     /**
      * Get {@link #localizer}.
      * @return {@link Localizer} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #localizer
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public LocalizerType localizer() {
-        if (ObjectUtil.nonNull(localizer)) {
-            return localizer;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(localizer, NOT_AVAILABLE);
+        return localizer;
     }
     //endregion
 
@@ -239,10 +237,8 @@ public class TestKit implements
 
         if (current > -1 && current < engines.size()) {
             Engine engine = engines.get(current);
-
-            if (ObjectUtil.nonNull(engine)) {
-                return engine;
-            }
+            ObjectUtil.requireNotNull(engine, NOT_AVAILABLE);
+            return engine;
         }
 
         throw new RuntimeException(NOT_AVAILABLE);

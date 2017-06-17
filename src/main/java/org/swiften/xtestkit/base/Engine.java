@@ -8,6 +8,7 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
@@ -92,16 +93,15 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get {@link #capability}.
      * @return {@link EngineCapabilityType} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #capability
      * @see #NOT_AVAILABLE
      */
+    @NotNull
+    @SuppressWarnings("ConstantConditions")
     public EngineCapabilityType capabilityType() {
-        if (ObjectUtil.nonNull(capability)) {
-            return capability;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(capability, NOT_AVAILABLE);
+        return capability;
     }
 
     /**
@@ -151,17 +151,15 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get the associated {@link LocalizerType} instance.
      * @return {@link LocalizerType} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #localizer
      * @see #NOT_AVAILABLE
      */
     @NotNull
+    @SuppressWarnings("ConstantConditions")
     public LocalizerType localizer() {
-        if (ObjectUtil.nonNull(localizer)) {
-            return localizer;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(localizer, NOT_AVAILABLE);
+        return localizer;
     }
 
     /**
@@ -194,12 +192,10 @@ public abstract class Engine<D extends WebDriver> implements
      * @see #NOT_AVAILABLE
      */
     @NotNull
+    @SuppressWarnings("ConstantConditions")
     public D driver() {
-        if (ObjectUtil.nonNull(driver)) {
-            return driver;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(driver, NOT_AVAILABLE);
+        return driver;
     }
 
     /**

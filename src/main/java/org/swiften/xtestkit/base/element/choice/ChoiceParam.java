@@ -34,35 +34,31 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
     /**
      * @return {@link Engine} instance.
      * @see AndroidChoiceMultiSwipeType#choiceHelper()
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #mode
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ChoiceMode mode() {
-        if (ObjectUtil.nonNull(mode)) {
-            return mode;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(mode, NOT_AVAILABLE);
+        return mode;
     }
 
     /**
      * @return {@link ChoiceInputType} instance.
      * @see AndroidChoiceMultiSwipeType#choiceInput()
-     * @see ObjectUtil#nonNull(Object)
+     * @see ObjectUtil#requireNotNull(Object, String)
      * @see #input
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ChoiceInputType input() {
-        if (ObjectUtil.nonNull(input)) {
-            return input;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(input, NOT_AVAILABLE);
+        return input;
     }
 
     /**
@@ -74,12 +70,10 @@ public class ChoiceParam implements ChoiceType, BaseErrorType {
      */
     @NotNull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public String selectedChoice() {
-        if (ObjectUtil.nonNull(selected)) {
-            return selected;
-        } else {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
+        ObjectUtil.requireNotNull(selected, NOT_AVAILABLE);
+        return selected;
     }
 
     //region Builder
