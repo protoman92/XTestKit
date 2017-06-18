@@ -27,6 +27,7 @@ import org.swiften.xtestkit.base.element.input.InputActionType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.locator.type.LocatorType;
 import org.swiften.xtestkit.base.element.password.PasswordActionType;
+import org.swiften.xtestkit.base.element.popup.PopupActionType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
@@ -64,6 +65,7 @@ public abstract class Engine<D extends WebDriver> implements
     LocatorType<D>,
     KeyboardActionType<D>,
     PasswordActionType<D>,
+    PopupActionType<D>,
     SearchActionType<D>,
     SwipeType<D>,
     SwitcherActionType,

@@ -16,9 +16,12 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
+import org.swiften.xtestkit.base.element.swipe.SwipeOnceType;
+import org.swiften.xtestkit.base.element.swipe.SwipeParam;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.TapParamType;
+import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RetryType;
@@ -252,7 +255,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
-    interface TestSearchActionType extends SearchActionType {
+    interface TestSearchActionType extends SearchActionType<WebDriver> {
         @NotNull
         @Override
         default Flowable<WebElement> rxe_textClear() {
@@ -280,6 +283,16 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
+    interface TestSwipeOnceType extends SwipeOnceType {
+        @Override
+        default void swipeOnce(@NotNull SwipeParamType param) {}
+    }
+
+    interface TestTapType extends TapType<WebDriver> {
+        @Override
+        default <P extends TapParamType & RetryType> void tap(@NotNull P param) {}
+    }
+
     static class MockEngine extends Engine<WebDriver> implements
         TestChoiceSelectorType,
         TestDateActionType,
@@ -287,16 +300,15 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         TestKeyboardActionType,
         TestPlatformProviderType,
         TestSearchActionType,
-        TestSwitcherActionType
+        TestSwipeOnceType,
+        TestSwitcherActionType,
+        TestTapType
     {
         @NotNull
         @Override
         public PlatformView platformView() {
             return mock(PlatformView.class);
         }
-
-        @Override
-        public <P extends TapParamType & RetryType> void tap(@NotNull P param) {}
 
         @NotNull
         @Override

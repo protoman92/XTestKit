@@ -80,11 +80,8 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
         return Flowable.just(true);
     }
 
-    @NotNull
     @Override
-    public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeParamType param) {
-        return Flowable.just(true);
-    }
+    public void swipeOnce(@NotNull SwipeParamType param) {}
 
     @NotNull
     @Override

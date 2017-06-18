@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by haipham on 5/8/17.
  */
-public interface BaseLocatorErrorType {
+public interface LocatorErrorType {
     String NO_SUCH_ELEMENT = "No such element";
 
     @NotNull

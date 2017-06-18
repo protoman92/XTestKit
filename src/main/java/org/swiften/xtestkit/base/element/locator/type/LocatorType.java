@@ -47,7 +47,7 @@ public interface LocatorType<D extends WebDriver> extends
     DriverProviderType<D>,
     LocalizerProviderType,
     ElementPropertyType,
-    BaseLocatorErrorType,
+    LocatorErrorType,
     PlatformProviderType,
     PlatformViewProviderType
 {
@@ -57,6 +57,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param param {@link ByXPath} instance.
      * @return {@link Flowable} instance.
      * @see ByXPath#error()
+     * @see ByXPath#logXPath()
      * @see ByXPath#retries()
      * @see ByXPath#xPath()
      * @see BaseViewType#className()
@@ -72,9 +73,14 @@ public interface LocatorType<D extends WebDriver> extends
     default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath param) {
         final WebDriver DRIVER = driver();
         final String XPATH = param.xPath();
+        final boolean LOG_XPATH = param.logXPath();
 
         return Flowable.just(XPATH)
-            .doOnNext(a -> LogUtil.printft("Searching for %s", a))
+            .doOnNext(a -> {
+                if (LOG_XPATH) {
+                    LogUtil.printft("Searching for %s", a);
+                }
+            })
             .concatMapIterable(path -> {
                 try {
                     /* Check for error here just to be certain */

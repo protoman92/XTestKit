@@ -67,11 +67,8 @@ public class MultiSwipeTest implements MultiSwipeType {
         return Flowable.just(ELEMENT);
     }
 
-    @NotNull
     @Override
-    public Flowable<Boolean> rxa_swipeOnce(@NotNull SwipeParamType param) {
-        return Flowable.just(true);
-    }
+    public void swipeOnce(@NotNull SwipeParamType param) {}
 
     @NotNull
     @Override
