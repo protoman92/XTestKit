@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.test.TestNGUtil;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -23,19 +24,13 @@ public final class TestHelper {
     /**
      * Provide {@link PlatformType} arguments.
      * @return {@link Iterator} of {@link Object} array.
+     * @see TestNGUtil#oneFromEach(Object...)
      * @see Platform#values()
      */
     @NotNull
     @DataProvider(parallel = true)
     public static Iterator<Object[]> platformProvider() {
-        Platform[] platforms = Platform.values();
-        List<Object[]> data = new LinkedList<>();
-
-        for (Platform platform : platforms) {
-            data.add(new Object[] { platform });
-        }
-
-        return data.iterator();
+        return TestNGUtil.oneFromEach((Object[])Platform.values()).iterator();
     }
 
     /**
