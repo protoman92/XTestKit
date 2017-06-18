@@ -10,7 +10,7 @@ import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.coordinate.RLPosition;
+import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 
 /**
@@ -30,13 +30,13 @@ public interface ClickActionType<D extends WebDriver> extends
      * Perform a click action for {@link WebElement}.
      * @param element {@link WebElement} instance.
      * @see WebElement#click()
-     * @see RLPosition#MID
+     * @see RLPoint#MID
      * @see #coordinate(WebElement, RLPositionType, RLPositionType)
      * @see #tap(Point)
      */
     default void click(@NotNull WebElement element) {
         LogUtil.printft("Clicking on %s", element);
-//        tap(coordinate(element, RLPosition.MID, RLPosition.MID));
+//        tap(coordinate(element, RLPoint.MID, RLPoint.MID));
         element.click();
     }
 

@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.element.swipe;
 
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.Point;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
@@ -34,6 +35,7 @@ public class SwipeParam implements RepeatType, SwipeParamType {
     SwipeParam() {
         delay = RepeatType.super.delay();
         duration = SwipeParamType.super.duration();
+        times = 1;
     }
 
     @Override
@@ -93,6 +95,7 @@ public class SwipeParam implements RepeatType, SwipeParamType {
          * Set the {@link #startX} value.
          * @param startX {@link Integer} value.
          * @return {@link Builder} instance.
+         * @see #startX
          */
         @NotNull
         public Builder withStartX(int startX) {
@@ -104,6 +107,7 @@ public class SwipeParam implements RepeatType, SwipeParamType {
          * Set the {@link #startY} value.
          * @param startY {@link Integer} value.
          * @return {@link Builder} instance.
+         * @see #startY
          */
         @NotNull
         public Builder withStartY(int startY) {
@@ -115,6 +119,7 @@ public class SwipeParam implements RepeatType, SwipeParamType {
          * Set the {@link #endX} value.
          * @param endX {@link Integer} value.
          * @return {@link Builder} instance.
+         * @see #endX
          */
         @NonNull
         public Builder withEndX(int endX) {
@@ -126,11 +131,40 @@ public class SwipeParam implements RepeatType, SwipeParamType {
          * Set the {@link #endY} value.
          * @param endY {@link Integer} value.
          * @return {@link Builder} instance.
+         * @see #endY
          */
         @NonNull
         public Builder withEndY(int endY) {
             PARAM.endY = endY;
             return this;
+        }
+
+        /**
+         * Set {@link #startX} and {@link #startY}.
+         * @param point {@link Point} instance.
+         * @return {@link Builder} instance.
+         * @see Point#getX()
+         * @see Point#getY()
+         * @see #withStartX(int)
+         * @see #withStartY(int)
+         */
+        @NotNull
+        public Builder withStartXY(@NotNull Point point) {
+            return this.withStartX(point.getX()).withStartY(point.getY());
+        }
+
+        /**
+         * Set {@link #endX} and {@link #endY}.
+         * @param point {@link Point} instance.
+         * @return {@link Builder} instance.
+         * @see Point#getX()
+         * @see Point#getY()
+         * @see #withStartX(int)
+         * @see #withStartY(int)
+         */
+        @NotNull
+        public Builder withEndXY(@NotNull Point point) {
+            return this.withEndX(point.getX()).withEndY(point.getY());
         }
 
         /**

@@ -4,6 +4,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
 
@@ -21,9 +22,7 @@ public interface SwipeOnceType extends BaseErrorType {
      * Perform a swipe action.
      * @param param {@link SwipeParamType} instance.
      */
-    default void swipeOnce(@NotNull SwipeParamType param) {
-        throw new RuntimeException(NOT_AVAILABLE);
-    }
+    void swipeOnce(@NotNull SwipeParamType param);
 
     /**
      * Perform a swipe action.
@@ -33,15 +32,17 @@ public interface SwipeOnceType extends BaseErrorType {
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeOnce(@NotNull final SwipeParamType PARAM) {
+        final SwipeOnceType THIS = this;
+
         return Completable
-            .fromAction(() -> this.swipeOnce(PARAM))
+            .fromAction(() -> THIS.swipeOnce(PARAM))
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
 
     /**
      * Perform a repeated swipe action.
-     * @param PARAM {@link P} instance.
+     * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
@@ -51,14 +52,14 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see #rxa_swipeOnce(SwipeParamType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull final P PARAM) {
-        final SwipeOnceType THIS = this;
-        final int TIMES = PARAM.times();
-        final long DELAY = PARAM.delay();
-        final TimeUnit UNIT = PARAM.timeUnit();
+    default <P extends RepeatType & SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull P param) {
+        int times = param.times();
+        long delay = param.delay();
+        TimeUnit unit = param.timeUnit();
 
-        return Flowable.range(0, TIMES)
-            .concatMap(a -> THIS.rxa_swipeOnce(PARAM).delay(DELAY, UNIT))
+        return rxa_swipeOnce(param)
+            .delay(delay, unit)
+            .repeat(times)
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

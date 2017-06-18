@@ -16,6 +16,8 @@ import org.swiften.xtestkit.mobile.Platform;
 public class IOSView extends PlatformView {
     public enum Type implements BaseViewType, BaseErrorType {
         UI_BUTTON,
+        UI_COLLECTION_VIEW,
+        UI_COLLECTION_VIEW_CELL,
         UI_IMAGE_VIEW,
         UI_LABEL,
         UI_LINK,
@@ -47,6 +49,9 @@ public class IOSView extends PlatformView {
             switch (this) {
                 case UI_BUTTON:
                     return "XCUIElementTypeButton";
+
+                case UI_COLLECTION_VIEW:
+                    return "XCUIElementTypeCollectionView";
 
                 case UI_IMAGE_VIEW:
                     return "XCUIElementTypeImage";
@@ -88,6 +93,7 @@ public class IOSView extends PlatformView {
                     return "XCUIElementTypeTable";
 
                 case UI_TABLE_VIEW_CELL:
+                case UI_COLLECTION_VIEW_CELL:
                     return "XCUIElementTypeCell";
 
                 case UI_TEXT_FIELD:
