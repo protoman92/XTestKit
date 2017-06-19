@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.input.InputActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;

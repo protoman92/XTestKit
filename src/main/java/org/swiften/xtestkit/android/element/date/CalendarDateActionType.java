@@ -15,7 +15,7 @@ import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.android.type.AndroidSDK;
 import org.swiften.xtestkit.android.type.AndroidSDKProviderType;
 import org.swiften.xtestkit.base.element.date.*;
-import org.swiften.xtestkit.base.element.locator.param.ByXPath;
+import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
@@ -281,7 +281,7 @@ public interface CalendarDateActionType extends
         final SimpleDateFormat FORMATTER = new SimpleDateFormat(format);
         Attributes attrs = Attributes.of(this);
 
-        XPath xPath = PARAM.datePickerType().targetItemXP(UNIT)
+        XPath xpath = PARAM.datePickerType().targetItemXP(UNIT)
             .addToEach(attrs.containsText(CP_STRING));
 
         /* We need a custom ByXPath because we want to limit the retry
@@ -289,7 +289,7 @@ public interface CalendarDateActionType extends
          * we need to recursively scroll and check for the existence of the
          * element. Consider this trade-off between time and accuracy */
         final ByXPath QUERY = ByXPath.builder()
-            .withXPath(xPath)
+            .withXPath(xpath)
             .withRetries(1)
             .build();
 

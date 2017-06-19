@@ -9,7 +9,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 
 /**
  * This interface provides methods to handle view visibility, such as polling

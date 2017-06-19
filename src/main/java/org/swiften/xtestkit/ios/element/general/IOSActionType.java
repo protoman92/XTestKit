@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;

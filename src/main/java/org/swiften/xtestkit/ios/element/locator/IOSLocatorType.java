@@ -5,7 +5,7 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;

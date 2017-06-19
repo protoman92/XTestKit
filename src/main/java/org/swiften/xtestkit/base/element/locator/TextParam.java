@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.param;
+package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
@@ -32,6 +32,12 @@ public class TextParam implements StringType, RetryType {
         text = "";
         ignoreCase = StringType.super.ignoreCase();
         retries = RetryType.super.retries();
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return text;
     }
 
     //region StringType

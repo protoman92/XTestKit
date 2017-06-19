@@ -45,10 +45,10 @@ public interface IOSChoiceSelectorType extends
         Platform platform = Platform.IOS;
         ChoiceInputType input = param.input();
         int index = input.scrollablePickerIndex(this);
-        XPath xPath = input.choicePickerXP(this);
+        XPath xpath = input.choicePickerXP(this);
 
         return ENGINE
-            .rxe_withXPath(xPath)
+            .rxe_withXPath(xpath)
             .elementAt(index)
             .toFlowable()
             .flatMap(a -> ENGINE.rxa_type(a, SELECTED))

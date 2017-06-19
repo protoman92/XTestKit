@@ -13,7 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.general.ActionType;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;

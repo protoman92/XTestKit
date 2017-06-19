@@ -6,7 +6,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
@@ -51,8 +51,8 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
             .withClass(AndroidView.Type.FRAME_LAYOUT.className())
             .withIndex(1);
 
-        XPath xPath = XPath.builder().addAttribute(cAttr).build();
-        return rxe_withXPath(xPath).firstElement().toFlowable();
+        XPath xpath = XPath.builder().addAttribute(cAttr).build();
+        return rxe_withXPath(xpath).firstElement().toFlowable();
     }
 
     /**

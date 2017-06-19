@@ -10,8 +10,8 @@ import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.param.TextParam;
+import org.swiften.xtestkit.base.element.locator.ByXPath;
+import org.swiften.xtestkit.base.element.locator.TextParam;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
 import org.swiften.xtestkitcomponents.view.BaseViewType;
@@ -125,7 +125,7 @@ public class LocatorTest implements TestLocatorType {
         doReturn(RxUtil.error()).when(ENGINE).rxe_byXPath(eq(query1));
         doReturn(Flowable.just(element1)).when(ENGINE).rxe_byXPath(eq(query2));
         doReturn(Flowable.just(element2)).when(ENGINE).rxe_byXPath(eq(query3));
-        doReturn(RxUtil.error()).when(ENGINE).rxe_xPathQueryFailure(any());
+        doReturn(RxUtil.error()).when(ENGINE).rxe_xpathQueryFailure(any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 

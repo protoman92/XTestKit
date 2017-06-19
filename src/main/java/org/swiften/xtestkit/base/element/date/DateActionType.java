@@ -15,8 +15,8 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
-import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.ByXPath;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -127,8 +127,8 @@ public interface DateActionType<D extends WebDriver> extends
     @NotNull
     default Flowable<WebElement> rxe_pickerView(@NotNull DateType param,
                                                 @NotNull CalendarUnit unit) {
-        XPath xPath = param.datePickerType().pickerViewXP(unit);
-        return rxe_withXPath(xPath).firstElement().toFlowable();
+        XPath xpath = param.datePickerType().pickerViewXP(unit);
+        return rxe_withXPath(xpath).firstElement().toFlowable();
     }
 
     /**
@@ -145,9 +145,9 @@ public interface DateActionType<D extends WebDriver> extends
         /* We need to use a custom XPath query because there are some views
          * that have similar IDs (e.g. if we search for date_picker_month, the
          * resulting WebElement may not be the one we are looking for */
-        XPath xPath = param.datePickerType().unitLabelViewXPath(unit);
-        ByXPath byXPath = ByXPath.builder().withXPath(xPath).build();
-        return rxe_withXPath(xPath).firstElement().toFlowable();
+        XPath xpath = param.datePickerType().unitLabelViewXPath(unit);
+        ByXPath byXPath = ByXPath.builder().withXPath(xpath).build();
+        return rxe_withXPath(xpath).firstElement().toFlowable();
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.param;
+package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;

@@ -1,8 +1,7 @@
-package org.swiften.xtestkit.base.element.locator.param;
+package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkit.base.element.locator.type.LocatorErrorType;
 import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -24,15 +23,21 @@ public class ByXPath implements LocatorErrorType, RetryType {
     }
 
     @NotNull private String error;
-    @NotNull private String xPath;
+    @NotNull private String xpath;
     private int retries;
     private boolean logXPath;
 
     ByXPath() {
-        xPath = "";
+        xpath = "";
         error = NO_SUCH_ELEMENT;
         logXPath = true;
         retries = RetryType.super.retries();
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return xpath;
     }
 
     /**
@@ -56,13 +61,13 @@ public class ByXPath implements LocatorErrorType, RetryType {
     }
 
     /**
-     * Get {@link #xPath}.
+     * Get {@link #xpath}.
      * @return {@link String} value.
-     * @see #xPath
+     * @see #xpath
      */
     @NotNull
-    public String xPath() {
-        return xPath;
+    public String xpath() {
+        return xpath;
     }
 
     /**
@@ -101,13 +106,13 @@ public class ByXPath implements LocatorErrorType, RetryType {
 
         /**
          * The {@link XPath} query that will be used to search for elements.
-         * @param xPath {@link XPath} instance.
+         * @param xpath {@link XPath} instance.
          * @return {@link Builder} instance.
          * @see XPath#attribute()
-         * @see #xPath
+         * @see #xpath
          */
-        public Builder withXPath(@NotNull XPath xPath) {
-            PARAM.xPath = xPath.attribute();
+        public Builder withXPath(@NotNull XPath xpath) {
+            PARAM.xpath = xpath.attribute();
             return this;
         }
 

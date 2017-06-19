@@ -9,17 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
-import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.locator.param.ByXPath;
-import org.swiften.xtestkit.base.element.locator.type.LocatorType;
+import org.swiften.xtestkit.base.element.locator.ByXPath;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.model.InputHelperType;
-import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.xpath.AttributeType;
-import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;
@@ -67,8 +62,8 @@ public interface PopupActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_popupDismiss(@NotNull PopupType param) {
-        XPath xPath = param.dismissXP(this);
-        return rxe_withXPath(xPath).firstElement().toFlowable();
+        XPath xpath = param.dismissXP(this);
+        return rxe_withXPath(xpath).firstElement().toFlowable();
     }
 
     /**
@@ -134,13 +129,14 @@ public interface PopupActionType<D extends WebDriver> extends
      * @see #rxa_pollAndDismissPopup(PopupType)
      */
     @NotNull
-    default <T extends PopupType> Flowable<Boolean>
-    rxa_pollAndDismissPopup(@NotNull T...params) {
+    @SuppressWarnings("unchecked")
+    default <T extends PopupType> Flowable<Boolean> rxa_pollAndDismissPopup(@NotNull T...params) {
         final PopupActionType<?> THIS = this;
         final PlatformType PLATFORM = platform();
 
         return Flowable.fromArray(params)
             .filter(a -> a.applicableTo(PLATFORM))
+            .doOnNext(a -> LogUtil.printft("Polling for %s", a))
             .flatMap(THIS::rxa_pollAndDismissPopup);
     }
 }

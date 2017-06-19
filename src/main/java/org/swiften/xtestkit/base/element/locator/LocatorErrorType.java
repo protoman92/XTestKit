@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.type;
+package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 

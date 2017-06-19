@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.param;
+package org.swiften.xtestkit.base.element.locator;
 
 /**
  * Created by haipham on 5/14/17.

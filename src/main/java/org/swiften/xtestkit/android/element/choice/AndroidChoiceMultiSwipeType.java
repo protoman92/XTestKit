@@ -7,9 +7,8 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
-import org.swiften.xtestkit.base.element.locator.param.ByXPath;
+import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
-import org.swiften.xtestkit.base.element.swipe.SwipeParam;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
@@ -182,8 +181,8 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     default Flowable<WebElement> rxe_scrollViewChildItems() {
         ChoiceHelperType<?> helper = choiceHelper();
         ChoiceInputType input = choiceInput();
-        XPath xPath = input.choicePickerItemXP(helper);
-        return helper.rxe_withXPath(xPath);
+        XPath xpath = input.choicePickerItemXP(helper);
+        return helper.rxe_withXPath(xpath);
     }
 
     /**
@@ -267,8 +266,8 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     default Flowable<WebElement> rxe_scrollableViewToSwipe() {
         ChoiceHelperType<?> helper = choiceHelper();
         ChoiceInputType input = choiceInput();
-        XPath xPath = input.choicePickerXP(helper);
-        return helper.rxe_withXPath(xPath).firstElement().toFlowable();
+        XPath xpath = input.choicePickerXP(helper);
+        return helper.rxe_withXPath(xpath).firstElement().toFlowable();
     }
 
     /**

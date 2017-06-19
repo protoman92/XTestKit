@@ -58,8 +58,8 @@ public interface AndroidChoiceSelectorType extends
             @NotNull
             @Override
             public Flowable<WebElement> rxe_scrollableViewToSwipe() {
-                XPath xPath = INPUT.choicePickerXP(THIS);
-                return THIS.rxe_withXPath(xPath).firstElement().toFlowable();
+                XPath xpath = INPUT.choicePickerXP(THIS);
+                return THIS.rxe_withXPath(xpath).firstElement().toFlowable();
             }
 
             @NotNull

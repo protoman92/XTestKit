@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.element.locator.type;
+package org.swiften.xtestkit.base.element.locator;
 
 /**
  * Created by haipham on 5/8/17.
@@ -6,18 +6,17 @@ package org.swiften.xtestkit.base.element.locator.type;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.collection.CollectionUtil;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.PlatformView;
-import org.swiften.xtestkit.base.element.locator.param.*;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.base.type.PlatformViewProviderType;
@@ -34,10 +33,9 @@ import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This interface provides general locator capabilities.
@@ -45,55 +43,14 @@ import java.util.Optional;
  */
 public interface LocatorType<D extends WebDriver> extends
     DriverProviderType<D>,
-    LocalizerProviderType,
     ElementPropertyType,
+    LocalizerProviderType,
+    LocatorDelayType,
     LocatorErrorType,
     PlatformProviderType,
     PlatformViewProviderType
 {
     //region By XPath
-    /**
-     * Find all elements that satisfies {@link XPath} request.
-     * @param param {@link ByXPath} instance.
-     * @return {@link Flowable} instance.
-     * @see ByXPath#error()
-     * @see ByXPath#logXPath()
-     * @see ByXPath#retries()
-     * @see ByXPath#xPath()
-     * @see BaseViewType#className()
-     * @see Collections#emptyList()
-     * @see CollectionUtil#unify(Collection[])
-     * @see D#findElements(By)
-     * @see ObjectUtil#nonNull(Object)
-     * @see #driver()
-     * @see #rxv_errorWithPageSource(String)
-     */
-    @NotNull
-    @SuppressWarnings("unchecked")
-    default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath param) {
-        final WebDriver DRIVER = driver();
-        final String XPATH = param.xPath();
-        final boolean LOG_XPATH = param.logXPath();
-
-        return Flowable.just(XPATH)
-            .doOnNext(a -> {
-                if (LOG_XPATH) {
-                    LogUtil.printft("Searching for %s", a);
-                }
-            })
-            .concatMapIterable(path -> {
-                try {
-                    /* Check for error here just to be certain */
-                    return DRIVER.findElements(By.xpath(path));
-                } catch (Exception e) {
-                    return Collections.<WebElement>emptyList();
-                }
-            })
-            .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(rxv_errorWithPageSource(param.error()))
-            .retry(param.retries());
-    }
-
     /**
      * Get an error {@link Flowable} to be used when
      * {@link #rxe_byXPath(ByXPath...)} fails to emit any {@link WebElement}.
@@ -107,7 +64,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see #rxv_errorWithPageSource(String)
      */
     @NotNull
-    default <T> Flowable<T> rxe_xPathQueryFailure(@NotNull ByXPath...param) {
+    default <T> Flowable<T> rxe_xpathQueryFailure(@NotNull ByXPath...param) {
         final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(param)
@@ -126,38 +83,54 @@ public interface LocatorType<D extends WebDriver> extends
      * platforms.
      * @param param A varargs of {@link ByXPath} instances.
      * @return {@link Flowable} instance.
-     * @see #rxe_byXPath(ByXPath)
-     * @see #rxe_xPathQueryFailure(ByXPath...)
+     * @see ByXPath#logXPath()
+     * @see ByXPath#retries()
+     * @see ByXPath#xpath()
+     * @see ObjectUtil#eq(Object)
+     * @see WebDriver#findElements(By)
+     * @see #driver()
+     * @see #elementLocateTimeout()
+     * @see #rxe_xpathQueryFailure(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
     default Flowable<WebElement> rxe_byXPath(@NotNull ByXPath...param) {
-        final LocatorType<?> THIS = this;
+        final WebDriver DRIVER = driver();
+
+        int retries = Arrays.stream(param)
+            .map(ByXPath::retries)
+            .max(Comparator.comparingInt(ObjectUtil::eq))
+            .orElse(3);
 
         return Flowable.fromArray(param)
-            .flatMap(a -> THIS.rxe_byXPath(a)
-                .map(Optional::of)
-                .onErrorReturnItem(Optional.empty()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .switchIfEmpty(rxe_xPathQueryFailure(param));
+            .doOnNext(a -> {
+                boolean logXPath = a.logXPath();
+                String xpath = a.xpath();
+                if (logXPath) LogUtil.printft("Searching for %s", xpath);
+            })
+            .observeOn(Schedulers.computation())
+            .map(ByXPath::xpath)
+            .map(By::xpath)
+            .flatMapIterable(DRIVER::<WebElement>findElements)
+            .switchIfEmpty(rxe_xpathQueryFailure(param))
+            .retry(retries);
     }
     //endregion
 
     //region With XPath
     /**
      * Get {@link ByXPath} from {@link XPath}.
-     * @param xPath {@link XPath} instance.
+     * @param xpath {@link XPath} instance.
      * @return {@link ByXPath} instance.
      * @see ByXPath.Builder#withXPath(XPath)
      * @see XPath#attribute()
      * @see #noSuchElement(String)
      */
     @NotNull
-    default ByXPath withXPathQuery(@NotNull XPath xPath) {
-        String query = xPath.attribute();
+    default ByXPath withXPathQuery(@NotNull XPath xpath) {
+        String query = xpath.attribute();
         String error = noSuchElement(query);
-        return ByXPath.builder().withXPath(xPath).withError(error).build();
+        return ByXPath.builder().withXPath(xpath).withError(error).build();
     }
 
     /**
@@ -173,8 +146,8 @@ public interface LocatorType<D extends WebDriver> extends
 
         return Flowable.fromArray(param)
             .map(THIS::withXPathQuery)
-            .toList().map(a -> a.toArray(new ByXPath[a.size()]))
-            .toFlowable()
+            .toList().toFlowable()
+            .map(a -> a.toArray(new ByXPath[a.size()]))
             .flatMap(THIS::rxe_byXPath);
     }
 
@@ -204,8 +177,8 @@ public interface LocatorType<D extends WebDriver> extends
 
         return Flowable.fromArray(attrs)
             .map(THIS::withAttributeQuery)
-            .toList().map(a -> a.toArray(new XPath[a.size()]))
-            .toFlowable()
+            .toList().toFlowable()
+            .map(a -> a.toArray(new XPath[a.size()]))
             .flatMap(THIS::rxe_withXPath);
 
     }
@@ -231,12 +204,12 @@ public interface LocatorType<D extends WebDriver> extends
     default <P extends OfClassType & RetryType> ByXPath ofClassQuery(@NotNull P param) {
         Attributes attrs = Attributes.of(this);
 
-        XPath xPath = XPath.builder()
+        XPath xpath = XPath.builder()
             .addAttribute(attrs.ofClass(param.value()))
             .build();
 
         return ByXPath.builder()
-            .withXPath(xPath)
+            .withXPath(xpath)
             .withError(noElementsWithClass(param.value()))
             .withRetryType(param)
             .build();
@@ -248,7 +221,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #ofClassQuery(OfClassType)
-     * @see #rxe_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -303,12 +276,12 @@ public interface LocatorType<D extends WebDriver> extends
     default <P extends ContainsIDType & RetryType> ByXPath containsIDQuery(@NotNull P param) {
         Attributes attrs = Attributes.of(this);
 
-        XPath xPath = XPath.builder()
+        XPath xpath = XPath.builder()
             .addAttribute(attrs.containsID(param.value()))
             .build();
 
         return ByXPath.builder()
-            .withXPath(xPath)
+            .withXPath(xpath)
             .withError(noElementsWithId(param.value()))
             .withRetryType(param)
             .build();
@@ -320,7 +293,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link IdParam} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rxe_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -379,12 +352,12 @@ public interface LocatorType<D extends WebDriver> extends
         String localized = localizer.localize(param.value());
         Attributes attrs = Attributes.of(this);
 
-        XPath xPath = XPath.builder()
+        XPath xpath = XPath.builder()
             .addAttribute(attrs.hasText(localized))
             .build();
 
         return ByXPath.builder()
-            .withXPath(xPath)
+            .withXPath(xpath)
             .withError(noElementsWithText(localized))
             .withRetryType(param)
             .build();
@@ -397,7 +370,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see #hasTextQuery(StringType)
-     * @see #rxe_byXPath(ByXPath)
+     * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -455,12 +428,12 @@ public interface LocatorType<D extends WebDriver> extends
         String localized = localizer.localize(param.value());
         Attributes attrs = Attributes.of(this);
 
-        XPath xPath = XPath.builder()
+        XPath xpath = XPath.builder()
             .addAttribute(attrs.containsText(localized))
             .build();
 
         return ByXPath.builder()
-            .withXPath(xPath)
+            .withXPath(xpath)
             .withError(noElementsContainingText(localized))
             .withRetryType(param)
             .build();
@@ -483,8 +456,8 @@ public interface LocatorType<D extends WebDriver> extends
 
         return Flowable.fromArray(param)
             .map(THIS::containsTextQuery)
-            .toList().map(a -> a.toArray(new ByXPath[a.size()]))
-            .toFlowable()
+            .toList().toFlowable()
+            .map(a -> a.toArray(new ByXPath[a.size()]))
             .flatMap(THIS::rxe_byXPath);
     }
 
@@ -499,10 +472,11 @@ public interface LocatorType<D extends WebDriver> extends
     @NotNull
     default Flowable<WebElement> rxe_containsText(@NotNull String...text) {
         final LocatorType<?> THIS = this;
+
         return Flowable.fromArray(text)
             .map(a -> TextParam.builder().withText(a).build())
-            .toList().map(a -> a.toArray(new TextParam[a.size()]))
-            .toFlowable()
+            .toList().toFlowable()
+            .map(a -> a.toArray(new TextParam[a.size()]))
             .flatMap(THIS::rxe_containsText);
     }
 
@@ -564,8 +538,8 @@ public interface LocatorType<D extends WebDriver> extends
 
         return Flowable.fromArray(format)
             .map(a -> TextFormatParam.builder().withLCFormat(a).build())
-            .toList().map(a -> a.toArray(new TextFormatParam[a.size()]))
-            .toFlowable()
+            .toList().toFlowable()
+            .map(a -> a.toArray(new TextFormatParam[a.size()]))
             .flatMap(THIS::rxe_containsText);
     }
     //endregion
