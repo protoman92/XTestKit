@@ -10,6 +10,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
+import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
@@ -89,5 +90,17 @@ public interface ElementPropertyType extends BaseErrorType {
         int offsetHeight = (int)(height * vRatio);
         int newX = x + offsetWidth, newY = y + offsetHeight;
         return new Point(newX, newY);
+    }
+
+    /**
+     * Get the middle {@link Point} coordinate of {@link WebElement}.
+     * @param element {@link WebElement} instance.
+     * @return {@link Point} instance.
+     * @see RLPoint#MID
+     * @see #coordinate(WebElement, RLPositionType, RLPositionType)
+     */
+    @NotNull
+    default Point middleCoordinate(@NotNull WebElement element) {
+        return coordinate(element, RLPoint.MID, RLPoint.MID);
     }
 }

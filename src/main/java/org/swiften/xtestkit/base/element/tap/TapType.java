@@ -9,6 +9,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.log.LogUtil;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkitcomponents.common.RetryType;
@@ -49,6 +50,16 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
     }
 
     /**
+     * Tap the middle {@link Point} of {@link WebElement}.
+     * @param element {@link WebElement} instance.
+     * @see #middleCoordinate(WebElement)
+     * @see #tap(Point)
+     */
+    default void tapMiddle(@NotNull WebElement element) {
+        tap(middleCoordinate(element));
+    }
+
+    /**
      * Perform a tap action.
      * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
@@ -56,9 +67,7 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      * @see #tap(TapParamType)
      */
     @NotNull
-    default <P extends
-        TapParamType &
-        RetryType> Flowable<Boolean>
+    default <P extends TapParamType & RetryType> Flowable<Boolean>
     rxa_tap(@NotNull final P PARAM) {
         final TapType<?> THIS = this;
 
@@ -77,7 +86,6 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      */
     @NotNull
     default Flowable<Boolean> rxa_tap(final int X, final int Y) {
-        LogUtil.printft("Tapping at x: %d, y: %d", X, Y);
         final TapType<?> THIS = this;
 
         return Completable
@@ -98,5 +106,21 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
     default Flowable<Boolean> rxa_tap(@NotNull Point point) {
         int x = point.getX(), y = point.getY();
         return rxa_tap(x, y);
+    }
+
+    /**
+     * Tap the middle {@link Point} of {@link WebElement}.
+     * @param ELEMENT {@link WebElement} instance.
+     * @return {@link Flowable} instance.
+     * @see #tapMiddle(WebElement)
+     */
+    @NotNull
+    default Flowable<Boolean> rxa_tapMiddle(@NotNull final WebElement ELEMENT) {
+        final TapType<?> THIS = this;
+
+        return Completable
+            .fromAction(() -> THIS.tapMiddle(ELEMENT))
+            .<Boolean>toFlowable()
+            .defaultIfEmpty(true);
     }
 }
