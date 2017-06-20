@@ -7,7 +7,7 @@ package org.swiften.xtestkit.ios.model;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
@@ -36,7 +36,7 @@ public interface IOSChoiceInputType {
      * @param helper {@link InputHelperType} instance.*
      * @return {@link XPath} instance.
      * @see CompoundAttribute#forClass(String)
-     * @see BaseViewType#className()
+     * @see ViewType#className()
      * @see IOSView.Type#UI_PICKER_WHEEL
      * @see XPath.Builder#addAttribute(AttributeType)
      */

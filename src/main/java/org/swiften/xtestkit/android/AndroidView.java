@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android;
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**
@@ -11,10 +11,10 @@ import org.swiften.xtestkit.mobile.Platform;
  */
 
 /**
- * Provide {@link Platform#ANDROID} {@link BaseViewType}.
+ * Provide {@link Platform#ANDROID} {@link ViewType}.
  */
 public class AndroidView extends PlatformView implements BaseErrorType {
-    public enum Type implements BaseViewType {
+    public enum Type implements ViewType {
         BUTTON,
         CHECKED_TEXT_VIEW,
         EDIT_TEXT,
@@ -118,7 +118,7 @@ public class AndroidView extends PlatformView implements BaseErrorType {
 
     @NotNull
     @Override
-    protected BaseViewType[] getViews() {
+    protected ViewType[] getViews() {
         return Type.values();
     }
 }

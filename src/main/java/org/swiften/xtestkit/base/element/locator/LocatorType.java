@@ -27,7 +27,7 @@ import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
 import org.swiften.xtestkitcomponents.property.base.StringType;
 import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkitcomponents.xpath.Attribute;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
@@ -109,6 +109,7 @@ public interface LocatorType<D extends WebDriver> extends
                 if (logXPath) LogUtil.printft("Searching for %s", xpath);
             })
             .observeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.computation())
             .map(ByXPath::xpath)
             .map(By::xpath)
             .flatMapIterable(DRIVER::<WebElement>findElements)
@@ -216,7 +217,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get all {@link BaseViewType} elements of some classes.
+     * Get all {@link ViewType} elements of some classes.
      * @param param A vararg of {@link ClassParam} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
@@ -288,7 +289,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get all {@link BaseViewType} elements whose IDs contain certain
+     * Get all {@link ViewType} elements whose IDs contain certain
      * {@link String} values.
      * @param param A varargs of {@link IdParam} instances.
      * @param <P> Generics parameter.
@@ -364,7 +365,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get all {@link BaseViewType#hasText()} {@link WebElement} that are
+     * Get all {@link ViewType#hasText()} {@link WebElement} that are
      * displaying some texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
@@ -440,7 +441,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
+     * Get all {@link ViewType#hasText()} {@link WebElement} whose texts
      * contain some another texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
@@ -504,7 +505,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get all {@link BaseViewType#hasText()} {@link WebElement} whose texts
+     * Get all {@link ViewType#hasText()} {@link WebElement} whose texts
      * contain some other texts.
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
@@ -546,11 +547,11 @@ public interface LocatorType<D extends WebDriver> extends
 
     //region Editable Elements
     /**
-     * Get all {@link BaseViewType#isEditable()} {@link WebElement}.
+     * Get all {@link ViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#ofClass(String)
-     * @see BaseViewType#className()
+     * @see ViewType#className()
      * @see ByXPath.Builder#withXPath(XPath)
      * @see PlatformView#isEditable()
      * @see XPath.Builder#addAttribute(AttributeType)
@@ -560,11 +561,11 @@ public interface LocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_editables() {
-        List<? extends BaseViewType> views = platformView().isEditable();
+        List<? extends ViewType> views = platformView().isEditable();
         final Attributes ATTRS = Attributes.of(this);
 
         ByXPath[] queries = views.stream()
-            .map(BaseViewType::className)
+            .map(ViewType::className)
             .map(a -> XPath.builder().addAttribute(ATTRS.ofClass(a)).build())
             .map(a -> ByXPath.builder().withXPath(a).build())
             .toArray(ByXPath[]::new);
@@ -573,7 +574,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Clear all {@link BaseViewType#isEditable()} {@link WebElement}.
+     * Clear all {@link ViewType#isEditable()} {@link WebElement}.
      * @return {@link Flowable} instance.
      * @see WebElement#clear()
      * @see #rxe_editables()
@@ -587,7 +588,7 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Get the currently focused {@link BaseViewType#isEditable()} field.
+     * Get the currently focused {@link ViewType#isEditable()} field.
      * @return {@link Flowable} instance.
      * @see #isFocused(WebElement)
      * @see #rxe_editables()

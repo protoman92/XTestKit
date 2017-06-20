@@ -295,13 +295,19 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Check whether an app is installed on the currently active
      * device/emulator.
      * @param PARAM {@link AppPackageType} instance.
-     * @param <T> Generics parameter.
+     * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
+     * @see BooleanUtil#toTrue(Object)
+     * @see ProcessRunner#rxa_execute(String)
+     * @see P#appPackage()
+     * @see P#retries()
+     * @see RxUtil#error()
+     * @see #appNotInstalled(String)
      * @see #cm_listPackages(DeviceUIDType)
      */
     @NotNull
-    public <T extends AppPackageType & DeviceUIDType & RetryType>
-    Flowable<Boolean> rxe_appInstalled(@NotNull final T PARAM) {
+    public <P extends AppPackageType & DeviceUIDType & RetryType>
+    Flowable<Boolean> rxe_appInstalled(@NotNull final P PARAM) {
         ProcessRunner processRunner = processRunner();
         String listCommand = cm_listPackages(PARAM);
         final String PKG = PARAM.appPackage();

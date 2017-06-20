@@ -13,7 +13,7 @@ import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -187,7 +187,7 @@ public class UnitNumberPickerWrapper implements
      * @param helper {@link InputHelperType} instance.
      * @return {@link XPath} instance.
      * @see AndroidNumericPickerInputType#androidChoicePickerParentXP(InputHelperType)
-     * @see BaseViewType#className()
+     * @see ViewType#className()
      * @see CompoundAttribute#forClass(String)
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy

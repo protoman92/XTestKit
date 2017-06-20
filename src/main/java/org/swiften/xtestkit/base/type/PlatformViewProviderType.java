@@ -6,11 +6,11 @@ package org.swiften.xtestkit.base.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.PlatformView;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 
 /**
  * This interface provides {@link org.swiften.xtestkit.base.PlatformView}
- * for {@link BaseViewType}-related operations.
+ * for {@link ViewType}-related operations.
  */
 @FunctionalInterface
 public interface PlatformViewProviderType {

@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.TextParam;
 import org.swiften.xtestkit.base.model.MockPlatform;
 import org.swiften.xtestkit.base.model.MockPlatformView;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
@@ -169,7 +169,7 @@ public class LocatorTest implements TestLocatorType {
     public void test_failToFindElements_shouldThrow() {
         // Setup
         doReturn(Collections.emptyList()).when(DRIVER).findElements(any());
-        List<BaseViewType> views = PLATFORM_VIEWS.allViews();
+        List<ViewType> views = PLATFORM_VIEWS.allViews();
         ByXPath param = ByXPath.builder().build();
         TestSubscriber subscriber = CustomTestSubscriber.create();
 

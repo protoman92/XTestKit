@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,51 +12,51 @@ import java.util.stream.Collectors;
  */
 
 /**
- * Subclass this class to provide platform-specific {@link BaseViewType}.
+ * Subclass this class to provide platform-specific {@link ViewType}.
  */
 public abstract class PlatformView {
     @NotNull
-    public List<BaseViewType> allViews() {
+    public List<ViewType> allViews() {
         return Arrays.asList(getViews());
     }
 
     /**
-     * Get all {@link BaseViewType} that {@link BaseViewType#hasText()}.
-     * @return {@link List} of {@link BaseViewType}.
+     * Get all {@link ViewType} that {@link ViewType#hasText()}.
+     * @return {@link List} of {@link ViewType}.
      */
     @NotNull
-    public List<? extends BaseViewType> hasText() {
+    public List<? extends ViewType> hasText() {
         return allViews().stream()
-            .filter(BaseViewType::hasText)
+            .filter(ViewType::hasText)
             .collect(Collectors.toList());
     }
 
     /**
-     * Get all {@link BaseViewType} that {@link BaseViewType#isClickable()}.
-     * @return {@link List} of {@link BaseViewType}.
+     * Get all {@link ViewType} that {@link ViewType#isClickable()}.
+     * @return {@link List} of {@link ViewType}.
      */
-    public List<? extends BaseViewType> isClickable() {
+    public List<? extends ViewType> isClickable() {
         return allViews().stream()
-            .filter(BaseViewType::isClickable)
+            .filter(ViewType::isClickable)
             .collect(Collectors.toList());
     }
 
     /**
-     * Get all {@link BaseViewType} that {@link BaseViewType#isEditable()}.
-     * @return {@link List} of {@link BaseViewType}.
+     * Get all {@link ViewType} that {@link ViewType#isEditable()}.
+     * @return {@link List} of {@link ViewType}.
      */
     @NotNull
-    public List<? extends BaseViewType> isEditable() {
+    public List<? extends ViewType> isEditable() {
         return allViews().stream()
-            .filter(BaseViewType::isEditable)
+            .filter(ViewType::isEditable)
             .collect(Collectors.toList());
     }
 
     /**
      * We return an array here because we will probably be using enums to
-     * store the {@link BaseViewType} types.
-     * @return An array of {@link BaseViewType}
+     * store the {@link ViewType} types.
+     * @return An array of {@link ViewType}
      */
     @NotNull
-    protected abstract BaseViewType[] getViews();
+    protected abstract ViewType[] getViews();
 }

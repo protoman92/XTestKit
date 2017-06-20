@@ -12,7 +12,7 @@ import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -52,7 +52,7 @@ public interface IOSActionType extends
      * @see AlertParam#shouldAccept()
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#hasText(String)
-     * @see BaseViewType#className()
+     * @see ViewType#className()
      * @see BooleanUtil#toTrue(Object)
      * @see CompoundAttribute#single(AttributeType)
      * @see CompoundAttribute#withClass(String)

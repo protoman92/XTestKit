@@ -3,7 +3,6 @@ package org.swiften.xtestkit.util;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.log.LogUtil;
 import org.swiften.javautilities.test.TestNGUtil;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
@@ -11,8 +10,6 @@ import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.DataProvider;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -28,7 +25,7 @@ public final class TestHelper {
      * @see Platform#values()
      */
     @NotNull
-    @DataProvider(parallel = true)
+    @DataProvider(parallel = false)
     public static Iterator<Object[]> platformProvider() {
         return TestNGUtil.oneFromEach((Object[])Platform.values()).iterator();
     }

@@ -7,14 +7,14 @@ package org.swiften.xtestkit.ios;
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
 /**
- * Provide {@link Platform#IOS} {@link BaseViewType}
+ * Provide {@link Platform#IOS} {@link ViewType}
  */
 public class IOSView extends PlatformView {
-    public enum Type implements BaseViewType, BaseErrorType {
+    public enum Type implements ViewType, BaseErrorType {
         UI_BUTTON,
         UI_COLLECTION_VIEW,
         UI_COLLECTION_VIEW_CELL,
@@ -40,7 +40,7 @@ public class IOSView extends PlatformView {
 
         /**
          * @return {@link String} value.
-         * @see BaseViewType#className()
+         * @see ViewType#className()
          * @see #NOT_AVAILABLE
          */
         @NotNull
@@ -118,7 +118,7 @@ public class IOSView extends PlatformView {
 
         /**
          * @return {@link String} value.
-         * @see BaseViewType#hasText()
+         * @see ViewType#hasText()
          */
         @Override
         public boolean hasText() {
@@ -136,7 +136,7 @@ public class IOSView extends PlatformView {
 
         /**
          * @return {@link Boolean} value.
-         * @see BaseViewType#isClickable()
+         * @see ViewType#isClickable()
          */
         @Override
         public boolean isClickable() {
@@ -151,7 +151,7 @@ public class IOSView extends PlatformView {
 
         /**
          * @return {@link Boolean} value.
-         * @see BaseViewType#isEditable()
+         * @see ViewType#isEditable()
          */
         @Override
         public boolean isEditable() {
@@ -167,12 +167,12 @@ public class IOSView extends PlatformView {
     }
 
     /**
-     * @return Array of {@link BaseViewType}.
+     * @return Array of {@link ViewType}.
      * @see PlatformView#getViews()
      */
     @NotNull
     @Override
-    public BaseViewType[] getViews() {
+    public ViewType[] getViews() {
         return Type.values();
     }
 }

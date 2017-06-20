@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.PlatformView;
-import org.swiften.xtestkitcomponents.view.BaseViewType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -20,20 +20,20 @@ public class MockPlatformView extends PlatformView {
     {
         RAND = new Random();
 
-            /* The number of BaseViewType to pass to PlatformView */
+            /* The number of ViewType to pass to PlatformView */
         VIEW_COUNT = 1000;
     }
 
     @NotNull
     @Override
-    protected BaseViewType[] getViews() {
+    protected ViewType[] getViews() {
         return Arrays
             .stream(new Object[VIEW_COUNT])
             .map(a -> spy(new MockView(RAND)))
-            .toArray(BaseViewType[]::new);
+            .toArray(ViewType[]::new);
     }
 
-    static class MockView implements BaseViewType {
+    static class MockView implements ViewType {
         @NotNull private final Random RAND;
 
         MockView(@NotNull Random rand) {
