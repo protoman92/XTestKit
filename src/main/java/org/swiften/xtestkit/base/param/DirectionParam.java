@@ -202,7 +202,7 @@ public class DirectionParam implements
          * @see RepeatType#delay()
          */
         @NotNull
-        public Builder withRepeatableType(@NotNull RepeatType type) {
+        public Builder withRepeatType(@NotNull RepeatType type) {
             return withTimes(type.times()).withDelay(type.delay());
         }
 

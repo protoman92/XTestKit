@@ -71,14 +71,10 @@ public interface ActionType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<Boolean> rxa_navigateBack(@NotNull RepeatType param) {
-        final ActionType<?> THIS = this;
-        final int TIMES = param.times();
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = TimeUnit.MILLISECONDS;
-
-        return Flowable
-            .range(0, TIMES)
-            .concatMap(a -> THIS.rxa_navigateBackOnce().delay(DELAY, UNIT));
+        int times = param.times();
+        long delay = param.delay();
+        TimeUnit unit = TimeUnit.MILLISECONDS;
+        return rxa_navigateBackOnce().delay(delay, unit).repeat(times);
     }
 
     /**

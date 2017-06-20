@@ -212,22 +212,21 @@ public class AndroidEngine extends
     @Override
     @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_beforeClass(@NotNull final RetryType PARAM) {
-        final AndroidEngine THIS = this;
-        final ADBHandler HANDLER = adbHandler();
+        ADBHandler handler = adbHandler();
         final AndroidInstance A = androidInstance();
         final String APP_PACKAGE = appPackage();
         Flowable<Boolean> source;
         TestMode testMode = testMode();
 
         if (testMode.isTestingOnSimulatedEnvironment()) {
-            source = HANDLER.rxe_availablePort(PARAM)
+            source = handler.rxe_availablePort(PARAM)
                 .doOnNext(A::setPort)
                 .map(a -> StartEmulatorParam.builder()
                     .withDeviceName(deviceName())
                     .withAndroidInstance(A)
                     .withRetries(100)
                     .build())
-                .flatMap(HANDLER::rxa_startEmulator)
+                .flatMap(handler::rxa_startEmulator)
                 .onErrorReturnItem(true);
         } else {
             /* Assuming the device is already started up */
@@ -235,11 +234,9 @@ public class AndroidEngine extends
         }
 
         return Flowable
-            .concatArray(super.rxa_beforeClass(PARAM), source)
-            .all(ObjectUtil::nonNull)
-            .toFlowable()
-            .flatMap(a -> Flowable.concatArray(
-                HANDLER.rxa_disableAnimations(A).onErrorReturnItem(true),
+            .concatArray(
+                super.rxa_beforeClass(PARAM), source,
+                handler.rxa_disableAnimations(A).onErrorReturnItem(true),
 
                 /* Clear cached data such as SharedPreferences. If the app is
                  * not found in the active device/emulator, swallow error */
@@ -256,11 +253,12 @@ public class AndroidEngine extends
                     obs.onComplete();
                 }, BackpressureStrategy.BUFFER
                 ).flatMap(b -> Flowable.concatArray(
-                    HANDLER.rxe_appInstalled(b),
-                    HANDLER.rxa_clearCache(b))
-                ).all(ObjectUtil::nonNull).toFlowable().onErrorReturnItem(true)
-            ))
-            .flatMap(a -> THIS.rxa_startDriver(PARAM));
+                    handler.rxe_appInstalled(b),
+                    handler.rxa_clearCache(b))
+                ).onErrorReturnItem(true),
+
+                rxa_startDriver(PARAM)
+            ).all(ObjectUtil::nonNull).toFlowable();
     }
 
     /**
