@@ -51,7 +51,7 @@ The main components of this library is:
 ### TestKit: 
 
 This is the main handler and coordinator class. A **TestKit** object can
-have a List of **PlatformEngine**, and provides convenience methods such
+have a List of **Engine**, and provides convenience methods such
 as *beforeClass*, *before*, *after* and *afterClass* for easy pre/post-test
 setups.
 
@@ -65,16 +65,16 @@ Consult **Localizer.Builder** to get an idea of how to construct a
 A **TestKit** instance will have one **Localizer**, which is constructed
 via **TestKit.Builder**.
 
-### PlatformEngine: 
+### Engine: 
 
 A base class that abstracts away **Appium** methods to work accross different
 platforms. It supplies methods to work with the **Appium** driver, and a number
 of these methods are implemented differently for each platform
-(e.g. **Android**, **iOS**) by subclasses. Each **PlatformEngine** contains
+(e.g. **Android**, **iOS**) by subclasses. Each **Engine** contains
 a set of crucial information (e.g. *platformName*, *version*, *appPackage*)
 that will be supplied to **Appium**.
 
-The idea is to provide pluggable **PlatformEngine** instances to a **TestKit**
+The idea is to provide pluggable **Engine** instances to a **TestKit**
 object, which will run them while completely unaware of the platform or OS
 versions. This allows us to write platform-agnostic tests that can be used on
 all platforms and versions.
@@ -103,33 +103,3 @@ how it's done for **AndroidEngine**.
 
 This class allows for convenient **XPath** scripting. Using **XPath** is a
 good way to write cross-platform test codes.
-
-## Test flow:
-
-### **TestKit** starts the test environment specified by the currently active
-**PlatformEngine**:
-
-This process is run in **@BeforeClass**. **@BeforeClass** will be run every
-time a new **PlatformEngine** becomes active.
-
-### **TestKit** starts the **Appium** driver with settings provided by the
-currently active PlatformEngine:
-
-This process is run in **@Before**.
-
-### Tests are run based on specified settings.
-
-### **TestKit** stops the **Appium** driver:
-
-This process is run in **@After**.
-
-### **TestKit** stops the test environment:
-
-This process is run in **@AfterClass**.
-
-### Repeat the avove steps for each new **PlatformEngine**.
-
-## Sample:
-
-Tests for a sample app is included in **src/test/java**. They go through basic
-usage and setup steps required to run the specified tests.
