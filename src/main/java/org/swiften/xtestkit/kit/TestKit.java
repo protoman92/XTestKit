@@ -11,7 +11,6 @@ import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.AndroidEngine;
 import org.swiften.xtestkit.base.Engine;
@@ -76,7 +75,7 @@ public class TestKit implements
             .toFlowable()
             .subscribe(subscriber);
 
-        return RxTestUtil.<Long>firstNextEvent(subscriber).intValue();
+        return RxUtil.<Long>firstNextEvent(subscriber).intValue();
     }
     //endregion
 

@@ -6,7 +6,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
@@ -82,7 +82,7 @@ public class ActionTest implements ActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
         verify(ENGINE).driver();
         verify(ENGINE).rxa_acceptAlert();
         verify(ENGINE).rxa_dismissAlert(any(AlertParam.class));
@@ -112,7 +112,7 @@ public class ActionTest implements ActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
         verify(ENGINE, times(times)).rxa_navigateBackOnce();
         verify(ENGINE).rxa_navigateBack(any());
         verify(ENGINE, atLeastOnce()).driver();

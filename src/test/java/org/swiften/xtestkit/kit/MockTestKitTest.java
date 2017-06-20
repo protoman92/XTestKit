@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import static org.testng.Assert.*;
 
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -96,7 +95,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxTestUtil.nextEvents(subscriber).size(), 2);
+        assertEquals(RxUtil.nextEvents(subscriber).size(), 2);
         verify(TEST_KIT).rxe_distinctEngines();
         verify(TEST_KIT).engines();
         verifyNoMoreInteractions(TEST_KIT);

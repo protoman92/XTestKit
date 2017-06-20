@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBErrorType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
@@ -198,7 +197,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxTestUtil.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
+        assertEquals(RxUtil.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxe_availablePort(any());
         verify(ADB_HANDLER).availablePorts();
@@ -634,7 +633,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertFalse(RxTestUtil.firstNextEvent(subscriber));
+            assertFalse(RxUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cm_AndroidHome();
             verify(ADB_HANDLER).cm_adb();
@@ -668,7 +667,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.firstNextEvent(subscriber));
+            assertTrue(RxUtil.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cm_AndroidHome();
             verify(ADB_HANDLER).cm_adb();

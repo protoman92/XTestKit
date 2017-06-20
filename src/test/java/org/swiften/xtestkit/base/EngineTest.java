@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.capability.BaseEngineCapability;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
@@ -17,7 +17,6 @@ import org.swiften.xtestkit.base.element.date.DateType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeOnceType;
-import org.swiften.xtestkit.base.element.swipe.SwipeParam;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.TapParamType;
@@ -160,7 +159,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).address();
         verify(ENGINE).serverUri();
@@ -186,7 +185,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
     }
     //endregion
 

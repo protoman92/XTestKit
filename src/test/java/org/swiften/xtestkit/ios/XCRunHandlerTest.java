@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
@@ -112,7 +111,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.firstNextEvent(subscriber));
+            assertTrue(RxUtil.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxa_checkSimulatorBooted(any());
             verify(XC_HANDLER).rxa_startSimulator(any());
             verify(XC_HANDLER, times(2)).processRunner();
@@ -149,7 +148,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxTestUtil.firstNextEvent(subscriber));
+            assertTrue(RxUtil.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxa_stopSimulator(any());
             verify(XC_HANDLER).processRunner();
             verify(XC_HANDLER).cm_stopSimulator();

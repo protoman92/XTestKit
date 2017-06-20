@@ -6,6 +6,7 @@ package org.swiften.xtestkit.base.type;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.log.LogUtil;
@@ -143,34 +144,33 @@ public interface AppiumHandlerType extends
             .flatMap(a -> Flowable.<Boolean>create(o -> {
                 final String COMMAND = THIS.cm_startLocalAppium(CLI, a);
 
-                new Thread(() -> {
-                    for (;;) {
-                        if (AVAILABLE_TO_START_APPIUM.getAndSet(false)) {
-                            /* We need to start a new thread because this
-                             * operation blocks */
-                            new Thread(() -> {
-                                Consumer<String> cs = LogUtil::println;
-                                RUNNER.execute(COMMAND, cs, o::onError);
-                            }).start();
+                for (;;) {
+                    if (AVAILABLE_TO_START_APPIUM.getAndSet(false)) {
+                        /* We need to start a new thread because this
+                         * operation blocks */
+                        new Thread(() -> {
+                            Consumer<String> cs = LogUtil::println;
+                            RUNNER.execute(COMMAND, cs, o::onError);
+                        }).start();
 
-                            /* Sleep for a while to straddle the initialization
-                             * of Appium instances */
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(5000);
-                            } catch (InterruptedException e) {
-                                o.onError(e);
-                            } finally {
-                                AVAILABLE_TO_START_APPIUM.set(true);
-                                o.onNext(true);
-                                o.onComplete();
-                            }
-
-                            break;
+                        /* Sleep for a while to straddle the initialization
+                         * of Appium instances */
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(5000);
+                        } catch (InterruptedException e) {
+                            o.onError(e);
+                        } finally {
+                            AVAILABLE_TO_START_APPIUM.set(true);
+                            o.onNext(true);
+                            o.onComplete();
                         }
+
+                        break;
                     }
-                }).start();
-            }, BackpressureStrategy.BUFFER))
-            .serialize();
+                }
+            }, BackpressureStrategy.BUFFER
+            ).subscribeOn(Schedulers.computation())
+            ).serialize();
     }
 
     /**

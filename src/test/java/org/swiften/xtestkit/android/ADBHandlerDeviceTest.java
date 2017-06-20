@@ -4,7 +4,6 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
@@ -99,7 +98,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -136,7 +135,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -153,7 +152,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -170,7 +169,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)

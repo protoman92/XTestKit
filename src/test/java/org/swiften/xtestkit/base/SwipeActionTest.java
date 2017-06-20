@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.NumberUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxTestUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParam;
@@ -74,7 +74,7 @@ public class SwipeActionTest implements SwipeType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxTestUtil.firstNextEvent(subscriber));
+        assertTrue(RxUtil.firstNextEvent(subscriber));
         verify(ENGINE).rxa_swipe(any());
         verify(ENGINE, times(times)).swipeOnce(any());
         verify(ENGINE, times(times)).rxa_swipeOnce(any());

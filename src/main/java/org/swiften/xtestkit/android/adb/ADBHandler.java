@@ -14,7 +14,6 @@ import org.swiften.xtestkitcomponents.system.network.param.PortCheckParam;
 import org.swiften.xtestkitcomponents.system.network.type.PortType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import io.reactivex.Flowable;
-import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.number.NumberUtil;
@@ -175,7 +174,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
      * @see ObjectUtil#nonNull(Object)
+     * @see RxUtil#delayRetry(int, long)
      * @see RxUtil#error()
+     * @see RxUtil#timeout(long, Object)
      * @see #cm_startEmulator(StartEmulatorParam)
      * @see #cm_bootAnim(DeviceUIDType)
      * @see #emulatorBootTimeout()
@@ -184,9 +185,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     @NotNull
     public Flowable<Boolean> rxa_startEmulator(@NotNull final StartEmulatorParam PARAM) {
         final ProcessRunner RUNNER = processRunner();
-        final int RETRIES = PARAM.retries();
-        final long DELAY = emulatorBootRetryDelay();
-        final long TIMEOUT = emulatorBootTimeout();
+        int retries = PARAM.retries();
+        long delay = emulatorBootRetryDelay();
+        long timeout = emulatorBootTimeout();
 
         /* We need to start the emulator on a new Thread, or else it will
          * block the rest of the operations */
@@ -207,24 +208,14 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * 'stopped' will be emitted */
             .filter(a -> a.equals("stopped"))
             .switchIfEmpty(RxUtil.error())
-            .retryWhen(a -> a
-                /* We add one to the retry count, or else we won't be able
-                 * to catch when the count is exceeded */
-                .zipWith(Flowable.range(1, RETRIES + 1), (e, i) -> {
-                    if (i > RETRIES) {
-                        throw Exceptions.propagate(e);
-                    } else {
-                        return e;
-                    }
-                })
-                .flatMap(e -> Flowable.timer(DELAY, TimeUnit.MILLISECONDS)))
+            .compose(RxUtil.delayRetry(retries, delay))
             .map(BooleanUtil::toTrue)
 
             /* timeout is used here in case processRunner() fails to poll
              * for bootanim. The timeout will be a reasonable value so that,
              * at the end of the interval, the emulator would have been
              * started up anyway */
-            .timeout(TIMEOUT, TimeUnit.MILLISECONDS, Flowable.just(true));
+            .compose(RxUtil.timeout(timeout, true));
     }
     //endregion
 
