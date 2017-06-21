@@ -7,7 +7,7 @@ import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.view.ViewType;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
@@ -190,9 +190,9 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
-     * @see ViewType#className()
-     * @see CompoundAttribute#forClass(String)
-     * @see CompoundAttribute#withIndex(Integer)
+     * @see CompoundAttribute.Builder#withClass(ClassNameType)
+     * @see CompoundAttribute.Builder#withIndex(Integer)
+     * @see CompoundAttribute.Builder#withPath(Path)
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see IOSView.Type#UI_PICKER
@@ -206,10 +206,10 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
         Attributes attrs = Attributes.of(Platform.IOS);
 
         return XPath.builder()
-            .addAttribute(attrs.ofClass(IOSView.Type.UNDEFINED.className()))
+            .addAttribute(attrs.ofClass(IOSView.Type.UNDEFINED))
             .addAttribute(CompoundAttribute.builder()
                 .withPath(Path.DIRECT)
-                .withClass(IOSView.Type.UI_PICKER_WHEEL.className())
+                .withClass(IOSView.Type.UI_PICKER_WHEEL)
                 .withIndex(pickerViewIndex(unit) + 1)
                 .build())
             .build();

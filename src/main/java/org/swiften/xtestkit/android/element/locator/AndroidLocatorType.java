@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.view.ViewType;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -36,9 +36,8 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_window()
-     * @see ViewType#className()
      * @see CompoundAttribute#empty()
-     * @see CompoundAttribute#withClass(String)
+     * @see CompoundAttribute#withClass(ClassNameType)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#FRAME_LAYOUT
@@ -48,7 +47,7 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
     @Override
     default Flowable<WebElement> rxe_window() {
         CompoundAttribute cAttr = CompoundAttribute.empty()
-            .withClass(AndroidView.Type.FRAME_LAYOUT.className())
+            .withClass(AndroidView.Type.FRAME_LAYOUT)
             .withIndex(1);
 
         XPath xpath = XPath.builder().addAttribute(cAttr).build();
@@ -60,11 +59,11 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_imageViews()
      * @see AndroidView.Type#IMAGE_VIEW
-     * @see ViewType#className()
+     * @see #rxe_ofClass(ClassNameType[])
      */
     @NotNull
     @Override
     default Flowable<WebElement> rxe_imageViews() {
-        return rxe_ofClass(AndroidView.Type.IMAGE_VIEW.className());
+        return rxe_ofClass(AndroidView.Type.IMAGE_VIEW);
     }
 }

@@ -24,10 +24,12 @@ public class AndroidView extends PlatformView implements BaseErrorType {
         LINEAR_LAYOUT,
         LIST_VIEW,
         NUMBER_PICKER,
+        PROGRESS_BAR,
         SWITCH,
         TEXT_VIEW,
         TIME_PICKER,
-        VIEW_PAGER;
+        VIEW_PAGER,
+        VIEW_PAGER_I;
 
         @NotNull
         @Override
@@ -60,6 +62,9 @@ public class AndroidView extends PlatformView implements BaseErrorType {
                 case NUMBER_PICKER:
                     return "android.widget.NumberPicker";
 
+                case PROGRESS_BAR:
+                    return "android.widget.ProgressBar";
+
                 case SWITCH:
                     return "android.widget.Switch";
 
@@ -71,6 +76,9 @@ public class AndroidView extends PlatformView implements BaseErrorType {
 
                 case VIEW_PAGER:
                     return "android.support.v4.view.ViewPager";
+
+                case VIEW_PAGER_I:
+                    return "com.android.internal.widget.ViewPager";
 
                 default:
                     throw new RuntimeException(NOT_AVAILABLE);

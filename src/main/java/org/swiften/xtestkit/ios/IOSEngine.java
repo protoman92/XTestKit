@@ -141,9 +141,10 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      */
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Flowable<Boolean> rxa_beforeClass(@NotNull RetryType param) {
         return Flowable
-            .concat(super.rxa_beforeClass(param), rxa_startDriver(param))
+            .concatArray(super.rxa_beforeClass(param), rxa_startDriver(param))
             .all(BooleanUtil::isTrue)
             .toFlowable();
     }

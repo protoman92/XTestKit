@@ -11,9 +11,9 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
@@ -127,9 +127,9 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
-     * @see ViewType#className()
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidView.Type#LIST_VIEW
+     * @see AndroidView.Type#VIEW_PAGER_I
      * @see Joiner#OR
      * @see Platform#ANDROID
      * @see #DATE_CALENDAR_PICKER
@@ -143,12 +143,10 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
             case DATE_CALENDAR_PICKER:
             case DATE_CALENDAR_PICKER_M:
                 Attributes attrs = Attributes.of(Platform.ANDROID);
-                String lvc = AndroidView.Type.LIST_VIEW.className();
-                String vpc = "com.android.internal.widget.ViewPager";
 
                 AttributeBlock block = AttributeBlock.builder()
-                    .addAttribute(attrs.ofClass(lvc))
-                    .addAttribute(attrs.ofClass(vpc))
+                    .addAttribute(attrs.ofClass(AndroidView.Type.LIST_VIEW))
+                    .addAttribute(attrs.ofClass(AndroidView.Type.VIEW_PAGER_I))
                     .withJoiner(Joiner.OR)
                     .build();
 
@@ -245,7 +243,6 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
-     * @see ViewType#className()
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
@@ -292,9 +289,8 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
-     * @see ViewType#className()
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
-     * @see CompoundAttribute.Builder#withClass(String)
+     * @see CompoundAttribute.Builder#withClass(ClassNameType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Joiner#OR
@@ -318,7 +314,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
 
                 CompoundAttribute attribute = CompoundAttribute.builder()
                     .addAttribute(block)
-                    .withClass(AndroidView.Type.TEXT_VIEW.className())
+                    .withClass(AndroidView.Type.TEXT_VIEW)
                     .build();
 
                 return XPath.builder().addAttribute(attribute).build();
@@ -338,8 +334,8 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
-     * @see ViewType#className()
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Platform#ANDROID
@@ -361,7 +357,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
 
                 CompoundAttribute attribute = CompoundAttribute.builder()
                     .addAttribute(block)
-                    .withClass(AndroidView.Type.TEXT_VIEW.className())
+                    .withClass(AndroidView.Type.TEXT_VIEW)
                     .build();
 
                 return XPath.builder().addAttribute(attribute).build();
@@ -381,8 +377,8 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#containsID(String)
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
-     * @see ViewType#className()
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Platform#ANDROID
@@ -405,7 +401,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
 
                 CompoundAttribute attribute = CompoundAttribute.builder()
                     .addAttribute(block)
-                    .withClass(AndroidView.Type.TEXT_VIEW.className())
+                    .withClass(AndroidView.Type.TEXT_VIEW)
                     .build();
 
                 return XPath.builder().addAttribute(attribute).build();

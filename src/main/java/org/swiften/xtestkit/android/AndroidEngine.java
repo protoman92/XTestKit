@@ -4,11 +4,11 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.reactivex.BackpressureStrategy;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.capability.AndroidEngineCapability;
@@ -268,8 +268,8 @@ public class AndroidEngine extends
      * @see Engine#rxa_afterClass(RetryType)
      * @see ADBHandler#rxa_stopEmulator(StopEmulatorParam)
      * @see AndroidInstance#port()
-     * @see BooleanUtil#isTrue(boolean)
      * @see NetworkHandler#markPortAvailable(int)
+     * @see ObjectUtil#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
@@ -300,10 +300,17 @@ public class AndroidEngine extends
 //        }
 
         return Flowable
-            .concatArray(super.rxa_afterClass(param), rxa_stopDriver(), source)
-            .all(BooleanUtil::isTrue)
-            .toFlowable()
-            .doOnNext(a -> HANDLER.markPortAvailable(PORT));
+            .concatArray(
+                super.rxa_afterClass(param),
+                rxa_stopDriver(), source,
+
+                Completable
+                    .fromAction(() -> HANDLER.markPortAvailable(PORT))
+                    .<Boolean>toFlowable()
+                    .defaultIfEmpty(true)
+            )
+            .all(ObjectUtil::nonNull)
+            .toFlowable();
     }
     //endregion
 

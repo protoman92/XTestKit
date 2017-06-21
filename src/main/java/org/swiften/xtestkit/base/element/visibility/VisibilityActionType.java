@@ -4,11 +4,12 @@ package org.swiften.xtestkit.base.element.visibility;
  * Created by haipham on 5/16/17.
  */
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 
 /**
@@ -19,31 +20,20 @@ import org.swiften.xtestkit.base.element.locator.LocatorType;
  */
 public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D> {
     /**
-     * Watch {@link WebDriver} until it disappears from the screen, by
-     * repeatedly checking its visibility.
-     * @param element {@link WebElement} instance.
-     * @see WebElement#isDisplayed()
-     */
-    default void watchUntilHidden(@NotNull WebElement element) {
-        if (element.isDisplayed()) {
-            watchUntilHidden(element);
-        }
-    }
-
-    /**
-     * Watch {@link WebDriver} until it disappears from the screen, by
-     * repeatedly checking its visibility.
-     * @param ELEMENT {@link WebElement} instance.
+     * Watch until {@link WebElement} disappears from the screen. This could
+     * be useful in case we are waiting for progress bars.
+     * @param flowable {@link Flowable} instance that emits the
+     *                 {@link WebElement} to be checked for visibility.
      * @return {@link Flowable} instance.
-     * @see #watchUntilHidden(WebElement)
+     * @see NumberUtil#isZero(Number)
+     * @see RxUtil#repeatUntil(Flowable)
      */
     @NotNull
-    default Flowable<Boolean> rxa_watchUntilHidden(@NotNull final WebElement ELEMENT) {
-        final VisibilityActionType THIS = this;
+    default Flowable<Boolean> rxa_watchUntilHidden(@NotNull Flowable<WebElement> flowable) {
+        Flowable<Boolean> counter = flowable.count()
+            .map(NumberUtil::isZero)
+            .toFlowable();
 
-        return Completable
-            .fromAction(() -> THIS.watchUntilHidden(ELEMENT))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
+        return Flowable.just(true).compose(RxUtil.repeatUntil(counter));
     }
 }

@@ -9,9 +9,12 @@ import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.view.ViewType;
-import org.swiften.xtestkitcomponents.xpath.*;
+import org.swiften.xtestkitcomponents.xpath.AttributeType;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
+import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
  * This interface provides input methods for
@@ -26,8 +29,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @return {@link ByXPath} instance.
      * @see Attributes#hasText(String)
      * @see Attributes#of(PlatformProviderType)
-     * @see Attributes#ofClass(String)
-     * @see ViewType#className()
+     * @see Attributes#ofClass(ClassNameType)
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see AndroidView.Type#EDIT_TEXT
      * @see Platform#ANDROID
@@ -38,10 +40,9 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     default XPath androidTargetItemXP(@NotNull InputHelperType helper,
                                       @NotNull String selected) {
         Attributes attrs = Attributes.of(Platform.ANDROID);
-        String clsName = AndroidView.Type.EDIT_TEXT.className();
 
         CompoundAttribute attribute = CompoundAttribute.builder()
-            .addAttribute(attrs.ofClass(clsName))
+            .addAttribute(attrs.ofClass(AndroidView.Type.EDIT_TEXT))
             .addAttribute(attrs.hasText(selected))
             .build();
 
@@ -69,9 +70,8 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
     /**
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
-     * @see ViewType#className()
      * @see CompoundAttribute#empty()
-     * @see CompoundAttribute#withClass(String)
+     * @see CompoundAttribute#withClass(ClassNameType)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidView.Type#NUMBER_PICKER
@@ -84,7 +84,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
         return XPath.builder()
             .withXPath(androidChoicePickerParentXP(helper))
             .addAttribute(CompoundAttribute.empty()
-                .withClass(AndroidView.Type.NUMBER_PICKER.className())
+                .withClass(AndroidView.Type.NUMBER_PICKER)
                 .withIndex(androidScrollablePickerIndex(helper) + 1))
             .build();
     }
@@ -96,7 +96,6 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @see CompoundAttribute#empty()
      * @see CompoundAttribute#withClass(String)
      * @see CompoundAttribute#withIndex(Integer)
-     * @see ViewType#className()
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see XPath.Builder#addXPath(XPath)
      * @see #androidChoicePickerXP(InputHelperType)

@@ -20,6 +20,7 @@ import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.base.type.PlatformViewProviderType;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
 import org.swiften.xtestkitcomponents.common.RetryType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
@@ -246,12 +247,33 @@ public interface LocatorType<D extends WebDriver> extends
      */
     @NotNull
     default Flowable<WebElement> rxe_ofClass(@NotNull String...cls) {
-        final LocatorType THIS = this;
+        final LocatorType<?> THIS = this;
 
         return Flowable
             .fromArray(cls)
             .map(a -> ClassParam.builder().withClass(a).build())
             .toList().map(a -> a.toArray(new ClassParam[a.size()]))
+            .toFlowable()
+            .flatMap(THIS::rxe_ofClass);
+    }
+
+    /**
+     * Same as above, but uses {@link ClassNameType} varargs.
+     * @param params {@link ClassNameType} varargs.
+     * @param <P> Generics parameter.
+     * @return {@link Flowable} instance.
+     * @see ClassNameType#className()
+     * @see #rxe_ofClass(String...)
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    default <P extends
+        ClassNameType> Flowable<WebElement> rxe_ofClass(@NotNull P...params) {
+        final LocatorType<?> THIS = this;
+
+        return Flowable.fromArray(params)
+            .map(ClassNameType::className)
+            .toList().map(a -> a.toArray(new String[a.size()]))
             .toFlowable()
             .flatMap(THIS::rxe_ofClass);
     }

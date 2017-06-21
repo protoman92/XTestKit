@@ -7,17 +7,20 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.view.ViewType;
-import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.xtestkit.ios.IOSView;
-import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.xpath.*;
+import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
+import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
+import org.swiften.xtestkitcomponents.xpath.AttributeType;
+import org.swiften.xtestkitcomponents.xpath.Attributes;
+import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
+import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,10 +55,9 @@ public interface IOSActionType extends
      * @see AlertParam#shouldAccept()
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#hasText(String)
-     * @see ViewType#className()
      * @see BooleanUtil#toTrue(Object)
      * @see CompoundAttribute#single(AttributeType)
-     * @see CompoundAttribute#withClass(String)
+     * @see CompoundAttribute#withClass(ClassNameType)
      * @see IOSView.Type#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
@@ -71,7 +73,6 @@ public interface IOSActionType extends
         final IOSActionType THIS = this;
         final Attributes ATTRS = Attributes.of(this);
         final LocalizerType LOCALIZER = localizer();
-        final String BTN_CLS = IOSView.Type.UI_BUTTON.className();
         String[] titles;
 
         if (param.shouldAccept()) {
@@ -84,7 +85,7 @@ public interface IOSActionType extends
             .map(LOCALIZER::localize)
             .map(ATTRS::hasText)
             .map(CompoundAttribute::single)
-            .map(a -> a.withClass(BTN_CLS))
+            .map(a -> a.withClass(IOSView.Type.UI_BUTTON))
             .map(a -> XPath.builder().addAttribute(a).build())
             .toList()
             .map(a -> a.toArray(new XPath[a.size()]))
