@@ -10,15 +10,24 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.xtestkit.base.element.locator.LocatorType;
+import org.swiften.xtestkit.base.param.DirectionParam;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkitcomponents.common.DurationType;
 import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 
 /**
  * This interface provides methods to perform swipe gestures.
  */
-public interface SwipeType<D extends WebDriver> extends DriverProviderType<D>, SwipeOnceType {
+public interface SwipeType<D extends WebDriver> extends
+    DriverProviderType<D>,
+    LocatorType<D>,
+    SwipeOnceType
+{
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
      * full swipe is required.
@@ -54,10 +63,11 @@ public interface SwipeType<D extends WebDriver> extends DriverProviderType<D>, S
         DirectionProviderType &
         DurationType &
         RepeatType &
-        RelativeSwipePositionType> Flowable<Boolean>
-    rxa_swipeGeneric(@NotNull Point origin,
-                     @NotNull Dimension size,
-                     @NotNull P param) {
+        RLSwipePositionType> Flowable<Boolean> rxa_swipeGeneric(
+            @NotNull Point origin,
+            @NotNull Dimension size,
+            @NotNull P param
+    ) {
         double height = size.getHeight(), width = size.getWidth();
         int originX = origin.getX(), originY = origin.getY();
         int startX, endX, startY, endY;
@@ -128,37 +138,89 @@ public interface SwipeType<D extends WebDriver> extends DriverProviderType<D>, S
         DirectionProviderType &
         DurationType &
         RepeatType &
-        RelativeSwipePositionType> Flowable<WebElement>
-    rxa_swipeGeneric(@NotNull final WebElement ELEMENT, @NotNull P param) {
+        RLSwipePositionType> Flowable<WebElement> rxa_swipeGeneric(
+            @NotNull final WebElement ELEMENT,
+            @NotNull P param
+    ) {
         Point origin = ELEMENT.getLocation();
         Dimension size = ELEMENT.getSize();
         return rxa_swipeGeneric(origin, size, param).map(a -> ELEMENT);
     }
 
     /**
-     * Perform a generic swipe on the app window.
+     * Swipe in one {@link org.swiften.xtestkitcomponents.direction.Direction},
+     * then once again in the opposite to arrive at the original position.
+     * This action can be used to break inactivity.
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see WebDriver#manage()
-     * @see WebDriver.Options#window()
-     * @see WebDriver.Window#getPosition()
-     * @see WebDriver.Window#getSize()
-     * @see #driver()
-     * @see #rxa_swipeGeneric(Point, Dimension, DirectionProviderType)
+     * @see Direction#opposite()
+     * @see DirectionParam#from(DirectionProviderType)
+     * @see DirectionParam#withDirection(Direction)
+     * @see ObjectUtil#nonNull(Object)
+     * @see P#direction()
+     * @see #rxa_swipeGeneric(WebElement, DirectionProviderType)
      */
     @NotNull
     default <P extends
         DirectionProviderType &
         DurationType &
         RepeatType &
-        RelativeSwipePositionType> Flowable<Boolean>
-    rxa_swipeGeneric(@NotNull P param) {
-        WebDriver driver = driver();
-        WebDriver.Options options = driver.manage();
-        WebDriver.Window window = options.window();
-        Point origin = window.getPosition();
-        Dimension size = window.getSize();
-        return rxa_swipeGeneric(origin, size, param);
+        RLSwipePositionType> Flowable<WebElement> rxa_swipeThenReverse(
+            @NotNull final WebElement ELEMENT,
+            @NotNull P param
+    ) {
+        final SwipeType<?> THIS = this;
+        Direction original = param.direction();
+        Direction opposite = original.opposite();
+        DirectionParam param1 = DirectionParam.from(param);
+        DirectionParam param2 = param1.withDirection(opposite);
+
+        return Flowable.fromArray(param1, param2)
+            .doOnNext(LogUtil::println)
+            .concatMap(a -> THIS.rxa_swipeGeneric(ELEMENT, a))
+            .all(ObjectUtil::nonNull)
+            .toFlowable()
+            .map(a -> ELEMENT);
+    }
+
+    /**
+     * Perform a generic swipe on the app window.
+     * @param PARAM {@link P} instance.
+     * @param <P> Generics parameter.
+     * @return {@link Flowable} instance.
+     * @see #rxa_swipeGeneric(WebElement, DirectionProviderType)
+     * @see #rxe_window()
+     */
+    @NotNull
+    default <P extends
+        DirectionProviderType &
+        DurationType &
+        RepeatType &
+        RLSwipePositionType> Flowable<WebElement> rxa_swipeGeneric(
+            @NotNull final P PARAM
+    ) {
+        final SwipeType<?> THIS = this;
+        return rxe_window().flatMap(a -> THIS.rxa_swipeGeneric(a, PARAM));
+    }
+
+    /**
+     * Perform the swipe/reverse swipe on the app window.
+     * @param PARAM {@link P} instance.
+     * @param <P> Generics parameter.
+     * @return {@link Flowable} instance.
+     * @see #rxa_swipeThenReverse(WebElement, DirectionProviderType)
+     * @see #rxe_window()
+     */
+    @NotNull
+    default <P extends
+        DirectionProviderType &
+        DurationType &
+        RepeatType &
+        RLSwipePositionType> Flowable<WebElement> rxa_swipeThenReverse(
+            @NotNull final P PARAM
+    ) {
+        final SwipeType<?> THIS = this;
+        return rxe_window().flatMap(a -> THIS.rxa_swipeThenReverse(a, PARAM));
     }
 }

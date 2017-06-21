@@ -51,8 +51,9 @@ public interface SwipeOnceType extends BaseErrorType {
      * @see #rxa_swipeOnce(SwipeParamType)
      */
     @NotNull
-    default <P extends RepeatType & SwipeParamType> Flowable<Boolean>
-    rxa_swipe(@NotNull P param) {
+    default <P extends
+        RepeatType &
+        SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull P param) {
         int times = param.times();
         long delay = param.delay();
         TimeUnit unit = param.timeUnit();

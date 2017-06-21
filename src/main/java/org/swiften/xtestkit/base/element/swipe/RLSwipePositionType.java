@@ -8,7 +8,7 @@ package org.swiften.xtestkit.base.element.swipe;
  * This interface provides ratios to determine the swipe's relative position
  * on the screen.
  */
-public interface RelativeSwipePositionType {
+public interface RLSwipePositionType {
     /**
      * This ratio increases the origin of the swipe.
      * @return {@link Double} value.
