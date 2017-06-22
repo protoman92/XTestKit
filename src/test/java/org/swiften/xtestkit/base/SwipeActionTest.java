@@ -22,7 +22,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 5/11/17.
  */
-public class SwipeActionTest implements SwipeType {
+public class SwipeActionTest implements SwipeType<WebDriver>, TestTypes.TestLocatorType {
     @NotNull private final SwipeType ENGINE;
     @NotNull private final WebDriver DRIVER;
 

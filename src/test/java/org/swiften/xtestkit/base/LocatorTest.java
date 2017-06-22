@@ -12,11 +12,8 @@ import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.TextParam;
-import org.swiften.xtestkit.base.model.MockPlatform;
-import org.swiften.xtestkit.base.model.MockPlatformView;
-import org.swiften.xtestkitcomponents.view.ViewType;
-import org.swiften.xtestkit.base.type.TestLocatorType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
+import org.swiften.xtestkitcomponents.view.ViewType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,7 +29,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by haipham on 5/8/17.
  */
-public class LocatorTest implements TestLocatorType {
+public class LocatorTest implements TestTypes.TestLocatorType {
     @NotNull private final LocatorTest ENGINE;
     @NotNull private final WebDriver DRIVER;
     @NotNull private final Localizer LOCALIZER;

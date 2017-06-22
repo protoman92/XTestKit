@@ -9,8 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.protocol.DelayType;
+import org.swiften.javautilities.rx.RepeatParam;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides methods to handle view visibility, such as polling
@@ -18,7 +22,7 @@ import org.swiften.xtestkit.base.element.locator.LocatorType;
  * network operation completes.
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D> {
+public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D>, VisibilityDelayType {
     /**
      * Watch until {@link WebElement} disappears from the screen. This could
      * be useful in case we are waiting for progress bars.
@@ -26,7 +30,10 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
      *                 {@link WebElement} to be checked for visibility.
      * @return {@link Flowable} instance.
      * @see NumberUtil#isZero(Number)
-     * @see RxUtil#repeatUntil(Flowable)
+     * @see RepeatParam.Builder#withDelay(long)
+     * @see RepeatParam.Builder#withTimeUnit(TimeUnit)
+     * @see RxUtil#repeatUntil(Flowable, DelayType)
+     * @see #consecutiveVisibilityCheckDelay()
      */
     @NotNull
     default Flowable<Boolean> rxa_watchUntilHidden(@NotNull Flowable<WebElement> flowable) {
@@ -34,6 +41,11 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
             .map(NumberUtil::isZero)
             .toFlowable();
 
-        return Flowable.just(true).compose(RxUtil.repeatUntil(counter));
+        RepeatParam param = RepeatParam.builder()
+            .withDelay(consecutiveVisibilityCheckDelay())
+            .withTimeUnit(TimeUnit.MILLISECONDS)
+            .build();
+
+        return Flowable.just(true).compose(RxUtil.repeatUntil(counter, param));
     }
 }

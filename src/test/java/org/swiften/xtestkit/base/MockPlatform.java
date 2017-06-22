@@ -1,4 +1,4 @@
-package org.swiften.xtestkit.base.model;
+package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.platform.PlatformType;

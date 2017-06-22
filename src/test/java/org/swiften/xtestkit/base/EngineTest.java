@@ -4,37 +4,23 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.capability.BaseEngineCapability;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
-import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
-import org.swiften.xtestkit.base.element.choice.ChoiceType;
-import org.swiften.xtestkit.base.element.date.DateActionType;
-import org.swiften.xtestkit.base.element.date.CalendarUnit;
-import org.swiften.xtestkit.base.element.date.DateType;
-import org.swiften.xtestkit.base.element.input.KeyboardActionType;
-import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeOnceType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
-import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
-import org.swiften.xtestkit.base.element.tap.TapParamType;
-import org.swiften.xtestkit.base.element.tap.TapType;
-import org.swiften.xtestkit.base.type.*;
+import org.swiften.xtestkit.util.TestMessageType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.RetryType;
-import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
-import org.swiften.xtestkit.util.TestMessageType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Created by haipham on 3/20/17.
@@ -189,119 +175,16 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
     }
     //endregion
 
-    interface TestDateActionType extends DateActionType<WebDriver> {
-        @NotNull
-        @Override
-        default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
-                                                 @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<Boolean> rxa_select(@NotNull DateType param,
-                                             @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
-                                                    @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default Flowable<WebElement> rxe_elementLabel(@NotNull DateType param,
-                                                      @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default String valueString(@NotNull DateType param, @NotNull CalendarUnit unit) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
-
-    interface TestPlatformProviderType extends PlatformProviderType {
-        @NotNull
-        @Override
-        default PlatformType platform() {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-
-        @NotNull
-        @Override
-        default String platformName() {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
-
-    interface TestChoiceSelectorType extends ChoiceSelectorType<WebDriver> {
-        @NotNull
-        @Override
-        default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
-
-    interface TestKeyboardActionType extends KeyboardActionType<WebDriver> {
-        @Override
-        default void hideKeyboard() {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
-
-    interface TestSearchActionType extends SearchActionType<WebDriver> {
-        @NotNull
-        @Override
-        default Flowable<WebElement> rxe_textClear() {
-            throw new RuntimeException(NOT_AVAILABLE);
-        }
-    }
-
-    interface TestSwitcherActionType extends SwitcherActionType {
-        @NotNull
-        @Override
-        default String switcherOnValue() {
-            return "1";
-        }
-
-        @NotNull
-        @Override
-        default String switcherOffValue() {
-            return "0";
-        }
-
-        @NotNull
-        @Override
-        default String switcherValue(@NotNull WebElement element) {
-            return element.getAttribute("value");
-        }
-    }
-
-    interface TestSwipeOnceType extends SwipeOnceType {
-        @Override
-        default void swipeOnce(@NotNull SwipeParamType param) {}
-    }
-
-    interface TestTapType extends TapType<WebDriver> {
-        @Override
-        default <P extends TapParamType & RetryType> void tap(@NotNull P param) {}
-    }
-
     static class MockEngine extends Engine<WebDriver> implements
-        TestChoiceSelectorType,
-        TestDateActionType,
-        TestLocatorType,
-        TestKeyboardActionType,
-        TestPlatformProviderType,
-        TestSearchActionType,
-        TestSwipeOnceType,
-        TestSwitcherActionType,
-        TestTapType
+        TestTypes.TestChoiceSelectorType,
+        TestTypes.TestDateActionType,
+        TestTypes.TestLocatorType,
+        TestTypes.TestKeyboardActionType,
+        TestTypes.TestPlatformProviderType,
+        TestTypes.TestSearchActionType,
+        TestTypes.TestSwipeOnceType,
+        TestTypes.TestSwitcherActionType,
+        TestTypes.TestTapType
     {
         @NotNull
         @Override

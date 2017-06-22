@@ -1,7 +1,6 @@
-package org.swiften.xtestkit.base.model;
+package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkitcomponents.view.ViewType;
 
 import java.util.Arrays;
