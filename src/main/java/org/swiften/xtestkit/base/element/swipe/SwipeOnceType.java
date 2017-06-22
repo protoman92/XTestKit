@@ -5,7 +5,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.javautilities.protocol.RepeatType;
 
 import java.util.concurrent.TimeUnit;
 

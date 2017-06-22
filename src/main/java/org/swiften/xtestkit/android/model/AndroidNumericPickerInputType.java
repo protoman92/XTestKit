@@ -9,7 +9,7 @@ import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;

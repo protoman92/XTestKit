@@ -5,7 +5,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;

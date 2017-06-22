@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 /**
  * This interface provides methods to handle taps.

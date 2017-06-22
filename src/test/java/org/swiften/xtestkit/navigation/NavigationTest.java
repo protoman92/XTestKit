@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
 import org.swiften.javautilities.collection.CollectionUtil;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
 

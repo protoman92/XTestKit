@@ -1,7 +1,8 @@
 package org.swiften.xtestkit.base.element.tap;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.util.Constants;
 
 /**
  * Created by haipham on 5/15/17.
@@ -25,25 +26,41 @@ public class TapParam implements TapParamType, RetryType {
     int x, y, retries;
 
     TapParam() {
-        retries = RetryType.super.retries();
+        retries = Constants.DEFAULT_RETRIES;
     }
 
-    //region Getters
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see TapParamType#x()
+     * @see #x
+     */
     @Override
     public int x() {
         return x;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see TapParamType#y()
+     * @see #y
+     */
     @Override
     public int y() {
         return y;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see #retries
+     */
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
     //region Builder
     /**

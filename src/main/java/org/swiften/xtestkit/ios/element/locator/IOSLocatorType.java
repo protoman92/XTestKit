@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 
 /**
  * Created by haipham on 1/6/17.

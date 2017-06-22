@@ -7,6 +7,8 @@ package org.swiften.xtestkit.base.element.date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.*;
@@ -33,6 +35,18 @@ public class DateParam implements DateType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
+
+    /**
+     * Override this method to provide default implementation.
      * @return {@link Date} instance.
      * @see DateType#date()
      * @see ObjectUtil#requireNotNull(Object, String)
@@ -48,6 +62,7 @@ public class DateParam implements DateType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @return {@link DatePickerType} instance.
      * @see DateType#datePickerType()
      * @see ObjectUtil#requireNotNull(Object, String)
@@ -63,6 +78,7 @@ public class DateParam implements DateType, BaseErrorType {
     }
 
     /**
+     * Override this method to provide default implementation.
      * @return {@link List} of {@link CalendarUnit}.
      * @see DateType#units()
      * @see #UNITS

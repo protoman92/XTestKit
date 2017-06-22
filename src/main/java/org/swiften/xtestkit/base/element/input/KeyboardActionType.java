@@ -8,7 +8,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 /**

@@ -6,9 +6,10 @@ package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.LCFormat;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.base.FormatType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 /**
  * Parameter object for {@link Engine#rxe_containsText(FormatType[])}.
@@ -31,7 +32,7 @@ public class TextFormatParam implements FormatType, RetryType {
     TextFormatParam() {
         format = LCFormat.builder().build();
         ignoreCase = FormatType.super.ignoreCase();
-        retries = RetryType.super.retries();
+        retries = Constants.DEFAULT_RETRIES;
     }
 
     //region StringType

@@ -3,13 +3,16 @@ package org.swiften.xtestkit.base.param;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.protocol.DurationType;
+import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
+import org.swiften.xtestkit.base.element.swipe.RLSwipePositionType;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 import org.swiften.xtestkitcomponents.direction.Direction;
-import org.swiften.xtestkit.base.element.swipe.RLSwipePositionType;
-import org.swiften.xtestkitcomponents.common.DurationType;
-import org.swiften.xtestkitcomponents.common.RepeatType;
 import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by haipham on 5/8/17.
@@ -58,7 +61,7 @@ public class DirectionParam implements
 
     DirectionParam() {
         direction = Direction.LEFT_RIGHT;
-        delay = RepeatType.super.delay();
+        delay = Constants.DEFAULT_DELAY;
         times = 1;
         startRatio = RLSwipePositionType.super.startRatio();
         endRatio = RLSwipePositionType.super.endRatio();
@@ -83,7 +86,7 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #times}.
+     * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see #times
      */
@@ -93,7 +96,7 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #delay}.
+     * Override this method to provide default implementation.
      * @return {@link Long} value.
      * @see #delay
      */
@@ -103,7 +106,7 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #duration}.
+     * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see #duration
      */
@@ -113,7 +116,7 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #startRatio}.
+     * Override this method to provide default implementation.
      * @return {@link Double} value.
      * @see #startRatio
      */
@@ -123,7 +126,7 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #endRatio}.
+     * Override this method to provide default implementation.
      * @return {@link Double} value.
      * @see #endRatio
      */
@@ -133,13 +136,25 @@ public class DirectionParam implements
     }
 
     /**
-     * Get {@link #anchorRatio}.
+     * Override this method to provide default implementation.
      * @return {@link Double} value.
      * @see #anchorRatio
      */
     @Override
     public double anchorRatio() {
         return anchorRatio;
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RepeatType#timeUnit()
+     * @see Constants#DEFAULT_TIME_UNIT
+     */
+    @NotNull
+    @Override
+    public TimeUnit timeUnit() {
+        return Constants.DEFAULT_TIME_UNIT;
     }
 
     /**

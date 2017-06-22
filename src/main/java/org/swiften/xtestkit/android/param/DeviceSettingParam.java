@@ -1,7 +1,8 @@
 package org.swiften.xtestkit.android.param;
 
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 
@@ -31,37 +32,85 @@ public class DeviceSettingParam implements DeviceUIDType, RetryType {
         deviceUID = "";
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see DeviceUIDType#deviceUID()
+     * @see #deviceUID
+     */
     @NotNull
     @Override
     public String deviceUID() {
         return deviceUID;
     }
 
+    /**
+     * Get {@link #nameSpace}.
+     * @return {@link String} value.
+     * @see #nameSpace
+     */
     @NotNull
     public String nameSpace() {
         return nameSpace;
     }
 
+    /**
+     * Get {@link #key}.
+     * @return {@link String} value.
+     * @see #key
+     */
     @NotNull
     public String key() {
         return key;
     }
 
+    /**
+     * Get {@link #value}.
+     * @return {@link String} value.
+     * @see #value
+     */
     @NotNull
     public String value() {
         return value;
     }
 
+    /**
+     * Get 'put' command.
+     * @return {@link String} value.
+     * @see #key()
+     * @see #nameSpace()
+     * @see #value()
+     */
     @NotNull
     public String cm_put() {
-        return String.format("put %1$s %2$s %3$s", nameSpace, key, value);
+        return String.format("put %1$s %2$s %3$s", nameSpace(), key(), value());
     }
 
+    /**
+     * Get 'get' command.
+     * @return {@link String} value.
+     * @see #key()
+     * @see #nameSpace()
+     */
     @NotNull
     public String cm_get() {
-        return String.format("get %1$s %2$s", nameSpace, key);
+        return String.format("get %1$s %2$s", nameSpace(), key());
     }
 
+    /**
+     * Builder class for {@link DeviceSettingParam}.
+     */
     public static final class Builder {
         @NotNull private final DeviceSettingParam PARAM;
 

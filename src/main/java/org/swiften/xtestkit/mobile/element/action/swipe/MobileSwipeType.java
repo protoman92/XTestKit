@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile.element.action.swipe;
 
 import io.appium.java_client.MobileDriver;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;

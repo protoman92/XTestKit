@@ -1,8 +1,9 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -10,7 +11,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
  */
 
 /**
- * Parameter object for {@link Engine#rxe_byXPath(ByXPath)}.
+ * Parameter object for {@link Engine#rxe_byXPath(ByXPath...)}.
  */
 public class ByXPath implements LocatorErrorType, RetryType {
     /**
@@ -31,7 +32,7 @@ public class ByXPath implements LocatorErrorType, RetryType {
         xpath = "";
         error = NO_SUCH_ELEMENT;
         logXPath = true;
-        retries = RetryType.super.retries();
+        retries = Constants.DEFAULT_RETRIES;
     }
 
     @NotNull

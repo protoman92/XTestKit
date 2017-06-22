@@ -23,7 +23,7 @@ import org.swiften.xtestkit.base.element.tap.TapParamType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.type.*;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;

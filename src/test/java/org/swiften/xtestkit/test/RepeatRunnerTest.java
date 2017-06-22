@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.test;
 
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.testng.annotations.*;
 
 /**

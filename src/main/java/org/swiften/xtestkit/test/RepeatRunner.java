@@ -1,14 +1,14 @@
 package org.swiften.xtestkit.test;
 
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.kit.TestKit;
 import org.testng.*;

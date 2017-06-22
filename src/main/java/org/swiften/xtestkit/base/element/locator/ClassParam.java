@@ -1,9 +1,11 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 /**
  * Created by haipham on 5/9/17.
@@ -27,13 +29,28 @@ public class ClassParam implements OfClassType, RetryType {
         clsName = "";
     }
 
-    //region StringType.
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see OfClassType#value()
+     * @see #clsName
+     */
     @NotNull
     @Override
     public String value() {
         return clsName;
     }
-    //endregion
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
 
     //region Builder.
     /**
@@ -47,14 +64,27 @@ public class ClassParam implements OfClassType, RetryType {
         }
 
         /**
-         * Set the {@link #clsName} value.
+         * Set {@link #clsName}.
          * @param clsName The clsName to be used to query elements.
          * @return {@link Builder} instance.
+         * @see #clsName
          */
         @NotNull
         public Builder withClass(@NotNull String clsName) {
             PARAM.clsName = clsName;
             return this;
+        }
+
+        /**
+         * Set {@link #clsName}.
+         * @param param {@link ClassNameType} instance.
+         * @return {@link Builder} instance.
+         * @see ClassNameType#className()
+         * @see #withClass(ClassNameType)
+         */
+        @NotNull
+        public Builder withClass(@NotNull ClassNameType param) {
+            return withClass(param.className());
         }
 
         @NotNull

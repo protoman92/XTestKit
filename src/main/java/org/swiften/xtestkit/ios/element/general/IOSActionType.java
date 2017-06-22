@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;

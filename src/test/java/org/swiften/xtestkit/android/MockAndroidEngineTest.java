@@ -7,7 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

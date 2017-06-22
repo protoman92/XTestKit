@@ -32,7 +32,7 @@ import org.swiften.xtestkit.base.type.AppPackageType;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 
 import java.net.MalformedURLException;

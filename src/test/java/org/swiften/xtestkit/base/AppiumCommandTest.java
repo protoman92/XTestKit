@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

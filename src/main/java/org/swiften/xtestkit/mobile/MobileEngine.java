@@ -13,7 +13,7 @@ import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionT
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
 import org.swiften.xtestkit.mobile.type.PlatformVersionProviderType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

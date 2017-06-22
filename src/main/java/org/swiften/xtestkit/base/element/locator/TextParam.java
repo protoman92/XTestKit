@@ -1,9 +1,10 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.property.base.StringType;
 
 /**
@@ -31,7 +32,7 @@ public class TextParam implements StringType, RetryType {
     TextParam() {
         text = "";
         ignoreCase = StringType.super.ignoreCase();
-        retries = RetryType.super.retries();
+        retries = Constants.DEFAULT_RETRIES;
     }
 
     @NotNull

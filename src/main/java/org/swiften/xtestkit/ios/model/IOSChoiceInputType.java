@@ -9,7 +9,7 @@ import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;

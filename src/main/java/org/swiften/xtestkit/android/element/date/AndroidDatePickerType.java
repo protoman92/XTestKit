@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.*;

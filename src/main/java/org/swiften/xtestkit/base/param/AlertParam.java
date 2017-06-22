@@ -1,8 +1,9 @@
 package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 /**
  * Created by haipham on 3/25/17.
@@ -25,6 +26,17 @@ public class AlertParam implements RetryType {
     private boolean accept;
 
     AlertParam() {}
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
 
     /**
      * Get {@link #accept}.

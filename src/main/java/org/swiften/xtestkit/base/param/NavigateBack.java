@@ -1,9 +1,12 @@
 package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.RepeatType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by haipham on 3/19/17.
@@ -29,17 +32,50 @@ public final class NavigateBack implements RepeatType, RetryType {
         times = 1;
     }
 
-    //region RepeatType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RepeatType#times()
+     * @see #times
+     */
     @Override
     public int times() {
         return times;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RepeatType#delay()
+     * @see #delay
+     */
     @Override
     public long delay() {
         return delay;
     }
-    //endregion
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RepeatType#timeUnit()
+     * @see Constants#DEFAULT_TIME_UNIT
+     */
+    @NotNull
+    @Override
+    public TimeUnit timeUnit() {
+        return Constants.DEFAULT_TIME_UNIT;
+    }
 
     //region Builder
     /**

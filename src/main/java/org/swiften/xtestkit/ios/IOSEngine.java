@@ -24,7 +24,7 @@ import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 import java.net.MalformedURLException;
 import java.net.URL;

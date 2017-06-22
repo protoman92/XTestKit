@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base.element.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkitcomponents.property.base.ValueType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

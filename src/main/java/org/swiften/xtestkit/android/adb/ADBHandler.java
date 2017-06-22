@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android.adb;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkit.android.param.ConnectionParam;
 import org.swiften.xtestkit.android.param.DeviceSettingParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;

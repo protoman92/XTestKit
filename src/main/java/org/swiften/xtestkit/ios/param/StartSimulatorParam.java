@@ -4,7 +4,7 @@ package org.swiften.xtestkit.ios.param;
  * Created by haipham on 4/8/17.
  */
 
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 import org.swiften.xtestkit.ios.XCRunHandler;

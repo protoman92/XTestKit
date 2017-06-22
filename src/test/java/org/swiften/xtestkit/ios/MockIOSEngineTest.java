@@ -4,7 +4,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;

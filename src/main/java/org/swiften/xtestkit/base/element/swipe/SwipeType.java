@@ -10,13 +10,13 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.DirectionParam;
 import org.swiften.xtestkit.base.type.DriverProviderType;
-import org.swiften.xtestkitcomponents.common.DurationType;
-import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.javautilities.protocol.DurationType;
+import org.swiften.javautilities.protocol.RepeatType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 

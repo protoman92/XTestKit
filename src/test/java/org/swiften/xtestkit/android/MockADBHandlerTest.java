@@ -11,7 +11,7 @@ import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;

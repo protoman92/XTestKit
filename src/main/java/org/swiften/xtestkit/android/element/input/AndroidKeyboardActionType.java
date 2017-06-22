@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Keys;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.general.ActionType;
-import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.javautilities.protocol.RepeatType;
 import org.swiften.xtestkit.android.AndroidInstance;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.type.ADBHandlerProviderType;

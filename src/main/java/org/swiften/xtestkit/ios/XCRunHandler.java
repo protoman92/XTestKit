@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.ios;
 
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.ios.type.XCRunDelayType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;

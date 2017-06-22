@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.android.element.date.AndroidDatePickerType;
 import org.swiften.xtestkit.android.element.date.UnitNumberPickerWrapper;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;

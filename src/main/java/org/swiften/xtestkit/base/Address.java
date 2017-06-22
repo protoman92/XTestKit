@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkitcomponents.system.network.type.MaxPortType;
 import org.swiften.xtestkitcomponents.system.network.type.PortStepType;
 import org.swiften.xtestkitcomponents.system.network.type.PortType;
@@ -29,14 +30,13 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
         }
     }
 
+    /**
+     * Get {@link Builder} instance.
+     * @return {@link Builder} instance.
+     */
     @NotNull
     public static Builder builder() {
         return new Builder();
-    }
-
-    @NotNull
-    public static Address localInstanceWithPort(int port) {
-        return Address.builder().withMode(Mode.LOCAL).build();
     }
 
     @NotNull private static final String LOCAL_URI_FORMAT;
@@ -72,6 +72,17 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
     @NotNull
     public String toString() {
         return uri();
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
     }
 
     /**

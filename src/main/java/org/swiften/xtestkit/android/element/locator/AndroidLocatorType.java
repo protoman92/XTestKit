@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 

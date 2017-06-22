@@ -4,8 +4,9 @@ package org.swiften.xtestkit.android.param;
  * Created by haipham on 3/23/17.
  */
 
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.type.DeviceUIDType;
 
@@ -28,13 +29,25 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
     }
 
     /**
-     * Return {@link #deviceUID}.
+     * Override this method to provide default implementation.
      * @return {@link String} value.
+     * @see #deviceUID
      */
     @NotNull
     @Override
     public String deviceUID() {
         return deviceUID;
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
     }
 
     /**

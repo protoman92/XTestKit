@@ -7,14 +7,19 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
+import org.swiften.javautilities.protocol.DelayType;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.DurationType;
-import org.swiften.xtestkitcomponents.common.RepeatType;
+import org.swiften.javautilities.protocol.DurationType;
+import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.TimeUnitType;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Parameter object for {@link Engine#rxa_swipe(RepeatType)}
  */
-public class SwipeParam implements RepeatType, SwipeParamType {
+public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -24,6 +29,7 @@ public class SwipeParam implements RepeatType, SwipeParamType {
         return new Builder();
     }
 
+    @NotNull private TimeUnit unit;
     private int startX;
     private int startY;
     private int endX;
@@ -33,8 +39,9 @@ public class SwipeParam implements RepeatType, SwipeParamType {
     private long delay;
 
     SwipeParam() {
-        delay = RepeatType.super.delay();
+        delay = Constants.DEFAULT_DELAY;
         duration = SwipeParamType.super.duration();
+        unit = Constants.DEFAULT_TIME_UNIT;
         times = 1;
     }
 
@@ -50,35 +57,94 @@ public class SwipeParam implements RepeatType, SwipeParamType {
         );
     }
 
-    //region Getters
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see SwipeParamType#startX()
+     * @see #startX
+     */
+    @Override
     public int startX() {
         return startX;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see SwipeParamType#startY()
+     * @see #startY
+     */
+    @Override
     public int startY() {
         return startY;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see SwipeParamType#endX()
+     * @see #endX
+     */
+    @Override
     public int endX() {
         return endX;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see SwipeParamType#endY()
+     * @see #endY
+     */
+    @Override
     public int endY() {
         return endY;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see DurationType#duration()
+     * @see #duration
+     */
+    @Override
     public int duration() {
         return duration;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RepeatType#times()
+     * @see #times
+     */
+    @Override
     public int times() {
         return times;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see DelayType#delay()
+     * @see #delay
+     */
+    @Override
     public long delay() {
         return delay;
     }
-    //endregion
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link TimeUnit} instance.
+     * @see TimeUnitType#timeUnit()
+     * @see #unit
+     */
+    @NotNull
+    @Override
+    public TimeUnit timeUnit() {
+        return unit;
+    }
 
     //region Builder
     /**
@@ -201,23 +267,60 @@ public class SwipeParam implements RepeatType, SwipeParamType {
         }
 
         /**
+         * Set the {@link #unit} instance.
+         * @param unit {@link TimeUnit} instance.
+         * @return {@link Builder} instance.
+         * @see #unit
+         */
+        @NotNull
+        public Builder withTimeUnit(@NotNull TimeUnit unit) {
+            PARAM.unit = unit;
+            return this;
+        }
+
+        /**
+         * Set the {@link #unit} instance.
+         * @param param {@link TimeUnitType} instance.
+         * @return {@link Builder} instance.
+         * @see TimeUnitType#timeUnit()
+         * @see #withTimeUnit(TimeUnit)
+         */
+        @NotNull
+        public Builder withTimeUnitType(@NotNull TimeUnitType param) {
+            return withTimeUnit(param.timeUnit());
+        }
+
+        /**
          * Set {@link #times} and {@link #delay}.
          * @param type {@link RepeatType} instance.
          * @return {@link Builder} instance.
+         * @see RepeatType#delay()
+         * @see RepeatType#times()
+         * @see #withDelay(long)
+         * @see #withTimes(int)
+         * @see #withTimeUnitType(TimeUnitType)
          */
         @NotNull
         public Builder withRepeatableType(@NotNull RepeatType type) {
-            return withTimes(type.times()).withDelay(type.delay());
+            return this
+                .withTimes(type.times())
+                .withDelay(type.delay())
+                .withTimeUnitType(type);
         }
 
         /**
          * Set {@link #duration}.
          * @param type {@link DurationType} instance.
          * @return {@link Builder} instance.
+         * @see DurationType#duration()
+         * @see #withDuration(int)
+         * @see #withTimeUnitType(TimeUnitType)
          */
         @NotNull
         public Builder withDurationType(@NotNull DurationType type) {
-            return withDuration(type.duration());
+            return this
+                .withDuration(type.duration())
+                .withTimeUnitType(type);
         }
 
         @NonNull

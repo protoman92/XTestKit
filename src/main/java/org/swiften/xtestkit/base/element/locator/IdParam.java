@@ -1,8 +1,9 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.RetryType;
+import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 
 /**
@@ -28,13 +29,28 @@ public class IdParam implements ContainsIDType, RetryType {
         id = "";
     }
 
-    //region StringType.
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryType#retries()
+     * @see Constants#DEFAULT_RETRIES
+     */
+    @Override
+    public int retries() {
+        return Constants.DEFAULT_RETRIES;
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see ContainsIDType#value()
+     * @see #id
+     */
     @NotNull
     @Override
     public String value() {
         return id;
     }
-    //endregion
 
     //region Builder.
     /**

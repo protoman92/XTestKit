@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.CollectionUtil;
-import org.swiften.javautilities.log.LogUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
