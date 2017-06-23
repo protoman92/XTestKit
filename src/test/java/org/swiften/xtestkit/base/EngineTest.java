@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.capability.BaseEngineCapability;
@@ -32,7 +32,7 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
     @NotNull private final MockEngine ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final RetryType RETRY;
+    @NotNull private final RetryProviderType RETRY;
     private final int TRIES;
 
     {
@@ -54,8 +54,8 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
          * method to throw an Exception should stub the method themselves */
         DRIVER = mock(WebDriver.class);
 
-        /* Use this parameter when a RetryType is needed */
-        RETRY = mock(RetryType.class);
+        /* Use this parameter when a RetryProviderType is needed */
+        RETRY = mock(RetryProviderType.class);
 
         /* The number of tries for certain test */
         TRIES = 10;

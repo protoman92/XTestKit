@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.ios;
 
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkit.ios.type.XCRunDelayType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
@@ -209,7 +209,7 @@ public class XCRunHandler implements XCRunDelayType {
 
     /**
      * Start a simulator.
-     * @param PARAM {@link RetryType} instance.
+     * @param PARAM {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see ProcessRunner#execute(String, Consumer)
      * @see #processRunner()
@@ -236,14 +236,14 @@ public class XCRunHandler implements XCRunDelayType {
     //region Stop Simulator
     /**
      * Stop the currently active simulator.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
      * @see #cm_stopSimulator()
      * @see #processRunner()
      */
     @NotNull
-    public Flowable<Boolean> rxa_stopSimulator(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_stopSimulator(@NotNull RetryProviderType param) {
         ProcessRunner processRunner = processRunner();
         String command = cm_stopSimulator();
 

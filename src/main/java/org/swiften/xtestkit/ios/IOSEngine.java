@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
@@ -24,7 +25,6 @@ import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.RetryType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -133,16 +133,16 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     //region Test Setup
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeClass(RetryType)
+     * @see Engine#rxa_beforeClass(RetryProviderType)
      * @see BooleanUtil#isTrue(boolean)
-     * @see #rxa_startDriver(RetryType)
+     * @see #rxa_startDriver(RetryProviderType)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryProviderType param) {
         return Flowable
             .concatArray(super.rxa_beforeClass(param), rxa_startDriver(param))
             .all(BooleanUtil::isTrue)
@@ -151,19 +151,19 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterClass(RetryType)
+     * @see Engine#rxa_afterClass(RetryProviderType)
      * @see ObjectUtil#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
-     * @see XCRunHandler#rxa_stopSimulator(RetryType)
+     * @see XCRunHandler#rxa_stopSimulator(RetryProviderType)
      * @see #testMode()
      * @see #rxa_stopDriver()
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryProviderType param) {
         Flowable<Boolean> source;
         TestMode testMode = testMode();
 

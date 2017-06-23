@@ -5,7 +5,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +52,7 @@ public interface SwipeOnceType extends BaseErrorType {
      */
     @NotNull
     default <P extends
-        RepeatType &
+        RepeatProviderType &
         SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull P param) {
         int times = param.times();
         long delay = param.delay();

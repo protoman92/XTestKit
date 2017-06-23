@@ -9,15 +9,15 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.Address;
 import org.swiften.xtestkit.base.AppiumCommand;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.network.type.NetworkHandlerHolderType;
-import org.swiften.xtestkitcomponents.system.network.type.PortType;
+import org.swiften.xtestkitcomponents.system.network.type.PortProviderType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunnerHolderType;
 
@@ -86,11 +86,11 @@ public interface AppiumHandlerType extends
 
     /**
      * Start appium with a specified uri.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
      * @see ProcessRunner#rxa_execute(String)
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see RxUtil#error()
      * @see StringUtil#isNotNullOrEmpty(String)
      * @see #processRunner()
@@ -99,7 +99,7 @@ public interface AppiumHandlerType extends
      * @see #rxa_startAppiumOnNewThread(String)
      */
     @NotNull
-    default Flowable<Boolean> rxa_startLocalAppium(@NotNull RetryType param) {
+    default Flowable<Boolean> rxa_startLocalAppium(@NotNull RetryProviderType param) {
         final AppiumHandlerType THIS = this;
         final ProcessRunner RUNNER = processRunner();
         String whichAppium = cm_whichAppium();
@@ -124,7 +124,7 @@ public interface AppiumHandlerType extends
      * @see Address#setPort(int)
      * @see BooleanUtil#toTrue(Object)
      * @see BooleanUtil#isFalse(boolean)
-     * @see NetworkHandler#rxa_checkUntilPortAvailable(PortType)
+     * @see NetworkHandler#rxa_checkUntilPortAvailable(PortProviderType)
      * @see ProcessRunner#execute(String, Consumer, Consumer)
      * @see #address()
      * @see #networkHandler()
@@ -176,7 +176,7 @@ public interface AppiumHandlerType extends
     /**
      * Stop all local appium instances.
      * @return {@link Flowable} instance.
-     * @see NetworkHandler#rxa_killWithPort(RetryType, Predicate)
+     * @see NetworkHandler#rxa_killWithPort(RetryProviderType, Predicate)
      * @see #address()
      * @see #networkHandler()
      * @see #isAppiumProcess(String)

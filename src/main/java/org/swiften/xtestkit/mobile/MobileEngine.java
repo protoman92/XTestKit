@@ -5,6 +5,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
@@ -13,7 +14,6 @@ import org.swiften.xtestkit.mobile.element.action.password.MobilePasswordActionT
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkit.mobile.element.action.tap.MobileTapType;
 import org.swiften.xtestkit.mobile.type.PlatformVersionProviderType;
-import org.swiften.javautilities.protocol.RetryType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -135,30 +135,30 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     //region Test Setup
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeMethod(RetryType)
+     * @see Engine#rxa_beforeMethod(RetryProviderType)
      * @see #rxa_launchApp()
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryProviderType param) {
         final Flowable<Boolean> SOURCE = rxa_launchApp();
         return super.rxa_beforeMethod(param).flatMap(a -> SOURCE);
     }
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterMethod(RetryType)
+     * @see Engine#rxa_afterMethod(RetryProviderType)
      * @see ObjectUtil#nonNull(Object)
      * @see #rxa_resetApp()
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryProviderType param) {
         return Flowable
             .concatArray(super.rxa_afterMethod(param), rxa_resetApp())
             .all(ObjectUtil::nonNull)

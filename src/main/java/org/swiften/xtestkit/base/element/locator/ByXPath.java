@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 /**
@@ -13,7 +13,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
 /**
  * Parameter object for {@link Engine#rxe_byXPath(ByXPath...)}.
  */
-public class ByXPath implements LocatorErrorType, RetryType {
+public class ByXPath implements LocatorErrorType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -44,7 +44,7 @@ public class ByXPath implements LocatorErrorType, RetryType {
     /**
      * Get {@link #retries}.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see #retries
      */
     @Override
@@ -131,13 +131,13 @@ public class ByXPath implements LocatorErrorType, RetryType {
 
         /**
          * Set {@link #retries} value.
-         * @param type {@link RetryType} instance.
+         * @param type {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
-         * @see RetryType#retries()
+         * @see RetryProviderType#retries()
          * @see #withRetries(int)
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType type) {
+        public Builder withRetryProvider(@NotNull RetryProviderType type) {
             return withRetries(type.retries());
         }
 

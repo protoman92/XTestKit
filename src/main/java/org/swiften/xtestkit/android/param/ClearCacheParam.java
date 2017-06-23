@@ -1,17 +1,17 @@
 package org.swiften.xtestkit.android.param;
 
-import org.swiften.xtestkit.base.type.AppPackageType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
+import org.swiften.xtestkit.base.type.AppPackageProviderType;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
 
 /**
  * Created by haipham on 4/10/17.
  */
 public class ClearCacheParam implements
-    AppPackageType,
-    DeviceUIDType,
-    RetryType {
+    AppPackageProviderType,
+    DeviceUIDProviderType,
+    RetryProviderType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -27,28 +27,40 @@ public class ClearCacheParam implements
         deviceUID = "";
     }
 
-    //region AppPackageType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see AppPackageProviderType#appPackage()
+     * @see #appPackage
+     */
     @NotNull
     @Override
     public String appPackage() {
         return appPackage;
     }
-    //endregion
 
-    //region DeviceUIDType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see DeviceUIDProviderType#deviceUID()
+     * @see #deviceUID
+     */
     @NotNull
     @Override
     public String deviceUID() {
         return deviceUID;
     }
-    //endregion
 
-    //region RetryType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryProviderType#retries()
+     * @see #retries
+     */
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
     //region Builder.
     /**
@@ -74,12 +86,12 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #appPackage} value.
-         * @param param {@link AppPackageType} instance.
+         * @param param {@link AppPackageProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withAppPackage(String)
          */
         @NotNull
-        public Builder withAppPackageType(@NotNull AppPackageType param) {
+        public Builder withAppPackageProvider(@NotNull AppPackageProviderType param) {
             return this.withAppPackage(param.appPackage());
         }
 
@@ -96,12 +108,12 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #deviceUID} value.
-         * @param param {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withDeviceUID(String)
          */
         @NotNull
-        public Builder withDeviceUIDType(@NotNull DeviceUIDType param) {
+        public Builder withDeviceUIDProvider(@NotNull DeviceUIDProviderType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 
@@ -118,11 +130,11 @@ public class ClearCacheParam implements
 
         /**
          * Set the {@link #retries} value.
-         * @param param {@link RetryType} instance.
+         * @param param {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType param) {
+        public Builder withRetryProvider(@NotNull RetryProviderType param) {
             return this.withRetries(param.retries());
         }
 

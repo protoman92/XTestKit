@@ -9,7 +9,7 @@ import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
@@ -29,7 +29,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * @return {@link ByXPath} instance.
      * @see Attributes#hasText(String)
      * @see Attributes#of(PlatformProviderType)
-     * @see Attributes#ofClass(ClassNameType)
+     * @see Attributes#ofClass(ClassNameProviderType)
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
      * @see AndroidView.Type#EDIT_TEXT
      * @see Platform#ANDROID
@@ -71,7 +71,7 @@ public interface AndroidNumericPickerInputType extends AndroidChoiceInputType {
      * Override this to provide default implementation.
      * @return {@link XPath} instance.
      * @see CompoundAttribute#empty()
-     * @see CompoundAttribute#withClass(ClassNameType)
+     * @see CompoundAttribute#withClass(ClassNameProviderType)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidView.Type#NUMBER_PICKER

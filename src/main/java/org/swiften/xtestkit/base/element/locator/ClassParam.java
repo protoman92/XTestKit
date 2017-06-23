@@ -1,11 +1,11 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
-import org.swiften.javautilities.protocol.RetryType;
 
 /**
  * Created by haipham on 5/9/17.
@@ -13,7 +13,7 @@ import org.swiften.javautilities.protocol.RetryType;
 /**
  * Parameter object for {@link Engine#rxe_ofClass(OfClassType[])}.
  */
-public class ClassParam implements OfClassType, RetryType {
+public class ClassParam implements OfClassType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -44,7 +44,7 @@ public class ClassParam implements OfClassType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override
@@ -77,13 +77,13 @@ public class ClassParam implements OfClassType, RetryType {
 
         /**
          * Set {@link #clsName}.
-         * @param param {@link ClassNameType} instance.
+         * @param param {@link ClassNameProviderType} instance.
          * @return {@link Builder} instance.
-         * @see ClassNameType#className()
-         * @see #withClass(ClassNameType)
+         * @see ClassNameProviderType#className()
+         * @see #withClass(ClassNameProviderType)
          */
         @NotNull
-        public Builder withClass(@NotNull ClassNameType param) {
+        public Builder withClass(@NotNull ClassNameProviderType param) {
             return withClass(param.className());
         }
 

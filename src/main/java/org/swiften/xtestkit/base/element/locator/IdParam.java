@@ -1,9 +1,9 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 
 /**
@@ -13,7 +13,7 @@ import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 /**
  * Parameter object for {@link Engine#rxe_containsID(ContainsIDType[])}.
  */
-public class IdParam implements ContainsIDType, RetryType {
+public class IdParam implements ContainsIDType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -32,7 +32,7 @@ public class IdParam implements ContainsIDType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override

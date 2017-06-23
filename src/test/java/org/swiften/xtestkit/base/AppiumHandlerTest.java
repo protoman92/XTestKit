@@ -5,10 +5,10 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.ArgumentCaptor;
 import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.swiften.xtestkit.util.TestMessageType;
@@ -31,7 +31,7 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
     @NotNull private final AppiumHandlerType ENGINE;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
     @NotNull private final NetworkHandler NETWORK_HANDLER;
-    @NotNull private final RetryType RETRY;
+    @NotNull private final RetryProviderType RETRY;
     private final int TRIES;
 
     {
@@ -43,8 +43,8 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
          * NETWORK_HANDLER.processRunner() */
         NETWORK_HANDLER = spy(new NetworkHandler());
 
-        /* Use this parameter when a RetryType is needed */
-        RETRY = mock(RetryType.class);
+        /* Use this parameter when a RetryProviderType is needed */
+        RETRY = mock(RetryProviderType.class);
 
         /* The number of tries for certain test */
         TRIES = 10;

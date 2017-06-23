@@ -6,15 +6,16 @@ package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.LCFormat;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.property.base.FormatType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.xtestkitcomponents.property.base.FormatProviderType;
+import org.swiften.xtestkitcomponents.property.base.StringProviderType;
 
 /**
- * Parameter object for {@link Engine#rxe_containsText(FormatType[])}.
+ * Parameter object for {@link Engine#rxe_containsText(FormatProviderType[])}.
  */
-public class TextFormatParam implements FormatType, RetryType {
+public class TextFormatParam implements FormatProviderType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -31,29 +32,43 @@ public class TextFormatParam implements FormatType, RetryType {
 
     TextFormatParam() {
         format = LCFormat.builder().build();
-        ignoreCase = FormatType.super.ignoreCase();
+        ignoreCase = FormatProviderType.super.ignoreCase();
         retries = Constants.DEFAULT_RETRIES;
     }
 
-    //region StringType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link LCFormat} instance.
+     * @see FormatProviderType#value()
+     * @see #format
+     */
     @NotNull
     @Override
     public LCFormat value() {
         return format;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Boolean} value.
+     * @see StringProviderType#ignoreCase()
+     * @see #ignoreCase
+     */
     @Override
     public boolean ignoreCase() {
         return ignoreCase;
     }
-    //endregion
 
-    //region RetryType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryProviderType#retries()
+     * @see #retries
+     */
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
     //region Builder.
     /**

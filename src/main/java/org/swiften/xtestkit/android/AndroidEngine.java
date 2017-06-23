@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.capability.AndroidEngineCapability;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType;
@@ -28,11 +29,10 @@ import org.swiften.xtestkit.android.type.*;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.type.AppPackageType;
+import org.swiften.xtestkit.base.type.AppPackageProviderType;
 import org.swiften.xtestkit.mobile.Automation;
 import org.swiften.xtestkit.mobile.MobileEngine;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 
 import java.net.MalformedURLException;
@@ -187,18 +187,18 @@ public class AndroidEngine extends
     //region Test Setup
     /**
      * Override this method to provide default implementation.
-     * @param PARAM {@link RetryType} instance.
+     * @param PARAM {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_beforeClass(RetryType)
-     * @see ADBHandler#rxa_disableAnimations(DeviceUIDType)
+     * @see Engine#rxa_beforeClass(RetryProviderType)
+     * @see ADBHandler#rxa_disableAnimations(DeviceUIDProviderType)
      * @see ADBHandler#rxa_startEmulator(StartEmulatorParam)
-     * @see ADBHandler#rxa_clearCache(AppPackageType)
-     * @see ADBHandler#rxe_availablePort(RetryType)
-     * @see ADBHandler#rxe_appInstalled(AppPackageType)
+     * @see ADBHandler#rxa_clearCache(AppPackageProviderType)
+     * @see ADBHandler#rxe_availablePort(RetryProviderType)
+     * @see ADBHandler#rxe_appInstalled(AppPackageProviderType)
      * @see AndroidInstance#setPort(int)
      * @see ClearCacheParam.Builder#withAppPackage(String)
-     * @see ClearCacheParam.Builder#withDeviceUIDType(DeviceUIDType)
-     * @see ClearCacheParam.Builder#withRetryType(RetryType)
+     * @see ClearCacheParam.Builder#withDeviceUIDProvider(DeviceUIDProviderType)
+     * @see ClearCacheParam.Builder#withRetryProvider(RetryProviderType)
      * @see ObjectUtil#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
@@ -206,12 +206,12 @@ public class AndroidEngine extends
      * @see #appPackage()
      * @see #deviceName()
      * @see #testMode()
-     * @see #rxa_startDriver(RetryType)
+     * @see #rxa_startDriver(RetryProviderType)
      */
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_beforeClass(@NotNull final RetryType PARAM) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull final RetryProviderType PARAM) {
         ADBHandler handler = adbHandler();
         final AndroidInstance A = androidInstance();
         final String APP_PACKAGE = appPackage();
@@ -245,8 +245,8 @@ public class AndroidEngine extends
                      * information about the device port */
                     ClearCacheParam ccParam = ClearCacheParam.builder()
                         .withAppPackage(APP_PACKAGE)
-                        .withDeviceUIDType(A)
-                        .withRetryType(PARAM)
+                        .withDeviceUIDProvider(A)
+                        .withRetryProvider(PARAM)
                         .build();
 
                     obs.onNext(ccParam);
@@ -263,9 +263,9 @@ public class AndroidEngine extends
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see Engine#rxa_afterClass(RetryType)
+     * @see Engine#rxa_afterClass(RetryProviderType)
      * @see ADBHandler#rxa_stopEmulator(StopEmulatorParam)
      * @see AndroidInstance#port()
      * @see NetworkHandler#markPortAvailable(int)
@@ -281,7 +281,7 @@ public class AndroidEngine extends
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryProviderType param) {
         AndroidInstance androidInstance = androidInstance();
         final NetworkHandler HANDLER = networkHandler();
         final int PORT = androidInstance.port();
@@ -290,8 +290,8 @@ public class AndroidEngine extends
 
 //        if (mode.isTestingOnSimulatedEnvironment()) {
 //            StopEmulatorParam seParam = StopEmulatorParam.builder()
-//                .withRetryType(param)
-//                .withPortType(androidInstance)
+//                .withRetryProvider(param)
+//                .withPortProvider(androidInstance)
 //                .build();
 //
 //            source = adbHandler().rxa_stopEmulator(seParam);

@@ -6,9 +6,9 @@ package org.swiften.xtestkit.mobile.element.action.tap;
 
 import io.appium.java_client.MobileDriver;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.element.tap.TapParamType;
 import org.swiften.xtestkit.base.element.tap.TapType;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.general.MobileTouchActionType;
 
@@ -28,7 +28,7 @@ public interface MobileTapType<D extends MobileDriver> extends
      * @see MobileTouchActionType#tap(MobileDriver, TapParamType)
      */
     @Override
-    default <P extends TapParamType & RetryType> void tap(@NotNull P param) {
+    default <P extends TapParamType & RetryProviderType> void tap(@NotNull P param) {
         touchAction().tap(driver(), param);
     }
 }

@@ -1,20 +1,20 @@
 package org.swiften.xtestkit.base.element.locator;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
-import org.swiften.javautilities.protocol.RetryType;
-import org.swiften.xtestkitcomponents.property.base.StringType;
+import org.swiften.xtestkitcomponents.property.base.StringProviderType;
 
 /**
  * Created by haipham on 3/20/17.
  */
 
 /**
- * Parameter object for {@link Engine#rxe_withText(StringType[])}.
+ * Parameter object for {@link Engine#rxe_withText(StringProviderType[])}.
  */
-public class TextParam implements StringType, RetryType {
+public class TextParam implements StringProviderType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -31,7 +31,7 @@ public class TextParam implements StringType, RetryType {
 
     TextParam() {
         text = "";
-        ignoreCase = StringType.super.ignoreCase();
+        ignoreCase = StringProviderType.super.ignoreCase();
         retries = Constants.DEFAULT_RETRIES;
     }
 
@@ -41,25 +41,39 @@ public class TextParam implements StringType, RetryType {
         return text;
     }
 
-    //region StringType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link String} value.
+     * @see StringProviderType#value()
+     * @see #text
+     */
     @NotNull
     @Override
     public String value() {
         return text;
     }
 
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Boolean} value.
+     * @see StringProviderType#ignoreCase()
+     * @see #ignoreCase
+     */
     @Override
     public boolean ignoreCase() {
         return ignoreCase;
     }
-    //endregion
 
-    //region RetryType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryProviderType#retries()
+     * @see #retries
+     */
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
     //region Builder.
     /**
@@ -96,12 +110,12 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set {@link #retries} value.
-         * @param param {@link RetryType} instance.
+         * @param param {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType param) {
+        public Builder withRetryProvider(@NotNull RetryProviderType param) {
             return withRetries(param.retries());
         }
 
@@ -129,13 +143,13 @@ public class TextParam implements StringType, RetryType {
 
         /**
          * Set {@link #text} and {@link #ignoreCase}.
-         * @param type {@link StringType} instance.
+         * @param type {@link StringProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withText(String)
          * @see #shouldIgnoreCase(boolean)
          */
         @NotNull
-        public Builder withStringType(@NotNull StringType type) {
+        public Builder withStringProvider(@NotNull StringProviderType type) {
             return withText(type.value()).shouldIgnoreCase(type.ignoreCase());
         }
 

@@ -15,7 +15,7 @@ import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
@@ -57,7 +57,7 @@ public interface IOSActionType extends
      * @see Attributes#hasText(String)
      * @see BooleanUtil#toTrue(Object)
      * @see CompoundAttribute#single(AttributeType)
-     * @see CompoundAttribute#withClass(ClassNameType)
+     * @see CompoundAttribute#withClass(ClassNameProviderType)
      * @see IOSView.Type#UI_BUTTON
      * @see LocalizerType#localize(String)
      * @see MobileActionType#rxa_dismissAlert(AlertParam)

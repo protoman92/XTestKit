@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 
 /**
  * Created by haipham on 1/6/17.
@@ -24,7 +24,7 @@ public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_statusBar()
      * @see IOSView.Type#UI_STATUS_BAR
-     * @see #rxe_ofClass(ClassNameType[])
+     * @see #rxe_ofClass(ClassNameProviderType[])
      */
     @NotNull
     @Override
@@ -37,7 +37,7 @@ public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_window()
      * @see IOSView.Type#UI_WINDOW
-     * @see #rxe_ofClass(ClassNameType[])
+     * @see #rxe_ofClass(ClassNameProviderType[])
      */
     @NotNull
     @Override
@@ -50,7 +50,7 @@ public interface IOSLocatorType extends LocatorType<IOSDriver<IOSElement>> {
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_imageViews()
      * @see IOSView.Type#UI_IMAGE_VIEW
-     * @see #rxe_ofClass(ClassNameType[])
+     * @see #rxe_ofClass(ClassNameProviderType[])
      */
     @NotNull
     @Override

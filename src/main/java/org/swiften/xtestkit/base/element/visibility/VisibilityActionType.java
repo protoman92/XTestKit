@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.number.NumberUtil;
-import org.swiften.javautilities.protocol.DelayType;
-import org.swiften.javautilities.rx.RepeatParam;
+import org.swiften.javautilities.protocol.DelayProviderType;
+import org.swiften.javautilities.rx.RxUtilParam;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 
@@ -30,9 +30,9 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
      *                 {@link WebElement} to be checked for visibility.
      * @return {@link Flowable} instance.
      * @see NumberUtil#isZero(Number)
-     * @see RepeatParam.Builder#withDelay(long)
-     * @see RepeatParam.Builder#withTimeUnit(TimeUnit)
-     * @see RxUtil#repeatUntil(Flowable, DelayType)
+     * @see RxUtilParam.Builder#withDelay(long)
+     * @see RxUtilParam.Builder#withTimeUnit(TimeUnit)
+     * @see RxUtil#repeatUntil(Flowable, DelayProviderType)
      * @see #consecutiveVisibilityCheckDelay()
      */
     @NotNull
@@ -41,7 +41,7 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
             .map(NumberUtil::isZero)
             .toFlowable();
 
-        RepeatParam param = RepeatParam.builder()
+        RxUtilParam param = RxUtilParam.builder()
             .withDelay(consecutiveVisibilityCheckDelay())
             .withTimeUnit(TimeUnit.MILLISECONDS)
             .build();

@@ -44,36 +44,36 @@ public interface DateActionType<D extends WebDriver> extends
 {
     /**
      * Open the picker view that corresponds to {@link CalendarUnit}.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+    Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                      @NotNull CalendarUnit unit);
 
     /**
-     * Select a component based on {@link CalendarUnit} and {@link DateType}.
-     * @param param {@link DateType} instance.
+     * Select a component based on {@link CalendarUnit} and {@link DateProviderType}.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      */
     @NotNull
-    Flowable<Boolean> rxa_select(@NotNull DateType param, @NotNull CalendarUnit unit);
+    Flowable<Boolean> rxa_select(@NotNull DateProviderType param, @NotNull CalendarUnit unit);
 
     /**
      * Check if {@link Date} is currently active. This assumes that the
      * user is in a calendar view.
-     * @param PARAM {@link DateType} instance.
+     * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see DateType#units()
+     * @see DateProviderType#units()
      * @see ObjectUtil#nonNull(Object)
-     * @see #valueString(DateType, CalendarUnit)
+     * @see #valueString(DateProviderType, CalendarUnit)
      * @see #rxe_containsText(String...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default Flowable<Boolean> rxv_hasDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxv_hasDate(@NotNull final DateProviderType PARAM) {
         final DateActionType<?> THIS = this;
         List<CalendarUnit> units = PARAM.units();
 
@@ -87,19 +87,19 @@ public interface DateActionType<D extends WebDriver> extends
 
     /**
      * Select {@link Date}. This assumes that the user is in a calendar view.
-     * @param PARAM {@link DateType} instance.
+     * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#isTrue(boolean)
-     * @see DateType#units()
+     * @see DateProviderType#units()
      * @see ObjectUtil#nonNull(Object)
      * @see RxUtil#error(String)
-     * @see #rxa_openPicker(DateType, CalendarUnit)
-     * @see #rxa_select(DateType, CalendarUnit)
-     * @see #rxv_hasDate(DateType)
+     * @see #rxa_openPicker(DateProviderType, CalendarUnit)
+     * @see #rxa_select(DateProviderType, CalendarUnit)
+     * @see #rxv_hasDate(DateProviderType)
      * @see #DATES_NOT_MATCHED
      */
     @NotNull
-    default Flowable<Boolean> rxa_selectDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxa_selectDate(@NotNull final DateProviderType PARAM) {
         LogUtil.printft("Selecting %s", dateString(PARAM));
 
         final DateActionType<?> THIS = this;
@@ -120,12 +120,12 @@ public interface DateActionType<D extends WebDriver> extends
      * The implementations may change based on {@link DatePickerType}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
-    default Flowable<WebElement> rxe_pickerView(@NotNull DateType param,
+    default Flowable<WebElement> rxe_pickerView(@NotNull DateProviderType param,
                                                 @NotNull CalendarUnit unit) {
         XPath xpath = param.datePickerType().pickerViewXP(unit);
         return rxe_withXPath(xpath).firstElement().toFlowable();
@@ -135,12 +135,12 @@ public interface DateActionType<D extends WebDriver> extends
      * Get the {@link WebElement} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see DatePickerType#unitLabelViewXPath(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
-    default Flowable<WebElement> rxe_elementLabel(@NotNull DateType param,
+    default Flowable<WebElement> rxe_elementLabel(@NotNull DateProviderType param,
                                                   @NotNull CalendarUnit unit) {
         /* We need to use a custom XPath query because there are some views
          * that have similar IDs (e.g. if we search for date_picker_month, the
@@ -156,13 +156,13 @@ public interface DateActionType<D extends WebDriver> extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see CalendarUnit#value()
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see DatePickerType#valueStringFormat(CalendarUnit)
-     * @see #rxe_elementLabel(DateType, CalendarUnit)
+     * @see #rxe_elementLabel(DateProviderType, CalendarUnit)
      */
     @NotNull
     @SuppressWarnings("MagicConstant")
-    default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
+    default Flowable<Integer> rxe_displayedUnit(@NotNull DateProviderType param,
                                                 @NotNull CalendarUnit unit) {
         final DateActionType<?> THIS = this;
         String format = param.datePickerType().valueStringFormat(unit);
@@ -183,14 +183,14 @@ public interface DateActionType<D extends WebDriver> extends
     /**
      * Get the {@link Date} as displayed by the date picker.
      * @return {@link Flowable} instance.
-     * @see #rxe_displayedUnit(DateType, CalendarUnit)
+     * @see #rxe_displayedUnit(DateProviderType, CalendarUnit)
      * @see Zip#of(Object, Object)
      * @see Zip#A
      * @see Zip#B
      */
     @NotNull
     @SuppressWarnings({"MagicConstant", "ConstantConditions"})
-    default Flowable<Date> rxe_displayedDate(@NotNull final DateType PARAM) {
+    default Flowable<Date> rxe_displayedDate(@NotNull final DateProviderType PARAM) {
         final DateActionType<?> THIS = this;
 
         return Flowable.fromIterable(PARAM.units())
@@ -203,19 +203,19 @@ public interface DateActionType<D extends WebDriver> extends
 
     /**
      * Get {@link CalendarUnit}'s {@link String} representation of
-     * {@link DateType#date()}.
-     * This may be differennt from {@link #displayString(DateType, CalendarUnit)}
+     * {@link DateProviderType#date()}.
+     * This may be differennt from {@link #displayString(DateProviderType, CalendarUnit)}
      * if the text that appears on screen is formatted different from how we
      * expect it to be.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see CalendarUnit#value()
      */
     @NotNull
-    default String valueString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+    default String valueString(@NotNull DateProviderType param, @NotNull CalendarUnit unit) {
         Date date = param.date();
         String format = param.datePickerType().valueStringFormat(unit);
         return new SimpleDateFormat(format).format(date);
@@ -223,28 +223,28 @@ public interface DateActionType<D extends WebDriver> extends
 
     /**
      * Get {@link CalendarUnit}'s {@link String} representation of
-     * {@link DateType#date()}, as displayed on the screen. Most of the time,
-     * this should be the same as {@link #valueString(DateType, CalendarUnit)},
+     * {@link DateProviderType#date()}, as displayed on the screen. Most of the time,
+     * this should be the same as {@link #valueString(DateProviderType, CalendarUnit)},
      * but there might be select cases where it is not.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see #valueString(DateType, CalendarUnit)
+     * @see #valueString(DateProviderType, CalendarUnit)
      */
     @NotNull
-    default String displayString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+    default String displayString(@NotNull DateProviderType param, @NotNull CalendarUnit unit) {
         return valueString(param, unit);
     }
 
     /**
-     * Get {@link String} representation of {@link DateType#date()}.
-     * @param PARAM {@link DateType} instance.
+     * Get {@link String} representation of {@link DateProviderType#date()}.
+     * @param PARAM {@link DateProviderType} instance.
      * @return {@link String} value.
-     * @see DateType#units()
-     * @see #valueString(DateType, CalendarUnit)
+     * @see DateProviderType#units()
+     * @see #valueString(DateProviderType, CalendarUnit)
      */
     @NotNull
-    default String dateString(@NotNull final DateType PARAM) {
+    default String dateString(@NotNull final DateProviderType PARAM) {
         List<String> params = PARAM.units().stream()
             .map(a -> String.format("%s %s", a, valueString(PARAM, a)))
             .collect(Collectors.toList());

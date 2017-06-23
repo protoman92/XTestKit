@@ -12,7 +12,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 
 /**
  * This interface provides methods to handle taps.
@@ -23,7 +23,7 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      */
-    <P extends TapParamType & RetryType> void tap(@NotNull P param);
+    <P extends TapParamType & RetryProviderType> void tap(@NotNull P param);
 
     /**
      * Same as above, but uses a default {@link TapParam}.
@@ -67,7 +67,7 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      * @see #tap(TapParamType)
      */
     @NotNull
-    default <P extends TapParamType & RetryType> Flowable<Boolean>
+    default <P extends TapParamType & RetryProviderType> Flowable<Boolean>
     rxa_tap(@NotNull final P PARAM) {
         final TapType<?> THIS = this;
 

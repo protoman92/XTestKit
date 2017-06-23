@@ -17,14 +17,14 @@ public interface AndroidDateActionType extends CalendarDateActionType, NumberDat
      * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_openPicker(DateType, CalendarUnit)
+     * @see DateActionType#rxa_openPicker(DateProviderType, CalendarUnit)
      * @see AndroidDatePickerType#isCalendar()
      * @see AndroidDatePickerType#isNumberPicker()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+    default Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                              @NotNull CalendarUnit unit) {
         DatePickerType pickerType = param.datePickerType();
 
@@ -43,18 +43,18 @@ public interface AndroidDateActionType extends CalendarDateActionType, NumberDat
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_select(DateType, CalendarUnit)
+     * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
      * @see AndroidDatePickerType#isCalendar()
      * @see AndroidDatePickerType#isNumberPicker()
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_select(@NotNull DateType param,
+    default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                          @NotNull CalendarUnit unit) {
         DatePickerType pickerType = param.datePickerType();
 

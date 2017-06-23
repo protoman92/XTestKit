@@ -11,7 +11,7 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkit.base.element.date.DateType;
+import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.element.input.InputActionType;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 
@@ -32,29 +32,29 @@ public interface IOSDateActionType extends
      * We do nothing here because the date picker is displayed by default.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_openPicker(DateType, CalendarUnit)
+     * @see DateActionType#rxa_openPicker(DateProviderType, CalendarUnit)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+    default Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                              @NotNull CalendarUnit unit) {
         return Flowable.just(true);
     }
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_select(DateType, CalendarUnit)
+     * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
      * @see BooleanUtil#toTrue(Object)
-     * @see #valueString(DateType, CalendarUnit)
+     * @see #valueString(DateProviderType, CalendarUnit)
      * @see #rxa_type(WebElement, String...)
-     * @see #rxe_pickerView(DateType, CalendarUnit)
+     * @see #rxe_pickerView(DateProviderType, CalendarUnit)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_select(@NotNull DateType param,
+    default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                          @NotNull CalendarUnit unit) {
         final IOSDateActionType THIS = this;
         String value = valueString(param, unit);
@@ -67,19 +67,19 @@ public interface IOSDateActionType extends
     /**
      * Override this method to take care of a few special cases whereby
      * {@link String} format with {@link SimpleDateFormat} is not enough.
-     * For example, if {@link DateType#datePickerType()} is
+     * For example, if {@link DateProviderType#datePickerType()} is
      * {@link IOSDatePickerType#PICKER_WHEEL_MMMd_h_mm_a}, the month-day {@link String} will
      * be "Today" if the {@link Date} is the current day.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see DateActionType#valueString(DateType, CalendarUnit)
+     * @see DateActionType#valueString(DateProviderType, CalendarUnit)
      * @see CalendarUnit#DAY
      * @see CalendarUnit#isDay()
      * @see CalendarUnit#isMonth()
      * @see CalendarUnit#value()
-     * @see DateType#date()
-     * @see DateType#datePickerType()
+     * @see DateProviderType#date()
+     * @see DateProviderType#datePickerType()
      * @see DateUtil#sameAs(Date, Date, int)
      * @see LocalizerType#localize(String)
      * @see IOSDatePickerType#PICKER_WHEEL_MMMd_h_mm_a
@@ -87,7 +87,7 @@ public interface IOSDateActionType extends
      */
     @NotNull
     @Override
-    default String displayString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+    default String displayString(@NotNull DateProviderType param, @NotNull CalendarUnit unit) {
         DatePickerType picker = param.datePickerType();
         DatePickerType target = IOSDatePickerType.PICKER_WHEEL_MMMd_h_mm_a;
 

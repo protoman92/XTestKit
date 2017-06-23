@@ -7,19 +7,19 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
-import org.swiften.javautilities.protocol.DelayType;
+import org.swiften.javautilities.protocol.DelayProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.javautilities.protocol.DurationType;
-import org.swiften.javautilities.protocol.RepeatType;
-import org.swiften.javautilities.protocol.TimeUnitType;
+import org.swiften.javautilities.protocol.DurationProviderType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
+import org.swiften.javautilities.protocol.TimeUnitProviderType;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * Parameter object for {@link Engine#rxa_swipe(RepeatType)}
+ * Parameter object for {@link Engine#rxa_swipe(RepeatProviderType)}
  */
-public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
+public class SwipeParam implements DurationProviderType, RepeatProviderType, SwipeParamType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -104,7 +104,7 @@ public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see DurationType#duration()
+     * @see DurationProviderType#duration()
      * @see #duration
      */
     @Override
@@ -115,7 +115,7 @@ public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RepeatType#times()
+     * @see RepeatProviderType#times()
      * @see #times
      */
     @Override
@@ -126,7 +126,7 @@ public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see DelayType#delay()
+     * @see DelayProviderType#delay()
      * @see #delay
      */
     @Override
@@ -137,7 +137,7 @@ public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
     /**
      * Override this method to provide default implementation.
      * @return {@link TimeUnit} instance.
-     * @see TimeUnitType#timeUnit()
+     * @see TimeUnitProviderType#timeUnit()
      * @see #unit
      */
     @NotNull
@@ -280,47 +280,47 @@ public class SwipeParam implements DurationType, RepeatType, SwipeParamType {
 
         /**
          * Set the {@link #unit} instance.
-         * @param param {@link TimeUnitType} instance.
+         * @param param {@link TimeUnitProviderType} instance.
          * @return {@link Builder} instance.
-         * @see TimeUnitType#timeUnit()
+         * @see TimeUnitProviderType#timeUnit()
          * @see #withTimeUnit(TimeUnit)
          */
         @NotNull
-        public Builder withTimeUnitType(@NotNull TimeUnitType param) {
+        public Builder withTimeUnitProvider(@NotNull TimeUnitProviderType param) {
             return withTimeUnit(param.timeUnit());
         }
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type {@link RepeatType} instance.
+         * @param type {@link RepeatProviderType} instance.
          * @return {@link Builder} instance.
-         * @see RepeatType#delay()
-         * @see RepeatType#times()
+         * @see RepeatProviderType#delay()
+         * @see RepeatProviderType#times()
          * @see #withDelay(long)
          * @see #withTimes(int)
-         * @see #withTimeUnitType(TimeUnitType)
+         * @see #withTimeUnitProvider(TimeUnitProviderType)
          */
         @NotNull
-        public Builder withRepeatableType(@NotNull RepeatType type) {
+        public Builder withRepeatProvider(@NotNull RepeatProviderType type) {
             return this
                 .withTimes(type.times())
                 .withDelay(type.delay())
-                .withTimeUnitType(type);
+                .withTimeUnitProvider(type);
         }
 
         /**
          * Set {@link #duration}.
-         * @param type {@link DurationType} instance.
+         * @param type {@link DurationProviderType} instance.
          * @return {@link Builder} instance.
-         * @see DurationType#duration()
+         * @see DurationProviderType#duration()
          * @see #withDuration(int)
-         * @see #withTimeUnitType(TimeUnitType)
+         * @see #withTimeUnitProvider(TimeUnitProviderType)
          */
         @NotNull
-        public Builder withDurationType(@NotNull DurationType type) {
+        public Builder withDurationProvider(@NotNull DurationProviderType type) {
             return this
                 .withDuration(type.duration())
-                .withTimeUnitType(type);
+                .withTimeUnitProvider(type);
         }
 
         @NonNull

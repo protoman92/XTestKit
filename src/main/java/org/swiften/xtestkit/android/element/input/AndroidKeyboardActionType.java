@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Keys;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.xtestkit.base.element.general.ActionType;
-import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
 import org.swiften.xtestkit.android.AndroidInstance;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.type.ADBHandlerProviderType;
 import org.swiften.xtestkit.android.type.AndroidInstanceProviderType;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
 import org.swiften.xtestkit.mobile.element.action.keyboard.MobileKeyboardActionType;
 
 /**
@@ -36,11 +36,11 @@ public interface AndroidKeyboardActionType extends
     /**
      * Dismiss the keyboard if it is open. We first need to check whether the
      * keyboard is present with
-     * {@link ADBHandler#rxe_keyboardOpen(DeviceUIDType)},
-     * and then call {@link #rxa_navigateBack(RepeatType)}.
+     * {@link ADBHandler#rxe_keyboardOpen(DeviceUIDProviderType)},
+     * and then call {@link #rxa_navigateBack(RepeatProviderType)}.
      * @return {@link Flowable} instance.
-     * @see #rxa_navigateBack(RepeatType)
-     * @see ADBHandler#rxe_keyboardOpen(DeviceUIDType)
+     * @see #rxa_navigateBack(RepeatProviderType)
+     * @see ADBHandler#rxe_keyboardOpen(DeviceUIDProviderType)
      */
     @NotNull
     default Flowable<Boolean> rxa_hideKeyboard() {

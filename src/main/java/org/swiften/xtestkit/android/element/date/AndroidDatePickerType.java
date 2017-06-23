@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.xpath.*;
@@ -290,7 +290,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
-     * @see CompoundAttribute.Builder#withClass(ClassNameType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameProviderType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Joiner#OR
@@ -335,7 +335,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
-     * @see CompoundAttribute.Builder#withClass(ClassNameType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameProviderType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Platform#ANDROID
@@ -378,7 +378,7 @@ public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
      * @see Attributes#of(PlatformType)
      * @see Attributes#ofClass(String)
      * @see CompoundAttribute.Builder#addAttribute(AttributeType)
-     * @see CompoundAttribute.Builder#withClass(ClassNameType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameProviderType)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#TEXT_VIEW
      * @see Platform#ANDROID

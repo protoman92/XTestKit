@@ -4,17 +4,17 @@ package org.swiften.xtestkit.android.param;
  * Created by haipham on 3/23/17.
  */
 
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
 
 /**
  * Parameter object for
  * {@link ADBHandler#rxa_toggleInternet(ConnectionParam)}
  */
-public class ConnectionParam implements DeviceUIDType, RetryType {
+public class ConnectionParam implements DeviceUIDProviderType, RetryProviderType {
     @NotNull
     public static Builder builder() {
         return new Builder();
@@ -42,7 +42,7 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override
@@ -89,13 +89,13 @@ public class ConnectionParam implements DeviceUIDType, RetryType {
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} with {@link DeviceUIDType}
+         * Set {@link #PARAM#deviceUID} with {@link DeviceUIDProviderType}
          * instance.
-         * @param param {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDProviderType} instance.
          * @return {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDType param) {
+        public Builder withDeviceUIDProtocol(@NotNull DeviceUIDProviderType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 

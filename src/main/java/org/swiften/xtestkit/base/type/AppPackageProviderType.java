@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * This interface provides an app package name.
  */
 @FunctionalInterface
-public interface AppPackageType {
+public interface AppPackageProviderType {
     /**
      * Get an app package.
      * @return {@link String} value.

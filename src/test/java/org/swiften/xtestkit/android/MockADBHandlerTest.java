@@ -3,6 +3,7 @@ package org.swiften.xtestkit.android;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
 import org.swiften.xtestkit.android.adb.ADBErrorType;
@@ -10,8 +11,7 @@ import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
 import org.swiften.xtestkit.android.param.StopEmulatorParam;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
@@ -35,8 +35,8 @@ public final class MockADBHandlerTest implements ADBErrorType {
     @NotNull private final NetworkHandler NETWORK_HANDLER;
     @NotNull private final StartEmulatorParam SE_PARAM;
     @NotNull private final ClearCacheParam CC_PARAM;
-    @NotNull private final DeviceUIDType DUID_PARAM;
-    @NotNull private final RetryType RETRY;
+    @NotNull private final DeviceUIDProviderType DUID_PARAM;
+    @NotNull private final RetryProviderType RETRY;
     @NotNull private final String APP_PACKAGE;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
@@ -55,9 +55,9 @@ public final class MockADBHandlerTest implements ADBErrorType {
 
         /* Create a mock here to fake retries() */
         SE_PARAM = mock(StartEmulatorParam.class);
-        RETRY = mock(RetryType.class);
+        RETRY = mock(RetryProviderType.class);
         CC_PARAM = mock(ClearCacheParam.class);
-        DUID_PARAM = mock(DeviceUIDType.class);
+        DUID_PARAM = mock(DeviceUIDProviderType.class);
 
         /* Return this appPackage when calling CC_PARAM#appPackage */
         APP_PACKAGE = "TestAppPackage";

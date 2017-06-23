@@ -3,8 +3,8 @@ package org.swiften.xtestkit.base.param;
 import io.reactivex.annotations.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.protocol.DurationType;
-import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.DurationProviderType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.element.swipe.RLSwipePositionType;
@@ -24,10 +24,10 @@ import java.util.concurrent.TimeUnit;
  * Use this to perform unidirectional swipe actions.
  */
 public class DirectionParam implements
-    DurationType,
+    DurationProviderType,
     DirectionProviderType,
     RLSwipePositionType,
-    RepeatType
+    RepeatProviderType
 {
     /**
      * Get {@link Builder} instance.
@@ -48,8 +48,8 @@ public class DirectionParam implements
     @NotNull
     public static <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> DirectionParam from(@NotNull P param) {
         return builder().withParam(param).build();
     }
@@ -148,7 +148,7 @@ public class DirectionParam implements
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RepeatType#timeUnit()
+     * @see RepeatProviderType#timeUnit()
      * @see Constants#DEFAULT_TIME_UNIT
      */
     @NotNull
@@ -245,25 +245,25 @@ public class DirectionParam implements
 
         /**
          * Set {@link #times} and {@link #delay}.
-         * @param type {@link RepeatType} instance.
+         * @param type {@link RepeatProviderType} instance.
          * @return {@link Builder} instance.
-         * @see RepeatType#times()
-         * @see RepeatType#delay()
+         * @see RepeatProviderType#times()
+         * @see RepeatProviderType#delay()
          */
         @NotNull
-        public Builder withRepeatType(@NotNull RepeatType type) {
+        public Builder withRepeatProvider(@NotNull RepeatProviderType type) {
             return withTimes(type.times()).withDelay(type.delay());
         }
 
         /**
          * Set {@link #duration}.
-         * @param type {@link DurationType} instance.
+         * @param type {@link DurationProviderType} instance.
          * @return {@link Builder} instance.
-         * @see DurationType#duration()
+         * @see DurationProviderType#duration()
          * @see #withDuration(int)
          */
         @NotNull
-        public Builder withDurationType(@NotNull DurationType type) {
+        public Builder withDurationProvider(@NotNull DurationProviderType type) {
             return withDuration(type.duration());
         }
 
@@ -327,7 +327,7 @@ public class DirectionParam implements
          * @see #withStartRatio(double)
          */
         @NotNull
-        public Builder withRLSwipePositionType(@NotNull RLSwipePositionType type) {
+        public Builder withRLSwipePosition(@NotNull RLSwipePositionType type) {
             return this
                 .withStartRatio(type.startRatio())
                 .withEndRatio(type.endRatio())
@@ -340,21 +340,22 @@ public class DirectionParam implements
          * @param <P> Generics parameter.
          * @return {@link Builder} instance.
          * @see #withDirectionProvider(DirectionProviderType)
-         * @see #withDurationType(DurationType)
-         * @see #withRepeatType(RepeatType)
-         * @see #withRLSwipePositionType(RLSwipePositionType)
+         * @see #withDurationProvider(DurationProviderType)
+         * @see #withRepeatProvider(RepeatProviderType)
+         * @see #withRLSwipePosition(RLSwipePositionType)
          */
         @NotNull
         public <P extends
             DirectionProviderType &
-            DurationType &
-            RepeatType &
-            RLSwipePositionType> Builder withParam(@NotNull P param) {
+            DurationProviderType &
+            RepeatProviderType &
+            RLSwipePositionType> Builder withParam(@NotNull P param)
+        {
             return this
                 .withDirectionProvider(param)
-                .withRepeatType(param)
-                .withDurationType(param)
-                .withRLSwipePositionType(param);
+                .withRepeatProvider(param)
+                .withDurationProvider(param)
+                .withRLSwipePosition(param);
         }
 
         @NonNull

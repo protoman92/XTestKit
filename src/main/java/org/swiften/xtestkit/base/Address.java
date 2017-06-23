@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkitcomponents.system.network.type.MaxPortType;
-import org.swiften.xtestkitcomponents.system.network.type.PortStepType;
-import org.swiften.xtestkitcomponents.system.network.type.PortType;
+import org.swiften.xtestkitcomponents.system.network.type.PortStepProviderType;
+import org.swiften.xtestkitcomponents.system.network.type.PortProviderType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * This class shall take care of Appium's server address. It provides some
  * convenience methods for when {@link Mode#LOCAL} is used.
  */
-public class Address implements PortType, MaxPortType, PortStepType, RetryType {
+public class Address implements PortProviderType, MaxPortType, PortStepProviderType, RetryProviderType {
     public enum Mode {
         LOCAL;
 
@@ -77,7 +77,7 @@ public class Address implements PortType, MaxPortType, PortStepType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override

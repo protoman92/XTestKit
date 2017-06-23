@@ -14,7 +14,7 @@ import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkit.base.element.date.DateType;
+import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -29,35 +29,35 @@ public interface NumberDatePickerType extends
 {
     /**
      * Override this method to provide default implementation.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+    default Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                              @NotNull CalendarUnit unit) {
         return Flowable.just(true);
     }
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_select(DateType, CalendarUnit)
+     * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
      * @see ChoiceParam.Builder#withInput(ChoiceInputType)
      * @see ChoiceParam.Builder#withGeneralMode()
      * @see ChoiceParam.Builder#withSelectedChoice(String)
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see UnitNumberPickerWrapper.Builder#withCalendarUnit(CalendarUnit)
      * @see UnitNumberPickerWrapper.Builder#withDatePicker(DatePickerType)
-     * @see #displayString(DateType, CalendarUnit)
+     * @see #displayString(DateProviderType, CalendarUnit)
      * @see #rxa_selectChoice(ChoiceType)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_select(@NotNull DateType param,
+    default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                          @NotNull CalendarUnit unit) {
         UnitNumberPickerWrapper wrapper = UnitNumberPickerWrapper.builder()
             .withCalendarUnit(unit)

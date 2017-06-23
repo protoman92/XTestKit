@@ -7,16 +7,16 @@ package org.swiften.xtestkit.base.element.date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
 
 import java.util.*;
 
 /**
- * Parameter object for {@link DateActionType#rxa_selectDate(DateType)}.
+ * Parameter object for {@link DateActionType#rxa_selectDate(DateProviderType)}.
  */
-public class DateParam implements DateType, BaseErrorType {
+public class DateParam implements DateProviderType, BaseErrorType {
     /**
      * Get a {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -37,7 +37,7 @@ public class DateParam implements DateType, BaseErrorType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override
@@ -48,7 +48,7 @@ public class DateParam implements DateType, BaseErrorType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Date} instance.
-     * @see DateType#date()
+     * @see DateProviderType#date()
      * @see ObjectUtil#requireNotNull(Object, String)
      * @see #date
      * @see #NOT_AVAILABLE
@@ -64,7 +64,7 @@ public class DateParam implements DateType, BaseErrorType {
     /**
      * Override this method to provide default implementation.
      * @return {@link DatePickerType} instance.
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see ObjectUtil#requireNotNull(Object, String)
      * @see #pickerType
      * @see #NOT_AVAILABLE
@@ -80,7 +80,7 @@ public class DateParam implements DateType, BaseErrorType {
     /**
      * Override this method to provide default implementation.
      * @return {@link List} of {@link CalendarUnit}.
-     * @see DateType#units()
+     * @see DateProviderType#units()
      * @see #UNITS
      */
     @NotNull
@@ -142,7 +142,7 @@ public class DateParam implements DateType, BaseErrorType {
          * @see #pickerType
          */
         @NotNull
-        public Builder withPickerType(@NotNull DatePickerType pickerType) {
+        public Builder withPicker(@NotNull DatePickerType pickerType) {
             PARAM.pickerType = pickerType;
             return this;
         }
@@ -184,13 +184,13 @@ public class DateParam implements DateType, BaseErrorType {
 
         /**
          * Set the {@link #date} instance and {@link #UNITS}.
-         * @param type {@link DateType} instance.
+         * @param type {@link DateProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withCalendarUnits(List)
          * @see #withDate(Date)
          */
         @NotNull
-        public Builder withDateType(@NotNull DateType type) {
+        public Builder withDateProvider(@NotNull DateProviderType type) {
             return withCalendarUnits(type.units()).withDate(type.date());
         }
 

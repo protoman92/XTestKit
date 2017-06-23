@@ -3,7 +3,7 @@ package org.swiften.xtestkit.base.param;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 
 /**
  * Created by haipham on 3/25/17.
@@ -13,7 +13,7 @@ import org.swiften.javautilities.protocol.RetryType;
  * Parameter object for
  * {@link Engine#rxa_dismissAlert(AlertParam)}
  */
-public class AlertParam implements RetryType {
+public class AlertParam implements RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -30,7 +30,7 @@ public class AlertParam implements RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override

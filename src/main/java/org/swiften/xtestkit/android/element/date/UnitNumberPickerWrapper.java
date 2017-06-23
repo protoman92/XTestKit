@@ -8,12 +8,12 @@ import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.android.model.AndroidNumericPickerInputType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
-import org.swiften.xtestkit.base.element.date.DateType;
+import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -33,7 +33,7 @@ import java.util.Date;
  * utilize
  * {@link org.swiften.xtestkit.android.element.choice.AndroidChoiceSelectorType}
  * when we select dates using
- * {@link AndroidDateActionType#rxa_selectDate(DateType)} with
+ * {@link AndroidDateActionType#rxa_selectDate(DateProviderType)} with
  * {@link AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm}.
  */
 public class UnitNumberPickerWrapper implements
@@ -187,7 +187,7 @@ public class UnitNumberPickerWrapper implements
      * @param helper {@link InputHelperType} instance.
      * @return {@link XPath} instance.
      * @see AndroidNumericPickerInputType#androidChoicePickerParentXP(InputHelperType)
-     * @see CompoundAttribute#forClass(ClassNameType)
+     * @see CompoundAttribute#forClass(ClassNameProviderType)
      * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidDatePickerType#DATE_NUMBER_PICKER_MMM_dd_yyyy
      * @see AndroidDatePickerType#TIME_NUMBER_PICKER_HH_mm
@@ -201,12 +201,12 @@ public class UnitNumberPickerWrapper implements
     public XPath androidChoicePickerParentXP(@NotNull InputHelperType helper) {
         switch (datePickerType()) {
             case DATE_NUMBER_PICKER_MMM_dd_yyyy:
-                ClassNameType dp = AndroidView.Type.DATE_PICKER;
+                ClassNameProviderType dp = AndroidView.Type.DATE_PICKER;
                 CompoundAttribute dpAttr = CompoundAttribute.forClass(dp);
                 return XPath.builder().addAttribute(dpAttr).build();
 
             case TIME_NUMBER_PICKER_HH_mm:
-                ClassNameType tp = AndroidView.Type.TIME_PICKER;
+                ClassNameProviderType tp = AndroidView.Type.TIME_PICKER;
                 CompoundAttribute tpAttr = CompoundAttribute.forClass(tp);
                 return XPath.builder().addAttribute(tpAttr).build();
 

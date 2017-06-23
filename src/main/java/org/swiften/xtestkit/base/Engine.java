@@ -14,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
@@ -37,7 +38,6 @@ import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
 import org.swiften.xtestkit.test.TestListenerType;
 import org.swiften.javautilities.protocol.DistinctiveType;
-import org.swiften.javautilities.protocol.RetryType;
 import org.swiften.xtestkitcomponents.lifecycle.TestLifecycleType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
@@ -272,16 +272,16 @@ public abstract class Engine<D extends WebDriver> implements
     //region Test Setup
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see TestLifecycleType#rxa_beforeClass(RetryType)
+     * @see TestLifecycleType#rxa_beforeClass(RetryProviderType)
      * @see Address#isLocalInstance()
      * @see #address()
-     * @see #rxa_startLocalAppium(RetryType)
+     * @see #rxa_startLocalAppium(RetryProviderType)
      */
     @NotNull
     @Override
-    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_beforeClass(@NotNull RetryProviderType param) {
         if (address().isLocalInstance()) {
             return rxa_startLocalAppium(param);
         } else {
@@ -291,9 +291,9 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see TestLifecycleType#rxa_afterClass(RetryType)
+     * @see TestLifecycleType#rxa_afterClass(RetryProviderType)
      * @see Address#isLocalInstance()
      * @see Address#port()
      * @see BooleanUtil#toTrue(Object)
@@ -305,7 +305,7 @@ public abstract class Engine<D extends WebDriver> implements
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public Flowable<Boolean> rxa_afterClass(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_afterClass(@NotNull RetryProviderType param) {
         final Engine<?> THIS = this;
         NetworkHandler HANDLER = networkHandler();
         final Address ADDRESS = address();
@@ -333,23 +333,23 @@ public abstract class Engine<D extends WebDriver> implements
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see TestLifecycleType#rxa_beforeMethod(RetryType)
+     * @see TestLifecycleType#rxa_beforeMethod(RetryProviderType)
      */
     @NotNull
-    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_beforeMethod(@NotNull RetryProviderType param) {
         return Flowable.just(true);
     }
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link RetryType} instance.
+     * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see TestLifecycleType#rxa_afterMethod(RetryType)
+     * @see TestLifecycleType#rxa_afterMethod(RetryProviderType)
      */
     @NotNull
-    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryType param) {
+    public Flowable<Boolean> rxa_afterMethod(@NotNull RetryProviderType param) {
         return Flowable.just(true);
     }
     //endregion
@@ -379,16 +379,16 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Start the Appium driver. If {@link EngineCapabilityType#isComplete(Map)}
      * returns false, throw {@link Exception}.
-     * @param PARAM {@link RetryType} instance.
+     * @param PARAM {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see EngineCapabilityType#isComplete(Map)
      * @see EngineCapabilityType#distill(Map)
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see #driver(String, DesiredCapabilities)
      * @see #NOT_AVAILABLE
      */
     @NotNull
-    public Flowable<Boolean> rxa_startDriver(@NotNull final RetryType PARAM) {
+    public Flowable<Boolean> rxa_startDriver(@NotNull final RetryProviderType PARAM) {
         EngineCapabilityType capType = capabilityType();
         Map<String,Object> caps = capabilities();
 

@@ -4,7 +4,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
@@ -22,7 +22,7 @@ public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSEngineCapability CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;
-    @NotNull private final RetryType RETRY;
+    @NotNull private final RetryProviderType RETRY;
 
     {
         ENGINE = spy(IOSEngine.builder()
@@ -36,8 +36,8 @@ public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
         /* We spy this class to check for method calls */
         PROCESS_RUNNER = spy(new ProcessRunner());
 
-        /* Use this parameter when a RetryType is needed */
-        RETRY = mock(RetryType.class);
+        /* Use this parameter when a RetryProviderType is needed */
+        RETRY = mock(RetryProviderType.class);
     }
 
     @BeforeMethod

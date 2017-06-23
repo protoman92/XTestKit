@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.base.param;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.protocol.RepeatType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkit.base.Engine;
 
@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * Parameter object for {@link Engine#rxa_navigateBack(RepeatType)}.
+ * Parameter object for {@link Engine#rxa_navigateBack(RepeatProviderType)}.
  */
-public final class NavigateBack implements RepeatType, RetryType {
+public final class NavigateBack implements RepeatProviderType, RetryProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -35,7 +35,7 @@ public final class NavigateBack implements RepeatType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see Constants#DEFAULT_RETRIES
      */
     @Override
@@ -46,7 +46,7 @@ public final class NavigateBack implements RepeatType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RepeatType#times()
+     * @see RepeatProviderType#times()
      * @see #times
      */
     @Override
@@ -57,7 +57,7 @@ public final class NavigateBack implements RepeatType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RepeatType#delay()
+     * @see RepeatProviderType#delay()
      * @see #delay
      */
     @Override
@@ -68,7 +68,7 @@ public final class NavigateBack implements RepeatType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RepeatType#timeUnit()
+     * @see RepeatProviderType#timeUnit()
      * @see Constants#DEFAULT_TIME_UNIT
      */
     @NotNull

@@ -47,13 +47,13 @@ public interface CalendarDateActionType extends
      * Override this method to provide default implementation.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateActionType#rxa_openPicker(DateType, CalendarUnit)
+     * @see DateActionType#rxa_openPicker(DateProviderType, CalendarUnit)
      * @see CalendarUnit#YEAR
-     * @see #rxa_openYearPicker(DateType)
+     * @see #rxa_openYearPicker(DateProviderType)
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+    default Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                              @NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
@@ -66,18 +66,18 @@ public interface CalendarDateActionType extends
 
     /**
      * Override this method to provide default implementation.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see CalendarUnit#YEAR
      * @see CalendarUnit#DAY
-     * @see #rxa_calibrateDate(DateType)
-     * @see #rxa_scrollAndSelect(DateType, CalendarUnit)
+     * @see #rxa_calibrateDate(DateProviderType)
+     * @see #rxa_scrollAndSelect(DateProviderType, CalendarUnit)
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @Override
-    default Flowable<Boolean> rxa_select(@NotNull DateType param,
+    default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                          @NotNull CalendarUnit unit) {
         switch (unit) {
             case YEAR:
@@ -103,7 +103,7 @@ public interface CalendarDateActionType extends
      * so in this case an additional iteration is required.
      * This is called the calibration phase because year selection should
      * have brought the picker close to the date we want.
-     * @param PARAM {@link DateType} instance.
+     * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
      * @see AndroidSDK#isAtLeastM()
      * @see Attribute.Builder#addAttribute(String)
@@ -118,8 +118,8 @@ public interface CalendarDateActionType extends
      * @see CalendarUnit#MONTH
      * @see CalendarUnit#DAY
      * @see CalendarUnit#value()
-     * @see DateType#date()
-     * @see DateType#dateString(String)
+     * @see DateProviderType#date()
+     * @see DateProviderType#dateString(String)
      * @see DateUtil#notEarlierThan(Date, Date)
      * @see Direction#horizontal(boolean)
      * @see Direction#vertical(boolean)
@@ -134,12 +134,12 @@ public interface CalendarDateActionType extends
      * @see #swipeOnce(SwipeParamType)
      * @see #rxa_click(WebElement)
      * @see #rxe_byXPath(ByXPath...)
-     * @see #rxe_displayedDate(DateType)
-     * @see #rxe_pickerView(DateType, CalendarUnit)
-     * @see #rxv_hasDate(DateType)
+     * @see #rxe_displayedDate(DateProviderType)
+     * @see #rxe_pickerView(DateProviderType, CalendarUnit)
+     * @see #rxv_hasDate(DateProviderType)
      */
     @NotNull
-    default Flowable<Boolean> rxa_calibrateDate(@NotNull final DateType PARAM) {
+    default Flowable<Boolean> rxa_calibrateDate(@NotNull final DateProviderType PARAM) {
         final CalendarDateActionType THIS = this;
         final Date DATE = PARAM.date();
 
@@ -230,15 +230,15 @@ public interface CalendarDateActionType extends
 
     /**
      * Open the year picker.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
      * @see BooleanUtil#toTrue(Object)
      * @see CalendarUnit#YEAR
      * @see #rxa_click(WebElement)
-     * @see #rxe_elementLabel(DateType, CalendarUnit)
+     * @see #rxe_elementLabel(DateProviderType, CalendarUnit)
      */
     @NotNull
-    default Flowable<Boolean> rxa_openYearPicker(@NotNull DateType param) {
+    default Flowable<Boolean> rxa_openYearPicker(@NotNull DateProviderType param) {
         final CalendarDateActionType THIS = this;
 
         return rxe_elementLabel(param, CalendarUnit.YEAR)
@@ -249,7 +249,7 @@ public interface CalendarDateActionType extends
     /**
      * Select a component by scrolling until the component {@link String} is
      * visible.
-     * @param PARAM {@link DateType} instance.
+     * @param PARAM {@link DateProviderType} instance.
      * @param UNIT {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see Attributes#containsText(String)
@@ -260,19 +260,19 @@ public interface CalendarDateActionType extends
      * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see DatePickerType#targetItemXP(CalendarUnit)
      * @see DateParam.Builder#withDate(Date)
-     * @see DateParam.Builder#withDateType(DateType)
-     * @see DateType#component(CalendarUnit)
-     * @see DateType#datePickerType()
+     * @see DateParam.Builder#withDateProvider(DateProviderType)
+     * @see DateProviderType#component(CalendarUnit)
+     * @see DateProviderType#datePickerType()
      * @see MultiSwipeType#rxa_performAction()
      * @see XPath.Builder#addAttribute(AttributeType)
-     * @see #displayString(DateType, CalendarUnit)
+     * @see #displayString(DateProviderType, CalendarUnit)
      * @see #getText(WebElement)
      * @see #platform()
      * @see #rxa_click(WebElement)
-     * @see #rxe_pickerView(DateType, CalendarUnit)
+     * @see #rxe_pickerView(DateProviderType, CalendarUnit)
      */
     @NotNull
-    default Flowable<Boolean> rxa_scrollAndSelect(@NotNull final DateType PARAM,
+    default Flowable<Boolean> rxa_scrollAndSelect(@NotNull final DateProviderType PARAM,
                                                   @NotNull final CalendarUnit UNIT) {
         final CalendarDateActionType THIS = this;
         final String CP_STRING = displayString(PARAM, UNIT);
@@ -306,7 +306,8 @@ public interface CalendarDateActionType extends
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
-                    .map(a -> DateParam.builder().withDateType(PARAM).withDate(a))
+                    .map(a -> DateParam.builder()
+                        .withDateProvider(PARAM).withDate(a))
                     .map(DateParam.Builder::build)
                     .map(a -> a.component(UNIT))
                     .map(a -> a - COMPONENT);
@@ -318,7 +319,8 @@ public interface CalendarDateActionType extends
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
-                    .map(a -> DateParam.builder().withDateType(PARAM).withDate(a))
+                    .map(a -> DateParam.builder()
+                        .withDateProvider(PARAM).withDate(a))
                     .map(DateParam.Builder::build)
                     .map(a -> a.component(UNIT))
                     .filter(a -> a > COMPONENT);
@@ -330,7 +332,8 @@ public interface CalendarDateActionType extends
                 return Flowable.just(element)
                     .map(THIS::getText)
                     .map(FORMATTER::parse)
-                    .map(a -> DateParam.builder().withDateType(PARAM).withDate(a))
+                    .map(a -> DateParam.builder()
+                        .withDateProvider(PARAM).withDate(a))
                     .map(DateParam.Builder::build)
                     .map(a -> a.component(UNIT))
                     .filter(a -> a < COMPONENT);
@@ -379,15 +382,15 @@ public interface CalendarDateActionType extends
     /**
      * Get the list view items that corresponds to {@link CalendarUnit}. This
      * assumes the user is already in a picker view.
-     * @param param {@link DateType} instance.
+     * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateType#datePickerType()
+     * @see DateProviderType#datePickerType()
      * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
-    default Flowable<WebElement> rxe_listViewItems(@NotNull DateType param,
+    default Flowable<WebElement> rxe_listViewItems(@NotNull DateProviderType param,
                                                    @NotNull CalendarUnit unit) {
         DatePickerType pickerType = param.datePickerType();
         return rxe_withXPath(pickerType.pickerItemXP(unit));

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.javautilities.protocol.DelayType;
+import org.swiften.javautilities.protocol.DelayProviderType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
-import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,13 +26,13 @@ public interface ActionType<D extends WebDriver> extends
 {
     /**
      * Implicitly wait before search for elements.
-     * @param param {@link DelayType} param.
+     * @param param {@link DelayProviderType} param.
      * @return {@link Flowable} instance.
      * @see WebDriver.Options#timeouts()
      * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
      */
     @NotNull
-    default Flowable<Boolean> rxa_implicitlyWait(@NotNull DelayType param) {
+    default Flowable<Boolean> rxa_implicitlyWait(@NotNull DelayProviderType param) {
         final WebDriver.Timeouts TIMEOUTS = driver().manage().timeouts();
         final long DELAY = param.delay();
         final TimeUnit UNIT = param.timeUnit();
@@ -63,14 +63,14 @@ public interface ActionType<D extends WebDriver> extends
 
     /**
      * Navigate backwards for certain number of times.
-     * @param param {@link RepeatType} object.
+     * @param param {@link RepeatProviderType} object.
      * @return {@link Flowable} instance.
-     * @see RepeatType#times()
-     * @see RepeatType#delay()
+     * @see RepeatProviderType#times()
+     * @see RepeatProviderType#delay()
      * @see #rxa_navigateBackOnce()
      */
     @NotNull
-    default Flowable<Boolean> rxa_navigateBack(@NotNull RepeatType param) {
+    default Flowable<Boolean> rxa_navigateBack(@NotNull RepeatProviderType param) {
         int times = param.times();
         long delay = param.delay();
         TimeUnit unit = TimeUnit.MILLISECONDS;

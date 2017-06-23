@@ -7,12 +7,12 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateActionType;
-import org.swiften.xtestkit.base.element.date.DateType;
+import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
@@ -75,35 +75,35 @@ public final class TestTypes {
     public interface TestDateActionType extends DateActionType<WebDriver> {
         @NotNull
         @Override
-        default Flowable<Boolean> rxa_openPicker(@NotNull DateType param,
+        default Flowable<Boolean> rxa_openPicker(@NotNull DateProviderType param,
                                                  @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Boolean> rxa_select(@NotNull DateType param,
+        default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                              @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<Integer> rxe_displayedUnit(@NotNull DateType param,
+        default Flowable<Integer> rxe_displayedUnit(@NotNull DateProviderType param,
                                                     @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default Flowable<WebElement> rxe_elementLabel(@NotNull DateType param,
+        default Flowable<WebElement> rxe_elementLabel(@NotNull DateProviderType param,
                                                       @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
 
         @NotNull
         @Override
-        default String valueString(@NotNull DateType param, @NotNull CalendarUnit unit) {
+        default String valueString(@NotNull DateProviderType param, @NotNull CalendarUnit unit) {
             throw new RuntimeException(NOT_AVAILABLE);
         }
     }
@@ -172,6 +172,6 @@ public final class TestTypes {
 
     public interface TestTapType extends TapType<WebDriver> {
         @Override
-        default <P extends TapParamType & RetryType> void tap(@NotNull P param) {}
+        default <P extends TapParamType & RetryProviderType> void tap(@NotNull P param) {}
     }
 }

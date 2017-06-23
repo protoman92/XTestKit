@@ -5,7 +5,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import org.testng.annotations.AfterMethod;
@@ -26,7 +26,7 @@ public final class XCRunHandlerTest {
     @NotNull private final XCRunHandler XC_HANDLER;
     @NotNull private final ProcessRunner RUNNER;
     @NotNull private final StartSimulatorParam SS_PARAM;
-    @NotNull private final RetryType RETRY;
+    @NotNull private final RetryProviderType RETRY;
     @NotNull private final String DEVICE_NAME;
     @NotNull private final String DEVICE_UID;
 
@@ -36,9 +36,9 @@ public final class XCRunHandlerTest {
         /* We spy this class to check for method calls */
         RUNNER = spy(new ProcessRunner());
 
-        /* Use this parameter when a RetryType is needed */
+        /* Use this parameter when a RetryProviderType is needed */
         SS_PARAM = mock(StartSimulatorParam.class);
-        RETRY = mock(RetryType.class);
+        RETRY = mock(RetryProviderType.class);
 
         DEVICE_NAME = "iPhone 7 Plus";
 

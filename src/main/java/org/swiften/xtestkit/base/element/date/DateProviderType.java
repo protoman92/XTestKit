@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.base.element.date;
 
 import org.jetbrains.annotations.NotNull;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkitcomponents.property.base.ValueType;
-import org.swiften.javautilities.protocol.RetryType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,9 +15,9 @@ import java.util.List;
 
 /**
  * This interface provides parameter properties for
- * {@link DateActionType#rxa_selectDate(DateType)}
+ * {@link DateActionType#rxa_selectDate(DateProviderType)}
  */
-public interface DateType extends RetryType {
+public interface DateProviderType extends RetryProviderType {
     /**
      * Get the associated {@link Date} instance to select.
      * @return {@link Date} instance.

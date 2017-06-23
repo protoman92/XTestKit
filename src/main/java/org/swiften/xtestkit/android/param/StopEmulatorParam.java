@@ -1,8 +1,8 @@
 package org.swiften.xtestkit.android.param;
 
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
-import org.swiften.xtestkitcomponents.system.network.type.PortType;
+import org.swiften.xtestkitcomponents.system.network.type.PortProviderType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * Parameter object for
  * {@link ADBHandler#rxa_stopEmulator(StopEmulatorParam)}
  */
-public class StopEmulatorParam implements RetryType, PortType {
+public class StopEmulatorParam implements RetryProviderType, PortProviderType {
     @NotNull
     public static StopEmulatorParam DEFAULT;
 
@@ -30,23 +30,27 @@ public class StopEmulatorParam implements RetryType, PortType {
 
     StopEmulatorParam() {}
 
-    //region RetryType
+    /**
+     * Override this method to provide default implementation.
+     * @return {@link Integer} value.
+     * @see RetryProviderType#retries()
+     * @see #retries
+     */
     @Override
     public int retries() {
         return retries;
     }
-    //endregion
 
-    //region PortType
     /**
-     * Return {@link #port}.
+     * Override this method to provide default implementation.
      * @return {@link Integer} value.
+     * @see PortProviderType#port()
+     * @see #port
      */
     @Override
     public int port() {
         return port;
     }
-    //endregion
 
     public static final class Builder {
         @NotNull final StopEmulatorParam PARAM;
@@ -79,23 +83,23 @@ public class StopEmulatorParam implements RetryType, PortType {
 
         /**
          * Set {@link #retries} value.
-         * @param param {@link RetryType} instance.
+         * @param param {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType param) {
+        public Builder withRetryProvider(@NotNull RetryProviderType param) {
             return this.withRetries(param.retries());
         }
 
         /**
          * Set {@link #port}.
-         * @param param {@link PortType} instance.
+         * @param param {@link PortProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withPort(int)
          */
         @NotNull
-        public Builder withPortType(@NotNull PortType param) {
+        public Builder withPortProvider(@NotNull PortProviderType param) {
             return this.withPort(param.port());
         }
 

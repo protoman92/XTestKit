@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.android.adb;
 
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
 
 /**
  * Created by haipham on 4/8/17.
@@ -32,7 +32,7 @@ public interface ADBDelayType {
     /**
      * Use this timeout for operations that change device/emulator settings,
      * such as
-     * {@link ADBHandler#rxa_disableAnimations(DeviceUIDType)}.
+     * {@link ADBHandler#rxa_disableAnimations(DeviceUIDProviderType)}.
      * @return {@link Long} value.
      */
     default long emulatorSettingTimeout() {

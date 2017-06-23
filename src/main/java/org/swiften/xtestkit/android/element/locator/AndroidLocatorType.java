@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
@@ -37,7 +37,7 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_window()
      * @see CompoundAttribute#empty()
-     * @see CompoundAttribute#withClass(ClassNameType)
+     * @see CompoundAttribute#withClass(ClassNameProviderType)
      * @see CompoundAttribute#withIndex(Integer)
      * @see XPath.Builder#addAttribute(CompoundAttribute)
      * @see AndroidView.Type#FRAME_LAYOUT
@@ -59,7 +59,7 @@ public interface AndroidLocatorType extends LocatorType<AndroidDriver<AndroidEle
      * @return {@link Flowable} instance.
      * @see LocatorType#rxe_imageViews()
      * @see AndroidView.Type#IMAGE_VIEW
-     * @see #rxe_ofClass(ClassNameType[])
+     * @see #rxe_ofClass(ClassNameProviderType[])
      */
     @NotNull
     @Override

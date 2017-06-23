@@ -7,7 +7,7 @@ import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 /**
@@ -190,7 +190,7 @@ public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
      * @param unit {@link CalendarUnit} instance.
      * @return {@link XPath} instance.
      * @see DatePickerType#pickerViewXP(CalendarUnit)
-     * @see CompoundAttribute.Builder#withClass(ClassNameType)
+     * @see CompoundAttribute.Builder#withClass(ClassNameProviderType)
      * @see CompoundAttribute.Builder#withIndex(Integer)
      * @see CompoundAttribute.Builder#withPath(Path)
      * @see XPath.Builder#addAttribute(AttributeType)

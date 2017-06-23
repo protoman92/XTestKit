@@ -9,7 +9,7 @@ import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.javautilities.protocol.ClassNameType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -35,13 +35,13 @@ public interface IOSChoiceInputType {
      * Get the scroll view picker {@link XPath} for {@link Platform#IOS}.
      * @param helper {@link InputHelperType} instance.*
      * @return {@link XPath} instance.
-     * @see CompoundAttribute#forClass(ClassNameType)
+     * @see CompoundAttribute#forClass(ClassNameProviderType)
      * @see IOSView.Type#UI_PICKER_WHEEL
      * @see XPath.Builder#addAttribute(AttributeType)
      */
     @NotNull
     default XPath iOSScrollViewPickerXP(@NotNull InputHelperType helper) {
-        ClassNameType param = IOSView.Type.UI_PICKER_WHEEL;
+        ClassNameProviderType param = IOSView.Type.UI_PICKER_WHEEL;
         CompoundAttribute attribute = CompoundAttribute.forClass(param);
         return XPath.builder().addAttribute(attribute).build();
     }

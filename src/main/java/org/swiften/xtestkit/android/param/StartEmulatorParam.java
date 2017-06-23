@@ -1,10 +1,10 @@
 package org.swiften.xtestkit.android.param;
 
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.AndroidInstance;
-import org.swiften.xtestkit.android.type.DeviceUIDType;
-import org.swiften.xtestkitcomponents.system.network.type.PortType;
+import org.swiften.xtestkit.android.type.DeviceUIDProviderType;
+import org.swiften.xtestkitcomponents.system.network.type.PortProviderType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
  * {@link ADBHandler#rxa_startEmulator(StartEmulatorParam)}
  */
 public class StartEmulatorParam implements
-    DeviceUIDType,
-    RetryType,
-    PortType
+    DeviceUIDProviderType,
+    RetryProviderType,
+    PortProviderType
 {
     @NotNull public static StartEmulatorParam DEFAULT;
 
@@ -135,22 +135,22 @@ public class StartEmulatorParam implements
 
         /**
          * Set {@link #retries}.
-         * @param param {@link RetryType} instance.
+         * @param param {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType param) {
+        public Builder withRetryProvider(@NotNull RetryProviderType param) {
             return this.withRetries(param.retries());
         }
 
         /**
-         * Set {@link #PARAM#deviceUID} from {@link DeviceUIDType}
+         * Set {@link #PARAM#deviceUID} from {@link DeviceUIDProviderType}
          * instance.
-         * @param param {@link DeviceUIDType} instance.
+         * @param param {@link DeviceUIDProviderType} instance.
          * @return {@link Builder} instance.
          */
         @NotNull
-        public Builder withDeviceUIDType(@NotNull DeviceUIDType param) {
+        public Builder withDeviceUIDProvider(@NotNull DeviceUIDProviderType param) {
             return this.withDeviceUID(param.deviceUID());
         }
 
@@ -163,7 +163,7 @@ public class StartEmulatorParam implements
         public Builder withAndroidInstance(@NotNull AndroidInstance instance) {
             return this
                 .withDeviceName(instance.deviceName())
-                .withDeviceUIDType(instance)
+                .withDeviceUIDProvider(instance)
                 .withPort(instance.port());
         }
 

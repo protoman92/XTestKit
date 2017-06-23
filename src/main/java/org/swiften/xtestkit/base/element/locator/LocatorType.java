@@ -14,18 +14,18 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.base.type.PlatformViewProviderType;
-import org.swiften.javautilities.protocol.ClassNameType;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.property.base.FormatType;
+import org.swiften.xtestkitcomponents.property.base.FormatProviderType;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
-import org.swiften.xtestkitcomponents.property.base.StringType;
+import org.swiften.xtestkitcomponents.property.base.StringProviderType;
 import org.swiften.xtestkitcomponents.property.sub.ContainsIDType;
 import org.swiften.xtestkitcomponents.property.sub.OfClassType;
 import org.swiften.xtestkitcomponents.view.ViewType;
@@ -195,7 +195,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#ofClass(String)
      * @see ByXPath.Builder#withError(String)
-     * @see ByXPath.Builder#withRetryType(RetryType)
+     * @see ByXPath.Builder#withRetryProvider(RetryProviderType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see P#value()
      * @see XPath.Builder#addAttribute(AttributeType)
@@ -203,7 +203,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see #platform()
      */
     @NotNull
-    default <P extends OfClassType & RetryType> ByXPath ofClassQuery(@NotNull P param) {
+    default <P extends OfClassType & RetryProviderType> ByXPath ofClassQuery(@NotNull P param) {
         Attributes attrs = Attributes.of(this);
 
         XPath xpath = XPath.builder()
@@ -213,7 +213,7 @@ public interface LocatorType<D extends WebDriver> extends
         return ByXPath.builder()
             .withXPath(xpath)
             .withError(noElementsWithClass(param.value()))
-            .withRetryType(param)
+            .withRetryProvider(param)
             .build();
     }
 
@@ -227,7 +227,7 @@ public interface LocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends OfClassType & RetryType> Flowable<WebElement>
+    default <P extends OfClassType & RetryProviderType> Flowable<WebElement>
     rxe_ofClass(@NotNull P...param) {
         final LocatorType<?> THIS = this;
 
@@ -258,21 +258,21 @@ public interface LocatorType<D extends WebDriver> extends
     }
 
     /**
-     * Same as above, but uses {@link ClassNameType} varargs.
-     * @param params {@link ClassNameType} varargs.
+     * Same as above, but uses {@link ClassNameProviderType} varargs.
+     * @param params {@link ClassNameProviderType} varargs.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see ClassNameType#className()
+     * @see ClassNameProviderType#className()
      * @see #rxe_ofClass(String...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
     default <P extends
-        ClassNameType> Flowable<WebElement> rxe_ofClass(@NotNull P...params) {
+        ClassNameProviderType> Flowable<WebElement> rxe_ofClass(@NotNull P...params) {
         final LocatorType<?> THIS = this;
 
         return Flowable.fromArray(params)
-            .map(ClassNameType::className)
+            .map(ClassNameProviderType::className)
             .toList().map(a -> a.toArray(new String[a.size()]))
             .toFlowable()
             .flatMap(THIS::rxe_ofClass);
@@ -288,7 +288,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#containsID(String)
      * @see ByXPath.Builder#withError(String)
-     * @see ByXPath.Builder#withRetryType(RetryType)
+     * @see ByXPath.Builder#withRetryProvider(RetryProviderType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see P#value()
      * @see XPath.Builder#addAttribute(AttributeType)
@@ -296,7 +296,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see #platform()
      */
     @NotNull
-    default <P extends ContainsIDType & RetryType> ByXPath containsIDQuery(@NotNull P param) {
+    default <P extends ContainsIDType & RetryProviderType> ByXPath containsIDQuery(@NotNull P param) {
         Attributes attrs = Attributes.of(this);
 
         XPath xpath = XPath.builder()
@@ -306,7 +306,7 @@ public interface LocatorType<D extends WebDriver> extends
         return ByXPath.builder()
             .withXPath(xpath)
             .withError(noElementsWithId(param.value()))
-            .withRetryType(param)
+            .withRetryProvider(param)
             .build();
     }
 
@@ -320,7 +320,7 @@ public interface LocatorType<D extends WebDriver> extends
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends ContainsIDType & RetryType> Flowable<WebElement>
+    default <P extends ContainsIDType & RetryProviderType> Flowable<WebElement>
     rxe_containsID(@NotNull P...param) {
         final LocatorType<?> THIS = this;
 
@@ -360,7 +360,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see Attributes#hasText(String)
      * @see Attributes#of(PlatformProviderType)
      * @see ByXPath.Builder#withError(String)
-     * @see ByXPath.Builder#withRetryType(RetryType)
+     * @see ByXPath.Builder#withRetryProvider(RetryProviderType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see LocalizerType#localize(String)
      * @see P#value()
@@ -370,7 +370,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see #platform()
      */
     @NotNull
-    default <P extends StringType & RetryType> ByXPath hasTextQuery(@NotNull P param) {
+    default <P extends StringProviderType & RetryProviderType> ByXPath hasTextQuery(@NotNull P param) {
         LocalizerType localizer = localizer();
         String localized = localizer.localize(param.value());
         Attributes attrs = Attributes.of(this);
@@ -382,7 +382,7 @@ public interface LocatorType<D extends WebDriver> extends
         return ByXPath.builder()
             .withXPath(xpath)
             .withError(noElementsWithText(localized))
-            .withRetryType(param)
+            .withRetryProvider(param)
             .build();
     }
 
@@ -392,12 +392,12 @@ public interface LocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #hasTextQuery(StringType)
+     * @see #hasTextQuery(StringProviderType)
      * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement>
+    default <P extends StringProviderType & RetryProviderType> Flowable<WebElement>
     rxe_withText(@NotNull P...param) {
         final LocatorType<?> THIS = this;
 
@@ -413,7 +413,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param text A varargs of {@link String} values.
      * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
-     * @see #rxe_withText(StringType[])
+     * @see #rxe_withText(StringProviderType[])
      */
     @NotNull
     default Flowable<WebElement> rxe_withText(@NotNull String...text) {
@@ -435,7 +435,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @return {@link ByXPath} instance.
      * @see Attributes#of(PlatformProviderType)
      * @see ByXPath.Builder#withError(String)
-     * @see ByXPath.Builder#withRetryType(RetryType)
+     * @see ByXPath.Builder#withRetryProvider(RetryProviderType)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see LocalizerType#localize(String)
      * @see P#value()
@@ -446,7 +446,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see #platform()
      */
     @NotNull
-    default <P extends StringType & RetryType> ByXPath containsTextQuery(@NotNull P param) {
+    default <P extends StringProviderType & RetryProviderType> ByXPath containsTextQuery(@NotNull P param) {
         LocalizerType localizer = localizer();
         String localized = localizer.localize(param.value());
         Attributes attrs = Attributes.of(this);
@@ -458,7 +458,7 @@ public interface LocatorType<D extends WebDriver> extends
         return ByXPath.builder()
             .withXPath(xpath)
             .withError(noElementsContainingText(localized))
-            .withRetryType(param)
+            .withRetryProvider(param)
             .build();
     }
 
@@ -468,12 +468,12 @@ public interface LocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #containsTextQuery(StringType)
+     * @see #containsTextQuery(StringProviderType)
      * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends StringType & RetryType> Flowable<WebElement>
+    default <P extends StringProviderType & RetryProviderType> Flowable<WebElement>
     rxe_containsText(@NotNull P...param) {
         final LocatorType<?> THIS = this;
 
@@ -490,7 +490,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param text A vararg of {@link String} values.
      * @return {@link Flowable} instance.
      * @see TextParam.Builder#withText(String)
-     * @see #rxe_containsText(StringType[])
+     * @see #rxe_containsText(StringProviderType[])
      */
     @NotNull
     default Flowable<WebElement> rxe_containsText(@NotNull String...text) {
@@ -511,18 +511,18 @@ public interface LocatorType<D extends WebDriver> extends
      * @see LocalizerType#localize(LCFormat)
      * @see P#value()
      * @see TextParam.Builder#shouldIgnoreCase(IgnoreCaseType)
-     * @see TextParam.Builder#withRetryType(RetryType)
+     * @see TextParam.Builder#withRetryProvider(RetryProviderType)
      * @see TextParam.Builder#withText(String)
      * @see #localizer()
      */
     @NotNull
-    default <P extends FormatType & RetryType> TextParam containsTextQuery(@NotNull P param) {
+    default <P extends FormatProviderType & RetryProviderType> TextParam containsTextQuery(@NotNull P param) {
         String localized = localizer().localize(param.value());
 
         return TextParam.builder()
             .withText(localized)
             .shouldIgnoreCase(param)
-            .withRetryType(param)
+            .withRetryProvider(param)
             .build();
     }
 
@@ -532,12 +532,12 @@ public interface LocatorType<D extends WebDriver> extends
      * @param param A varargs of {@link P} instances.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #containsTextQuery(FormatType)
-     * @see #rxe_containsText(StringType[])
+     * @see #containsTextQuery(FormatProviderType)
+     * @see #rxe_containsText(StringProviderType[])
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    default <P extends FormatType & RetryType> Flowable<WebElement>
+    default <P extends FormatProviderType & RetryProviderType> Flowable<WebElement>
     rxe_containsText(@NotNull P...param) {
         final LocatorType<?> THIS = this;
 
@@ -553,7 +553,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @param format A vararg of {@link LCFormat} instances.
      * @return {@link Flowable} instance.
      * @see TextFormatParam.Builder#withLCFormat(LCFormat)
-     * @see #rxe_containsText(FormatType[])
+     * @see #rxe_containsText(FormatProviderType[])
      */
     @NotNull
     default Flowable<WebElement> rxe_containsText(@NotNull LCFormat...format) {

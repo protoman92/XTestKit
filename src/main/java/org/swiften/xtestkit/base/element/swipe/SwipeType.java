@@ -15,8 +15,8 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.DirectionParam;
 import org.swiften.xtestkit.base.type.DriverProviderType;
-import org.swiften.javautilities.protocol.DurationType;
-import org.swiften.javautilities.protocol.RepeatType;
+import org.swiften.javautilities.protocol.DurationProviderType;
+import org.swiften.javautilities.protocol.RepeatProviderType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 
@@ -49,20 +49,20 @@ public interface SwipeType<D extends WebDriver> extends
      * @see SwipeParam.Builder#withEndX(int)
      * @see SwipeParam.Builder#withStartY(int)
      * @see SwipeParam.Builder#withEndY(int)
-     * @see SwipeParam.Builder#withRepeatableType(RepeatType)
-     * @see SwipeParam.Builder#withDurationType(DurationType)
+     * @see SwipeParam.Builder#withRepeatProvider(RepeatProviderType)
+     * @see SwipeParam.Builder#withDurationProvider(DurationProviderType)
      * @see org.swiften.xtestkitcomponents.direction.Direction#DOWN_UP
      * @see org.swiften.xtestkitcomponents.direction.Direction#LEFT_RIGHT
      * @see org.swiften.xtestkitcomponents.direction.Direction#RIGHT_LEFT
      * @see org.swiften.xtestkitcomponents.direction.Direction#UP_DOWN
-     * @see #rxa_swipe(RepeatType)
+     * @see #rxa_swipe(RepeatProviderType)
      * @see #NOT_AVAILABLE
      */
     @NotNull
     default <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> Flowable<Boolean> rxa_swipeGeneric(
             @NotNull Point origin,
             @NotNull Dimension size,
@@ -116,8 +116,8 @@ public interface SwipeType<D extends WebDriver> extends
             .withStartY(startY)
             .withEndX(endX)
             .withEndY(endY)
-            .withRepeatableType(param)
-            .withDurationType(param)
+            .withRepeatProvider(param)
+            .withDurationProvider(param)
             .build();
 
         return rxa_swipe(swipeParam);
@@ -136,8 +136,8 @@ public interface SwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> Flowable<WebElement> rxa_swipeGeneric(
             @NotNull final WebElement ELEMENT,
             @NotNull P param
@@ -164,8 +164,8 @@ public interface SwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> Flowable<WebElement> rxa_swipeThenReverse(
             @NotNull final WebElement ELEMENT,
             @NotNull P param
@@ -195,8 +195,8 @@ public interface SwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> Flowable<WebElement> rxa_swipeGeneric(
             @NotNull final P PARAM
     ) {
@@ -215,8 +215,8 @@ public interface SwipeType<D extends WebDriver> extends
     @NotNull
     default <P extends
         DirectionProviderType &
-        DurationType &
-        RepeatType &
+        DurationProviderType &
+        RepeatProviderType &
         RLSwipePositionType> Flowable<WebElement> rxa_swipeThenReverse(
             @NotNull final P PARAM
     ) {

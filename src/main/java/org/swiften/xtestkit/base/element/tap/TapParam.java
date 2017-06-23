@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.base.element.tap;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.protocol.RetryType;
+import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 
 /**
@@ -13,7 +13,7 @@ import org.swiften.javautilities.util.Constants;
  * {@link TapType#tap(TapParamType)}
  */
 @SuppressWarnings("WeakerAccess")
-public class TapParam implements TapParamType, RetryType {
+public class TapParam implements TapParamType, RetryProviderType {
     /**
      * Get a new {@link Builder} instance.
      * @return {@link Builder} instance.
@@ -54,7 +54,7 @@ public class TapParam implements TapParamType, RetryType {
     /**
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
-     * @see RetryType#retries()
+     * @see RetryProviderType#retries()
      * @see #retries
      */
     @Override
@@ -97,13 +97,13 @@ public class TapParam implements TapParamType, RetryType {
 
         /**
          * Set the {@link #x} and {@link #y} values.
-         * @param type {@link RetryType} instance.
+         * @param type {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withX(int)
          * @see #withY(int)
          */
         @NotNull
-        public Builder withTapType(@NotNull TapParamType type) {
+        public Builder withTapParam(@NotNull TapParamType type) {
             return withX(type.x()).withY(type.y());
         }
 
@@ -120,12 +120,12 @@ public class TapParam implements TapParamType, RetryType {
 
         /**
          * Set the {@link #retries} value.
-         * @param type {@link RetryType} instance.
+         * @param type {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
          * @see #withRetries(int)
          */
         @NotNull
-        public Builder withRetryType(@NotNull RetryType type) {
+        public Builder withRetryProvider(@NotNull RetryProviderType type) {
             return withRetries(type.retries());
         }
 
