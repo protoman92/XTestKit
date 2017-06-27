@@ -14,14 +14,14 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
+import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.xtestkit.base.type.PlatformViewProviderType;
-import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
 import org.swiften.xtestkitcomponents.property.base.FormatProviderType;
 import org.swiften.xtestkitcomponents.property.base.IgnoreCaseType;
@@ -37,6 +37,7 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides general locator capabilities.
@@ -62,7 +63,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @return {@link Flowable} instance.
      * @see ByXPath#error()
      * @see String#join(CharSequence, CharSequence...)
-     * @see #rxv_errorWithPageSource(String)
+     * @see #rxv_error(String)
      */
     @NotNull
     default <T> Flowable<T> rxe_xpathQueryFailure(@NotNull ByXPath...param) {
@@ -74,7 +75,7 @@ public interface LocatorType<D extends WebDriver> extends
             .map(a -> a.toArray(new String[a.size()]))
             .map(a -> String.join("\n", a))
             .toFlowable()
-            .flatMap(THIS::rxv_errorWithPageSource);
+            .flatMap(THIS::rxv_error);
     }
 
     /**
@@ -114,6 +115,7 @@ public interface LocatorType<D extends WebDriver> extends
             .map(ByXPath::xpath)
             .map(By::xpath)
             .flatMapIterable(DRIVER::<WebElement>findElements)
+            .timeout(elementLocateTimeout(), TimeUnit.MILLISECONDS)
             .switchIfEmpty(rxe_xpathQueryFailure(param))
             .retry(retries);
     }

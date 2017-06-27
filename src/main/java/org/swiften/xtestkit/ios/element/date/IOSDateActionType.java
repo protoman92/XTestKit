@@ -49,7 +49,7 @@ public interface IOSDateActionType extends
      * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
      * @see BooleanUtil#toTrue(Object)
      * @see #valueString(DateProviderType, CalendarUnit)
-     * @see #rxa_type(WebElement, String...)
+     * @see #rxa_sendValue(WebElement, String)
      * @see #rxe_pickerView(DateProviderType, CalendarUnit)
      */
     @NotNull
@@ -60,7 +60,7 @@ public interface IOSDateActionType extends
         String value = valueString(param, unit);
 
         return rxe_pickerView(param, unit)
-            .flatMap(a -> THIS.rxa_type(a, value))
+            .flatMap(a -> THIS.rxa_sendValue(a, value))
             .map(BooleanUtil::toTrue);
     }
 

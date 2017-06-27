@@ -10,13 +10,11 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
-import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.common.BaseErrorType;
-
-import java.util.Arrays;
+import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 /**
  * This interface provides methods to handle input views.
@@ -28,11 +26,11 @@ public interface InputActionType<D extends WebDriver> extends
     /**
      * Send {@link String} keys to {@link WebElement}.
      * @param element {@link WebElement} instance.
-     * @param text A varargs of {@link String} values.
+     * @param text {@link String} value.
      * @see WebElement#sendKeys(CharSequence...)
      */
-    default void type(@NotNull WebElement element, @NotNull String...text) {
-        LogUtil.printft("Sending '%s' to %s", Arrays.toString(text), element);
+    default void sendValue(@NotNull WebElement element, @NotNull String text) {
+        LogUtil.printft("Sending '%s' to %s", text, element);
         element.sendKeys(text);
     }
 
@@ -41,15 +39,15 @@ public interface InputActionType<D extends WebDriver> extends
      * @param ELEMENT The {@link WebElement} that will receive the key.
      * @param TEXT The {@link String} to be sent.
      * @return {@link Flowable} instance.
-     * @see #type(WebElement, String...)
+     * @see #sendValue(WebElement, String)
      */
     @NotNull
-    default Flowable<WebElement> rxa_type(@NotNull final WebElement ELEMENT,
-                                          @NotNull final String...TEXT) {
+    default Flowable<WebElement> rxa_sendValue(@NotNull final WebElement ELEMENT,
+                                               @NotNull final String TEXT) {
         final InputActionType THIS = this;
 
         return Completable
-            .fromAction(() -> THIS.type(ELEMENT, TEXT))
+            .fromAction(() -> THIS.sendValue(ELEMENT, TEXT))
             .<WebElement>toFlowable()
             .defaultIfEmpty(ELEMENT);
     }

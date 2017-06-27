@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.xtestkit.base.capability.BaseEngineCapability;
+import org.swiften.xtestkit.base.capability.EngineCapability;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.util.TestMessageType;
@@ -205,14 +205,14 @@ public final class EngineTest implements BaseErrorType, TestMessageType {
         }
     }
 
-    static class MockEngineCapability extends BaseEngineCapability {
+    static class MockEngineCapability extends EngineCapability {
         @NotNull
         @Override
         public PlatformType platform() {
             return mock(PlatformType.class);
         }
 
-        static final class Builder extends BaseEngineCapability.Builder<MockEngineCapability> {
+        static final class Builder extends EngineCapability.Builder<MockEngineCapability> {
             Builder() {
                 super(new MockEngineCapability());
             }

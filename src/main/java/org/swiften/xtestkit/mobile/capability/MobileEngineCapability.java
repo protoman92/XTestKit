@@ -3,7 +3,7 @@ package org.swiften.xtestkit.mobile.capability;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.TestMode;
-import org.swiften.xtestkit.base.capability.BaseEngineCapability;
+import org.swiften.xtestkit.base.capability.EngineCapability;
 
 import java.io.File;
 import java.util.*;
@@ -15,10 +15,10 @@ import java.util.*;
 /**
  * Extend this class to provide specific capabilities for mobile platforms.
  */
-public abstract class MobileEngineCapability extends BaseEngineCapability {
+public abstract class MobileEngineCapability extends EngineCapability {
     /**
      * @return {@link List} of {@link String}.
-     * @see BaseEngineCapability#requiredCapabilities()
+     * @see EngineCapability#requiredCapabilities()
      */
     @NotNull
     @Override
@@ -39,7 +39,7 @@ public abstract class MobileEngineCapability extends BaseEngineCapability {
     /**
      * @param capabilities {@link Map} instance.
      * @return {@link Map} instance.
-     * @see BaseEngineCapability#distill(Map)
+     * @see EngineCapability#distill(Map)
      * @see TestMode#isTestingOnActualEnvironment()
      * @see #testMode()
      */
@@ -79,7 +79,7 @@ public abstract class MobileEngineCapability extends BaseEngineCapability {
      * @param <C> Generics parameter that extends {@link MobileEngineCapability}.
      */
     public static class Builder<C extends MobileEngineCapability>
-        extends BaseEngineCapability.Builder<C>
+        extends EngineCapability.Builder<C>
     {
         protected Builder(@NotNull C capability) {
             super(capability);

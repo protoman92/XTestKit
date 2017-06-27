@@ -35,7 +35,7 @@ public interface IOSChoiceSelectorType extends
      * @see ChoiceType#input()
      * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
      * @see ChoiceInputType#choicePickerXP(InputHelperType)
-     * @see ChoiceHelperType#rxa_type(WebElement, String...)
+     * @see ChoiceHelperType#rxa_sendValue(WebElement, String)
      * @see BooleanUtil#toTrue(Object)
      */
     @NotNull
@@ -51,7 +51,7 @@ public interface IOSChoiceSelectorType extends
             .rxe_withXPath(xpath)
             .elementAt(index)
             .toFlowable()
-            .flatMap(a -> ENGINE.rxa_type(a, SELECTED))
+            .flatMap(a -> ENGINE.rxa_sendValue(a, SELECTED))
             .map(BooleanUtil::toTrue);
     }
 }

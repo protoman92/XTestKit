@@ -15,10 +15,10 @@ import java.util.Map;
 /**
  * Created by haipham on 5/7/17.
  */
-public abstract class BaseEngineCapability implements EngineCapabilityType {
+public abstract class EngineCapability implements EngineCapabilityType {
     @Nullable TestMode testMode;
 
-    protected BaseEngineCapability() {}
+    protected EngineCapability() {}
 
     //region EngineCapabilityType
     /**
@@ -62,10 +62,10 @@ public abstract class BaseEngineCapability implements EngineCapabilityType {
 
     //region Builder
     /**
-     * Builder class for {@link BaseEngineCapability}.
-     * @param <C> Generics that extends {@link BaseEngineCapability}.
+     * Builder class for {@link EngineCapability}.
+     * @param <C> Generics that extends {@link EngineCapability}.
      */
-    public static class Builder<C extends BaseEngineCapability> implements
+    public static class Builder<C extends EngineCapability> implements
         EngineCapabilityType.Builder
     {
         @NotNull private final C CAPABILITY;

@@ -34,7 +34,7 @@ public interface DriverProviderType<D extends WebDriver> {
      * @see #driver()
      */
     @NotNull
-    default  <T> Flowable<T> rxv_errorWithPageSource(@NotNull String error) {
+    default  <T> Flowable<T> rxv_error(@NotNull String error) {
         final DriverProviderType<?> THIS = this;
 
         return Flowable.error(() -> {
@@ -47,10 +47,10 @@ public interface DriverProviderType<D extends WebDriver> {
      * Same as above, but uses an empty {@link String} error.
      * @param <T> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see #rxv_errorWithPageSource(String)
+     * @see #rxv_error(String)
      */
     @NotNull
-    default <T> Flowable<T> rxv_errorWithPageSource() {
-        return rxv_errorWithPageSource("");
+    default <T> Flowable<T> rxv_error() {
+        return rxv_error("");
     }
 }
