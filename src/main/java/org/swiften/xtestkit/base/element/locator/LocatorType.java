@@ -115,7 +115,6 @@ public interface LocatorType<D extends WebDriver> extends
             .map(ByXPath::xpath)
             .map(By::xpath)
             .flatMapIterable(DRIVER::<WebElement>findElements)
-            .timeout(elementLocateTimeout(), TimeUnit.MILLISECONDS)
             .switchIfEmpty(rxe_xpathQueryFailure(param))
             .retry(retries);
     }
