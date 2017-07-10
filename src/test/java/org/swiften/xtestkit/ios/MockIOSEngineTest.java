@@ -3,7 +3,7 @@ package org.swiften.xtestkit.ios;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.ios.capability.IOSEngineCapability;
 import org.swiften.xtestkit.ios.type.IOSErrorType;
@@ -18,7 +18,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by haipham on 3/31/17.
  */
-public final class MockIOSEngineTest implements BaseErrorType, IOSErrorType {
+public final class MockIOSEngineTest implements ErrorProviderType, IOSErrorType {
     @NotNull private final IOSEngine ENGINE;
     @NotNull private final IOSEngineCapability CAPABILITY;
     @NotNull private final ProcessRunner PROCESS_RUNNER;

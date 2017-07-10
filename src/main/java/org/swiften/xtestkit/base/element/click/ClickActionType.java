@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.tap.TapType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 
@@ -22,7 +22,7 @@ import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
  * @param <D> Generics parameter.
  */
 public interface ClickActionType<D extends WebDriver> extends
-    BaseErrorType,
+    ErrorProviderType,
     TapType<D>,
     ElementPropertyType
 {

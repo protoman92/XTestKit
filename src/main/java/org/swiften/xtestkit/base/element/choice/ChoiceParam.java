@@ -10,14 +10,14 @@ import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 /**
  * Concrete class that implements {@link ChoiceType}.
  * Use this with
  * {@link ChoiceSelectorType#rxa_selectChoice(ChoiceType)}.
  */
-public class ChoiceParam implements ChoiceType, BaseErrorType {
+public class ChoiceParam implements ChoiceType, ErrorProviderType {
     /**
      * Get {@link Builder} instance.
      * @return {@link Builder} instance.

@@ -18,7 +18,7 @@ import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.xpath.XPath;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +38,7 @@ public interface DateActionType<D extends WebDriver> extends
     ClickActionType<D>,
     DateActionErrorType,
     ElementPropertyType,
-    BaseErrorType,
+    ErrorProviderType,
     LocatorType<D>,
     SwipeType<D>
 {

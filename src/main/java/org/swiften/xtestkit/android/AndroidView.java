@@ -2,7 +2,7 @@ package org.swiften.xtestkit.android;
 
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -13,7 +13,7 @@ import org.swiften.xtestkit.mobile.Platform;
 /**
  * Provide {@link Platform#ANDROID} {@link ViewType}.
  */
-public class AndroidView extends PlatformView implements BaseErrorType {
+public class AndroidView extends PlatformView implements ErrorProviderType {
     public enum Type implements ViewType {
         BUTTON,
         CHECKED_TEXT_VIEW,

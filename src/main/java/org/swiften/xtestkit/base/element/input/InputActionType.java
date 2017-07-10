@@ -13,7 +13,7 @@ import org.swiften.javautilities.bool.BooleanUtil;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
 /**
@@ -21,7 +21,7 @@ import org.swiften.xtestkitcomponents.platform.PlatformType;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface InputActionType<D extends WebDriver> extends
-    BaseErrorType, BaseInputActionDelayType, LocatorType<D>
+    ErrorProviderType, BaseInputActionDelayType, LocatorType<D>
 {
     /**
      * Send {@link String} keys to {@link WebElement}.

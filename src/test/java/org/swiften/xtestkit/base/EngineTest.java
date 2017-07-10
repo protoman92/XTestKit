@@ -11,7 +11,7 @@ import org.swiften.xtestkit.base.capability.EngineCapability;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.util.TestMessageType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
@@ -26,7 +26,7 @@ import static org.testng.Assert.assertTrue;
  * Created by haipham on 3/20/17.
  */
 @SuppressWarnings("MessageMissingOnTestNGAssertion")
-public final class EngineTest implements BaseErrorType, TestMessageType {
+public final class EngineTest implements ErrorProviderType, TestMessageType {
     @NotNull private final WebDriver DRIVER;
     @NotNull private final EngineCapabilityType CAPABILITY;
     @NotNull private final MockEngine ENGINE;

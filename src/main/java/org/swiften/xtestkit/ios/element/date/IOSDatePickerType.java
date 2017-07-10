@@ -6,7 +6,7 @@ import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
@@ -18,7 +18,7 @@ import org.swiften.xtestkitcomponents.xpath.*;
  * This {@link Enum} contains different types of date picker for
  * {@link Platform#IOS}.
  */
-public enum IOSDatePickerType implements DatePickerType, BaseErrorType {
+public enum IOSDatePickerType implements DatePickerType, ErrorProviderType {
     PICKER_WHEEL_MMMM_d_yyyy,
     PICKER_WHEEL_MMMd_h_mm_a;
 

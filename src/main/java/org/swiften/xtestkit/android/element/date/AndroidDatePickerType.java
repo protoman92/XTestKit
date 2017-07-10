@@ -10,7 +10,7 @@ import org.swiften.xtestkit.android.type.AndroidSDK;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -19,7 +19,7 @@ import org.swiften.xtestkitcomponents.xpath.*;
 /**
  * Represents the available types of calendar views for {@link Platform#ANDROID}.
  */
-public enum AndroidDatePickerType implements DatePickerType, BaseErrorType {
+public enum AndroidDatePickerType implements DatePickerType, ErrorProviderType {
     /**
      * On {@link AndroidSDK#SDK_22} and below, the calendar is scrolled
      * vertically. Therefore, we need to use {@link Direction#UP_DOWN} and

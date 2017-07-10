@@ -6,7 +6,7 @@ package org.swiften.xtestkit.base.capability;
 
 import org.jetbrains.annotations.NotNull;
 import org.swiften.xtestkit.base.Engine;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -18,7 +18,7 @@ import java.util.Map;
  * Implement this interface to selectively provide capabilities for
  * {@link Engine}.
  */
-public interface EngineCapabilityType extends BaseErrorType {
+public interface EngineCapabilityType extends ErrorProviderType {
     /**
      * Get the {@link Platform} for which we are getting capabilities.
      * @return {@link Platform} instance.

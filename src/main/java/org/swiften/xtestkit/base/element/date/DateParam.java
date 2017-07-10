@@ -9,14 +9,14 @@ import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.object.ObjectUtil;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 import java.util.*;
 
 /**
  * Parameter object for {@link DateActionType#rxa_selectDate(DateProviderType)}.
  */
-public class DateParam implements DateProviderType, BaseErrorType {
+public class DateParam implements DateProviderType, ErrorProviderType {
     /**
      * Get a {@link Builder} instance.
      * @return {@link Builder} instance.

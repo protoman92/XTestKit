@@ -6,7 +6,7 @@ package org.swiften.xtestkit.ios;
 
 import org.swiften.xtestkit.base.PlatformView;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.view.ViewType;
 import org.swiften.xtestkit.mobile.Platform;
 
@@ -14,7 +14,7 @@ import org.swiften.xtestkit.mobile.Platform;
  * Provide {@link Platform#IOS} {@link ViewType}
  */
 public class IOSView extends PlatformView {
-    public enum Type implements ViewType, BaseErrorType {
+    public enum Type implements ViewType, ErrorProviderType {
         UI_BUTTON,
         UI_COLLECTION_VIEW,
         UI_COLLECTION_VIEW_CELL,

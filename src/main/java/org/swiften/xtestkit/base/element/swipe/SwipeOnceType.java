@@ -4,7 +4,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.javautilities.protocol.RepeatProviderType;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to perform a single swipe action.
  */
-public interface SwipeOnceType extends BaseErrorType {
+public interface SwipeOnceType extends ErrorProviderType {
     /**
      * Perform a swipe action.
      * @param param {@link SwipeParamType} instance.

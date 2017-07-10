@@ -13,7 +13,7 @@ import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 /**
  * This interface provides interaction capabilities for
@@ -21,7 +21,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
  * but individual {@link PlatformType}
  * subclasses will need its own implementations.
  */
-public interface ElementPropertyType extends BaseErrorType {
+public interface ElementPropertyType extends ErrorProviderType {
     /**
      * Get text from {@link WebElement}, assuming that this {@link WebElement}
      * is capable of displaying a text.

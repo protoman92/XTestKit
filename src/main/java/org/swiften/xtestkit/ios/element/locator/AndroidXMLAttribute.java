@@ -5,13 +5,13 @@ package org.swiften.xtestkit.ios.element.locator;
  */
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
 
 /**
  * XML attributes for {@link org.swiften.xtestkit.mobile.Platform#ANDROID}.
  */
-public enum AndroidXMLAttribute implements BaseErrorType, XMLAttributeType {
+public enum AndroidXMLAttribute implements ErrorProviderType, XMLAttributeType {
     CONTENT_DESC;
 
     /**

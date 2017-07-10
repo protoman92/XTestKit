@@ -17,7 +17,7 @@ import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.test.RepeatRunner;
 import org.swiften.xtestkit.test.TestListenerType;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * Created by haipham on 3/24/17.
  */
 public class TestKit implements
-    BaseErrorType,
+    ErrorProviderType,
     LocalizerProviderType,
     RepeatRunner.IndexConsumer,
     TestListenerType

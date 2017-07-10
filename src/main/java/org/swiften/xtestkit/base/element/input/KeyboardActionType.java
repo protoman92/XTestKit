@@ -9,13 +9,13 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 /**
  * This interface provides methods to interact with the keyboard.
  * * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface KeyboardActionType<D extends WebDriver> extends BaseErrorType {
+public interface KeyboardActionType<D extends WebDriver> extends ErrorProviderType {
     /**
      * Hide the currently active keyboard.
      */

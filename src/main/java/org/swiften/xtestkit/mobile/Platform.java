@@ -3,7 +3,7 @@ package org.swiften.xtestkit.mobile;
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.collection.CollectionUtil;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.ValueType;
 
@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by haipham on 3/20/17.
  */
-public enum Platform implements BaseErrorType, PlatformType, ValueType<String> {
+public enum Platform implements ErrorProviderType, PlatformType, ValueType<String> {
     ANDROID,
     IOS;
 

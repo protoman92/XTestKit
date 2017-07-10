@@ -12,7 +12,7 @@ import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
@@ -38,7 +38,7 @@ import java.util.Date;
  */
 public class UnitNumberPickerWrapper implements
     AndroidNumericPickerInputType,
-    BaseErrorType,
+    ErrorProviderType,
     ChoiceInputType
 {
     /**

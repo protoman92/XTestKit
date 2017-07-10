@@ -1,7 +1,7 @@
 package org.swiften.xtestkit.android.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.swiften.xtestkitcomponents.common.BaseErrorType;
+import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 /**
  * Created by haipham on 5/27/17.
@@ -11,7 +11,7 @@ import org.swiften.xtestkitcomponents.common.BaseErrorType;
  * Convenient {@link Enum} to set
  * {@link org.swiften.xtestkit.android.AndroidEngine#platformVersion}.
  */
-public enum AndroidSDK implements BaseErrorType {
+public enum AndroidSDK implements ErrorProviderType {
     SDK_18,
     SDK_22,
     SDK_23;
