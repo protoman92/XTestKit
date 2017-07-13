@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
@@ -138,7 +138,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         return Flowable.just(element)
             .map(HELPER::getText)
             .map(a -> INPUT.numericValue(HELPER, a))
-            .doOnNext(a -> LogUtil.printft("Comparing %s and %s", a, NUMERIC))
+            .doOnNext(a -> HPLog.printft("Comparing %s and %s", a, NUMERIC))
             .filter(a -> a >= NUMERIC);
     }
 
@@ -163,7 +163,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         return Flowable.just(element)
             .map(HELPER::getText)
             .map(a -> INPUT.numericValue(HELPER, a))
-            .doOnNext(a -> LogUtil.printft("Comparing %s and %s", a, NUMERIC))
+            .doOnNext(a -> HPLog.printft("Comparing %s and %s", a, NUMERIC))
             .filter(a -> a <= NUMERIC);
     }
 
@@ -250,7 +250,9 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         return rxe_targetChoiceItem()
             .filter(a -> ENGINE.getText(a).equals(STR_VALUE))
             .flatMap(THIS::rxa_targetItemLocated)
-            .map(HPBooleans::toTrue);
+            .map(HPBooleans::isFalse)
+            .defaultIfEmpty(true)
+            .onErrorReturnItem(true);
     }
 
     /**

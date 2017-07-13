@@ -6,7 +6,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.date.DateUtil;
+import org.swiften.javautilities.date.HPDates;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
@@ -80,7 +80,7 @@ public interface IOSDateActionType extends
      * @see CalendarUnit#value()
      * @see DateProviderType#date()
      * @see DateProviderType#datePickerType()
-     * @see DateUtil#sameAs(Date, Date, int)
+     * @see HPDates#sameAs(Date, Date, int)
      * @see LocalizerType#localize(String)
      * @see IOSDatePickerType#PICKER_WHEEL_MMMd_h_mm_a
      * @see #localizer()
@@ -96,7 +96,7 @@ public interface IOSDateActionType extends
             Date now = Calendar.getInstance().getTime();
             Date date = param.date();
 
-            if (DateUtil.sameAs(now, date, CalendarUnit.DAY.value())) {
+            if (HPDates.sameAs(now, date, CalendarUnit.DAY.value())) {
                 return localizer.localize("date_title_today");
             }
         }

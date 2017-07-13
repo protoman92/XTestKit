@@ -15,7 +15,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.protocol.RetryProviderType;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
@@ -30,7 +30,7 @@ import org.swiften.xtestkit.base.element.password.PasswordActionType;
 import org.swiften.xtestkit.base.element.popup.PopupActionType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeActionType;
 import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkit.base.element.visibility.VisibilityActionType;
@@ -66,7 +66,7 @@ public abstract class Engine<D extends WebDriver> implements
     PasswordActionType<D>,
     PopupActionType<D>,
     SearchActionType<D>,
-    SwipeType<D>,
+    SwipeActionType<D>,
     SwitcherActionType,
     TapType<D>,
     TestListenerType,
@@ -396,7 +396,7 @@ public abstract class Engine<D extends WebDriver> implements
             final Map<String,Object> distilled = capType.distill(caps);
             final DesiredCapabilities CAPS = new DesiredCapabilities(distilled);
             final String SERVER_URL = serverUri();
-            LogUtil.printft("Starting driver with %s and %s", SERVER_URL, CAPS);
+            HPLog.printft("Starting driver with %s and %s", SERVER_URL, CAPS);
 
             return Completable
                 .fromAction(() -> driver = driver(SERVER_URL, CAPS))
@@ -418,7 +418,7 @@ public abstract class Engine<D extends WebDriver> implements
     @NotNull
     public Flowable<Boolean> rxa_stopDriver() {
         final WebDriver DRIVER = driver();
-        LogUtil.printft("Stopping driver %s", DRIVER);
+        HPLog.printft("Stopping driver %s", DRIVER);
 
         return Completable
             .fromAction(DRIVER::quit)

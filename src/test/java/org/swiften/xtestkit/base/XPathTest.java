@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.base;
 
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.android.element.date.AndroidDatePickerType;
 import org.swiften.xtestkit.android.element.date.UnitNumberPickerWrapper;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
@@ -24,16 +24,16 @@ public final class XPathTest {
             .build();
 
         // When & Then
-        LogUtil.println(wrapper.androidChoicePickerParentXP(helper));
-        LogUtil.println(wrapper.androidChoicePickerXP(helper));
-        LogUtil.println(wrapper.androidChoicePickerItemXP(helper));
+        HPLog.println(wrapper.androidChoicePickerParentXP(helper));
+        HPLog.println(wrapper.androidChoicePickerXP(helper));
+        HPLog.println(wrapper.androidChoicePickerItemXP(helper));
     }
 
     @Test
     public void test_androidDatePickerType_shouldUseCorrectXPath() {
         // Setup & When & Then
-        LogUtil.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.pickerItemXP(CalendarUnit.YEAR));
-        LogUtil.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.pickerViewXP(CalendarUnit.YEAR));
-        LogUtil.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.targetItemXP(CalendarUnit.YEAR));
+        HPLog.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.pickerItemXP(CalendarUnit.YEAR));
+        HPLog.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.pickerViewXP(CalendarUnit.YEAR));
+        HPLog.println(AndroidDatePickerType.DATE_CALENDAR_PICKER.targetItemXP(CalendarUnit.YEAR));
     }
 }

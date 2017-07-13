@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mockito.ArgumentCaptor;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.protocol.RetryProviderType;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.base.type.AppiumHandlerType;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
@@ -133,7 +133,7 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
 
         // Then
         Collection<Integer> usedPorts = ENGINE.networkHandler().usedPorts();
-        LogUtil.println(usedPorts);
+        HPLog.println(usedPorts);
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();

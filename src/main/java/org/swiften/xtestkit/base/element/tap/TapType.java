@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.javautilities.protocol.RetryProviderType;
 
@@ -29,20 +29,16 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      * Same as above, but uses a default {@link TapParam}.
      * @param x The tap's x coordinate, {@link Integer} value.
      * @param y The tap's y coordinate, {@link Integer} value.
-     * @see TapParam.Builder#withX(int)
-     * @see TapParam.Builder#withY(int)
      * @see #tap(TapParamType)
      */
     default void tap(int x, int y) {
-        LogUtil.printft("Tapping at x: %d, y: %d", x, y);
+        HPLog.printft("Tapping at x: %d, y: %d", x, y);
         tap(TapParam.builder().withX(x).withY(y).build());
     }
 
     /**
      * Same as above, but uses {@link Point}.
      * @param point {@link Point} instance.
-     * @see Point#getX()
-     * @see Point#getY()
      * @see #tap(int, int)
      */
     default void tap(@NotNull Point point) {
@@ -98,8 +94,6 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
      * Same as above, but uses {@link Point}.
      * @param point {@link Point} instance.
      * @return {@link Flowable} instance.
-     * @see Point#getX()
-     * @see Point#getY()
      * @see #rxa_tap(int, int)
      */
     @NotNull

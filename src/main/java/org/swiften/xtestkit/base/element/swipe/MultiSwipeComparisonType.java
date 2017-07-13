@@ -8,7 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkitcomponents.direction.Direction;
 
@@ -146,17 +146,17 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
 
         return Flowable.zip(
             THIS.rxe_scrollViewChildCount()
-                .doOnNext(a -> LogUtil.printft("%d child items", a))
+                .doOnNext(a -> HPLog.printft("%d child items", a))
                 .map(Long::doubleValue),
 
             THIS.rxe_firstVisibleChild()
                 .flatMap(THIS::rxe_initialDifference)
-                .doOnNext(a -> LogUtil.printft("%d initial diff.", a))
+                .doOnNext(a -> HPLog.printft("%d initial diff.", a))
                 .map(Math::abs)
                 .map(Integer::doubleValue),
 
             (visible, diff) -> (int)(Math.ceil(diff / visible / 0.8d))
-        ).doOnNext(a -> LogUtil.printft("%d initial swipes", a));
+        ).doOnNext(a -> HPLog.printft("%d initial swipes", a));
     }
 
     /**

@@ -8,7 +8,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.kit.TestKit;
 import org.testng.*;
@@ -97,8 +97,8 @@ public class RepeatRunner implements
 
     @Override
     public void onTestFailure(@NotNull ITestResult result) {
-        LogUtil.println(result.getName());
-        LogUtil.println(result.getThrowable());
+        HPLog.println(result.getName());
+        HPLog.println(result.getThrowable());
     }
 
     @Override

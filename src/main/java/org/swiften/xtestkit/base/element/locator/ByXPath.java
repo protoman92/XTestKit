@@ -45,7 +45,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
      * Get {@link #retries}.
      * @return {@link Integer} value.
      * @see RetryProviderType#retries()
-     * @see #retries
      */
     @Override
     public int retries() {
@@ -64,7 +63,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
     /**
      * Get {@link #xpath}.
      * @return {@link String} value.
-     * @see #xpath
      */
     @NotNull
     public String xpath() {
@@ -74,7 +72,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
     /**
      * Get {@link #logXPath}.
      * @return {@link Boolean} value.
-     * @see #logXPath
      */
     public boolean logXPath() {
         return logXPath;
@@ -97,7 +94,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
          * @param error The error {@link String} to be thrown when no elements
          *              are found.
          * @return {@link Builder} instance.
-         * @see #error
          */
         @NotNull
         public Builder withError(@NotNull String error) {
@@ -109,8 +105,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
          * The {@link XPath} query that will be used to search for elements.
          * @param xpath {@link XPath} instance.
          * @return {@link Builder} instance.
-         * @see XPath#attribute()
-         * @see #xpath
          */
         public Builder withXPath(@NotNull XPath xpath) {
             PARAM.xpath = xpath.attribute();
@@ -121,7 +115,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
          * Set {@link #retries} value.
          * @param retries {@link Integer} value.
          * @return {@link Builder} instance.
-         * @see #retries
          */
         @NotNull
         public Builder withRetries(int retries) {
@@ -133,7 +126,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
          * Set {@link #retries} value.
          * @param type {@link RetryProviderType} instance.
          * @return {@link Builder} instance.
-         * @see RetryProviderType#retries()
          * @see #withRetries(int)
          */
         @NotNull
@@ -145,7 +137,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
          * Set {@link #logXPath}.
          * @param logXPath {@link Boolean} value.
          * @return {@link Builder} instance.
-         * @see #logXPath
          */
         @NotNull
         public Builder shouldLogXPath(boolean logXPath) {
@@ -156,7 +147,6 @@ public class ByXPath implements LocatorErrorType, RetryProviderType {
         /**
          * Get {@link #PARAM}.
          * @return {@link ByXPath} instance.
-         * @see #PARAM
          */
         @NotNull
         public ByXPath build() {

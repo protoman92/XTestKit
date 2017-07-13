@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.element.choice;
 import org.openqa.selenium.WebDriver;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.input.InputActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.model.InputHelperType;
@@ -23,6 +23,6 @@ public interface ChoiceHelperType<D extends WebDriver> extends
     ElementPropertyType,
     InputActionType<D>,
     LocatorType<D>,
-    SwipeType<D>,
+    SwipeActionType<D>,
     InputHelperType,
     PlatformProviderType {}

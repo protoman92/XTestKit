@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.HPReactives;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParam;
 import org.testng.annotations.AfterMethod;
@@ -22,8 +22,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * Created by haipham on 5/11/17.
  */
-public class SwipeActionTest implements SwipeType<WebDriver>, TestTypes.TestLocatorType {
-    @NotNull private final SwipeType ENGINE;
+public class SwipeActionTest implements SwipeActionType<WebDriver>, TestTypes.TestLocatorType {
+    @NotNull private final SwipeActionType ENGINE;
     @NotNull private final WebDriver DRIVER;
 
     {

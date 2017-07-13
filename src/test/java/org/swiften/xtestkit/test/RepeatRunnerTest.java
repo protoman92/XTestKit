@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.test;
 
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.testng.annotations.*;
 
 /**
@@ -14,7 +14,7 @@ public final class RepeatRunnerTest {
         dataProvider = "dataProvider"
     )
     public RepeatRunnerTest(int index) {
-        LogUtil.printft("Starting test %d", index);
+        HPLog.printft("Starting test %d", index);
         INDEX = index;
     }
 

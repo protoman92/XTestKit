@@ -38,7 +38,7 @@ public interface DriverProviderType<D extends WebDriver> {
         final DriverProviderType<?> THIS = this;
 
         return Flowable.error(() -> {
-//            LogUtil.println(THIS.driver().getPageSource());
+//            HPLog.println(THIS.driver().getPageSource());
             return new Exception(error);
         });
     }

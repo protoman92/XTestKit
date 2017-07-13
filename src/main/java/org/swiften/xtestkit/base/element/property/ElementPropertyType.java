@@ -9,7 +9,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -31,7 +31,7 @@ public interface ElementPropertyType extends ErrorProviderType {
     @NotNull
     default String getText(@NotNull WebElement element) {
         String text = element.getText();
-        LogUtil.printft("Text '%s' for element %s", text, element);
+        HPLog.printft("Text '%s' for element %s", text, element);
         return text;
     }
 

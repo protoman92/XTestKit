@@ -2,7 +2,7 @@ package org.swiften.xtestkit.android.element.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.android.model.AndroidNumericPickerInputType;
@@ -103,7 +103,7 @@ public class UnitNumberPickerWrapper implements
         CalendarUnit unit = calendarUnit();
         String format = pickerType.valueStringFormat(unit);
         SimpleDateFormat formatter = new SimpleDateFormat(format);
-        LogUtil.printft("Formatting %s with %s", value, format);
+        HPLog.printft("Formatting %s with %s", value, format);
 
         try {
             Date date = formatter.parse(value);
@@ -112,7 +112,7 @@ public class UnitNumberPickerWrapper implements
             int unitValue = unit.value();
             return calendar.get(unitValue);
         } catch (ParseException e) {
-            LogUtil.printft("Error parsing %s", value);
+            HPLog.printft("Error parsing %s", value);
             throw new RuntimeException(NOT_AVAILABLE);
         }
     }
@@ -140,7 +140,7 @@ public class UnitNumberPickerWrapper implements
         Date date = calendar.getTime();
         String format = pickerType.valueStringFormat(unit);
         SimpleDateFormat formatter = new SimpleDateFormat(format);
-        LogUtil.printft("Formatting %s with %s", value, format);
+        HPLog.printft("Formatting %s with %s", value, format);
         return formatter.format(date);
     }
 

@@ -17,7 +17,7 @@ import org.swiften.xtestkitcomponents.direction.Direction;
  * This interface provides methods to repeatedly scroll a scrollable view so
  * long as a condition is satisfied.
  */
-public interface MultiSwipeType extends SwipeOnceType {
+public interface MultiSwipeType extends SwipeOnceActionType {
     /**
      * Get the swipe ratio that is used to dampen the swipe gesture in order
      * to avoid a full unidirectional swipe.
@@ -48,8 +48,6 @@ public interface MultiSwipeType extends SwipeOnceType {
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
-     * @see HPObjects#eq(Object)
-     * @see HPReactives#error()
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()
@@ -58,20 +56,16 @@ public interface MultiSwipeType extends SwipeOnceType {
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeRecursively() {
-        final MultiSwipeType THIS = this;
+        return HPReactives.doWhile(
+            Flowable.zip(
+                rxe_scrollableViewToSwipe(),
+                rxe_swipeDirection(),
+                rxe_elementSwipeRatio(),
+                this::rxa_swipeElement
+            ).flatMap(HPObjects::<Flowable<Boolean>>eq),
 
-        return rxv_shouldKeepSwiping()
-            .switchIfEmpty(HPReactives.error())
-            .onErrorResumeNext(Flowable
-                .zip(
-                    rxe_scrollableViewToSwipe(),
-                    rxe_swipeDirection(),
-                    rxe_elementSwipeRatio(),
-                    THIS::rxa_swipeElement
-                )
-                .flatMap(a -> a)
-                .flatMap(a -> THIS.rxa_swipeRecursively())
-            );
+            rxv_shouldKeepSwiping()
+        );
     }
 
     /**
@@ -90,21 +84,7 @@ public interface MultiSwipeType extends SwipeOnceType {
      * @param direction {@link Direction} instance.
      * @param scrollRatio A dampening ratio for a vertical scroll.
      * @return {@link Flowable} instance.
-     * @see Dimension#getHeight()
-     * @see Dimension#getWidth()
-     * @see Point#getX()
-     * @see Point#getY()
-     * @see SwipeParam.Builder#withStartX(int)
-     * @see SwipeParam.Builder#withStartY(int)
-     * @see SwipeParam.Builder#withEndX(int)
-     * @see SwipeParam.Builder#withEndY(int)
-     * @see Direction#DOWN_UP
-     * @see Direction#NONE
-     * @see Direction#UP_DOWN
-     * @see WebElement#getLocation()
-     * @see WebElement#getSize()
      * @see #rxa_swipeOnce(SwipeParamType)
-     * @see #NOT_AVAILABLE
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeElement(@NotNull WebElement element,

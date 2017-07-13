@@ -11,10 +11,10 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.functional.Tuple;
 import org.swiften.javautilities.rx.HPReactives;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeType;
+import org.swiften.xtestkit.base.element.swipe.SwipeActionType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
@@ -40,7 +40,7 @@ public interface DateActionType<D extends WebDriver> extends
     ElementPropertyType,
     ErrorProviderType,
     LocatorType<D>,
-    SwipeType<D>
+    SwipeActionType<D>
 {
     /**
      * Open the picker view that corresponds to {@link CalendarUnit}.
@@ -66,8 +66,6 @@ public interface DateActionType<D extends WebDriver> extends
      * user is in a calendar view.
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see DateProviderType#units()
-     * @see HPObjects#nonNull(Object)
      * @see #valueString(DateProviderType, CalendarUnit)
      * @see #rxe_containsText(String...)
      */
@@ -89,30 +87,28 @@ public interface DateActionType<D extends WebDriver> extends
      * Select {@link Date}. This assumes that the user is in a calendar view.
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see HPBooleans#isTrue(boolean)
-     * @see DateProviderType#units()
-     * @see HPObjects#nonNull(Object)
-     * @see HPReactives#error(String)
      * @see #rxa_openPicker(DateProviderType, CalendarUnit)
      * @see #rxa_select(DateProviderType, CalendarUnit)
      * @see #rxv_hasDate(DateProviderType)
-     * @see #DATES_NOT_MATCHED
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     default Flowable<Boolean> rxa_selectDate(@NotNull final DateProviderType PARAM) {
-        LogUtil.printft("Selecting %s", dateString(PARAM));
+        HPLog.printft("Selecting %s", dateString(PARAM));
 
         final DateActionType<?> THIS = this;
 
-        return Flowable
-            .fromIterable(PARAM.units())
-            .concatMap(a -> THIS.rxa_openPicker(PARAM, a)
-                .flatMap(b -> THIS.rxa_select(PARAM, a)))
-            .all(HPObjects::nonNull)
-            .toFlowable()
-            .flatMap(a -> THIS.rxv_hasDate(PARAM))
-            .filter(HPBooleans::isTrue)
-            .switchIfEmpty(HPReactives.error(DATES_NOT_MATCHED));
+        return Flowable.concatArray(
+            Flowable.fromIterable(PARAM.units())
+                .concatMap(a -> Flowable.concatArray(
+                    THIS.rxa_openPicker(PARAM, a),
+                    THIS.rxa_select(PARAM, a)
+                )),
+
+            rxv_hasDate(PARAM)
+                .filter(HPBooleans::isTrue)
+                .switchIfEmpty(HPReactives.error(DATES_NOT_MATCHED))
+        ).all(HPObjects::nonNull).toFlowable();
     }
 
     /**
@@ -120,8 +116,6 @@ public interface DateActionType<D extends WebDriver> extends
      * The implementations may change based on {@link DatePickerType}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateProviderType#datePickerType()
-     * @see DatePickerType#pickerViewXP(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
@@ -135,8 +129,6 @@ public interface DateActionType<D extends WebDriver> extends
      * Get the {@link WebElement} that corresponds to {@link CalendarUnit}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateProviderType#datePickerType()
-     * @see DatePickerType#unitLabelViewXPath(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
@@ -155,9 +147,6 @@ public interface DateActionType<D extends WebDriver> extends
      * as displayed by the relevant {@link WebElement}.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see CalendarUnit#value()
-     * @see DateProviderType#datePickerType()
-     * @see DatePickerType#valueStringFormat(CalendarUnit)
      * @see #rxe_elementLabel(DateProviderType, CalendarUnit)
      */
     @NotNull
@@ -184,9 +173,6 @@ public interface DateActionType<D extends WebDriver> extends
      * Get the {@link Date} as displayed by the date picker.
      * @return {@link Flowable} instance.
      * @see #rxe_displayedUnit(DateProviderType, CalendarUnit)
-     * @see Tuple#of(Object, Object)
-     * @see Tuple#A
-     * @see Tuple#B
      */
     @NotNull
     @SuppressWarnings({"MagicConstant", "ConstantConditions"})
@@ -210,9 +196,6 @@ public interface DateActionType<D extends WebDriver> extends
      * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link String} value.
-     * @see DateProviderType#datePickerType()
-     * @see DatePickerType#valueStringFormat(CalendarUnit)
-     * @see CalendarUnit#value()
      */
     @NotNull
     default String valueString(@NotNull DateProviderType param, @NotNull CalendarUnit unit) {
@@ -240,7 +223,6 @@ public interface DateActionType<D extends WebDriver> extends
      * Get {@link String} representation of {@link DateProviderType#date()}.
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link String} value.
-     * @see DateProviderType#units()
      * @see #valueString(DateProviderType, CalendarUnit)
      */
     @NotNull

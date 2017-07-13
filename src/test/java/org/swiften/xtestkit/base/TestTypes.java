@@ -16,7 +16,7 @@ import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
-import org.swiften.xtestkit.base.element.swipe.SwipeOnceType;
+import org.swiften.xtestkit.base.element.swipe.SwipeOnceActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.switcher.SwitcherActionType;
 import org.swiften.xtestkit.base.element.tap.TapParamType;
@@ -165,7 +165,7 @@ public final class TestTypes {
         }
     }
 
-    public interface TestSwipeOnceType extends SwipeOnceType {
+    public interface TestSwipeOnceType extends SwipeOnceActionType {
         @Override
         default void swipeOnce(@NotNull SwipeParamType param) {}
     }

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.HPIterables;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
@@ -93,7 +93,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
     @NotNull
     @Override
     public Direction firstElementDirection() {
-        LogUtil.println("First direction");
+        HPLog.println("First direction");
         currentIndex -= 1;
         return AndroidChoiceMultiSwipeType.super.firstElementDirection();
     }
@@ -101,7 +101,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
     @NotNull
     @Override
     public Direction lastElementDirection() {
-        LogUtil.println("Last direction");
+        HPLog.println("Last direction");
         currentIndex += 1;
         return AndroidChoiceMultiSwipeType.super.lastElementDirection();
     }
@@ -178,7 +178,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
     public void test_selectChoice_shouldSucceed() {
         // Setup
         TestSubscriber subscriber = CustomTestSubscriber.create();
-        LogUtil.printf("Searching for %s", selectedChoice());
+        HPLog.printf("Searching for %s", selectedChoice());
 
         // When
         SELECTOR.rxa_performAction().subscribe(subscriber);

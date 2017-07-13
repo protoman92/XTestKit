@@ -8,7 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.collection.HPIterables;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.util.EngineProviderType;
 
@@ -283,7 +283,7 @@ public interface ScreenManagerType extends EngineProviderType, ScreenManagerErro
     @NotNull
     default Flowable<?> rxa_navigate(@NotNull Object initial,
                                      @NotNull ScreenType...screens) {
-        LogUtil.printft("Navigating %s", Arrays.toString(screens));
+        HPLog.printft("Navigating %s", Arrays.toString(screens));
         final List<Node> NODES = multiNodes(screens);
         final int LENGTH = NODES.size();
 

@@ -33,7 +33,6 @@ public class TapParam implements TapParamType, RetryProviderType {
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see TapParamType#x()
-     * @see #x
      */
     @Override
     public int x() {
@@ -44,7 +43,6 @@ public class TapParam implements TapParamType, RetryProviderType {
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see TapParamType#y()
-     * @see #y
      */
     @Override
     public int y() {
@@ -55,7 +53,6 @@ public class TapParam implements TapParamType, RetryProviderType {
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see RetryProviderType#retries()
-     * @see #retries
      */
     @Override
     public int retries() {
@@ -129,6 +126,10 @@ public class TapParam implements TapParamType, RetryProviderType {
             return withRetries(type.retries());
         }
 
+        /**
+         * Get {@link #PARAM}.
+         * @return {@link TapParam} instance.
+         */
         @NotNull
         public TapParam build() {
             return PARAM;

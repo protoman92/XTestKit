@@ -8,7 +8,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 
 /**
  * This interface provides methods to handle switcher
@@ -19,7 +19,6 @@ public interface SwitcherActionType {
      * Get the switcher's current value.
      * @param element {@link WebElement} instance.
      * @return {@link String} value.
-     * @see WebElement#getAttribute(String)
      */
     @NotNull String switcherValue(@NotNull WebElement element);
 
@@ -51,7 +50,6 @@ public interface SwitcherActionType {
      * set to the target value, do nothing.
      * @param element {@link WebElement} instance.
      * @param on {@link Boolean} value.
-     * @see WebElement#click()
      * @see #switcherValue(WebElement)
      * @see #switcherOffValue()
      * @see #switcherOnValue()
@@ -59,7 +57,7 @@ public interface SwitcherActionType {
     default void toggleSwitch(@NotNull WebElement element, boolean on) {
         String currentValue = switcherValue(element);
         String target = on ? switcherOnValue() : switcherOffValue();
-        LogUtil.printft("Switcher value: %s, target: %s", currentValue, target);
+        HPLog.printft("Switcher value: %s, target: %s", currentValue, target);
 
         if (!currentValue.equals(target)) {
             element.click();

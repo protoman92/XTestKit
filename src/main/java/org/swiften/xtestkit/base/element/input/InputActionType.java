@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.object.HPObjects;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -30,7 +30,7 @@ public interface InputActionType<D extends WebDriver> extends
      * @see WebElement#sendKeys(CharSequence...)
      */
     default void sendValue(@NotNull WebElement element, @NotNull String text) {
-        LogUtil.printft("Sending '%s' to %s", text, element);
+        HPLog.printft("Sending '%s' to %s", text, element);
         element.sendKeys(text);
     }
 

@@ -17,7 +17,7 @@ import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.javautilities.protocol.RetryProviderType;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.type.DriverProviderType;
@@ -107,7 +107,7 @@ public interface LocatorType<D extends WebDriver> extends
             .doOnNext(a -> {
                 boolean logXPath = a.logXPath();
                 String xpath = a.xpath();
-                if (logXPath) LogUtil.printft("Searching for %s", xpath);
+                if (logXPath) HPLog.printft("Searching for %s", xpath);
             })
             .observeOn(Schedulers.computation())
             .subscribeOn(Schedulers.computation())

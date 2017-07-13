@@ -2,7 +2,7 @@ package org.swiften.xtestkit.base;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -25,7 +25,7 @@ public final class AppiumCommandTest {
         AppiumCommand command = builder().withBase("Base").withPort(4327).build();
 
         // Then
-        LogUtil.println(command.command());
+        HPLog.println(command.command());
     }
 
     @NotNull

@@ -12,7 +12,7 @@ import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.string.HPStrings;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.Address;
 import org.swiften.xtestkit.base.AppiumCommand;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
@@ -149,7 +149,7 @@ public interface AppiumHandlerType extends
                         /* We need to start a new thread because this
                          * operation blocks */
                         new Thread(() -> {
-                            Consumer<String> cs = LogUtil::println;
+                            Consumer<String> cs = HPLog::println;
                             RUNNER.execute(COMMAND, cs, o::onError);
                         }).start();
 

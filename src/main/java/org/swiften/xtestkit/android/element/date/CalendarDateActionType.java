@@ -10,7 +10,8 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.date.DateUtil;
+import org.swiften.javautilities.date.HPDates;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.android.type.AndroidSDK;
 import org.swiften.xtestkit.android.type.AndroidSDKProviderType;
@@ -120,7 +121,7 @@ public interface CalendarDateActionType extends
      * @see CalendarUnit#value()
      * @see DateProviderType#date()
      * @see DateProviderType#dateString(String)
-     * @see DateUtil#notEarlierThan(Date, Date)
+     * @see HPDates#notEarlierThan(Date, Date)
      * @see Direction#horizontal(boolean)
      * @see Direction#vertical(boolean)
      * @see Formatibles#containsString()
@@ -179,6 +180,7 @@ public interface CalendarDateActionType extends
 
             @NotNull
             @Override
+            @SuppressWarnings("unchecked")
             public Flowable<Boolean> rxv_shouldKeepSwiping() {
                 /* Since there is no way to check the current month in focus,
                  * we need to use a crude workaround. Every time the list view
@@ -186,15 +188,19 @@ public interface CalendarDateActionType extends
                  * first day element in order to update the displayed date.
                  * We can then use rxe_displayedDate to check */
                 return Flowable
-                    .concat(
-                        THIS.rxe_byXPath(DQ).firstElement().toFlowable(),
-                        THIS.rxe_byXPath(Q).firstElement().toFlowable()
+                    .concatArrayDelayError(
+                        Flowable
+                            .concatArray(rxe_byXPath(DQ), rxe_byXPath(Q))
+                            .concatMap(THIS::rxa_click)
+                            .all(HPObjects::nonNull)
+                            .toFlowable(),
+
+                        rxv_hasDate(PARAM)
                     )
-                    .concatMap(THIS::rxa_click)
-                    .lastElement()
+                    .all(HPBooleans::isFalse)
                     .toFlowable()
-                    .flatMap(a -> rxv_hasDate(PARAM))
-                    .filter(HPBooleans::isTrue);
+                    .defaultIfEmpty(true)
+                    .onErrorReturnItem(true);
             }
 
             @NotNull
@@ -211,7 +217,7 @@ public interface CalendarDateActionType extends
                 /* We use month to compare because the month and day views
                  * are intertwined in calendar mode */
                 return rxe_displayedDate(PARAM)
-                    .map(a -> DateUtil.notEarlierThan(a, DATE, DAY))
+                    .map(a -> HPDates.notEarlierThan(a, DATE, DAY))
                     .map(a -> {
                         if (AT_LEAST_M) {
                             return Direction.horizontal(a);
@@ -363,7 +369,9 @@ public interface CalendarDateActionType extends
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
                     .flatMap(THIS::rxa_click)
-                    .map(HPBooleans::toTrue);
+                    .map(HPBooleans::isFalse)
+                    .defaultIfEmpty(true)
+                    .onErrorReturnItem(true);
             }
 
             @NotNull

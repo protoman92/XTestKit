@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.android.adb.ADBErrorType;
@@ -61,7 +61,7 @@ public final class ActualADBHandlerTest implements ADBErrorType {
         /* Since there are limited number of ports available, we expect the
          * process to throw an Exception */
         List ports = HPReactives.nextEvents(subscriber);
-        LogUtil.println(ports);
+        HPLog.println(ports);
         subscriber.assertSubscribed();
         subscriber.assertErrorMessage(NO_PORT_AVAILABLE);
         subscriber.assertNotComplete();

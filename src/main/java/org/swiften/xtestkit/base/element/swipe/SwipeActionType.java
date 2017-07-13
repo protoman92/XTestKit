@@ -10,7 +10,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.DirectionParam;
@@ -23,10 +23,10 @@ import org.swiften.xtestkitcomponents.direction.DirectionProviderType;
 /**
  * This interface provides methods to perform swipe gestures.
  */
-public interface SwipeType<D extends WebDriver> extends
+public interface SwipeActionType<D extends WebDriver> extends
     DriverProviderType<D>,
     LocatorType<D>,
-    SwipeOnceType
+    SwipeOnceActionType
 {
     /**
      * Perform a generic unidirectional swipe. This can be used anywhere a non-
@@ -38,25 +38,7 @@ public interface SwipeType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see Dimension#getHeight()
-     * @see Dimension#getWidth()
-     * @see Point#getX()
-     * @see Point#getY()
-     * @see P#anchorRatio()
-     * @see P#endRatio()
-     * @see P#startRatio()
-     * @see SwipeParam.Builder#withStartX(int)
-     * @see SwipeParam.Builder#withEndX(int)
-     * @see SwipeParam.Builder#withStartY(int)
-     * @see SwipeParam.Builder#withEndY(int)
-     * @see SwipeParam.Builder#withRepeatProvider(RepeatProviderType)
-     * @see SwipeParam.Builder#withDurationProvider(DurationProviderType)
-     * @see org.swiften.xtestkitcomponents.direction.Direction#DOWN_UP
-     * @see org.swiften.xtestkitcomponents.direction.Direction#LEFT_RIGHT
-     * @see org.swiften.xtestkitcomponents.direction.Direction#RIGHT_LEFT
-     * @see org.swiften.xtestkitcomponents.direction.Direction#UP_DOWN
      * @see #rxa_swipe(RepeatProviderType)
-     * @see #NOT_AVAILABLE
      */
     @NotNull
     default <P extends
@@ -129,8 +111,6 @@ public interface SwipeType<D extends WebDriver> extends
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see WebElement#getLocation()
-     * @see WebElement#getSize()
      * @see #rxa_swipeGeneric(Point, Dimension, DirectionProviderType)
      */
     @NotNull
@@ -155,10 +135,6 @@ public interface SwipeType<D extends WebDriver> extends
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
      * @see Direction#opposite()
-     * @see DirectionParam#from(DirectionProviderType)
-     * @see DirectionParam#withDirection(Direction)
-     * @see HPObjects#nonNull(Object)
-     * @see P#direction()
      * @see #rxa_swipeGeneric(WebElement, DirectionProviderType)
      */
     @NotNull
@@ -170,14 +146,14 @@ public interface SwipeType<D extends WebDriver> extends
             @NotNull final WebElement ELEMENT,
             @NotNull P param
     ) {
-        final SwipeType<?> THIS = this;
+        final SwipeActionType<?> THIS = this;
         Direction original = param.direction();
         Direction opposite = original.opposite();
         DirectionParam param1 = DirectionParam.from(param);
         DirectionParam param2 = param1.withDirection(opposite);
 
         return Flowable.fromArray(param1, param2)
-            .doOnNext(LogUtil::println)
+            .doOnNext(HPLog::println)
             .concatMap(a -> THIS.rxa_swipeGeneric(ELEMENT, a))
             .all(HPObjects::nonNull)
             .toFlowable()
@@ -200,7 +176,7 @@ public interface SwipeType<D extends WebDriver> extends
         RLSwipePositionType> Flowable<WebElement> rxa_swipeGeneric(
             @NotNull final P PARAM
     ) {
-        final SwipeType<?> THIS = this;
+        final SwipeActionType<?> THIS = this;
         return rxe_window().flatMap(a -> THIS.rxa_swipeGeneric(a, PARAM));
     }
 
@@ -220,7 +196,7 @@ public interface SwipeType<D extends WebDriver> extends
         RLSwipePositionType> Flowable<WebElement> rxa_swipeThenReverse(
             @NotNull final P PARAM
     ) {
-        final SwipeType<?> THIS = this;
+        final SwipeActionType<?> THIS = this;
         return rxe_window().flatMap(a -> THIS.rxa_swipeThenReverse(a, PARAM));
     }
 }

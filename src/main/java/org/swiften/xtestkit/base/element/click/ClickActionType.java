@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.tap.TapType;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
@@ -35,7 +35,7 @@ public interface ClickActionType<D extends WebDriver> extends
      * @see #tap(Point)
      */
     default void click(@NotNull WebElement element) {
-        LogUtil.printft("Clicking on %s", element);
+        HPLog.printft("Clicking on %s", element);
 //        tap(coordinate(element, RLPoint.MID, RLPoint.MID));
         element.click();
     }

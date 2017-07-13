@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
@@ -81,7 +81,7 @@ public interface PopupActionType<D extends WebDriver> extends
 
         return rxe_popupDismiss(PARAM)
             .flatMap(THIS::rxa_click)
-            .doOnNext(a -> LogUtil.printft("Dismissing popup %s", PARAM))
+            .doOnNext(a -> HPLog.printft("Dismissing popup %s", PARAM))
             .delay(popupDismissDelay(), TimeUnit.MILLISECONDS)
             .map(HPBooleans::toTrue);
     }
@@ -136,7 +136,7 @@ public interface PopupActionType<D extends WebDriver> extends
 
         return Flowable.fromArray(params)
             .filter(a -> a.applicableTo(PLATFORM))
-            .doOnNext(a -> LogUtil.printft("Polling for %s", a))
+            .doOnNext(a -> HPLog.printft("Polling for %s", a))
             .flatMap(THIS::rxa_pollAndDismissPopup);
     }
 }

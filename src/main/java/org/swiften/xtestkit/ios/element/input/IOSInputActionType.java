@@ -4,7 +4,7 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.input.InputActionType;
 
 /**
@@ -24,7 +24,7 @@ public interface IOSInputActionType extends InputActionType<IOSDriver<IOSElement
      */
     @Override
     default void sendValue(@NotNull WebElement element, @NotNull String text) {
-        LogUtil.printft("Sending '%s' to %s", text, element);
+        HPLog.printft("Sending '%s' to %s", text, element);
 
         if (element instanceof IOSElement) {
             ((IOSElement) element).setValue(text);

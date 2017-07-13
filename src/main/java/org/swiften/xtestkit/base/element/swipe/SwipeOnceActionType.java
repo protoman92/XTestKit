@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This interface provides methods to perform a single swipe action.
  */
-public interface SwipeOnceType extends ErrorProviderType {
+public interface SwipeOnceActionType extends ErrorProviderType {
     /**
      * Perform a swipe action.
      * @param param {@link SwipeParamType} instance.
@@ -31,7 +31,7 @@ public interface SwipeOnceType extends ErrorProviderType {
      */
     @NotNull
     default Flowable<Boolean> rxa_swipeOnce(@NotNull final SwipeParamType PARAM) {
-        final SwipeOnceType THIS = this;
+        final SwipeOnceActionType THIS = this;
 
         return Completable
             .fromAction(() -> THIS.swipeOnce(PARAM))
@@ -44,16 +44,13 @@ public interface SwipeOnceType extends ErrorProviderType {
      * @param param {@link P} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see HPBooleans#isTrue(boolean)
-     * @see P#delay()
-     * @see P#times()
-     * @see P#timeUnit()
      * @see #rxa_swipeOnce(SwipeParamType)
      */
     @NotNull
     default <P extends
         RepeatProviderType &
-        SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull P param) {
+        SwipeParamType> Flowable<Boolean> rxa_swipe(@NotNull P param
+    ) {
         int times = param.times();
         long delay = param.delay();
         TimeUnit unit = param.timeUnit();

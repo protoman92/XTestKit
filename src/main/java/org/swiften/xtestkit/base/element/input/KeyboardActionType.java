@@ -8,7 +8,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 
 /**
@@ -28,7 +28,7 @@ public interface KeyboardActionType<D extends WebDriver> extends ErrorProviderTy
      */
     @NotNull
     default Flowable<Boolean> rxa_hideKeyboard() {
-        LogUtil.printft("Hiding keyboard for %s", this);
+        HPLog.printft("Hiding keyboard for %s", this);
         return Completable.fromAction(this::hideKeyboard).<Boolean>toFlowable().defaultIfEmpty(true);
     }
 }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
 import org.swiften.javautilities.collection.HPIterables;
-import org.swiften.javautilities.util.LogUtil;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
 
@@ -105,7 +105,7 @@ public class NavigationTest implements ScreenManagerType {
                         // When
                         List<Node> nodes = multiNodes(current, screen);
                         Flowable<?> navigator = rxa_navigate(true, current, screen);
-                        LogUtil.println(nodes);
+                        HPLog.println(nodes);
 
                         // Then
                         for (int j = 0, size = nodes.size(); j < size; j++) {

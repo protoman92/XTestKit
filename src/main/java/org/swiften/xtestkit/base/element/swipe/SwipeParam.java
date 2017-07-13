@@ -61,7 +61,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see SwipeParamType#startX()
-     * @see #startX
      */
     @Override
     public int startX() {
@@ -72,7 +71,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see SwipeParamType#startY()
-     * @see #startY
      */
     @Override
     public int startY() {
@@ -83,7 +81,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see SwipeParamType#endX()
-     * @see #endX
      */
     @Override
     public int endX() {
@@ -94,7 +91,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see SwipeParamType#endY()
-     * @see #endY
      */
     @Override
     public int endY() {
@@ -105,7 +101,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see DurationProviderType#duration()
-     * @see #duration
      */
     @Override
     public int duration() {
@@ -116,7 +111,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see RepeatProviderType#times()
-     * @see #times
      */
     @Override
     public int times() {
@@ -127,7 +121,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link Integer} value.
      * @see DelayProviderType#delay()
-     * @see #delay
      */
     @Override
     public long delay() {
@@ -138,7 +131,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
      * Override this method to provide default implementation.
      * @return {@link TimeUnit} instance.
      * @see TimeUnitProviderType#timeUnit()
-     * @see #unit
      */
     @NotNull
     @Override
@@ -161,7 +153,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set the {@link #startX} value.
          * @param startX {@link Integer} value.
          * @return {@link Builder} instance.
-         * @see #startX
          */
         @NotNull
         public Builder withStartX(int startX) {
@@ -173,7 +164,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set the {@link #startY} value.
          * @param startY {@link Integer} value.
          * @return {@link Builder} instance.
-         * @see #startY
          */
         @NotNull
         public Builder withStartY(int startY) {
@@ -185,7 +175,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set the {@link #endX} value.
          * @param endX {@link Integer} value.
          * @return {@link Builder} instance.
-         * @see #endX
          */
         @NonNull
         public Builder withEndX(int endX) {
@@ -197,7 +186,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set the {@link #endY} value.
          * @param endY {@link Integer} value.
          * @return {@link Builder} instance.
-         * @see #endY
          */
         @NonNull
         public Builder withEndY(int endY) {
@@ -209,8 +197,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set {@link #startX} and {@link #startY}.
          * @param point {@link Point} instance.
          * @return {@link Builder} instance.
-         * @see Point#getX()
-         * @see Point#getY()
          * @see #withStartX(int)
          * @see #withStartY(int)
          */
@@ -223,8 +209,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set {@link #endX} and {@link #endY}.
          * @param point {@link Point} instance.
          * @return {@link Builder} instance.
-         * @see Point#getX()
-         * @see Point#getY()
          * @see #withStartX(int)
          * @see #withStartY(int)
          */
@@ -282,7 +266,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set the {@link #unit} instance.
          * @param param {@link TimeUnitProviderType} instance.
          * @return {@link Builder} instance.
-         * @see TimeUnitProviderType#timeUnit()
          * @see #withTimeUnit(TimeUnit)
          */
         @NotNull
@@ -294,8 +277,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set {@link #times} and {@link #delay}.
          * @param type {@link RepeatProviderType} instance.
          * @return {@link Builder} instance.
-         * @see RepeatProviderType#delay()
-         * @see RepeatProviderType#times()
          * @see #withDelay(long)
          * @see #withTimes(int)
          * @see #withTimeUnitProvider(TimeUnitProviderType)
@@ -312,7 +293,6 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
          * Set {@link #duration}.
          * @param type {@link DurationProviderType} instance.
          * @return {@link Builder} instance.
-         * @see DurationProviderType#duration()
          * @see #withDuration(int)
          * @see #withTimeUnitProvider(TimeUnitProviderType)
          */
@@ -323,6 +303,10 @@ public class SwipeParam implements DurationProviderType, RepeatProviderType, Swi
                 .withTimeUnitProvider(type);
         }
 
+        /**
+         * Get {@link #PARAM}.
+         * @return {@link SwipeParam} instance.
+         */
         @NonNull
         public SwipeParam build() {
             return PARAM;
