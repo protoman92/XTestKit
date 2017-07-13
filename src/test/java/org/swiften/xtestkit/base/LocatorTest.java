@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
 import org.swiften.xtestkit.base.element.locator.TextParam;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -119,10 +119,10 @@ public class LocatorTest implements TestTypes.TestLocatorType {
         ByXPath query3 = mock(ByXPath.class);
         WebElement element1 = mock(WebElement.class);
         WebElement element2 = mock(WebElement.class);
-        doReturn(RxUtil.error()).when(ENGINE).rxe_byXPath(eq(query1));
+        doReturn(HPReactives.error()).when(ENGINE).rxe_byXPath(eq(query1));
         doReturn(Flowable.just(element1)).when(ENGINE).rxe_byXPath(eq(query2));
         doReturn(Flowable.just(element2)).when(ENGINE).rxe_byXPath(eq(query3));
-        doReturn(RxUtil.error()).when(ENGINE).rxe_xpathQueryFailure(any());
+        doReturn(HPReactives.error()).when(ENGINE).rxe_xpathQueryFailure(any());
 
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
@@ -148,7 +148,7 @@ public class LocatorTest implements TestTypes.TestLocatorType {
         doReturn(error1).when(query1).error();
         doReturn(error2).when(query2).error();
         doReturn(error3).when(query3).error();
-        doReturn(RxUtil.error("")).when(ENGINE).rxe_byXPath(any(ByXPath.class));
+        doReturn(HPReactives.error("")).when(ENGINE).rxe_byXPath(any(ByXPath.class));
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         // When

@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import static org.mockito.Mockito.*;
 
-import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.collection.HPIterables;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import static org.testng.Assert.*;
@@ -150,7 +150,7 @@ public class NavigationTest implements ScreenManagerType {
             final Random RAND = new Random();
             int size = RAND.nextInt(screens.size());
 
-            return CollectionUtil
+            return HPIterables
                 .subList(screens, 0, size).stream()
                 .filter(a -> a.largerThan(THIS) && RAND.nextBoolean())
                 .map(a -> new Direction(a, Flowable::just, ENGINE.platform()))
@@ -165,7 +165,7 @@ public class NavigationTest implements ScreenManagerType {
             final Random RAND = new Random();
             int size = RAND.nextInt(screens.size());
 
-            return CollectionUtil
+            return HPIterables
                 .subList(screens, 0, size).stream()
                 .filter(a -> THIS.largerThan(a) && RAND.nextBoolean())
                 .map(a -> new Direction(a, Flowable::just, ENGINE.platform()))

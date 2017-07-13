@@ -7,8 +7,8 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.PlatformView;
@@ -138,7 +138,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_beforeClass(RetryProviderType)
-     * @see BooleanUtil#isTrue(boolean)
+     * @see HPBooleans#isTrue(boolean)
      * @see #rxa_startDriver(RetryProviderType)
      */
     @NotNull
@@ -147,7 +147,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
     public Flowable<Boolean> rxa_beforeClass(@NotNull RetryProviderType param) {
         return Flowable
             .concatArray(super.rxa_beforeClass(param), rxa_startDriver(param))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable();
     }
 
@@ -156,7 +156,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
      * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_afterClass(RetryProviderType)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see XCRunHandler#rxa_stopSimulator(RetryProviderType)
      * @see #testMode()
@@ -177,7 +177,7 @@ public class IOSEngine extends MobileEngine<IOSDriver<IOSElement>> implements
 
         return Flowable
             .concatArray(super.rxa_afterClass(param), source, rxa_stopDriver())
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable();
     }
     //endregion

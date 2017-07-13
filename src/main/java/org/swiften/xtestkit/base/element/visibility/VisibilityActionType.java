@@ -8,10 +8,10 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.javautilities.protocol.DelayProviderType;
-import org.swiften.javautilities.rx.RxUtilParam;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.RxParam;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 
 import java.util.concurrent.TimeUnit;
@@ -29,23 +29,23 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
      * @param flowable {@link Flowable} instance that emits the
      *                 {@link WebElement} to be checked for visibility.
      * @return {@link Flowable} instance.
-     * @see NumberUtil#isZero(Number)
-     * @see RxUtilParam.Builder#withDelay(long)
-     * @see RxUtilParam.Builder#withTimeUnit(TimeUnit)
-     * @see RxUtil#repeatUntil(Flowable, DelayProviderType)
+     * @see HPNumbers#isZero(Number)
+     * @see RxParam.Builder#withDelay(long)
+     * @see RxParam.Builder#withTimeUnit(TimeUnit)
+     * @see HPReactives#repeatUntil(Flowable, DelayProviderType)
      * @see #consecutiveVisibilityCheckDelay()
      */
     @NotNull
     default Flowable<Boolean> rxa_watchUntilHidden(@NotNull Flowable<WebElement> flowable) {
         Flowable<Boolean> counter = flowable.count()
-            .map(NumberUtil::isZero)
+            .map(HPNumbers::isZero)
             .toFlowable();
 
-        RxUtilParam param = RxUtilParam.builder()
+        RxParam param = RxParam.builder()
             .withDelay(consecutiveVisibilityCheckDelay())
             .withTimeUnit(TimeUnit.MILLISECONDS)
             .build();
 
-        return Flowable.just(true).compose(RxUtil.repeatUntil(counter, param));
+        return Flowable.just(true).compose(HPReactives.repeatUntil(counter, param));
     }
 }

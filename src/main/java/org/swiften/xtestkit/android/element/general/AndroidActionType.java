@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
@@ -40,7 +40,7 @@ public interface AndroidActionType extends
      * @return {@link Flowable} instance.
      * @see ActionType#rxa_dismissAlert(AlertParam)
      * @see AlertParam#shouldAccept()
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see #alertDismissDelay()
      * @see #rxa_click(WebElement)
      * @see #rxe_containsID(String...)
@@ -62,7 +62,7 @@ public interface AndroidActionType extends
             .firstElement()
             .toFlowable()
             .flatMap(THIS::rxa_click)
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);
     }

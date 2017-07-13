@@ -3,9 +3,9 @@ package org.swiften.xtestkit.base;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParam;
@@ -57,7 +57,7 @@ public class SwipeActionTest implements SwipeType<WebDriver>, TestTypes.TestLoca
     @SuppressWarnings("unchecked")
     public void test_swipe_shouldSucceed() {
         // Setup
-        int times = NumberUtil.randomBetween(1, 5);
+        int times = HPNumbers.randomBetween(1, 5);
 
         SwipeParam param = SwipeParam.builder()
             .withDelay(100)
@@ -74,7 +74,7 @@ public class SwipeActionTest implements SwipeType<WebDriver>, TestTypes.TestLoca
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
         verify(ENGINE).rxa_swipe(any());
         verify(ENGINE, times(times)).swipeOnce(any());
         verify(ENGINE, times(times)).rxa_swipeOnce(any());

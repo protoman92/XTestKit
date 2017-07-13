@@ -5,7 +5,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.collection.HPIterables;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
@@ -170,7 +170,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
     private List<ChoiceInputItem> currentItemRange() {
         int lower = currentIndex * ITEM_PER_PAGE;
         int upper = (currentIndex + 1) * ITEM_PER_PAGE;
-        return CollectionUtil.subList(ITEMS, lower, upper);
+        return HPIterables.subList(ITEMS, lower, upper);
     }
 
     @SuppressWarnings("unchecked")

@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.ArgumentCaptor;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
@@ -124,7 +124,7 @@ public class AppiumHandlerTest implements AppiumHandlerType, TestMessageType {
         // When
         Flowable.range(1, tries)
             .flatMap(a -> THIS.ENGINE.rxa_startLocalAppium(RETRY))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable()
             .flatMap(a -> THIS.ENGINE.networkHandler().rxa_killAll("node appium"))
             .subscribe(subscriber);

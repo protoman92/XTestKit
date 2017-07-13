@@ -4,9 +4,9 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.base.param.NavigateBack;
@@ -82,7 +82,7 @@ public class ActionTest implements ActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
         verify(ENGINE).driver();
         verify(ENGINE).rxa_acceptAlert();
         verify(ENGINE).rxa_dismissAlert(any(AlertParam.class));
@@ -95,7 +95,7 @@ public class ActionTest implements ActionType {
     @SuppressWarnings("unchecked")
     public void test_navigateBack_shouldSucceed() {
         // Setup
-        int times = NumberUtil.randomBetween(1, 5);
+        int times = HPNumbers.randomBetween(1, 5);
 
         NavigateBack param = NavigateBack.builder()
             .withTimes(times)
@@ -112,7 +112,7 @@ public class ActionTest implements ActionType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
         verify(ENGINE, times(times)).rxa_navigateBackOnce();
         verify(ENGINE).rxa_navigateBack(any());
         verify(ENGINE, atLeastOnce()).driver();

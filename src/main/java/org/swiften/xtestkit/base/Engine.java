@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.checkbox.CheckBoxActionType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
@@ -94,14 +94,14 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get {@link #capability}.
      * @return {@link EngineCapabilityType} instance.
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #capability
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings("ConstantConditions")
     public EngineCapabilityType capabilityType() {
-        ObjectUtil.requireNotNull(capability, NOT_AVAILABLE);
+        HPObjects.requireNotNull(capability, NOT_AVAILABLE);
         return capability;
     }
 
@@ -152,14 +152,14 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get the associated {@link LocalizerType} instance.
      * @return {@link LocalizerType} instance.
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #localizer
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings("ConstantConditions")
     public LocalizerType localizer() {
-        ObjectUtil.requireNotNull(localizer, NOT_AVAILABLE);
+        HPObjects.requireNotNull(localizer, NOT_AVAILABLE);
         return localizer;
     }
 
@@ -188,14 +188,14 @@ public abstract class Engine<D extends WebDriver> implements
     /**
      * Get the active {@link D} {@link #driver}.
      * @return {@link D} {@link #driver}.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #driver
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings("ConstantConditions")
     public D driver() {
-        ObjectUtil.requireNotNull(driver, NOT_AVAILABLE);
+        HPObjects.requireNotNull(driver, NOT_AVAILABLE);
         return driver;
     }
 
@@ -296,9 +296,9 @@ public abstract class Engine<D extends WebDriver> implements
      * @see TestLifecycleType#rxa_afterClass(RetryProviderType)
      * @see Address#isLocalInstance()
      * @see Address#port()
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see NetworkHandler#markPortAvailable(int)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #address()
      * @see #networkHandler()
      * @see #rxa_stopLocalAppium()
@@ -316,7 +316,7 @@ public abstract class Engine<D extends WebDriver> implements
                 Completable
                     .fromAction(() -> HANDLER.markPortAvailable(PORT))
                     .toFlowable()
-                    .map(BooleanUtil::toTrue)
+                    .map(HPBooleans::toTrue)
                     .defaultIfEmpty(true),
 
                 Flowable.create(obs -> {
@@ -327,7 +327,7 @@ public abstract class Engine<D extends WebDriver> implements
                     obs.onComplete();
                 }, BackpressureStrategy.BUFFER
                 ).flatMap(a -> THIS.rxa_stopLocalAppium()))
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable();
     }
 

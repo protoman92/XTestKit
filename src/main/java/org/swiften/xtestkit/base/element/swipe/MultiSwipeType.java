@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.object.HPObjects;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkitcomponents.direction.Direction;
 
 /**
@@ -48,8 +48,8 @@ public interface MultiSwipeType extends SwipeOnceType {
     /**
      * Repeat a scroll while a condition is satisfied.
      * @return {@link Flowable} instance.
-     * @see ObjectUtil#eq(Object)
-     * @see RxUtil#error()
+     * @see HPObjects#eq(Object)
+     * @see HPReactives#error()
      * @see #rxv_shouldKeepSwiping()
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()
@@ -61,7 +61,7 @@ public interface MultiSwipeType extends SwipeOnceType {
         final MultiSwipeType THIS = this;
 
         return rxv_shouldKeepSwiping()
-            .switchIfEmpty(RxUtil.error())
+            .switchIfEmpty(HPReactives.error())
             .onErrorResumeNext(Flowable
                 .zip(
                     rxe_scrollableViewToSwipe(),

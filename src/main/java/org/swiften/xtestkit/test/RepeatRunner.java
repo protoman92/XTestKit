@@ -7,7 +7,7 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
 import org.swiften.xtestkit.kit.TestKit;
@@ -192,7 +192,7 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(TestListenerType::rxa_onFreshStart)
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
@@ -203,9 +203,9 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(a -> a.rxa_onBatchStarted(INDEXES))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .<Boolean>toFlowable()
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 
@@ -215,9 +215,9 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(a -> a.rxa_onBatchFinished(INDEXES))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .<Boolean>toFlowable()
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 
@@ -227,9 +227,9 @@ public class RepeatRunner implements
         return Flowable
             .fromIterable(testListeners())
             .flatMap(TestListenerType::rxa_onAllTestsFinished)
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .<Boolean>toFlowable()
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
     //endregion

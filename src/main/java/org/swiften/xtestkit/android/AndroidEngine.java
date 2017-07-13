@@ -9,7 +9,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.capability.AndroidEngineCapability;
@@ -172,14 +172,14 @@ public class AndroidEngine extends
     /**
      * Return {@link #androidInstance}.
      * @return {@link AndroidInstance} instance.
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #androidInstance
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings("ConstantConditions")
     public AndroidInstance androidInstance() {
-        ObjectUtil.requireNotNull(androidInstance, NOT_AVAILABLE);
+        HPObjects.requireNotNull(androidInstance, NOT_AVAILABLE);
         return androidInstance;
     }
     //endregion
@@ -199,7 +199,7 @@ public class AndroidEngine extends
      * @see ClearCacheParam.Builder#withAppPackage(String)
      * @see ClearCacheParam.Builder#withDeviceUIDProvider(DeviceUIDProviderType)
      * @see ClearCacheParam.Builder#withRetryProvider(RetryProviderType)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
@@ -258,7 +258,7 @@ public class AndroidEngine extends
                 ).onErrorReturnItem(true),
 
                 rxa_startDriver(PARAM)
-            ).all(ObjectUtil::nonNull).toFlowable();
+            ).all(HPObjects::nonNull).toFlowable();
     }
 
     /**
@@ -269,7 +269,7 @@ public class AndroidEngine extends
      * @see ADBHandler#rxa_stopEmulator(StopEmulatorParam)
      * @see AndroidInstance#port()
      * @see NetworkHandler#markPortAvailable(int)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see TestMode#isTestingOnSimulatedEnvironment()
      * @see #adbHandler()
      * @see #androidInstance()
@@ -309,7 +309,7 @@ public class AndroidEngine extends
                     .<Boolean>toFlowable()
                     .defaultIfEmpty(true)
             )
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable();
     }
     //endregion

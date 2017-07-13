@@ -8,11 +8,11 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.collection.Zip;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.functional.Tuple;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
@@ -67,7 +67,7 @@ public interface DateActionType<D extends WebDriver> extends
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
      * @see DateProviderType#units()
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #valueString(DateProviderType, CalendarUnit)
      * @see #rxe_containsText(String...)
      */
@@ -81,7 +81,7 @@ public interface DateActionType<D extends WebDriver> extends
             .fromIterable(units)
             .map(a -> THIS.displayString(PARAM, a))
             .flatMap(THIS::rxe_containsText)
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable();
     }
 
@@ -89,10 +89,10 @@ public interface DateActionType<D extends WebDriver> extends
      * Select {@link Date}. This assumes that the user is in a calendar view.
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#isTrue(boolean)
+     * @see HPBooleans#isTrue(boolean)
      * @see DateProviderType#units()
-     * @see ObjectUtil#nonNull(Object)
-     * @see RxUtil#error(String)
+     * @see HPObjects#nonNull(Object)
+     * @see HPReactives#error(String)
      * @see #rxa_openPicker(DateProviderType, CalendarUnit)
      * @see #rxa_select(DateProviderType, CalendarUnit)
      * @see #rxv_hasDate(DateProviderType)
@@ -108,11 +108,11 @@ public interface DateActionType<D extends WebDriver> extends
             .fromIterable(PARAM.units())
             .concatMap(a -> THIS.rxa_openPicker(PARAM, a)
                 .flatMap(b -> THIS.rxa_select(PARAM, a)))
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable()
             .flatMap(a -> THIS.rxv_hasDate(PARAM))
-            .filter(BooleanUtil::isTrue)
-            .switchIfEmpty(RxUtil.error(DATES_NOT_MATCHED));
+            .filter(HPBooleans::isTrue)
+            .switchIfEmpty(HPReactives.error(DATES_NOT_MATCHED));
     }
 
     /**
@@ -184,9 +184,9 @@ public interface DateActionType<D extends WebDriver> extends
      * Get the {@link Date} as displayed by the date picker.
      * @return {@link Flowable} instance.
      * @see #rxe_displayedUnit(DateProviderType, CalendarUnit)
-     * @see Zip#of(Object, Object)
-     * @see Zip#A
-     * @see Zip#B
+     * @see Tuple#of(Object, Object)
+     * @see Tuple#A
+     * @see Tuple#B
      */
     @NotNull
     @SuppressWarnings({"MagicConstant", "ConstantConditions"})
@@ -194,7 +194,7 @@ public interface DateActionType<D extends WebDriver> extends
         final DateActionType<?> THIS = this;
 
         return Flowable.fromIterable(PARAM.units())
-            .flatMap(a -> THIS.rxe_displayedUnit(PARAM, a).map(b -> Zip.of(a, b)))
+            .flatMap(a -> THIS.rxe_displayedUnit(PARAM, a).map(b -> Tuple.of(a, b)))
             .reduce(Calendar.getInstance(), (a, b) -> {
                 a.set(b.A.value(), b.B); return a;
             })

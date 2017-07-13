@@ -1,8 +1,9 @@
 package org.swiften.xtestkit.android.adb;
 
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.RetryProviderType;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
+import org.swiften.javautilities.string.HPStrings;
 import org.swiften.xtestkit.base.type.AppPackageProviderType;
 import org.swiften.xtestkit.android.param.ConnectionParam;
 import org.swiften.xtestkit.android.param.DeviceSettingParam;
@@ -15,9 +16,8 @@ import org.swiften.xtestkitcomponents.system.network.type.PortProviderType;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.number.NumberUtil;
-import org.swiften.javautilities.string.StringUtil;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.number.HPNumbers;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     static {
         AVAILABLE_PORTS = IntStream
             .range(MIN_PORT, MAX_PORT + 1)
-            .filter(NumberUtil::isEven)
+            .filter(HPNumbers::isEven)
             .boxed()
             .collect(Collectors.toList());;
     }
@@ -56,9 +56,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     public static int availablePortsCount() {
         int total = MAX_PORT - MIN_PORT + 1;
 
-        if (NumberUtil.isEven(MIN_PORT) && NumberUtil.isEven(MAX_PORT)) {
+        if (HPNumbers.isEven(MIN_PORT) && HPNumbers.isEven(MAX_PORT)) {
             return (total - 1) / 2 + 1;
-        } else if (NumberUtil.isOdd(MIN_PORT) && NumberUtil.isOdd(MAX_PORT)) {
+        } else if (HPNumbers.isOdd(MIN_PORT) && HPNumbers.isOdd(MAX_PORT)) {
             return (total - 1) / 2;
         } else {
             return total / 2;
@@ -108,7 +108,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @return {@link Boolean} value.
      */
     public boolean isAcceptablePort(int port) {
-        return port >= MIN_PORT && port <= MAX_PORT && NumberUtil.isEven(port);
+        return port >= MIN_PORT && port <= MAX_PORT && HPNumbers.isEven(port);
     }
     //endregion
 
@@ -117,7 +117,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * Restart adb server in order to avoid problem with adb not acknowledging
      * the first command at the start of a test batch.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see NetworkHandler#rxa_killWithName(String)
      * @see ProcessRunner#rxa_execute(String)
      * @see #networkHandler()
@@ -135,7 +135,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .onErrorReturnItem(true)
             .map(a -> THIS.cm_launchAdb())
             .flatMap(RUNNER::rxa_execute)
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
     //endregion
 
@@ -154,7 +154,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         Collection<Integer> availablePorts = availablePorts();
 
         if (networkHandler.checkPortsUsed(availablePorts)) {
-            return RxUtil.error(NO_PORT_AVAILABLE);
+            return HPReactives.error(NO_PORT_AVAILABLE);
         } else {
             PortCheckParam param = PortCheckParam.builder()
                 .withPort(MIN_PORT)
@@ -172,11 +172,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * 'closed' and then emit value.
      * @param PARAM {@link StartEmulatorParam} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
-     * @see ObjectUtil#nonNull(Object)
-     * @see RxUtil#delayRetry(int, long)
-     * @see RxUtil#error()
-     * @see RxUtil#timeout(long, Object)
+     * @see HPBooleans#toTrue(Object)
+     * @see HPObjects#nonNull(Object)
+     * @see HPReactives#delayRetry(int, long)
+     * @see HPReactives#error()
+     * @see HPReactives#timeout(long, Object)
      * @see #cm_startEmulator(StartEmulatorParam)
      * @see #cm_bootAnim(DeviceUIDProviderType)
      * @see #emulatorBootTimeout()
@@ -196,7 +196,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
         return RUNNER
             .rxa_execute(cm_bootAnim(PARAM))
-            .filter(ObjectUtil::nonNull)
+            .filter(HPObjects::nonNull)
             .map(String::trim)
 
             /* There are two errors that can be thrown here:
@@ -207,15 +207,15 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * Afterwards, when the emulator has booted up fully, a value
              * 'stopped' will be emitted */
             .filter(a -> a.equals("stopped"))
-            .switchIfEmpty(RxUtil.error())
-            .compose(RxUtil.delayRetry(retries, delay))
-            .map(BooleanUtil::toTrue)
+            .switchIfEmpty(HPReactives.error())
+            .compose(HPReactives.delayRetry(retries, delay))
+            .map(HPBooleans::toTrue)
 
             /* timeout is used here in case processRunner() fails to poll
              * for bootanim. The timeout will be a reasonable value so that,
              * at the end of the interval, the emulator would have been
              * started up anyway */
-            .compose(RxUtil.timeout(timeout, true));
+            .compose(HPReactives.timeout(timeout, true));
     }
     //endregion
 
@@ -232,7 +232,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
 
         return processRunner()
             .rxa_execute(command)
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .retry(param.retries());
     }
 
@@ -275,9 +275,9 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
              * 'Failed'. Failures may be due to the app's package name not
              * present in the device/emulator. */
             .filter(a -> a.contains("Success"))
-            .switchIfEmpty(RxUtil.error(unableToClearCache(APP)))
+            .switchIfEmpty(HPReactives.error(unableToClearCache(APP)))
             .retry(param.retries())
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
     //endregion
 
@@ -288,11 +288,11 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
      * @param PARAM {@link AppPackageProviderType} instance.
      * @param <P> Generics parameter.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see ProcessRunner#rxa_execute(String)
      * @see P#appPackage()
      * @see P#retries()
-     * @see RxUtil#error()
+     * @see HPReactives#error()
      * @see #appNotInstalled(String)
      * @see #cm_listPackages(DeviceUIDProviderType)
      */
@@ -307,8 +307,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
             .rxa_execute(listCommand)
             .filter(a -> a.contains(PKG))
             .retry(PARAM.retries())
-            .map(BooleanUtil::toTrue)
-            .switchIfEmpty(RxUtil.error(appNotInstalled(PKG)));
+            .map(HPBooleans::toTrue)
+            .switchIfEmpty(HPReactives.error(appNotInstalled(PKG)));
     }
     //endregion
 
@@ -327,8 +327,8 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         return processRunner().rxa_execute(command)
             /* If successful, there should be no output */
             .filter(String::isEmpty)
-            .map(BooleanUtil::toTrue)
-            .switchIfEmpty(RxUtil.error(NO_OUTPUT_EXPECTED));
+            .map(HPBooleans::toTrue)
+            .switchIfEmpty(HPReactives.error(NO_OUTPUT_EXPECTED));
     }
 
     /**
@@ -378,7 +378,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         String command = cm_checkKeyboardOpen(param);
 
         return processRunner().rxa_execute(command)
-            .filter(StringUtil::isNotNullOrEmpty)
+            .filter(HPStrings::isNotNullOrEmpty)
             .map(output -> {
                 String regex = "mHasSurface=(\\w+)";
                 Pattern pattern = Pattern.compile(regex);
@@ -414,12 +414,12 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
         return RUNNER.rxa_execute(cm_putSettings(PARAM))
             .flatMap(a -> RUNNER.rxa_execute(cm_getSettings(PARAM)))
             .filter(a -> a.contains(PARAM.value()))
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .onErrorResumeNext(Flowable.empty())
 
             /* Throw error if the returned value does not match the new
              * setting value */
-            .switchIfEmpty(RxUtil.error(changeSettingsFailed(PARAM.key())))
+            .switchIfEmpty(HPReactives.error(changeSettingsFailed(PARAM.key())))
 
             /* Sometimes an adb error may be thrown if the currently active
              * adb instance does not acknowledge the request */
@@ -508,7 +508,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
                 rxa_disableTransitionAnimationScale(param),
                 rxa_disableAnimatorDurationScale(param)
             )
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable();
     }
     //endregion
@@ -522,7 +522,7 @@ public class ADBHandler implements ADBErrorType, ADBDelayType {
     public String cm_AndroidHome() {
         String androidHome = System.getenv("ANDROID_HOME");
 
-        if (StringUtil.isNotNullOrEmpty(androidHome)) {
+        if (HPStrings.isNotNullOrEmpty(androidHome)) {
             return androidHome;
         }
 

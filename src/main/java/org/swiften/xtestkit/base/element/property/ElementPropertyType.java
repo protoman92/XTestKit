@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkitcomponents.coordinate.RLPoint;
 import org.swiften.xtestkitcomponents.coordinate.RLPositionType;
@@ -39,11 +39,11 @@ public interface ElementPropertyType extends ErrorProviderType {
      * Check if a {@link WebElement} is focused.
      * @param element {@link WebElement} instance.
      * @return {@link Boolean} value.
-     * @see BooleanUtil#isTrue(Object)
+     * @see HPBooleans#isTrue(Object)
      * @see WebElement#getAttribute(String)
      */
     default boolean isFocused(@NotNull WebElement element) {
-        return BooleanUtil.isTrue(element.getAttribute("focused"));
+        return HPBooleans.isTrue(element.getAttribute("focused"));
     }
 
     /**

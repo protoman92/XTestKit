@@ -6,7 +6,7 @@ package org.swiften.xtestkit.base.element.choice;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
@@ -34,7 +34,7 @@ public class ChoiceParam implements ChoiceType, ErrorProviderType {
     /**
      * @return {@link Engine} instance.
      * @see AndroidChoiceMultiSwipeType#choiceHelper()
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #mode
      * @see #NOT_AVAILABLE
      */
@@ -42,14 +42,14 @@ public class ChoiceParam implements ChoiceType, ErrorProviderType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public ChoiceMode mode() {
-        ObjectUtil.requireNotNull(mode, NOT_AVAILABLE);
+        HPObjects.requireNotNull(mode, NOT_AVAILABLE);
         return mode;
     }
 
     /**
      * @return {@link ChoiceInputType} instance.
      * @see AndroidChoiceMultiSwipeType#choiceInput()
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #input
      * @see #NOT_AVAILABLE
      */
@@ -57,14 +57,14 @@ public class ChoiceParam implements ChoiceType, ErrorProviderType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public ChoiceInputType input() {
-        ObjectUtil.requireNotNull(input, NOT_AVAILABLE);
+        HPObjects.requireNotNull(input, NOT_AVAILABLE);
         return input;
     }
 
     /**
      * @return {@link String} value.
      * @see AndroidChoiceMultiSwipeType#selectedChoice()
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #selected
      * @see #NOT_AVAILABLE
      */
@@ -72,7 +72,7 @@ public class ChoiceParam implements ChoiceType, ErrorProviderType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public String selectedChoice() {
-        ObjectUtil.requireNotNull(selected, NOT_AVAILABLE);
+        HPObjects.requireNotNull(selected, NOT_AVAILABLE);
         return selected;
     }
 

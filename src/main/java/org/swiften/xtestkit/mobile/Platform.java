@@ -2,7 +2,7 @@ package org.swiften.xtestkit.mobile;
 
 import io.appium.java_client.remote.MobilePlatform;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.collection.HPIterables;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkitcomponents.property.base.ValueType;
@@ -86,7 +86,7 @@ public enum Platform implements ErrorProviderType, PlatformType, ValueType<Strin
      * Override this method to provide default implementation.
      * @return {@link Collection} of {@link String}.
      * @see PlatformType#idAttribute()
-     * @see CollectionUtil#asList(Object[])
+     * @see HPIterables#asList(Object[])
      * @see #ANDROID
      * @see #IOS
      * @see #NOT_AVAILABLE
@@ -96,10 +96,10 @@ public enum Platform implements ErrorProviderType, PlatformType, ValueType<Strin
     public Collection<String> idAttribute() {
         switch (this) {
             case ANDROID:
-                return CollectionUtil.asList("resource-id");
+                return HPIterables.asList("resource-id");
 
             case IOS:
-                return CollectionUtil.asList("name");
+                return HPIterables.asList("name");
 
             default:
                 throw new RuntimeException(NOT_AVAILABLE);
@@ -110,7 +110,7 @@ public enum Platform implements ErrorProviderType, PlatformType, ValueType<Strin
      * Override this method to provide default implementation.
      * @return {@link Collection} of {@link String}.
      * @see PlatformType#textAttribute()
-     * @see CollectionUtil#asList(Object[])
+     * @see HPIterables#asList(Object[])
      * @see #ANDROID
      * @see #IOS
      * @see #NOT_AVAILABLE
@@ -120,10 +120,10 @@ public enum Platform implements ErrorProviderType, PlatformType, ValueType<Strin
     public Collection<String> textAttribute() {
         switch (this) {
             case ANDROID:
-                return CollectionUtil.asList("text");
+                return HPIterables.asList("text");
 
             case IOS:
-                return CollectionUtil.asList(
+                return HPIterables.asList(
                     "title",
                     "text",
                     "value",

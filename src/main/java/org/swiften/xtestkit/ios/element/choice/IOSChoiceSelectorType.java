@@ -5,7 +5,7 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
@@ -36,7 +36,7 @@ public interface IOSChoiceSelectorType extends
      * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
      * @see ChoiceInputType#choicePickerXP(InputHelperType)
      * @see ChoiceHelperType#rxa_sendValue(WebElement, String)
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      */
     @NotNull
     default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
@@ -52,6 +52,6 @@ public interface IOSChoiceSelectorType extends
             .elementAt(index)
             .toFlowable()
             .flatMap(a -> ENGINE.rxa_sendValue(a, SELECTED))
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
 }

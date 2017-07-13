@@ -4,14 +4,14 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.box.BoxUtil;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.box.HPBoxes;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.android.AndroidEngine;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.mobile.Platform;
@@ -68,14 +68,14 @@ public class TestKit implements
         TestSubscriber subscriber = CustomTestSubscriber.create();
 
         Flowable
-            .fromArray(BoxUtil.box(indexes))
+            .fromArray(HPBoxes.box(indexes))
             .map(this::engine)
             .distinct(Engine::comparisonObject)
             .count()
             .toFlowable()
             .subscribe(subscriber);
 
-        return RxUtil.<Long>firstNextEvent(subscriber).intValue();
+        return HPReactives.<Long>firstNextEvent(subscriber).intValue();
     }
     //endregion
 
@@ -120,11 +120,11 @@ public class TestKit implements
         final int SIZE = ENGINES.size();
 
         return Flowable
-            .fromArray(BoxUtil.box(indexes))
+            .fromArray(HPBoxes.box(indexes))
             .filter(a -> a >= 0 && a < SIZE)
             .map(ENGINES::get)
-            .filter(ObjectUtil::nonNull)
-            .switchIfEmpty(RxUtil.error(NOT_AVAILABLE));
+            .filter(HPObjects::nonNull)
+            .switchIfEmpty(HPReactives.error(NOT_AVAILABLE));
     }
 
     @NotNull
@@ -132,7 +132,7 @@ public class TestKit implements
     public Flowable<Boolean> rxa_onBatchStarted(@NotNull final int[] INDEXES) {
         return rxe_enginesFromIndexes(INDEXES)
             .concatMap(a -> a.rxa_onBatchStarted(INDEXES))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable()
             .defaultIfEmpty(true);
     }
@@ -142,9 +142,9 @@ public class TestKit implements
     public Flowable<Boolean> rxa_onBatchFinished(@NotNull final int[] INDEXES) {
         return rxe_enginesFromIndexes(INDEXES)
             .concatMap(a -> a.rxa_onBatchFinished(INDEXES))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable()
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 
@@ -210,7 +210,7 @@ public class TestKit implements
     /**
      * Get {@link #localizer}.
      * @return {@link Localizer} instance.
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #localizer
      * @see #NOT_AVAILABLE
      */
@@ -218,7 +218,7 @@ public class TestKit implements
     @Override
     @SuppressWarnings("ConstantConditions")
     public LocalizerType localizer() {
-        ObjectUtil.requireNotNull(localizer, NOT_AVAILABLE);
+        HPObjects.requireNotNull(localizer, NOT_AVAILABLE);
         return localizer;
     }
     //endregion
@@ -227,7 +227,7 @@ public class TestKit implements
     /**
      * Get the current active {@link Engine}.
      * @return {@link Engine} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #NOT_AVAILABLE
      */
     @NotNull
@@ -236,7 +236,7 @@ public class TestKit implements
 
         if (current > -1 && current < engines.size()) {
             Engine engine = engines.get(current);
-            ObjectUtil.requireNotNull(engine, NOT_AVAILABLE);
+            HPObjects.requireNotNull(engine, NOT_AVAILABLE);
             return engine;
         }
 

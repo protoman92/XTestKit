@@ -3,7 +3,7 @@ package org.swiften.xtestkit.base.type;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 
 import java.util.concurrent.Callable;
 
@@ -24,7 +24,7 @@ public interface DriverProviderType<D extends WebDriver> {
     @NotNull D driver();
 
     /**
-     * Instead of calling {@link RxUtil#error(String)} directly, call this
+     * Instead of calling {@link HPReactives#error(String)} directly, call this
      * method so that we can get the {@link WebDriver#getPageSource()} as well.
      * @param error {@link String} value.
      * @param <T> Generics parameter.

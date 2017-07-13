@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.ios.param.StartSimulatorParam;
 import org.swiften.xtestkitcomponents.system.process.ProcessRunner;
@@ -67,7 +67,7 @@ public final class XCRunHandlerTest {
     public void test_startSimulatorWithError_shouldThrow() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(RUNNER).rxa_execute(contains("CurrentDeviceUDID"));
+            doReturn(HPReactives.error()).when(RUNNER).rxa_execute(contains("CurrentDeviceUDID"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -111,7 +111,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxUtil.firstNextEvent(subscriber));
+            assertTrue(HPReactives.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxa_checkSimulatorBooted(any());
             verify(XC_HANDLER).rxa_startSimulator(any());
             verify(XC_HANDLER, times(2)).processRunner();
@@ -137,7 +137,7 @@ public final class XCRunHandlerTest {
     public void test_stopSimulatorWithError_shouldSucceed() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(RUNNER).rxa_execute(any());
+            doReturn(HPReactives.error()).when(RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -148,7 +148,7 @@ public final class XCRunHandlerTest {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxUtil.firstNextEvent(subscriber));
+            assertTrue(HPReactives.firstNextEvent(subscriber));
             verify(XC_HANDLER).rxa_stopSimulator(any());
             verify(XC_HANDLER).processRunner();
             verify(XC_HANDLER).cm_stopSimulator();

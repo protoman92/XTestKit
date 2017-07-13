@@ -8,7 +8,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.locator.ByXPath;
@@ -33,7 +33,7 @@ public interface PopupActionType<D extends WebDriver> extends
      * on-screen.
      * @param param {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see ByXPath.Builder#shouldLogXPath(boolean)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see PopupType#presenceXP(InputHelperType)
@@ -49,7 +49,7 @@ public interface PopupActionType<D extends WebDriver> extends
         return rxe_byXPath(query)
             .firstElement()
             .toFlowable()
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .onErrorReturnItem(false);
     }
 
@@ -70,7 +70,7 @@ public interface PopupActionType<D extends WebDriver> extends
      * Dismiss a popup corresponding to {@link PopupType}.
      * @param PARAM {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see #popupDismissDelay()
      * @see #rxa_click(WebElement)
      * @see #rxe_popupDismiss(PopupType)
@@ -83,7 +83,7 @@ public interface PopupActionType<D extends WebDriver> extends
             .flatMap(THIS::rxa_click)
             .doOnNext(a -> LogUtil.printft("Dismissing popup %s", PARAM))
             .delay(popupDismissDelay(), TimeUnit.MILLISECONDS)
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
 
     /**

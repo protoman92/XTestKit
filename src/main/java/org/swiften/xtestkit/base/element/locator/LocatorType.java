@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.LogUtil;
@@ -37,7 +37,6 @@ import org.swiften.xtestkitcomponents.xpath.XPath;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides general locator capabilities.
@@ -88,7 +87,7 @@ public interface LocatorType<D extends WebDriver> extends
      * @see ByXPath#logXPath()
      * @see ByXPath#retries()
      * @see ByXPath#xpath()
-     * @see ObjectUtil#eq(Object)
+     * @see HPObjects#eq(Object)
      * @see WebDriver#findElements(By)
      * @see #driver()
      * @see #elementLocateTimeout()
@@ -101,7 +100,7 @@ public interface LocatorType<D extends WebDriver> extends
 
         int retries = Arrays.stream(param)
             .map(ByXPath::retries)
-            .max(Comparator.comparingInt(ObjectUtil::eq))
+            .max(Comparator.comparingInt(HPObjects::eq))
             .orElse(3);
 
         return Flowable.fromArray(param)

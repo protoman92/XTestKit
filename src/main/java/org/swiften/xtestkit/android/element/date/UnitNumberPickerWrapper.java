@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android.element.date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.android.AndroidView;
 import org.swiften.xtestkit.android.model.AndroidNumericPickerInputType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
@@ -58,28 +58,28 @@ public class UnitNumberPickerWrapper implements
     /**
      * Get {@link #pickerType}.
      * @return {@link AndroidDatePickerType} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #pickerType
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings({"WeakerAccess", "ConstantConditions"})
     public AndroidDatePickerType datePickerType() {
-        ObjectUtil.requireNotNull(pickerType, NOT_AVAILABLE);
+        HPObjects.requireNotNull(pickerType, NOT_AVAILABLE);
         return pickerType;
     }
 
     /**
      * Get {@link #unit}.
      * @return {@link CalendarUnit} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #unit
      * @see #NOT_AVAILABLE
      */
     @NotNull
     @SuppressWarnings({"WeakerAccess", "ConstantConditions"})
     public CalendarUnit calendarUnit() {
-        ObjectUtil.requireNotNull(unit, NOT_AVAILABLE);
+        HPObjects.requireNotNull(unit, NOT_AVAILABLE);
         return unit;
     }
 
@@ -390,7 +390,7 @@ public class UnitNumberPickerWrapper implements
          * Set the {@link #unit} instance.
          * @param unit {@link CalendarUnit} instance.
          * @return {@link Builder} instance.
-         * @see ObjectUtil#requireNotNull(Object, String)
+         * @see HPObjects#requireNotNull(Object, String)
          * @see #unit
          */
         @NotNull

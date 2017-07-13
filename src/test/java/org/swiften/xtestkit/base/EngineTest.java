@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.capability.EngineCapability;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
@@ -145,7 +145,7 @@ public final class EngineTest implements ErrorProviderType, TestMessageType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
         verify(ENGINE).rxa_startDriver(any());
         verify(ENGINE).address();
         verify(ENGINE).serverUri();
@@ -171,7 +171,7 @@ public final class EngineTest implements ErrorProviderType, TestMessageType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
     }
     //endregion
 

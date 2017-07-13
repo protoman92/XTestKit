@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 
 /**
@@ -31,7 +31,7 @@ public interface SearchActionType<D extends WebDriver> extends ClickActionType<D
      * won't induce any additional side effect aside from the search bar being
      * cleared.
      * @return {@link Flowable} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #middleCoordinate(WebElement)
      * @see #rxa_click(WebElement)
      * @see #rxa_tap(Point)
@@ -44,6 +44,6 @@ public interface SearchActionType<D extends WebDriver> extends ClickActionType<D
         return Flowable.concatArray(
             rxe_textClear().flatMap(THIS::rxa_click),
             rxe_textClear().map(THIS::middleCoordinate).flatMap(THIS::rxa_tap)
-        ).all(ObjectUtil::nonNull).toFlowable();
+        ).all(HPObjects::nonNull).toFlowable();
     }
 }

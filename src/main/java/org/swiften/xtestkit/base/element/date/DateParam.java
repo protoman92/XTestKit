@@ -6,7 +6,7 @@ package org.swiften.xtestkit.base.element.date;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.util.Constants;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
@@ -49,7 +49,7 @@ public class DateParam implements DateProviderType, ErrorProviderType {
      * Override this method to provide default implementation.
      * @return {@link Date} instance.
      * @see DateProviderType#date()
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #date
      * @see #NOT_AVAILABLE
      */
@@ -57,7 +57,7 @@ public class DateParam implements DateProviderType, ErrorProviderType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public Date date() {
-        ObjectUtil.requireNotNull(date, NOT_AVAILABLE);
+        HPObjects.requireNotNull(date, NOT_AVAILABLE);
         return date;
     }
 
@@ -65,7 +65,7 @@ public class DateParam implements DateProviderType, ErrorProviderType {
      * Override this method to provide default implementation.
      * @return {@link DatePickerType} instance.
      * @see DateProviderType#datePickerType()
-     * @see ObjectUtil#requireNotNull(Object, String)
+     * @see HPObjects#requireNotNull(Object, String)
      * @see #pickerType
      * @see #NOT_AVAILABLE
      */
@@ -73,7 +73,7 @@ public class DateParam implements DateProviderType, ErrorProviderType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public DatePickerType datePickerType() {
-        ObjectUtil.requireNotNull(pickerType, NOT_AVAILABLE);
+        HPObjects.requireNotNull(pickerType, NOT_AVAILABLE);
         return pickerType;
     }
 

@@ -9,7 +9,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.xtestkit.android.element.locator.AndroidLocatorType;
 import org.swiften.xtestkit.android.type.AndroidSDK;
@@ -112,7 +112,7 @@ public interface CalendarDateActionType extends
      * @see Attribute.Builder#withValue(Object)
      * @see Attribute.Builder#withWrapper(Wrapper)
      * @see Attribute#withValue(Object)
-     * @see BooleanUtil#isTrue(boolean)
+     * @see HPBooleans#isTrue(boolean)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see ByXPath.Builder#withRetries(int)
      * @see CalendarUnit#MONTH
@@ -194,7 +194,7 @@ public interface CalendarDateActionType extends
                     .lastElement()
                     .toFlowable()
                     .flatMap(a -> rxv_hasDate(PARAM))
-                    .filter(BooleanUtil::isTrue);
+                    .filter(HPBooleans::isTrue);
             }
 
             @NotNull
@@ -232,7 +232,7 @@ public interface CalendarDateActionType extends
      * Open the year picker.
      * @param param {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see CalendarUnit#YEAR
      * @see #rxa_click(WebElement)
      * @see #rxe_elementLabel(DateProviderType, CalendarUnit)
@@ -243,7 +243,7 @@ public interface CalendarDateActionType extends
 
         return rxe_elementLabel(param, CalendarUnit.YEAR)
             .flatMap(THIS::rxa_click)
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
 
     /**
@@ -254,7 +254,7 @@ public interface CalendarDateActionType extends
      * @return {@link Flowable} instance.
      * @see Attributes#containsText(String)
      * @see Attributes#of(PlatformProviderType)
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see ByXPath.Builder#withXPath(XPath)
      * @see ByXPath.Builder#withRetries(int)
      * @see DatePickerType#valueStringFormat(CalendarUnit)
@@ -363,7 +363,7 @@ public interface CalendarDateActionType extends
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
                     .flatMap(THIS::rxa_click)
-                    .map(BooleanUtil::toTrue);
+                    .map(HPBooleans::toTrue);
             }
 
             @NotNull

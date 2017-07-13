@@ -5,7 +5,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.number.NumberUtil;
+import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
@@ -38,7 +38,7 @@ public interface AndroidChoiceSelectorType extends
      * @see ChoiceType#selectedChoice()
      * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
      * @see ChoiceHelperType#rxe_withXPath(XPath...)
-     * @see NumberUtil#inverse(Number)
+     * @see HPNumbers#inverse(Number)
      * @see Platform#ANDROID
      */
     @NotNull
@@ -68,7 +68,7 @@ public interface AndroidChoiceSelectorType extends
                 /* Customize the swipe ratio so that the picker is scrolled
                  * by one item at a time, to ensure accuracy */
                 return rxe_scrollViewChildCount()
-                    .map(NumberUtil::inverse)
+                    .map(HPNumbers::inverse)
                     .map(a -> a * RATIO);
             }
 

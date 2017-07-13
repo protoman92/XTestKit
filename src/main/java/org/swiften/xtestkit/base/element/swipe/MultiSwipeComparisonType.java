@@ -7,9 +7,9 @@ package org.swiften.xtestkit.base.element.swipe;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkitcomponents.direction.Direction;
 
 /**
@@ -165,7 +165,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * @param D {@link Direction} instance.
      * @param times The number of times to swipe. {@link Integer} value.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#isTrue(boolean)
+     * @see HPBooleans#isTrue(boolean)
      * @see #rxa_swipeElement(WebElement, Direction, double)
      */
     @NotNull
@@ -174,7 +174,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
                                                  final int times) {
         return Flowable.range(0, times)
             .concatMap(a -> rxa_swipeElement(E, D, 0.8d))
-            .all(BooleanUtil::isTrue)
+            .all(HPBooleans::isTrue)
             .toFlowable();
     }
 
@@ -182,7 +182,7 @@ public interface MultiSwipeComparisonType extends MultiSwipeType {
      * Perform initial swipes to get us as close to the target value as
      * possible.
      * @return {@link Flowable} instance.
-     * @see ObjectUtil#eq(Object)
+     * @see HPObjects#eq(Object)
      * @see #rxa_swipeInitially(WebElement, Direction, int)
      * @see #rxe_scrollableViewToSwipe()
      * @see #rxe_swipeDirection()

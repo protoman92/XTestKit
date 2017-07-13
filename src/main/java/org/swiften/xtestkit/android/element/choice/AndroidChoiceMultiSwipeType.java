@@ -3,7 +3,7 @@ package org.swiften.xtestkit.android.element.choice;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
@@ -233,7 +233,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxv_shouldKeepSwiping()
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see ChoiceHelperType#getText(WebElement)
      * @see #choiceHelper()
      * @see #selectedChoice()
@@ -250,7 +250,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
         return rxe_targetChoiceItem()
             .filter(a -> ENGINE.getText(a).equals(STR_VALUE))
             .flatMap(THIS::rxa_targetItemLocated)
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
 
     /**

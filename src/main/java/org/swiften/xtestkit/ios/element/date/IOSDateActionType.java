@@ -5,7 +5,7 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.date.DateUtil;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.date.DateActionType;
@@ -47,7 +47,7 @@ public interface IOSDateActionType extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see #valueString(DateProviderType, CalendarUnit)
      * @see #rxa_sendValue(WebElement, String)
      * @see #rxe_pickerView(DateProviderType, CalendarUnit)
@@ -61,7 +61,7 @@ public interface IOSDateActionType extends
 
         return rxe_pickerView(param, unit)
             .flatMap(a -> THIS.rxa_sendValue(a, value))
-            .map(BooleanUtil::toTrue);
+            .map(HPBooleans::toTrue);
     }
 
     /**

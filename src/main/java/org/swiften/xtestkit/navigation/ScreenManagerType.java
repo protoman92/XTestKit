@@ -7,7 +7,7 @@ package org.swiften.xtestkit.navigation;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.collection.CollectionUtil;
+import org.swiften.javautilities.collection.HPIterables;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.util.EngineProviderType;
@@ -79,7 +79,7 @@ public interface ScreenManagerType extends EngineProviderType, ScreenManagerErro
      * @see #addForwardNodes(List)
      */
     default void addForwardNodes(@NotNull Node...nodes) {
-        addForwardNodes(CollectionUtil.asList(nodes));
+        addForwardNodes(HPIterables.asList(nodes));
     }
 
     /**
@@ -94,7 +94,7 @@ public interface ScreenManagerType extends EngineProviderType, ScreenManagerErro
      * @see #addBackwardNodes(List)
      */
     default void addBackwardNodes(@NotNull Node...nodes) {
-        addBackwardNodes(CollectionUtil.asList(nodes));
+        addBackwardNodes(HPIterables.asList(nodes));
     }
 
     /**

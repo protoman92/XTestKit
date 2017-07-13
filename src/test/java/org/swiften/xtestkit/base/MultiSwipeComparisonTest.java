@@ -5,7 +5,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkitcomponents.direction.Direction;
 import org.swiften.xtestkit.base.element.swipe.MultiSwipeComparisonType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
@@ -62,7 +62,7 @@ public class MultiSwipeComparisonTest implements MultiSwipeComparisonType {
         currentSwipeCount += 1;
 
         if (currentSwipeCount < TOTAL_SWIPE) {
-            return RAND.nextBoolean() ? Flowable.empty() : RxUtil.error();
+            return RAND.nextBoolean() ? Flowable.empty() : HPReactives.error();
         } else {
             return Flowable.just(true);
         }

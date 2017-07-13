@@ -11,7 +11,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkit.base.param.DirectionParam;
 import org.swiften.xtestkit.base.type.DriverProviderType;
@@ -157,7 +157,7 @@ public interface SwipeType<D extends WebDriver> extends
      * @see Direction#opposite()
      * @see DirectionParam#from(DirectionProviderType)
      * @see DirectionParam#withDirection(Direction)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see P#direction()
      * @see #rxa_swipeGeneric(WebElement, DirectionProviderType)
      */
@@ -179,7 +179,7 @@ public interface SwipeType<D extends WebDriver> extends
         return Flowable.fromArray(param1, param2)
             .doOnNext(LogUtil::println)
             .concatMap(a -> THIS.rxa_swipeGeneric(ELEMENT, a))
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable()
             .map(a -> ELEMENT);
     }

@@ -5,7 +5,7 @@ import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.android.adb.ADBErrorType;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
@@ -197,7 +197,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxUtil.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
+        assertEquals(HPReactives.<Integer>firstNextEvent(subscriber).intValue(), correctPort);
         verify(ADB_HANDLER).networkHandler();
         verify(ADB_HANDLER).rxe_availablePort(any());
         verify(ADB_HANDLER).availablePorts();
@@ -248,7 +248,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
              * number of retries, the bootanim checking process will loop
              * indefinitely */
             doReturn(Flowable.just("")).when(PROCESS_RUNNER).rxa_execute(contains("-avd"));
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(contains("bootanim"));
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(contains("bootanim"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -283,7 +283,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             /* We need to make sure that when startEmulator() throws an
              * error, bootAnim loop will be notified. This is because the
              * former is run on a different Thread */
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(any());
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -354,7 +354,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     public void test_stopEmulatorsWithError_shouldThrow() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(contains("reboot"));
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(contains("reboot"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -495,7 +495,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     public void test_clearCacheWithError_shouldThrow() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(contains("pm clear"));
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(contains("pm clear"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -633,7 +633,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertFalse(RxUtil.firstNextEvent(subscriber));
+            assertFalse(HPReactives.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cm_AndroidHome();
             verify(ADB_HANDLER).cm_adb();
@@ -667,7 +667,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
             subscriber.assertSubscribed();
             subscriber.assertNoErrors();
             subscriber.assertComplete();
-            assertTrue(RxUtil.firstNextEvent(subscriber));
+            assertTrue(HPReactives.firstNextEvent(subscriber));
             verify(ADB_HANDLER).processRunner();
             verify(ADB_HANDLER).cm_AndroidHome();
             verify(ADB_HANDLER).cm_adb();
@@ -710,7 +710,7 @@ public final class MockADBHandlerTest implements ADBErrorType {
     public void test_disableEmulatorAnimationsWithError_shouldSucceed() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(contains("put"));
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(contains("put"));
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When

@@ -6,7 +6,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
@@ -55,7 +55,7 @@ public interface IOSActionType extends
      * @see AlertParam#shouldAccept()
      * @see Attributes#of(PlatformProviderType)
      * @see Attributes#hasText(String)
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see CompoundAttribute#single(AttributeType)
      * @see CompoundAttribute#withClass(ClassNameProviderType)
      * @see IOSView.Type#UI_BUTTON
@@ -94,7 +94,7 @@ public interface IOSActionType extends
             .firstElement()
             .toFlowable()
             .flatMap(THIS::rxa_click)
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);
     }

@@ -3,7 +3,7 @@ package org.swiften.xtestkit.ios.capability;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.string.StringUtil;
+import org.swiften.javautilities.string.HPStrings;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 import org.swiften.xtestkit.mobile.Platform;
@@ -84,7 +84,7 @@ public class IOSEngineCapability extends MobileEngineCapability {
      * @param capabilities {@link Map} instance.
      * @return {@link Boolean} value.
      * @see MobileEngineCapability#isComplete(Map)
-     * @see StringUtil#isNotNullOrEmpty(String)
+     * @see HPStrings#isNotNullOrEmpty(String)
      * @see #hasValidAppName(String)
      */
     @Override
@@ -92,7 +92,7 @@ public class IOSEngineCapability extends MobileEngineCapability {
     public boolean isComplete(@NotNull Map<String,Object> capabilities) {
         String appPath = appPath(capabilities);
 
-        if (StringUtil.isNotNullOrEmpty(appPath) && !hasValidAppName(appPath)) {
+        if (HPStrings.isNotNullOrEmpty(appPath) && !hasValidAppName(appPath)) {
             return false;
         } else {
             return super.isComplete(capabilities);

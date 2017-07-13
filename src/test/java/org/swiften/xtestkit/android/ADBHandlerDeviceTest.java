@@ -2,9 +2,9 @@ package org.swiften.xtestkit.android;
 
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.android.adb.ADBHandler;
 import org.swiften.xtestkit.android.param.ClearCacheParam;
 import org.swiften.xtestkit.android.param.StartEmulatorParam;
@@ -89,7 +89,7 @@ public final class ADBHandlerDeviceTest {
             .filter(success -> success)
             .flatMap(a -> ADB_HANDLER.rxa_enableInternet(DUID_PARAM))
             .filter(success -> success)
-            .switchIfEmpty(RxUtil.error())
+            .switchIfEmpty(HPReactives.error())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -98,7 +98,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -125,8 +125,8 @@ public final class ADBHandlerDeviceTest {
 
         // When
         ADB_HANDLER.rxa_disableAnimations(DUID_PARAM)
-            .filter(BooleanUtil::isTrue)
-            .switchIfEmpty(RxUtil.error())
+            .filter(HPBooleans::isTrue)
+            .switchIfEmpty(HPReactives.error())
             .subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -135,7 +135,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -152,7 +152,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)
@@ -169,7 +169,7 @@ public final class ADBHandlerDeviceTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertTrue(RxUtil.firstNextEvent(subscriber));
+        assertTrue(HPReactives.firstNextEvent(subscriber));
     }
 
     @Test(enabled = true)

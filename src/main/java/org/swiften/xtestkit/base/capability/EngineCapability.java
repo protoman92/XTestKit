@@ -2,8 +2,8 @@ package org.swiften.xtestkit.base.capability;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.swiften.javautilities.object.ObjectUtil;
-import org.swiften.javautilities.string.StringUtil;
+import org.swiften.javautilities.object.HPObjects;
+import org.swiften.javautilities.string.HPStrings;
 import org.swiften.xtestkit.base.TestMode;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
@@ -33,7 +33,7 @@ public abstract class EngineCapability implements EngineCapabilityType {
     @Override
     @SuppressWarnings("ConstantConditions")
     public TestMode testMode() {
-        ObjectUtil.requireNotNull(testMode, NOT_AVAILABLE);
+        HPObjects.requireNotNull(testMode, NOT_AVAILABLE);
         return testMode;
     }
 
@@ -50,7 +50,7 @@ public abstract class EngineCapability implements EngineCapabilityType {
         return required.stream()
             .map(information::get)
             .map(String::valueOf)
-            .allMatch(StringUtil::isNotNullOrEmpty);
+            .allMatch(HPStrings::isNotNullOrEmpty);
     }
 
     @NotNull

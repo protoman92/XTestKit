@@ -4,7 +4,7 @@ import io.appium.java_client.MobileDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.RetryProviderType;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.base.capability.EngineCapabilityType;
@@ -152,7 +152,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
      * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
      * @see Engine#rxa_afterMethod(RetryProviderType)
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #rxa_resetApp()
      */
     @NotNull
@@ -161,7 +161,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     public Flowable<Boolean> rxa_afterMethod(@NotNull RetryProviderType param) {
         return Flowable
             .concatArray(super.rxa_afterMethod(param), rxa_resetApp())
-            .all(ObjectUtil::nonNull)
+            .all(HPObjects::nonNull)
             .toFlowable();
     }
     //endregion

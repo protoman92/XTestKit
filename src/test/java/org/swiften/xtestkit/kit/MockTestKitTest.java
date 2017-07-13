@@ -1,6 +1,6 @@
 package org.swiften.xtestkit.kit;
 
-import org.swiften.javautilities.rx.RxUtil;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.Engine;
 import org.swiften.xtestkit.android.AndroidEngine;
 import org.swiften.xtestkit.ios.IOSEngine;
@@ -95,7 +95,7 @@ public final class MockTestKitTest {
         subscriber.assertSubscribed();
         subscriber.assertNoErrors();
         subscriber.assertComplete();
-        assertEquals(RxUtil.nextEvents(subscriber).size(), 2);
+        assertEquals(HPReactives.nextEvents(subscriber).size(), 2);
         verify(TEST_KIT).rxe_distinctEngines();
         verify(TEST_KIT).engines();
         verifyNoMoreInteractions(TEST_KIT);
@@ -136,7 +136,7 @@ public final class MockTestKitTest {
     public void test_beforeAllTestWithKillAllError_shouldSucceed() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(any());
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When
@@ -196,7 +196,7 @@ public final class MockTestKitTest {
     public void test_afterAllTestWithKillAllError_shouldSucceed() {
         try {
             // Setup
-            doReturn(RxUtil.error()).when(PROCESS_RUNNER).rxa_execute(any());
+            doReturn(HPReactives.error()).when(PROCESS_RUNNER).rxa_execute(any());
             TestSubscriber subscriber = CustomTestSubscriber.create();
 
             // When

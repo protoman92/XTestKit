@@ -9,8 +9,8 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.swiften.javautilities.bool.BooleanUtil;
-import org.swiften.javautilities.object.ObjectUtil;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.util.LogUtil;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
@@ -109,7 +109,7 @@ public interface InputActionType<D extends WebDriver> extends
      * list of {@link WebElement}.
      * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see ObjectUtil#nonNull(Object)
+     * @see HPObjects#nonNull(Object)
      * @see #sameOriginAndSize(WebElement, WebElement)
      * @see #rxe_editables()
      */
@@ -119,7 +119,7 @@ public interface InputActionType<D extends WebDriver> extends
         return rxe_editables()
             .lastElement()
             .toFlowable()
-            .filter(ObjectUtil::nonNull)
+            .filter(HPObjects::nonNull)
             .map(a -> THIS.sameOriginAndSize(a, ELEMENT));
     }
 
@@ -130,7 +130,7 @@ public interface InputActionType<D extends WebDriver> extends
      * the list.
      * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#isTrue(boolean)
+     * @see HPBooleans#isTrue(boolean)
      * @see #rxv_isLastInput(WebElement)
      * @see #rxa_toggleNextInput(WebElement)
      * @see #rxa_finishInput(WebElement)
@@ -141,7 +141,7 @@ public interface InputActionType<D extends WebDriver> extends
         final InputActionType<?> THIS = this;
 
         return rxv_isLastInput(ELEMENT)
-            .filter(BooleanUtil::isTrue)
+            .filter(HPBooleans::isTrue)
             .flatMap(a -> THIS.rxa_finishInput(ELEMENT))
             .switchIfEmpty(THIS.rxa_toggleNextInput(ELEMENT));
     }

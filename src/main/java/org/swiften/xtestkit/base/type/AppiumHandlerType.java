@@ -8,11 +8,11 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.protocol.RetryProviderType;
+import org.swiften.javautilities.rx.HPReactives;
+import org.swiften.javautilities.string.HPStrings;
 import org.swiften.javautilities.util.LogUtil;
-import org.swiften.javautilities.rx.RxUtil;
-import org.swiften.javautilities.string.StringUtil;
 import org.swiften.xtestkit.base.Address;
 import org.swiften.xtestkit.base.AppiumCommand;
 import org.swiften.xtestkitcomponents.system.network.NetworkHandler;
@@ -88,11 +88,11 @@ public interface AppiumHandlerType extends
      * Start appium with a specified uri.
      * @param param {@link RetryProviderType} instance.
      * @return {@link Flowable} instance.
-     * @see BooleanUtil#toTrue(Object)
+     * @see HPBooleans#toTrue(Object)
      * @see ProcessRunner#rxa_execute(String)
      * @see RetryProviderType#retries()
-     * @see RxUtil#error()
-     * @see StringUtil#isNotNullOrEmpty(String)
+     * @see HPReactives#error()
+     * @see HPStrings#isNotNullOrEmpty(String)
      * @see #processRunner()
      * @see #cm_whichAppium()
      * @see #cm_fallBackAppium()
@@ -105,15 +105,15 @@ public interface AppiumHandlerType extends
         String whichAppium = cm_whichAppium();
 
         return RUNNER.rxa_execute(whichAppium)
-            .filter(StringUtil::isNotNullOrEmpty)
+            .filter(HPStrings::isNotNullOrEmpty)
             .map(a -> a.replace("\n", ""))
-            .switchIfEmpty(RxUtil.error())
+            .switchIfEmpty(HPReactives.error())
 
             /* No matter the error, we want to use the fallback command to
              * try starting the Appium server */
             .onErrorReturnItem(cm_fallBackAppium())
             .flatMap(THIS::rxa_startAppiumOnNewThread)
-            .map(BooleanUtil::toTrue)
+            .map(HPBooleans::toTrue)
             .retry(param.retries());
     }
 
@@ -122,8 +122,8 @@ public interface AppiumHandlerType extends
      * @param CLI The path to Appium CLI. {@link String} value.
      * @return {@link Flowable} instance.
      * @see Address#setPort(int)
-     * @see BooleanUtil#toTrue(Object)
-     * @see BooleanUtil#isFalse(boolean)
+     * @see HPBooleans#toTrue(Object)
+     * @see HPBooleans#isFalse(boolean)
      * @see NetworkHandler#rxa_checkUntilPortAvailable(PortProviderType)
      * @see ProcessRunner#execute(String, Consumer, Consumer)
      * @see #address()

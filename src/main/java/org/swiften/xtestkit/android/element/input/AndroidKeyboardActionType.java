@@ -9,7 +9,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Keys;
-import org.swiften.javautilities.bool.BooleanUtil;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.xtestkit.base.element.general.ActionType;
 import org.swiften.javautilities.protocol.RepeatProviderType;
 import org.swiften.xtestkit.android.AndroidInstance;
@@ -47,7 +47,7 @@ public interface AndroidKeyboardActionType extends
         AndroidInstance instance = androidInstance();
 
         return adbHandler().rxe_keyboardOpen(instance)
-            .filter(BooleanUtil::isTrue)
+            .filter(HPBooleans::isTrue)
             .flatMap(a -> rxa_navigateBackOnce())
             .defaultIfEmpty(true);
     }
