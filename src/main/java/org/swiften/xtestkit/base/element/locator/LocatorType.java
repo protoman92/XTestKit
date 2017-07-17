@@ -4,19 +4,20 @@ package org.swiften.xtestkit.base.element.locator;
  * Created by haipham on 5/8/17.
  */
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.localizer.LCFormat;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
 import org.swiften.javautilities.object.HPObjects;
 import org.swiften.javautilities.protocol.ClassNameProviderType;
 import org.swiften.javautilities.protocol.RetryProviderType;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.PlatformView;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
@@ -604,8 +605,8 @@ public interface LocatorType<D extends WebDriver> extends
     @NotNull
     default Flowable<Boolean> rxa_clearAllEditables() {
         return rxe_editables()
-            .flatMapCompletable(a -> Completable.fromAction(a::clear))
-            .<Boolean>toFlowable()
+            .compose(HPReactives.completableFn(WebElement::clear))
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 

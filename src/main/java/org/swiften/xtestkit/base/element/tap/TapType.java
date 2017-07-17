@@ -4,15 +4,17 @@ package org.swiften.xtestkit.base.element.tap;
  * Created by haipham on 5/15/17.
  */
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.functional.Tuple;
+import org.swiften.javautilities.protocol.RetryProviderType;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
-import org.swiften.javautilities.protocol.RetryProviderType;
 
 /**
  * This interface provides methods to handle taps.
@@ -37,6 +39,14 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
     }
 
     /**
+     * Same as above, but uses a default {@link Tuple}.
+     * @param coordinates {@link Tuple} instance.
+     */
+    default void tap(@NotNull Tuple<Integer, Integer> coordinates) {
+        tap(coordinates.A, coordinates.B);
+    }
+
+    /**
      * Same as above, but uses {@link Point}.
      * @param point {@link Point} instance.
      * @see #tap(int, int)
@@ -57,64 +67,61 @@ public interface TapType<D extends WebDriver> extends ElementPropertyType {
 
     /**
      * Perform a tap action.
-     * @param PARAM {@link P} instance.
      * @param <P> Generics parameter.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #tap(TapParamType)
      */
     @NotNull
-    default <P extends TapParamType & RetryProviderType> Flowable<Boolean>
-    rxa_tap(@NotNull final P PARAM) {
+    default <P extends TapParamType & RetryProviderType> FlowableTransformer<P, Boolean> tapFn() {
         final TapType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.tap(PARAM))
-            .<Boolean>toFlowable()
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::tap))
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 
     /**
      * Same as above, but uses a default {@link TapParam}.
-     * @param X The tap's x coordinate, {@link Integer} value.
-     * @param Y The tap's y coordinate, {@link Integer} value.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #tap(int, int)
      */
     @NotNull
-    default Flowable<Boolean> rxa_tap(final int X, final int Y) {
+    default FlowableTransformer<Tuple<Integer, Integer>, Boolean> tapXYFn() {
         final TapType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.tap(X, Y))
-            .<Boolean>toFlowable()
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::tap))
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 
     /**
      * Same as above, but uses {@link Point}.
-     * @param point {@link Point} instance.
-     * @return {@link Flowable} instance.
-     * @see #rxa_tap(int, int)
+     * @return {@link FlowableTransformer} instance.
+     * @see #tapXYFn()
      */
     @NotNull
-    default Flowable<Boolean> rxa_tap(@NotNull Point point) {
-        int x = point.getX(), y = point.getY();
-        return rxa_tap(x, y);
+    default FlowableTransformer<Point, Boolean> tapPointFn() {
+        final TapType<?> THIS = this;
+
+        return upstream -> upstream
+            .map(a -> Tuple.of(a.getX(), a.getY()))
+            .compose(THIS.tapXYFn());
     }
 
     /**
      * Tap the middle {@link Point} of {@link WebElement}.
-     * @param ELEMENT {@link WebElement} instance.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #tapMiddle(WebElement)
      */
     @NotNull
-    default Flowable<Boolean> rxa_tapMiddle(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> tapMiddleFn() {
         final TapType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.tapMiddle(ELEMENT))
-            .<Boolean>toFlowable()
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::tapMiddle))
+            .map(HPBooleans::toTrue)
             .defaultIfEmpty(true);
     }
 }

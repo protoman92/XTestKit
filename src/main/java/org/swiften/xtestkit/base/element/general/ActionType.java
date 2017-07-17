@@ -9,10 +9,9 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
-import org.swiften.xtestkit.base.param.AlertParam;
-import org.swiften.javautilities.protocol.DelayProviderType;
-import org.swiften.xtestkit.base.type.DriverProviderType;
 import org.swiften.javautilities.protocol.RepeatProviderType;
+import org.swiften.xtestkit.base.param.AlertParam;
+import org.swiften.xtestkit.base.type.DriverProviderType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,29 +19,7 @@ import java.util.concurrent.TimeUnit;
  * This interface provides general actions, such as back/swipe navigation.
  * * @param <D> Generics parameter that extends {@link WebDriver}.
  */
-public interface ActionType<D extends WebDriver> extends
-    BaseActionDelayType,
-    DriverProviderType<D>
-{
-    /**
-     * Implicitly wait before search for elements.
-     * @param param {@link DelayProviderType} param.
-     * @return {@link Flowable} instance.
-     * @see WebDriver.Options#timeouts()
-     * @see org.openqa.selenium.WebDriver.Timeouts#implicitlyWait(long, TimeUnit)
-     */
-    @NotNull
-    default Flowable<Boolean> rxa_implicitlyWait(@NotNull DelayProviderType param) {
-        final WebDriver.Timeouts TIMEOUTS = driver().manage().timeouts();
-        final long DELAY = param.delay();
-        final TimeUnit UNIT = param.timeUnit();
-
-        return Completable
-            .fromAction(() -> TIMEOUTS.implicitlyWait(DELAY, UNIT))
-            .<Boolean>toFlowable()
-            .defaultIfEmpty(true);
-    }
-
+public interface ActionType<D extends WebDriver> extends ActionDelayType, DriverProviderType<D> {
     /**
      * Navigate back only once.
      * @return {@link Flowable} instance.

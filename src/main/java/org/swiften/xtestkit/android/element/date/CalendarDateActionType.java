@@ -25,8 +25,6 @@ import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
 import org.swiften.xtestkit.mobile.element.action.swipe.MobileSwipeType;
 import org.swiften.xtestkitcomponents.direction.Direction;
-import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.platform.XMLAttributeType;
 import org.swiften.xtestkitcomponents.xpath.*;
 
 import java.text.SimpleDateFormat;
@@ -107,33 +105,10 @@ public interface CalendarDateActionType extends
      * @param PARAM {@link DateProviderType} instance.
      * @return {@link Flowable} instance.
      * @see AndroidSDK#isAtLeastM()
-     * @see Attribute.Builder#addAttribute(String)
-     * @see Attribute.Builder#withFormatible(Formatible)
-     * @see Attribute.Builder#withJoiner(Joiner)
-     * @see Attribute.Builder#withValue(Object)
-     * @see Attribute.Builder#withWrapper(Wrapper)
-     * @see Attribute#withValue(Object)
-     * @see HPBooleans#isTrue(boolean)
-     * @see ByXPath.Builder#withXPath(XPath)
-     * @see ByXPath.Builder#withRetries(int)
-     * @see CalendarUnit#MONTH
-     * @see CalendarUnit#DAY
-     * @see CalendarUnit#value()
-     * @see DateProviderType#date()
-     * @see DateProviderType#dateString(String)
-     * @see HPDates#notEarlierThan(Date, Date)
-     * @see Direction#horizontal(boolean)
-     * @see Direction#vertical(boolean)
-     * @see Formatibles#containsString()
-     * @see MultiSwipeType#rxa_performAction()
-     * @see XMLAttributeType#value()
-     * @see XPath.Builder#addAttribute(AttributeType)
      * @see AndroidXMLAttribute#CONTENT_DESC
-     * @see Joiner#OR
-     * @see Wrapper#NONE
      * @see #androidSDK()
      * @see #swipeOnce(SwipeParamType)
-     * @see #rxa_click(WebElement)
+     * @see #clickFn()
      * @see #rxe_byXPath(ByXPath...)
      * @see #rxe_displayedDate(DateProviderType)
      * @see #rxe_pickerView(DateProviderType, CalendarUnit)
@@ -191,7 +166,7 @@ public interface CalendarDateActionType extends
                     .concatArrayDelayError(
                         Flowable
                             .concatArray(rxe_byXPath(DQ), rxe_byXPath(Q))
-                            .concatMap(THIS::rxa_click)
+                            .compose(clickFn())
                             .all(HPObjects::nonNull)
                             .toFlowable(),
 
@@ -240,15 +215,13 @@ public interface CalendarDateActionType extends
      * @return {@link Flowable} instance.
      * @see HPBooleans#toTrue(Object)
      * @see CalendarUnit#YEAR
-     * @see #rxa_click(WebElement)
+     * @see #clickFn()
      * @see #rxe_elementLabel(DateProviderType, CalendarUnit)
      */
     @NotNull
     default Flowable<Boolean> rxa_openYearPicker(@NotNull DateProviderType param) {
-        final CalendarDateActionType THIS = this;
-
         return rxe_elementLabel(param, CalendarUnit.YEAR)
-            .flatMap(THIS::rxa_click)
+            .compose(clickFn())
             .map(HPBooleans::toTrue);
     }
 
@@ -259,22 +232,10 @@ public interface CalendarDateActionType extends
      * @param UNIT {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see Attributes#containsText(String)
-     * @see Attributes#of(PlatformProviderType)
-     * @see HPBooleans#toTrue(Object)
-     * @see ByXPath.Builder#withXPath(XPath)
-     * @see ByXPath.Builder#withRetries(int)
-     * @see DatePickerType#valueStringFormat(CalendarUnit)
-     * @see DatePickerType#targetItemXP(CalendarUnit)
-     * @see DateParam.Builder#withDate(Date)
-     * @see DateParam.Builder#withDateProvider(DateProviderType)
-     * @see DateProviderType#component(CalendarUnit)
-     * @see DateProviderType#datePickerType()
-     * @see MultiSwipeType#rxa_performAction()
-     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #displayString(DateProviderType, CalendarUnit)
      * @see #getText(WebElement)
      * @see #platform()
-     * @see #rxa_click(WebElement)
+     * @see #clickFn()
      * @see #rxe_pickerView(DateProviderType, CalendarUnit)
      */
     @NotNull
@@ -368,7 +329,7 @@ public interface CalendarDateActionType extends
                      * scroll low in order to catch potential oddities like
                      * this */
                     .filter(a -> THIS.getText(a).equals(CP_STRING))
-                    .flatMap(THIS::rxa_click)
+                    .compose(THIS.clickFn())
                     .map(HPBooleans::isFalse)
                     .defaultIfEmpty(true)
                     .onErrorReturnItem(true);
@@ -393,8 +354,6 @@ public interface CalendarDateActionType extends
      * @param param {@link DateProviderType} instance.
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
-     * @see DateProviderType#datePickerType()
-     * @see DatePickerType#pickerItemXP(CalendarUnit)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull

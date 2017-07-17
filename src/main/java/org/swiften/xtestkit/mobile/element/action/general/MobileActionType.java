@@ -28,12 +28,13 @@ public interface MobileActionType<D extends MobileDriver> extends ActionType<D> 
     /**
      * Launch an app.
      * @return {@link Flowable} instance.
-     * @see D#launchApp()
      */
     @NotNull
     default Flowable<Boolean> rxa_launchApp() {
+        final MobileActionType<D> THIS = this;
+
         return Completable
-            .fromAction(driver()::launchApp)
+            .fromAction(THIS.driver()::launchApp)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }
@@ -41,12 +42,13 @@ public interface MobileActionType<D extends MobileDriver> extends ActionType<D> 
     /**
      * Reset an installed app.
      * @return {@link Flowable} instance.
-     * @see D#closeApp()
      */
     @NotNull
     default Flowable<Boolean> rxa_resetApp() {
+        final MobileActionType<D> THIS = this;
+
         return Completable
-            .fromAction(driver()::closeApp)
+            .fromAction(THIS.driver()::closeApp)
             .<Boolean>toFlowable()
             .defaultIfEmpty(true);
     }

@@ -2,7 +2,6 @@ package org.swiften.xtestkit.base.element.search;
 
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.object.HPObjects;
@@ -31,19 +30,17 @@ public interface SearchActionType<D extends WebDriver> extends ClickActionType<D
      * won't induce any additional side effect aside from the search bar being
      * cleared.
      * @return {@link Flowable} instance.
-     * @see HPObjects#nonNull(Object)
      * @see #middleCoordinate(WebElement)
-     * @see #rxa_click(WebElement)
-     * @see #rxa_tap(Point)
+     * @see #clickFn()
+     * @see #tapMiddleFn()
      * @see #rxe_textClear()
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     default Flowable<Boolean> rxa_clearSearchBar() {
-        final SearchActionType<?> THIS = this;
-
         return Flowable.concatArray(
-            rxe_textClear().flatMap(THIS::rxa_click),
-            rxe_textClear().map(THIS::middleCoordinate).flatMap(THIS::rxa_tap)
+            rxe_textClear().compose(clickFn()),
+            rxe_textClear().compose(tapMiddleFn())
         ).all(HPObjects::nonNull).toFlowable();
     }
 }

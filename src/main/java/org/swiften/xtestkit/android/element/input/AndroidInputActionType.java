@@ -24,7 +24,6 @@ public interface AndroidInputActionType extends
     /**
      * Override this method to provide default implementation.
      * @see InputActionType#toggleNextInput(WebElement)
-     * @see AndroidDriver#pressKeyCode(int)
      */
     @Override
     default void toggleNextInput(@NotNull WebElement element) {
@@ -33,11 +32,10 @@ public interface AndroidInputActionType extends
 
     /**
      * Override this method to provide default implementation.
-     * @see InputActionType#endInput(WebElement)
-     * @see AndroidDriver#pressKeyCode(int)
+     * @see InputActionType#finishInput(WebElement)
      */
     @Override
-    default void endInput(@NotNull WebElement element) {
+    default void finishInput(@NotNull WebElement element) {
         driver().pressKeyCode(KEYCODE_ENTER);
     }
 }

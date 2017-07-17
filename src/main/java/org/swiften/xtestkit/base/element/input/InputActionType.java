@@ -4,13 +4,13 @@ package org.swiften.xtestkit.base.element.input;
  * Created by haipham on 5/15/17.
  */
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.javautilities.object.HPObjects;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 import org.swiften.xtestkitcomponents.common.ErrorProviderType;
@@ -21,7 +21,7 @@ import org.swiften.xtestkitcomponents.platform.PlatformType;
  * @param <D> Generics parameter that extends {@link WebDriver}.
  */
 public interface InputActionType<D extends WebDriver> extends
-    ErrorProviderType, BaseInputActionDelayType, LocatorType<D>
+    ErrorProviderType, InputActionDelayType, LocatorType<D>
 {
     /**
      * Send {@link String} keys to {@link WebElement}.
@@ -36,20 +36,18 @@ public interface InputActionType<D extends WebDriver> extends
 
     /**
      * Send a certain {@link String} key to {@link WebElement}.
-     * @param ELEMENT The {@link WebElement} that will receive the key.
      * @param TEXT The {@link String} to be sent.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #sendValue(WebElement, String)
      */
     @NotNull
-    default Flowable<WebElement> rxa_sendValue(@NotNull final WebElement ELEMENT,
-                                               @NotNull final String TEXT) {
+    default FlowableTransformer<WebElement, Boolean> sendValueFn(@NotNull final String TEXT) {
         final InputActionType THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.sendValue(ELEMENT, TEXT))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(a -> THIS.sendValue(a, TEXT)))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 
     /**
@@ -58,24 +56,21 @@ public interface InputActionType<D extends WebDriver> extends
      * {@link PlatformType}.
      * @param element The currently active editable {@link WebElement}.
      */
-    default void toggleNextInput(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_AVAILABLE);
-    }
+    void toggleNextInput(@NotNull WebElement element);
 
     /**
      * Toggle the next input.
-     * @param ELEMENT The currently active editable {@link WebElement}.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #toggleNextInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxa_toggleNextInput(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> toggleNextInputFn() {
         final InputActionType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.toggleNextInput(ELEMENT))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::toggleNextInput))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 
     /**
@@ -84,43 +79,38 @@ public interface InputActionType<D extends WebDriver> extends
      * editable field is the last one.
      * @param element The currently active editable {@link WebElement}.
      */
-    default void endInput(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_AVAILABLE);
-    }
+    void finishInput(@NotNull WebElement element);
 
     /**
      * Toggle the done input.
-     * @param ELEMENT The currently active editable {@link WebElement}.
-     * @return {@link Flowable} instance.
-     * @see #endInput(WebElement)
+     * @return {@link FlowableTransformer} instance.
+     * @see #finishInput(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxa_finishInput(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> finishInputFn() {
         final InputActionType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.endInput(ELEMENT))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::finishInput))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 
     /**
      * Check whether an input {@link WebElement} is the last one out of a
      * list of {@link WebElement}.
-     * @param ELEMENT {@link WebElement} instance.
-     * @return {@link Flowable} instance.
-     * @see HPObjects#nonNull(Object)
+     * @return {@link FlowableTransformer} instance.
      * @see #sameOriginAndSize(WebElement, WebElement)
      * @see #rxe_editables()
      */
     @NotNull
-    default Flowable<Boolean> rxv_isLastInput(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> isLastInputFn() {
         final InputActionType<?> THIS = this;
-        return rxe_editables()
-            .lastElement()
-            .toFlowable()
-            .filter(HPObjects::nonNull)
-            .map(a -> THIS.sameOriginAndSize(a, ELEMENT));
+
+        return upstream -> Flowable.zip(
+            THIS.rxe_editables().lastElement().toFlowable(),
+            upstream,
+            THIS::sameOriginAndSize);
     }
 
     /**
@@ -128,21 +118,19 @@ public interface InputActionType<D extends WebDriver> extends
      * the views to adjust. We need to check all editable elements to
      * see whether the currently active editable field is the last one in
      * the list.
-     * @param ELEMENT {@link WebElement} instance.
      * @return {@link Flowable} instance.
-     * @see HPBooleans#isTrue(boolean)
-     * @see #rxv_isLastInput(WebElement)
-     * @see #rxa_toggleNextInput(WebElement)
-     * @see #rxa_finishInput(WebElement)
+     * @see #isLastInputFn()
+     * @see #toggleNextInputFn()
+     * @see #finishInputFn()
      * @see #consecutiveNextToggleDelay()
      */
     @NotNull
-    default Flowable<WebElement> rxa_toggleNextOrFinishInput(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> toggleNextOrFinishInputFn() {
         final InputActionType<?> THIS = this;
 
-        return rxv_isLastInput(ELEMENT)
-            .filter(HPBooleans::isTrue)
-            .flatMap(a -> THIS.rxa_finishInput(ELEMENT))
-            .switchIfEmpty(THIS.rxa_toggleNextInput(ELEMENT));
+        return upstream -> upstream
+            .compose(THIS.isLastInputFn())
+            .map(a -> a ? THIS.finishInputFn() : THIS.toggleNextInputFn())
+            .flatMap(upstream::compose);
     }
 }

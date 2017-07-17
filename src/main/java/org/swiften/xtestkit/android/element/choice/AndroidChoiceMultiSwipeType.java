@@ -1,6 +1,7 @@
 package org.swiften.xtestkit.android.element.choice;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
@@ -54,10 +55,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
     /**
      * Get the {@link ByXPath} query to locate the target choice item.
      * @return {@link ByXPath} instance.
-     * @see AndroidChoiceInputType#androidTargetItemXP(InputHelperType, String)
-     * @see ByXPath.Builder#withXPath(XPath)
-     * @see ByXPath.Builder#withRetries(int)
-     * @see ChoiceHelperType#platform()
      * @see #choiceInput()
      * @see #choiceHelper()
      * @see #selectedChoice()
@@ -78,7 +75,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * Get the selected choice's numeric representation to compare against
      * other choice items.
      * @return {@link Double} value.
-     * @see ChoiceInputType#numericValue(InputHelperType, String)
      * @see #choiceHelper()
      * @see #choiceInput()
      * @see #selectedChoice()
@@ -95,9 +91,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxe_initialDifference(WebElement)
-     * @see ChoiceHelperType#getText(WebElement)
-     * @see ChoiceInputType#numericValue(InputHelperType, String)
-     * @see ChoiceInputType#numericValueStep(InputHelperType)
      * @see #choiceInput()
      * @see #choiceHelper()
      * @see #selectedChoiceNumericValue()
@@ -122,8 +115,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxa_compareFirst(WebElement)
-     * @see ChoiceHelperType#getText(WebElement)
-     * @see ChoiceInputType#numericValue(InputHelperType, String)
      * @see #choiceInput()
      * @see #choiceHelper()
      * @see #selectedChoiceNumericValue()
@@ -147,8 +138,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * @param element {@link WebElement} instance.
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxa_compareLast(WebElement)
-     * @see ChoiceHelperType#getText(WebElement)
-     * @see ChoiceInputType#numericValue(InputHelperType, String)
      * @see #choiceInput()
      * @see #choiceHelper()
      * @see #selectedChoiceNumericValue()
@@ -218,27 +207,22 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
 
     /**
      * This method will be called once the item has been located.
-     * @param element {@link WebElement} instance that is displaying the
-     *                selected choice.
      * @return {@link Flowable} instance.
-     * @see ChoiceHelperType#rxa_click(WebElement)
      * @see #choiceHelper()
      */
     @NotNull
-    default Flowable<?> rxa_targetItemLocated(@NotNull WebElement element) {
-        return choiceHelper().rxa_click(element);
+    default FlowableTransformer<WebElement, ?> targetItemLocatedFn() {
+        ChoiceHelperType<?> HELPER = choiceHelper();
+        return upstream -> upstream.compose(HELPER.clickFn());
     }
 
     /**
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
-     * @see MultiSwipeComparisonType#rxv_shouldKeepSwiping()
-     * @see HPBooleans#toTrue(Object)
-     * @see ChoiceHelperType#getText(WebElement)
      * @see #choiceHelper()
      * @see #selectedChoice()
      * @see #targetChoiceItemQuery()
-     * @see #rxa_targetItemLocated(WebElement)
+     * @see #targetItemLocatedFn()
      */
     @NotNull
     @Override
@@ -249,7 +233,7 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
 
         return rxe_targetChoiceItem()
             .filter(a -> ENGINE.getText(a).equals(STR_VALUE))
-            .flatMap(THIS::rxa_targetItemLocated)
+            .compose(targetItemLocatedFn())
             .map(HPBooleans::isFalse)
             .defaultIfEmpty(true)
             .onErrorReturnItem(true);
@@ -259,7 +243,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * Override this method to provide default implementation.
      * @return {@link Flowable} instance.
      * @see MultiSwipeComparisonType#rxe_scrollableViewToSwipe()
-     * @see ChoiceInputType#choicePickerXP(InputHelperType)
      * @see #choiceHelper()
      * @see #choiceInput()
      */
@@ -276,7 +259,6 @@ public interface AndroidChoiceMultiSwipeType extends MultiSwipeComparisonType {
      * Override this method to provide default implementation.
      * @param param {@link SwipeParamType} instance.
      * @see MultiSwipeComparisonType#swipeOnce(SwipeParamType)
-     * @see ChoiceHelperType#rxa_swipeOnce(SwipeParamType)
      * @see #choiceHelper()
      */
     @Override

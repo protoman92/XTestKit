@@ -7,7 +7,7 @@ package org.swiften.xtestkit.base.element.general;
 /**
  * This interface provides delay duration for {@link ActionType}.
  */
-public interface BaseActionDelayType {
+public interface ActionDelayType {
     /**
      * Delay duration between the time the dialog is dismissed and the time
      * it disappears from the screen.

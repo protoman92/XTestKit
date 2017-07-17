@@ -13,8 +13,10 @@ import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
 import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.DateProviderType;
+import org.swiften.xtestkit.base.element.input.InputActionType;
 import org.swiften.xtestkit.base.element.input.KeyboardActionType;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
+import org.swiften.xtestkit.base.element.password.PasswordActionType;
 import org.swiften.xtestkit.base.element.search.SearchActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeOnceActionType;
 import org.swiften.xtestkit.base.element.swipe.SwipeParamType;
@@ -130,10 +132,29 @@ public final class TestTypes {
         }
     }
 
+    public interface TestInputActionType extends InputActionType<WebDriver> {
+        @Override
+        default void toggleNextInput(@NotNull WebElement element) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+
+        @Override
+        default void finishInput(@NotNull WebElement element) {
+            throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
     public interface TestKeyboardActionType extends KeyboardActionType<WebDriver> {
         @Override
         default void hideKeyboard() {
             throw new RuntimeException(NOT_AVAILABLE);
+        }
+    }
+
+    public interface TestPasswordActionType extends PasswordActionType<WebDriver> {
+        @Override
+        default void togglePasswordMask(@NotNull WebElement element) {
+            throw new RuntimeException();
         }
     }
 

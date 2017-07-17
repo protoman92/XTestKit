@@ -5,7 +5,6 @@ import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
@@ -15,9 +14,6 @@ import org.swiften.xtestkit.base.param.AlertParam;
 import org.swiften.xtestkit.ios.IOSView;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkit.mobile.element.action.general.MobileActionType;
-import org.swiften.javautilities.protocol.ClassNameProviderType;
-import org.swiften.xtestkitcomponents.platform.PlatformProviderType;
-import org.swiften.xtestkitcomponents.xpath.AttributeType;
 import org.swiften.xtestkitcomponents.xpath.Attributes;
 import org.swiften.xtestkitcomponents.xpath.CompoundAttribute;
 import org.swiften.xtestkitcomponents.xpath.XPath;
@@ -29,8 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * This interface provides actions for
- * {@link Platform#IOS}.
+ * This interface provides actions for {@link Platform#IOS}.
  */
 public interface IOSActionType extends
     ClickActionType<IOSDriver<IOSElement>>,
@@ -52,19 +47,9 @@ public interface IOSActionType extends
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
      * @see MobileActionType#rxa_dismissAlert(AlertParam)
-     * @see AlertParam#shouldAccept()
-     * @see Attributes#of(PlatformProviderType)
      * @see Attributes#hasText(String)
-     * @see HPBooleans#toTrue(Object)
-     * @see CompoundAttribute#single(AttributeType)
-     * @see CompoundAttribute#withClass(ClassNameProviderType)
-     * @see IOSView.Type#UI_BUTTON
-     * @see LocalizerType#localize(String)
-     * @see MobileActionType#rxa_dismissAlert(AlertParam)
-     * @see XPath.Builder#addAttribute(AttributeType)
      * @see #alertDismissDelay()
      * @see #localizer()
-     * @see #rxa_click(WebElement)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
@@ -93,7 +78,7 @@ public interface IOSActionType extends
             .flatMap(THIS::rxe_withXPath)
             .firstElement()
             .toFlowable()
-            .flatMap(THIS::rxa_click)
+            .compose(clickFn())
             .map(HPBooleans::toTrue)
             .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);

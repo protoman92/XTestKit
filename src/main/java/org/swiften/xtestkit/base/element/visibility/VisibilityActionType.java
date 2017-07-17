@@ -10,8 +10,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.number.HPNumbers;
 import org.swiften.javautilities.protocol.DelayProviderType;
-import org.swiften.javautilities.rx.RxParam;
 import org.swiften.javautilities.rx.HPReactives;
+import org.swiften.javautilities.rx.RxParam;
 import org.swiften.xtestkit.base.element.locator.LocatorType;
 
 import java.util.concurrent.TimeUnit;
@@ -29,9 +29,6 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
      * @param flowable {@link Flowable} instance that emits the
      *                 {@link WebElement} to be checked for visibility.
      * @return {@link Flowable} instance.
-     * @see HPNumbers#isZero(Number)
-     * @see RxParam.Builder#withDelay(long)
-     * @see RxParam.Builder#withTimeUnit(TimeUnit)
      * @see HPReactives#repeatUntil(Flowable, DelayProviderType)
      * @see #consecutiveVisibilityCheckDelay()
      */
@@ -46,6 +43,7 @@ public interface VisibilityActionType<D extends WebDriver> extends LocatorType<D
             .withTimeUnit(TimeUnit.MILLISECONDS)
             .build();
 
-        return Flowable.just(true).compose(HPReactives.repeatUntil(counter, param));
+        Flowable<Boolean> initial = Flowable.just(true);
+        return HPReactives.<Boolean, RxParam>doUntil(initial, counter, param);
     }
 }

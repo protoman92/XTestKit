@@ -4,16 +4,15 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.javautilities.date.HPDates;
+import org.swiften.javautilities.localizer.LocalizerProviderType;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.CalendarUnit;
+import org.swiften.xtestkit.base.element.date.DateActionType;
 import org.swiften.xtestkit.base.element.date.DatePickerType;
 import org.swiften.xtestkit.base.element.date.DateProviderType;
 import org.swiften.xtestkit.base.element.input.InputActionType;
-import org.swiften.javautilities.localizer.LocalizerProviderType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,20 +46,18 @@ public interface IOSDateActionType extends
      * @param unit {@link CalendarUnit} instance.
      * @return {@link Flowable} instance.
      * @see DateActionType#rxa_select(DateProviderType, CalendarUnit)
-     * @see HPBooleans#toTrue(Object)
      * @see #valueString(DateProviderType, CalendarUnit)
-     * @see #rxa_sendValue(WebElement, String)
+     * @see #sendValueFn(String)
      * @see #rxe_pickerView(DateProviderType, CalendarUnit)
      */
     @NotNull
     @Override
     default Flowable<Boolean> rxa_select(@NotNull DateProviderType param,
                                          @NotNull CalendarUnit unit) {
-        final IOSDateActionType THIS = this;
         String value = valueString(param, unit);
 
         return rxe_pickerView(param, unit)
-            .flatMap(a -> THIS.rxa_sendValue(a, value))
+            .compose(sendValueFn(value))
             .map(HPBooleans::toTrue);
     }
 

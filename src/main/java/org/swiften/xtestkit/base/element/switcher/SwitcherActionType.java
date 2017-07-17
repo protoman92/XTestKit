@@ -4,10 +4,11 @@ package org.swiften.xtestkit.base.element.switcher;
  * Created by haipham on 5/30/17.
  */
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.HPLog;
 
 /**
@@ -66,19 +67,17 @@ public interface SwitcherActionType {
 
     /**
      * Toggle the switcher on or off.
-     * @param ELEMENT {@link WebElement} instance.
      * @param ON {@link Boolean} value.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #toggleSwitch(WebElement, boolean)
      */
     @NotNull
-    default Flowable<WebElement> rxa_toggleSwitch(@NotNull final WebElement ELEMENT,
-                                                  final boolean ON) {
+    default FlowableTransformer<WebElement, Boolean> toggleSwitchFn(final boolean ON) {
         final SwitcherActionType THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.toggleSwitch(ELEMENT, ON))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(a -> THIS.toggleSwitch(a, ON)))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 }

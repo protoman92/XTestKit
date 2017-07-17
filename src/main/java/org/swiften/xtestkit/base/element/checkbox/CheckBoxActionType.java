@@ -4,11 +4,12 @@ package org.swiften.xtestkit.base.element.checkbox;
  * Created by haipham on 5/15/17.
  */
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 
 /**
@@ -47,20 +48,17 @@ public interface CheckBoxActionType<D extends WebDriver> extends ClickActionType
 
     /**
      * Toggle a checkbox to be checked/unchecked.
-     * @param ELEMENT {@link WebElement} instance.
      * @param CHECKED {@link Boolean} value.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #setCheckBoxState(WebElement, boolean)
      */
     @NotNull
-    default Flowable<WebElement> toggleCheckBox(
-        @NotNull final WebElement ELEMENT, final boolean CHECKED)
-    {
+    default FlowableTransformer<WebElement, Boolean> toggleCheckBoxFn(final boolean CHECKED) {
         final CheckBoxActionType THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.setCheckBoxState(ELEMENT, CHECKED))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(a -> THIS.setCheckBoxState(a, CHECKED)))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 }

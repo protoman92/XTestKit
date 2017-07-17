@@ -1,10 +1,11 @@
 package org.swiften.xtestkit.base.element.password;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
 
@@ -27,18 +28,17 @@ public interface PasswordActionType<D extends WebDriver> extends ElementProperty
 
     /**
      * Toggle password mask to show/hide password.
-     * @param ELEMENT {@link WebElement} instance.
-     * @return {@link Flowable} instance.
+     * @return {@link FlowableTransformer} instance.
      * @see #togglePasswordMask(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxa_togglePasswordMask(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> togglePasswordMaskFn() {
         final PasswordActionType THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.togglePasswordMask(ELEMENT))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::togglePasswordMask))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 
     /**

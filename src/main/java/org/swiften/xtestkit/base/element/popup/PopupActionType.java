@@ -33,10 +33,7 @@ public interface PopupActionType<D extends WebDriver> extends
      * on-screen.
      * @param param {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see HPBooleans#toTrue(Object)
      * @see ByXPath.Builder#shouldLogXPath(boolean)
-     * @see ByXPath.Builder#withXPath(XPath)
-     * @see PopupType#presenceXP(InputHelperType)
      * @see #rxe_byXPath(ByXPath...)
      */
     @NotNull
@@ -57,7 +54,6 @@ public interface PopupActionType<D extends WebDriver> extends
      * Get the {@link WebElement} that can be used to dismiss the popup.
      * @param param {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see PopupType#dismissXP(InputHelperType)
      * @see #rxe_withXPath(XPath...)
      */
     @NotNull
@@ -70,9 +66,8 @@ public interface PopupActionType<D extends WebDriver> extends
      * Dismiss a popup corresponding to {@link PopupType}.
      * @param PARAM {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see HPBooleans#toTrue(Object)
      * @see #popupDismissDelay()
-     * @see #rxa_click(WebElement)
+     * @see #clickFn()
      * @see #rxe_popupDismiss(PopupType)
      */
     @NotNull
@@ -80,7 +75,7 @@ public interface PopupActionType<D extends WebDriver> extends
         final PopupActionType<?> THIS = this;
 
         return rxe_popupDismiss(PARAM)
-            .flatMap(THIS::rxa_click)
+            .compose(clickFn())
             .doOnNext(a -> HPLog.printft("Dismissing popup %s", PARAM))
             .delay(popupDismissDelay(), TimeUnit.MILLISECONDS)
             .map(HPBooleans::toTrue);
@@ -91,7 +86,6 @@ public interface PopupActionType<D extends WebDriver> extends
      * duration interval, then dismiss it when it appears on-screen.
      * @param PARAM {@link PopupType} instance.
      * @return {@link Flowable} instance.
-     * @see PopupType#applicableTo(PlatformType)
      * @see #popupPollDuration()
      * @see #platform()
      * @see #rxa_dismissPopup(PopupType)

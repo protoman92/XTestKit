@@ -16,6 +16,6 @@ public interface IOSPasswordActionType extends PasswordActionType<IOSDriver<IOSE
      */
     @Override
     default void togglePasswordMask(@NotNull WebElement element) {
-        throw new RuntimeException("Not supported on this platform");
+        throw new RuntimeException(NOT_AVAILABLE);
     }
 }

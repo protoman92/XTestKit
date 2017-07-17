@@ -1,13 +1,14 @@
 package org.swiften.xtestkit.android;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.subscribers.TestSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.collection.HPIterables;
-import org.swiften.javautilities.util.HPLog;
 import org.swiften.javautilities.rx.CustomTestSubscriber;
+import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.android.element.choice.AndroidChoiceMultiSwipeType;
 import org.swiften.xtestkit.android.model.AndroidChoiceInputType;
 import org.swiften.xtestkit.base.Engine;
@@ -23,7 +24,6 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by haipham on 5/24/17.
@@ -67,7 +67,7 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
         selected = String.valueOf(ITEMS.get(RAND.nextInt(ITEMS.size())).INDEX);
         doReturn(PLATFORM).when(ENGINE).platform();
         doReturn(Flowable.just(true)).when(ENGINE).rxa_swipeOnce(any());
-        doReturn(Flowable.just(true)).when(ENGINE).rxa_click(any());
+        doReturn(Flowable.just(true)).when(ENGINE).clickFn();
         doReturn(selected).when(SELECTOR).selectedChoice();
 
     }
@@ -108,9 +108,8 @@ public class AndroidChoiceMultiSwipeTest implements AndroidChoiceMultiSwipeType 
 
     @NotNull
     @Override
-    public Flowable<?> rxa_targetItemLocated(@NotNull WebElement element) {
-        assertEquals(element.getText(), selectedChoice());
-        return Flowable.just(true);
+    public FlowableTransformer<WebElement, ?> targetItemLocatedFn() {
+        return upstream -> upstream.cast(Object.class);
     }
 
     @NotNull

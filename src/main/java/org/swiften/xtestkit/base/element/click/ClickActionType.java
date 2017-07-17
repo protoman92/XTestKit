@@ -1,11 +1,12 @@
 package org.swiften.xtestkit.base.element.click;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.swiften.javautilities.bool.HPBooleans;
+import org.swiften.javautilities.rx.HPReactives;
 import org.swiften.javautilities.util.HPLog;
 import org.swiften.xtestkit.base.element.property.ElementPropertyType;
 import org.swiften.xtestkit.base.element.tap.TapType;
@@ -36,24 +37,21 @@ public interface ClickActionType<D extends WebDriver> extends
      */
     default void click(@NotNull WebElement element) {
         HPLog.printft("Clicking on %s", element);
-//        tap(coordinate(element, RLPoint.MID, RLPoint.MID));
         element.click();
     }
 
     /**
-     * Send a click event to {@link WebElement} with
-     * {@link WebElement#click()}.
-     * @param ELEMENT The {@link WebElement} to be clicked.
-     * @return {@link Flowable} instance.
+     * Send a click event to {@link WebElement} with {@link WebElement#click()}.
+     * @return {@link FlowableTransformer} instance.
      * @see #click(WebElement)
      */
     @NotNull
-    default Flowable<WebElement> rxa_click(@NotNull final WebElement ELEMENT) {
+    default FlowableTransformer<WebElement, Boolean> clickFn() {
         final ClickActionType<?> THIS = this;
 
-        return Completable
-            .fromAction(() -> THIS.click(ELEMENT))
-            .<WebElement>toFlowable()
-            .defaultIfEmpty(ELEMENT);
+        return upstream -> upstream
+            .compose(HPReactives.completableFn(THIS::click))
+            .map(HPBooleans::toTrue)
+            .defaultIfEmpty(true);
     }
 }

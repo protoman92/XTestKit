@@ -32,4 +32,24 @@ public interface IOSInputActionType extends InputActionType<IOSDriver<IOSElement
             InputActionType.super.sendValue(element, text);
         }
     }
+
+    /**
+     * Override this method to provide default implementation.
+     * @param element The currently active editable {@link WebElement}.
+     * @see InputActionType#toggleNextInput(WebElement)
+     */
+    @Override
+    default void toggleNextInput(@NotNull WebElement element) {
+        throw new RuntimeException(NOT_AVAILABLE);
+    }
+
+    /**
+     * Override this method to provide default implementation.
+     * @param element The currently active editable {@link WebElement}.
+     * @see InputActionType#finishInput(WebElement)
+     */
+    @Override
+    default void finishInput(@NotNull WebElement element) {
+        throw new RuntimeException(NOT_AVAILABLE);
+    }
 }

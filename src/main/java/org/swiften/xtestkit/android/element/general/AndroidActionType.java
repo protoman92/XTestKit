@@ -9,7 +9,6 @@ import io.appium.java_client.android.AndroidElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
 import org.swiften.xtestkit.base.element.click.ClickActionType;
 import org.swiften.xtestkit.base.element.general.ActionType;
@@ -38,11 +37,9 @@ public interface AndroidActionType extends
      * is not absolutely critical.
      * @param param {@link AlertParam} instance.
      * @return {@link Flowable} instance.
-     * @see ActionType#rxa_dismissAlert(AlertParam)
-     * @see AlertParam#shouldAccept()
-     * @see HPBooleans#toTrue(Object)
+     * @see MobileActionType#rxa_dismissAlert(AlertParam)
      * @see #alertDismissDelay()
-     * @see #rxa_click(WebElement)
+     * @see #clickFn()
      * @see #rxe_containsID(String...)
      */
     @NotNull
@@ -61,7 +58,7 @@ public interface AndroidActionType extends
         return rxe_containsID(id)
             .firstElement()
             .toFlowable()
-            .flatMap(THIS::rxa_click)
+            .compose(clickFn())
             .map(HPBooleans::toTrue)
             .delay(alertDismissDelay(), TimeUnit.MILLISECONDS)
             .onErrorReturnItem(true);

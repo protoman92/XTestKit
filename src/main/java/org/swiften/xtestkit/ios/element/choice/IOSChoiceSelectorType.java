@@ -4,9 +4,7 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.WebElement;
 import org.swiften.javautilities.bool.HPBooleans;
-import org.swiften.xtestkit.base.element.choice.ChoiceHelperType;
 import org.swiften.xtestkit.base.element.choice.ChoiceSelectorType;
 import org.swiften.xtestkit.base.element.choice.ChoiceType;
 import org.swiften.xtestkit.base.model.ChoiceInputType;
@@ -29,29 +27,16 @@ public interface IOSChoiceSelectorType extends
      * Override this method to provide default implementation.
      * @param param {@link ChoiceType} instance.
      * @return {@link Flowable} instance.
-     * @see ChoiceSelectorType#rxa_selectGeneralChoice(ChoiceType)
-     * @see Platform#IOS
-     * @see ChoiceType#selectedChoice()
-     * @see ChoiceType#input()
-     * @see ChoiceInputType#scrollablePickerIndex(InputHelperType)
-     * @see ChoiceInputType#choicePickerXP(InputHelperType)
-     * @see ChoiceHelperType#rxa_sendValue(WebElement, String)
-     * @see HPBooleans#toTrue(Object)
+     * @see #rxe_withXPath(XPath...)
      */
     @NotNull
     default Flowable<Boolean> rxa_selectGeneralChoice(@NotNull ChoiceType param) {
-        final ChoiceHelperType<?> ENGINE = this;
-        final String SELECTED = param.selectedChoice();
-        Platform platform = Platform.IOS;
         ChoiceInputType input = param.input();
-        int index = input.scrollablePickerIndex(this);
-        XPath xpath = input.choicePickerXP(this);
 
-        return ENGINE
-            .rxe_withXPath(xpath)
-            .elementAt(index)
+        return rxe_withXPath(input.choicePickerXP(this))
+            .elementAt(input.scrollablePickerIndex(this))
             .toFlowable()
-            .flatMap(a -> ENGINE.rxa_sendValue(a, SELECTED))
+            .compose(sendValueFn(param.selectedChoice()))
             .map(HPBooleans::toTrue);
     }
 }
