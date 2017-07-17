@@ -23,9 +23,7 @@ public interface PasswordActionType<D extends WebDriver> extends ElementProperty
      * Toggle password mask to show/hide password.
      * @param element {@link WebElement} instance.
      */
-    default void togglePasswordMask(@NotNull WebElement element) {
-        throw new RuntimeException(NOT_AVAILABLE);
-    }
+    void togglePasswordMask(@NotNull WebElement element);
 
     /**
      * Toggle password mask to show/hide password.
