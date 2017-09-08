@@ -3,7 +3,7 @@ package org.swiften.xtestkit.util;
 import org.jetbrains.annotations.NotNull;
 import org.swiften.javautilities.localizer.Localizer;
 import org.swiften.javautilities.localizer.LocalizerType;
-import org.swiften.javautilities.test.TestNGs;
+import org.swiften.javautilities.test.HPTestNGs;
 import org.swiften.xtestkit.base.model.InputHelperType;
 import org.swiften.xtestkit.mobile.Platform;
 import org.swiften.xtestkitcomponents.platform.PlatformType;
@@ -21,13 +21,13 @@ public final class TestHelper {
     /**
      * Provide {@link PlatformType} arguments.
      * @return {@link Iterator} of {@link Object} array.
-     * @see TestNGs#oneFromEach(Object...)
+     * @see HPTestNGs#oneFromEach(Object...)
      * @see Platform#values()
      */
     @NotNull
     @DataProvider(parallel = false)
     public static Iterator<Object[]> platformProvider() {
-        return TestNGs.oneFromEach((Object[])Platform.values()).iterator();
+        return HPTestNGs.oneFromEach((Object[])Platform.values()).iterator();
     }
 
     /**

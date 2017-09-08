@@ -6,6 +6,8 @@ gradlew.bat
 gradle.properties
 artifacts/
 classes/
+out/
+.DS_Store
 
 # Ignore Gradle GUI config
 gradle-app.setting

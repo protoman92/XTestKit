@@ -42,7 +42,7 @@ public abstract class MobileEngine<D extends MobileDriver> extends
     public MobileEngine() {
         app = "";
         appPackage = "";
-        appiumVersion = "1.6.5";
+        appiumVersion = "1.7.0-beta";
         deviceName = "";
         platformVersion = "";
         autoLaunch = true;
